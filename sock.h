@@ -1,18 +1,41 @@
 /*
-    Copyright FLEX COMPUTING / FLEXTRONCS 
-    Author Marius Chincisan Aug 2008
-    OsConsole Interface Implementation. Handles console input and output pipes
+Copyright (c) 2014-2016 PANGEEA.DPT All rights reserved.
+
+Redistribution and use in source and binary forms are permitted
+provided that the above copyright notice and this paragraph are
+duplicated in all such forms and that any documentation,
+advertising materials, and other materials related to such
+distribution and use acknowledge that the software was developed
+by the https://github.com/pangeea. The name of the
+https://github.com/pangeea may not be used to endorse or promote
+products derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
-#ifndef __SOCK_H__
-#define __SOCK_H__
 
-#include "os.h"
+#ifndef __SOCKX_H__
+#define __SOCKX_H__
 
+#include "osthread.h"
+#include <sys/socket.h>
+#include <resolv.h>
+#include <sys/select.h>
+#include <arpa/inet.h>
+#include <sys/ioctl.h>
+#include <sys/time.h>
+#include <netdb.h>
+#include <stdlib.h>
+#include <string.h>
+#include <string>
+#include <fstream>
+#include <math.h>
+using namespace std;
+
+#ifdef _WIN32
 #pragma warning (disable: 4267)
 #pragma warning (disable: 4244)
-
-
-
+#endif //_WIN32
 
 #ifndef _WIN32
     typedef int SOCKET;
@@ -20,12 +43,11 @@
     typedef int socklen_t;
 #endif //
 
-
-#define MAKE_IP(a_,b_,c_,d_) (DWORD)( (a_ <<24) | (b_<<16) | (c_<<8) | d_)
-
+//---------------------------------------------------------------------------------------
+#define MAKE_IP(a_,b_,c_,d_) (unsigned long)( (a_ <<24) | (b_<<16) | (c_<<8) | d_)
 
 //---------------------------------------------------------------------------------------
-typedef BOOL (*CancelCB)(void* pVoid, DWORD time);
+typedef bool (*CancelCB)(void* pVoid, unsigned long time);
 
 #ifdef WIN32
     #define EINPROGRESS         WSAEINPROGRESS
@@ -35,57 +57,290 @@ typedef BOOL (*CancelCB)(void* pVoid, DWORD time);
 #endif //
 
 //---------------------------------------------------------------------------------------
-// ver 1.5 for broadcasting UDP packets
-struct SMachineName
+class tcp_sock;
+
+typedef struct sockaddr_in  SA_46;
+struct bio_unblock;
+
+//fake till migrate to 4 and 6
+/*
+    _remote_sin.sin_family		= AF_INET;
+    _remote_sin.sin_addr.s_addr	= htonl(ip.ip4());
+    _remote_sin.sin_port		= htons(port);
+*/
+//---------------------------------------------------------------------------------------
+#ifndef IPV6
+
+#define _IPR(asin)   (asin.sin_addr.s_addr)
+#define _IP(asin)    ::htonl(asin.sin_addr.s_addr)
+#define _PORT(asin)  ::htons(asin.sin_port)
+
+struct SADDR_46 ;
+class Ip2str
 {
-    char    sMachine[32];
+public:
+    Ip2str(const SADDR_46& sa);
+    Ip2str(const u_int32_t dw);
+    operator const char*()const{return _s;}
+private:
+   char _s[128];
 };
+
+
+#define IP2STR(dwip_)   (const char*)Ip2str(dwip_)
+
+//---------------------------------------------------------------------------------------
+// holds in network order
+//---------------------------------------------------------------------------------------
+struct SADDR_46 : public SA_46
+{
+    SADDR_46(){clear();}
+    void clear(){memset(this,0, sizeof(*this)); sin_family=AF_INET; _mask=0xFFFFFFFF;_sip[0]='*';}
+
+    SADDR_46(u_int32_t r, uint16_t port=0, int32_t mask=0xFFFFFFFF){
+        sin_addr.s_addr = htonl(r);
+        sin_port = htons(port);
+        sin_family=AF_INET;
+        _mask = mask;
+       ::strcpy(_sip,inet_ntoa((struct in_addr)this->sin_addr));
+    }
+    SADDR_46(const SADDR_46& r){::memcpy(this, &r, sizeof(*this));}
+
+    SADDR_46(const char* r, uint16_t port=0, int32_t mask=0xFFFFFFFF){
+
+        from_string(r,  port, mask);
+       ::strcpy(_sip,inet_ntoa((struct in_addr)this->sin_addr));
+
+    }
+    SADDR_46(const SA_46& sa){::memcpy(this, &sa, sizeof(*this));}
+    SADDR_46& operator=(const SADDR_46& r){
+        ::memcpy(this, &r, sizeof(*this));
+        ::strcpy(_sip,inet_ntoa((struct in_addr)this->sin_addr));
+        return *this;
+    }
+    void commit(){::strcpy(_sip,inet_ntoa((struct in_addr)this->sin_addr));}
+    inline int rsz()const{return sizeof(SA_46);}
+    void addr_htonl(){sin_addr.s_addr = htonl(sin_addr.s_addr);}
+    void port_htons(){sin_port = htons(sin_port);}
+    void from_string( const char* r, uint16_t port=0, int32_t mask=0xFFFFFFFF)
+    {
+        char l[128]; ::strcpy(l,r);
+        char* pp = ::strstr((char*)l,":");
+        if(pp){
+            *pp=0;
+            port=::atoi(pp+1);
+        }
+
+        char* pm = 0;
+        if((pm = (char*)strchr(l,'/')) != 0) //has range ip
+        {
+            *pm++=0;
+            sin_addr.s_addr = inet_addr(l);
+            sin_port = htons(port);
+            sin_family=AF_INET;
+            int msk = pow(2,atoi(pm))-1;
+            _mask=htonl(~msk);
+        }
+        else
+        {
+            sin_addr.s_addr = inet_addr(l);
+            sin_port = htons(port);
+            sin_family=AF_INET;
+            _mask = mask;
+        }
+       ::strcpy(_sip,inet_ntoa((struct in_addr)this->sin_addr));
+
+    }
+
+    bool compare_range_ip(const SADDR_46& r)const
+    {
+        int32_t m = _mask & r._mask;
+        return ((sin_addr.s_addr&m) == (r.sin_addr.s_addr&m));
+    }
+    bool operator != (const SADDR_46& r)const
+    {
+        int32_t m = _mask & r._mask;
+        if(sin_port == 0 && r.sin_port == 0)
+        {
+            return (sin_addr.s_addr&m) != (r.sin_addr.s_addr&m);
+        }
+        u_int64_t bigint = ((((u_int64_t)(sin_addr.s_addr&m)<<32)) | (u_int64_t)sin_port);
+        u_int64_t bigintr = ((((u_int64_t)(r.sin_addr.s_addr&m))<<32) | (u_int64_t)r.sin_port);
+        return bigint != bigintr;
+    }
+    bool isequal(const SADDR_46& r, bool porttoo=false)const
+    {
+        int32_t m = _mask & r._mask;
+        if(!porttoo)
+        {
+             return ((sin_addr.s_addr&m) == (r.sin_addr.s_addr&m));
+        }
+        u_int64_t bigint = ((((u_int64_t)sin_addr.s_addr&m)<<32) | (u_int64_t)sin_port);
+        u_int64_t bigintr = ((((u_int64_t)r.sin_addr.s_addr&m)<<32) | (u_int64_t)r.sin_port);
+        return bigint == bigintr;
+
+    }
+    bool operator == (const SADDR_46& r)const
+    {
+        int32_t m = _mask & r._mask;
+        if(sin_port == 0 || r.sin_port == 0)
+        {
+
+             return ((sin_addr.s_addr&m) == (r.sin_addr.s_addr&m));
+        }
+        u_int64_t bigint = ((((u_int64_t)sin_addr.s_addr&m)<<32) | (u_int64_t)sin_port);
+        u_int64_t bigintr = ((((u_int64_t)r.sin_addr.s_addr&m)<<32) | (u_int64_t)r.sin_port);
+        return bigint == bigintr;
+    }
+    bool operator < (const SADDR_46& r)const{
+        int32_t m = _mask & r._mask;
+        if(sin_port == 0 || r.sin_port==0)
+        {
+            return (sin_addr.s_addr&m) < (r.sin_addr.s_addr&m);
+        }
+        u_int64_t bigint = ((((u_int64_t)sin_addr.s_addr&m)<<32) | (u_int64_t)sin_port);
+        u_int64_t bigintr = ((((u_int64_t)r.sin_addr.s_addr&m)<<32) | (u_int64_t)r.sin_port);
+        return bigint < bigintr;
+    }
+    bool operator > (const SADDR_46& r)const{
+        int32_t m = _mask & r._mask;
+        if(sin_port == 0 || r.sin_port==0)
+        {
+            return (sin_addr.s_addr & m) > (r.sin_addr.s_addr & m);
+        }
+        u_int64_t bigint = ((((u_int64_t)sin_addr.s_addr&m)<<32) | (u_int64_t)sin_port);
+        u_int64_t bigintr = ((((u_int64_t)r.sin_addr.s_addr&m)<<32) | (u_int64_t)r.sin_port);
+        return bigint > bigintr;
+    }
+    void set(u_int32_t r,  uint16_t port=0){
+            sin_addr.s_addr = htonl(r);
+            sin_port = htons(port);
+            ::strcpy(_sip,inet_ntoa((struct in_addr)this->sin_addr));
+        }
+    void set_port(uint16_t port){sin_port = htons(port);}
+    u_int32_t ip4()const{return htonl(sin_addr.s_addr);}    //ret in normal order
+    u_int32_t port()const{return htons(sin_port);}          //ret in normal order
+    const char* c_str()const{return _sip;};
+    operator const char*()const{return _sip;}
+    bool empty()const{return sin_addr.s_addr==0;}
+
+    const SADDR_46& operator>>(ofstream& o) const
+    {
+        char fmt[64];
+        if(_mask!=(int)0xFFFFFFFF)
+        {
+            int bits=0;
+            int32_t m = ~_mask;
+            while((m&(0x1)) == 0x1)
+            {
+                m>>=1;
+                ++bits;
+            }
+            sprintf(fmt, "%d/%d:%d\n", ip4(), bits , port());
+        }
+        else
+        {
+            sprintf(fmt, "%d:%d\n", ip4(), port());
+        }
+        o.write(fmt, strlen(fmt));
+        return *this;
+    }
+
+    SADDR_46& operator<<(ifstream& i)
+    {
+        std::string s;
+        std::getline(i, s);
+        int uip=0, port=0;
+        if(s.find('/'))//has range of ip's
+        {
+            int bits;
+            _mask=0xFFFFFFFF;
+            sscanf(s.c_str(),"%d/%d:%d",&uip, &bits, &port);
+            int msk = pow(2,bits)-1;
+            _mask=htonl(~msk);
+
+        }
+        else
+        {
+            _mask=0xFFFFFFFF;
+            sscanf(s.c_str(),"%d:%d",&uip, &port);
+        }
+        if(uip)
+            set(uip, (uint16_t)port);
+        ::strcpy(_sip,inet_ntoa((struct in_addr)this->sin_addr));
+
+        return *this;
+    }
+    int32_t _mask;
+    char     _sip[32];
+};
+
+#else // to do
+union SADDR_46  {
+    struct sockaddr sa;
+    struct sockaddr_in sin;
+    struct sockaddr_in6 sin6;
+};
+#endif
+
+
 
 //---------------------------------------------------------------------------------------
 class sock
 {
 public:
-
-    static      BOOL DefCBCall(void*,DWORD);
+    friend struct bio_unblock;
+    static      bool DefCBCall(void*,unsigned long);
     static void Init();
-    static void Uninit();
-    static char*  GetLocalIP();
-    static int  GetHostIp(const char* hostname, char* szip, DWORD* dwip=0);
-    static BOOL CTime(void* pT, DWORD time);
-
+    static void Unctxreg();
+    static char*  GetLocalIP(const char* reject);
+    static bool CTime(void* pT, unsigned long time);
+    static SADDR_46 dnsgetip(const char* sip, char* out=0, int port=0);
+    static SADDR_46 sip2ip(const char* sip, uint16_t port=0);
+    static bool dnsgetname(u_int32_t uip, char* out);
+    static bool dnsgetnameinfo(const SADDR_46& uip, char* out);
     sock();
     virtual ~sock();
-    virtual SOCKET  create(int opt=0);
-    virtual void    destroy();
+    virtual SOCKET  create(int port, int opt=0, const char* inetaddr=0);
+    virtual SOCKET  create(const SADDR_46& r,int opt=0);
+    virtual bool    term(bool be=true);
     virtual int     send(const char* buff, const int length, int port=0, const char* ip=0  )=0;
-    virtual int     send(const char* buff, const int length, const struct sockaddr_in& rsin)=0;
-    virtual int     send(const BYTE* buff, const int length, int port=0, const char* ip=0  )=0;
-    virtual int     send(const BYTE* buff, const int length, const struct sockaddr_in& rsin)=0;
-    virtual int     receive(BYTE* buff, int length, int port=0, const char* ip=0  )=0;
-    virtual int     receive(BYTE* buff, int length, struct sockaddr_in& rsin)=0;
-    virtual int     select_receive(BYTE* buff, int length, struct sockaddr_in& rsin, int toutms);
-    virtual int     receive(char* buff, int length, int port=0, const char* ip=0  )=0;
-    virtual int     receive(char* buff, int length, struct sockaddr_in& rsin)=0;
-    virtual int     select_receive(char* buff, int length, struct sockaddr_in& rsin, int toutms);
-
-    
-    void      detach(){s_socket=-1;}
-    int       setblocking(DWORD block);
-    int       setoption(int option, int optionsize);
-    int       getoption(int option);
-    const SOCKET&   socket()const {return s_socket;}
-    const bool      isopen()const{return (int)s_socket!=-1;}
-    const int       error()const{return _error;}
-    BOOL      IsBlocking(){return _blocking;}
-
+    virtual int     send(const char* buff, const int length, const  SADDR_46& rsin)=0;
+    virtual int     send(const unsigned char* buff, const int length, int port=0, const char* ip=0  )=0;
+    virtual int     send(const unsigned char* buff, const int length, const  SADDR_46& rsin)=0;
+    virtual int     receive(unsigned char* buff, int length, int port=0, const char* ip=0  )=0;
+    virtual int     receive(unsigned char* buff, int length,  SADDR_46& rsin)=0;
+    virtual int     select_receive(unsigned char* buff, int length, int toutms, int wait=0)const;
+    virtual int     receive(char* buff, int length, int port=0, const char* ip=0  )const=0;
+    virtual int     receive(char* buff, int length,  SADDR_46& rsin)=0;
+    virtual int     select_receive(char* buff, int length, int toutms, int wait=0)const;
+    int             detach(){int s = _thesock; _thesock=-1; return s;}
+    void            attach(int s);
+    int             set_blocking(const unsigned long block);
+    int             set_option(int option, int getJson);
+    int             get_option(int option);
+    SOCKET&         socket() {return _thesock;}
+    bool            isopen()const{return (int)_thesock > 0;}
+    int             error()const{return _error;}
+    int             is_blocking(){return _blocking;}
+    void            pre_set(int sb, int rb){_buffers[0]=sb;_buffers[1]=rb;}
+    void            reset(){_io = 0;};
+    int&            set(){return _io;};
+    SADDR_46&        ip46(){return _ipfixit;}
+    void            set(int mask){_io|=mask;};
+     SADDR_46& Rsin(){return _remote_sin;}
+     SADDR_46& Lsin(){return _local_sin;}
 protected:
-    DWORD           _flags;
-    SOCKET          s_socket;
-    int       _error;
-    BOOL      _bClose;
-    static  DWORD   _tout;
-    int       _blocking;
-    
+    SOCKET          _thesock;
+    int             _io;
+    int             _error;
+    int             _blocking;
+    int             _buffers[2];
+    SADDR_46        _ipfixit;
+    SADDR_46	    _local_sin;	        // source
+	SADDR_46	    _remote_sin;          // dest
+    static  unsigned long   _tout;
+
 };
 
 //---------------------------------------------------------------------------------------
@@ -95,141 +350,115 @@ class tcp_sock : public sock
 public:
     friend class tcp_srv_sock;
     tcp_sock();
-    virtual ~tcp_sock(){};
-    virtual SOCKET  create(int opt=0);
+    virtual ~tcp_sock();
+    virtual SOCKET  create(int port, int opt=0, const char* inetaddr=0);
+    virtual SOCKET  create(const SADDR_46& r, int opt=0);
     virtual int     send(const char* buff, const int length, int port=0, const char* ip=0  );
-    virtual int     send(const char* buff, const int length, const struct sockaddr_in& rsin){return send(buff, length);};
-    virtual int     send(const BYTE* buff, const int length, int port=0, const char* ip=0  );
-    virtual int     send(const BYTE* buff, const int length, const struct sockaddr_in& rsin){return send(buff, length);}
-    virtual int     receive(BYTE* buff, int length, int port=0, const char* ip=0  );
-    virtual int     receive(BYTE* buff, int length, struct sockaddr_in& rsin){return receive(buff,length);}
-    virtual int     receive(char* buff, int length, int port=0, const char* ip=0  );
-    virtual int     receive(char* buff, int length, struct sockaddr_in& rsin){return receive(buff,length);}
+    virtual int     send(const char* buff, const int length, const  SADDR_46& rsin){UNUS(rsin); return send(buff, length);};
+    virtual int     send(const unsigned char* buff, const int length, int port=0, const char* ip=0  );
+    virtual int     send(const unsigned char* buff, const int length, const  SADDR_46& rsin){UNUS(rsin) ;return send(buff, length);}
+    virtual int     receive(unsigned char* buff, int length, int port=0, const char* ip=0  );
+    virtual int     receive(unsigned char* buff, int length,  SADDR_46& rsin){UNUS(rsin); return receive(buff,length);}
+    virtual int     receive(char* buff, int length, int port=0, const char* ip=0  )const;
+    virtual int     receive(char* buff, int length,  SADDR_46& rsin){UNUS(rsin); return receive(buff,length);}
+    virtual int     sendall(const unsigned char* buff,  int length, int tout=8000);
+    virtual int     sendall(const char* buff, int length, int tout=8000){return sendall((unsigned char*)buff, length, tout);}
+    int             receiveall(const unsigned char* buff, const int length);
 
-    char*           AddrIP();
-    char*           getsocketaddr(char* pAddr);
-    int       listen(int maxpending=16);
-    struct          sockaddr_in& Rsin(){return _remote_sin;}
-    struct          sockaddr_in& Lsin(){return _local_sin;}
+    char*           ssock_addrip();
+    char*           getsocketaddr_str(char* pAddr)const;
+    const SADDR_46&       getsocketaddr()const;
+    int             getsocketport()const;
+    int             listen(int maxpending=64);
+
 protected:
-    struct sockaddr_in	_local_sin;	   // source
-	struct sockaddr_in	_remote_sin;          // dest
-    char          _sip[128];
+
+    char    _sip[32];
 };
 
 
 //---------------------------------------------------------------------------------------
-class tcp_cli_sock;
+class tcp_clis;
 class tcp_srv_sock : public tcp_sock
 {
-    int _port;
+    int n_port;
 public:
+    int port()const{return n_port;}
     tcp_srv_sock();
-    virtual ~tcp_srv_sock(){};
-    SOCKET     accept(tcp_cli_sock& cliSock);
-    virtual SOCKET   create(int opt=0);
+    virtual ~tcp_srv_sock();
+    virtual bool    term(bool be=true);
+    SOCKET     accept(tcp_clis& cliSock);
+    virtual SOCKET   create(int port, int opt=0, const char* inetaddr=0);
+    virtual SOCKET  create(const SADDR_46& r, int opt=0);
 };
 
 //---------------------------------------------------------------------------------------
-class tcp_cli_sock : public tcp_sock
+class tcp_clis : public tcp_sock
 {
 public:
-    explicit tcp_cli_sock(){_hostent=0;_connecting=0;}
-    explicit tcp_cli_sock(const tcp_cli_sock& s):tcp_sock(){
-        s_socket       = s.s_socket;
-        _error      = s._error;
-        _bClose     = s._bClose;
-        _blocking   = s._blocking;
-        ::memcpy(&_local_sin, &s._local_sin, sizeof(_local_sin));
-        ::memcpy(&_remote_sin, &s._remote_sin, sizeof(_remote_sin));
-    }
-    tcp_cli_sock& operator =   (const tcp_cli_sock& s){
-        if(this != &s){
-      s_socket       = s.s_socket;
-      _error      = s._error;
-      _bClose     = s._bClose;
-      _blocking   = s._blocking;
-      ::memcpy(&_local_sin, &s._local_sin, sizeof(_local_sin));
-      ::memcpy(&_remote_sin, &s._remote_sin, sizeof(_remote_sin));
-        }
-        return *this;
-    }
-    virtual ~tcp_cli_sock(){};
-    virtual SOCKET  create(int opt=0);
-	int       try_connect(const char* sip, int port);
-    int       raw_connect(DWORD uip4, int port);
-    int       raw_connect(const char* suip4, int port);
-    int       openconnection(const char* sip, int port);
-    int       connect(const char* sip, int port, CancelCB cbCall=sock::DefCBCall, void* pUser=0);
-    int       i4connect(DWORD ip, int port, CancelCB cbCall=sock::DefCBCall, void* pUser=0);
-    int       s4connect(const char* sip, int port, CancelCB cbCall=sock::DefCBCall, void* pUser=0);
-    DWORD   getremoteip(){return (DWORD)_remote_sin.sin_addr.s_addr;}
+    tcp_clis();
+    tcp_clis(const tcp_clis& s);
+    tcp_clis& operator=(const tcp_clis& s);
+    virtual         ~tcp_clis();
+    virtual SOCKET  create(int port, int opt=0, const char* inetaddr=0);
+    virtual SOCKET  create(const SADDR_46& r, int opt=0);
+    virtual int     raw_connect(const SADDR_46& uip4, int tout=0);
+    virtual int     raw_connect(u_int32_t ip4,  int port);
+	virtual int     raw_connect_sin();
+    int             try_connect(const char* sip, int port);
+	void            raw_sethost(const SADDR_46& uip4);
+    int             openconnection(const char* sip, int port);
+    int             connect(const char* sip, int port, CancelCB cbCall=sock::DefCBCall, void* pUser=0);
+    int             i4connect(const SADDR_46& ip, CancelCB cbCall=sock::DefCBCall, void* pUser=0);
+    int             s4connect(const char* sip, int port, CancelCB cbCall=sock::DefCBCall, void* pUser=0);
+    bool            is_really_connected();
+    bool            check_connection()const {return _connected;};
     struct hostent* gethostent(){return _hostent;}
-    int       isconnecting(){
+    virtual bool    term(bool be=true);
+    int             isconnecting(){
         return _connecting;
     }
-    void      setconnected(){
-        assert(s_socket!=-1); 
+    virtual void            setconnected(){
         _connecting = 0;
+        _connected = 1;
     }
 
-    void      destroy();
 protected:
-    struct hostent  *_hostent;
-    int       _connecting;
+     hostent  *_hostent;
+    int  _connecting;
+    int  _connected;
 };
 
 //---------------------------------------------------------------------------------------
 class udp_sock : public sock
 {
 public:
-    udp_sock():_connected(0){}
-    virtual ~udp_sock(){destroy();}
-    virtual void    destroy(){sock::destroy();_connected=0;};
-    virtual SOCKET  create(int opt=0);
+    udp_sock():_connected(0),_bind(0){}
+    virtual ~udp_sock(){term(false);}
+    virtual bool    term(bool be=true){bool b = sock::term(be);_connected=0;return b;};
+    virtual SOCKET  create(int port, int opt=0, const char* inetaddr=0);
+    virtual SOCKET  create(const SADDR_46& r, int opt=0);
     virtual int     send(const char* buff, const int length, int port=0, const char* ip=0  );
-    virtual int     send(const char* buff, const int length, const struct sockaddr_in& rsin);
-    virtual int     send(const BYTE* buff, const int length, int port=0, const char* ip=0  );
-    virtual int     send(const BYTE* buff, const int length, const struct sockaddr_in& rsin);
-    virtual int     receive(BYTE* buff, int length, int port=0, const char* ip=0  );
-    virtual int     receive(BYTE* buff, int length, struct sockaddr_in& rsin);
+    virtual int     send(const char* buff, const int length, const  SADDR_46& rsin);
+    virtual int     send(const unsigned char* buff, const int length, int port=0, const char* ip=0  );
+    virtual int     send(const unsigned char* buff, const int length, const  SADDR_46& rsin);
+    virtual int     receive(unsigned char* buff, int length, int port=0, const char* ip=0  );
+    virtual int     receive(unsigned char* buff, int length,  SADDR_46& rsin);
     virtual int     receive(char* buff, int length, int port=0, const char* ip=0  );
-    virtual int     receive(char* buff, int length, struct sockaddr_in& rsin);
+    virtual int     receive(char* buff, int length,  SADDR_46& rsin);
+    void            SetRsin(const  SADDR_46& in){::memcpy(&_remote_sin, &in, sizeof( SADDR_46));}
+    int             connect(const char* sip, int port, CancelCB cbCall=sock::DefCBCall, void* pUser=0);
+    int             set_rsin(const char* sip, int port);
+    int             bind(const char* ip=0, int port=0);
+    SADDR_46&          remote(){return _remote_sin;}
+    void            remote(SADDR_46& s){memcpy(&_remote_sin,&s,sizeof(s));}
+    char*           ssock_addrip();
 
-    struct sockaddr_in& Rsin(){return _remote_sin;}
-    struct sockaddr_in& Lsin(){return _local_sin;}
-    void      SetRsin(const struct sockaddr_in& in){::memcpy(&_remote_sin, &in, sizeof(struct sockaddr_in));}
-    int       connect(const char* sip, int port, CancelCB cbCall=sock::DefCBCall, void* pUser=0);
-    
 protected:
-    BOOL          _connected;
-    struct sockaddr_in	_local_sin;
-    struct sockaddr_in	_remote_sin;          // dest
-    char          _sip[128];
-};
-
-
-//---------------------------------------------------------------------------------------
-class udp_server_sock : public udp_sock
-{
-public:
-    udp_server_sock(){_sip[0]=0;}
-    virtual ~udp_server_sock(){};
-    virtual SOCKET  create(int opt=0);
-    sockaddr_in&    remote(){return _remote_sin;}
-    void      remote(sockaddr_in& s){memcpy(&_remote_sin,&s,sizeof(s));}
-
-    char*           AddrIP();
-};
-
-//---------------------------------------------------------------------------------------
-class udp_client_sock : public udp_sock
-{
-public:
-    udp_client_sock(){}
-    virtual ~udp_client_sock(){}
-    virtual SOCKET   create(int opt=0);
-
+    bool    _connected;
+    bool    _bind;
+    int     _option;
+    char    _sip[128];
 };
 
 
@@ -238,28 +467,28 @@ class udp_group_sock : public udp_sock
 {
 /*
     struct ip_mreq    _mcastGrp;
-    BOOL         _groupmember;
+    bool               _groupmember;
 
 public:
     udp_group_sock(int opt=0){};
-    virtual ~udp_group_sock(){destroy();};
+    virtual ~udp_group_sock(){term();};
     virtual int  create(int opt=0);
     int     join(const char* ipGrp, int port);
 
-    virtual int     send(BYTE* buff, int length, int port=0, const char* ip=0  );
-    virtual int     receive(BYTE* buff, int length, int port=0, const char* ip=0  );
-    virtual void    destroy();
+    virtual int     send(unsigned char* buff, int length, int port=0, const char* ip=0  );
+    virtual int     receive(unsigned char* buff, int length, int port=0, const char* ip=0  );
+    virtual bool    term();
     */
 };
 
 #define IS_SOCKK_ERR(err_)  err_ == WSAECONNRESET   ||\
-                err_ == WSAECONNABORTED ||\
-                err_ == WSAESHUTDOWN    ||\
-                err_ == WSAETIMEDOUT    ||\
-                err_ == WSAECONNREFUSED ||\
-                err_ == WSAEOPNOTSUPP   ||\
-                err_ == WSAENETDOWN     ||\
-                err_ == -1
+                            err_ == WSAECONNABORTED ||\
+                            err_ == WSAESHUTDOWN    ||\
+                            err_ == WSAETIMEDOUT    ||\
+                            err_ == WSAECONNREFUSED ||\
+                            err_ == WSAEOPNOTSUPP   ||\
+                            err_ == WSAENETDOWN     ||\
+                            err_ == -1
 
 
 
@@ -273,25 +502,19 @@ public:
     }
     ~WsaInit()
     {
-        sock::Uninit();
+        sock::Unctxreg();
     }
 };
 
 
-class IP2String
+struct bio_unblock
 {
-public:
-   IP2String(DWORD dw){
-       ::t_sprintf( _s,"%u.%u.%u.%u",
-                (int)(dw  & 0xFF),
-                (int)((dw >>8)& 0xFF),
-                (int)((dw >>16) & 0xFF),
-                (int)((dw >>24)&0xFF));
-   }
-   operator const char*(){return _s;}
-private:
-   static char _s[128];
+    sock* _sk;
+    int   _bl;
+    bio_unblock(sock* sock, int bl=0);
+    ~bio_unblock();
 };
-#define IP2STR(dwip_)   (const char*)IP2String(dwip_)
+
+
 
 #endif // !

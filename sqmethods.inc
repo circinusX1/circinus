@@ -3,12 +3,12 @@
 /////////////////////
 
 template<class T >
-SQInteger _sqbind_sqmethod_0(HSQUIRRELVM v) {
+int _sqbind_sqmethod_0(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );
+	T* self = &SqBind<T>::read(v, 1 );
 	typedef void (T::*M)();	
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	
 	(self->*method)();		
@@ -17,12 +17,12 @@ SQInteger _sqbind_sqmethod_0(HSQUIRRELVM v) {
 }
 
 template<class T >
-SQInteger _sqbind_sqmethod_0c(HSQUIRRELVM v) {
+int _sqbind_sqmethod_0c(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );
+	T* self = &SqBind<T>::read(v, 1 );
 	typedef void (T::*M)() const;	
-	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	M* methodptr;
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	
 	(self->*method)();		
@@ -31,12 +31,12 @@ SQInteger _sqbind_sqmethod_0c(HSQUIRRELVM v) {
 }
 
 template<class T, class R>
-SQInteger _sqbind_sqmethod_0r(HSQUIRRELVM v) {
+int _sqbind_sqmethod_0r(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );		
+	T* self = &SqBind<T>::read(v, 1 );		
 	typedef R (T::*M)();
-	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	M* methodptr;
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 		
 	R r = (self->*method)();		
@@ -45,12 +45,12 @@ SQInteger _sqbind_sqmethod_0r(HSQUIRRELVM v) {
 }
 
 template<class T, class R>
-SQInteger _sqbind_sqmethod_0rc(HSQUIRRELVM v) {
+int _sqbind_sqmethod_0rc(HSKVM v) {
 
-	const T* self = &SqBind<T>::get(v, 1 );		
+	const T* self = &SqBind<T>::read(v, 1 );		
 	typedef R (T::*M)() const;
-	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	M* methodptr;
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 		
 	R r = (self->*method)();		
@@ -59,7 +59,7 @@ SQInteger _sqbind_sqmethod_0rc(HSQUIRRELVM v) {
 }
 
 template<class T>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)() ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  void (T::*method)() ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -71,7 +71,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)() ) 
 }
 
 template<class T>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)() const ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  void (T::*method)() const ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -83,7 +83,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)() co
 }
 
 template<class T ,class R>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)() ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  R (T::*method)() ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -95,7 +95,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)() ) {
 }
 
 template<class T,class R>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)() const ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  R (T::*method)() const ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -112,11 +112,11 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)() const
 // otherwise overload won't work
 
 template<class VM>
-SQInteger _sqbind_sqfunction_0(VM v) {
+int _sqbind_sqfunction_0(VM v) {
 
 	typedef void (*F)();	
 	F*functionptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&functionptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&functionptr,NULL);
 	F function = *functionptr;
 	
 	(function)();		
@@ -127,11 +127,11 @@ SQInteger _sqbind_sqfunction_0(VM v) {
 
 
 template<class VM, class R>
-SQInteger _sqbind_sqfunction_0r(VM v) {
+int _sqbind_sqfunction_0r(VM v) {
 
 	typedef R (*F)();
 	F*functionptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&functionptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&functionptr,NULL);
 	F function = *functionptr;
 		
 	R r = (function)();		
@@ -178,67 +178,67 @@ void sqbind_function( VM v, const SQChar *p_name,  R (*function)(), const HSQOBJ
 /////////////////////
 
 template<class T,class P1 >
-SQInteger _sqbind_sqmethod_1(HSQUIRRELVM v) {
+int _sqbind_sqmethod_1(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );
+	T* self = &SqBind<T>::read(v, 1 );
 	typedef void (T::*M)(P1);	
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 
-	(self->*method)(p1.getter.get(v,2));		
+	(self->*method)(p1.getter.read(v,2));		
 	
 	return 0;
 }
 
 template<class T,class P1 >
-SQInteger _sqbind_sqmethod_1c(HSQUIRRELVM v) {
+int _sqbind_sqmethod_1c(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );
+	T* self = &SqBind<T>::read(v, 1 );
 	typedef void (T::*M)(P1) const;	
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 
-	(self->*method)(p1.getter.get(v,2));		
+	(self->*method)(p1.getter.read(v,2));		
 	
 	return 0;
 }
 
 template<class T,class P1, class R>
-SQInteger _sqbind_sqmethod_1r(HSQUIRRELVM v) {
+int _sqbind_sqmethod_1r(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );		
+	T* self = &SqBind<T>::read(v, 1 );		
 	typedef R (T::*M)(P1);
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	
-	R r = (self->*method)(p1.getter.get(v,2));		
+	R r = (self->*method)(p1.getter.read(v,2));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
 
 template<class T,class P1, class R>
-SQInteger _sqbind_sqmethod_1rc(HSQUIRRELVM v) {
+int _sqbind_sqmethod_1rc(HSKVM v) {
 
-	const T* self = &SqBind<T>::get(v, 1 );		
+	const T* self = &SqBind<T>::read(v, 1 );		
 	typedef R (T::*M)(P1) const;
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	
-	R r = (self->*method)(p1.getter.get(v,2));		
+	R r = (self->*method)(p1.getter.read(v,2));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
 
 template<class T,class P1>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1) ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  void (T::*method)(P1) ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -250,7 +250,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1) 
 }
 
 template<class T,class P1>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1) const ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  void (T::*method)(P1) const ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -262,7 +262,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1) 
 }
 
 template<class T,class P1 ,class R>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1) ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  R (T::*method)(P1) ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -274,7 +274,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1) ) {
 }
 
 template<class T,class P1,class R>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1) const ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  R (T::*method)(P1) const ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -291,15 +291,15 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1) con
 // otherwise overload won't work
 
 template<class VM,class P1>
-SQInteger _sqbind_sqfunction_1(VM v) {
+int _sqbind_sqfunction_1(VM v) {
 
 	typedef void (*F)(P1);	
 	F*functionptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&functionptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&functionptr,NULL);
 	F function = *functionptr;
 	SqCParam<P1> p1;
 
-	(function)(p1.getter.get(v,2));		
+	(function)(p1.getter.read(v,2));		
 	
 	return 0;
 }
@@ -307,15 +307,15 @@ SQInteger _sqbind_sqfunction_1(VM v) {
 
 
 template<class VM,class P1, class R>
-SQInteger _sqbind_sqfunction_1r(VM v) {
+int _sqbind_sqfunction_1r(VM v) {
 
 	typedef R (*F)(P1);
 	F*functionptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&functionptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&functionptr,NULL);
 	F function = *functionptr;
 	SqCParam<P1> p1;
 	
-	R r = (function)(p1.getter.get(v,2));		
+	R r = (function)(p1.getter.read(v,2));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
@@ -359,71 +359,71 @@ void sqbind_function( VM v, const SQChar *p_name,  R (*function)(P1), const HSQO
 /////////////////////
 
 template<class T,class P1, class P2 >
-SQInteger _sqbind_sqmethod_2(HSQUIRRELVM v) {
+int _sqbind_sqmethod_2(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );
+	T* self = &SqBind<T>::read(v, 1 );
 	typedef void (T::*M)(P1, P2);	
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 
-	(self->*method)(p1.getter.get(v,2), p2.getter.get(v,3));		
+	(self->*method)(p1.getter.read(v,2), p2.getter.read(v,3));		
 	
 	return 0;
 }
 
 template<class T,class P1, class P2 >
-SQInteger _sqbind_sqmethod_2c(HSQUIRRELVM v) {
+int _sqbind_sqmethod_2c(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );
+	T* self = &SqBind<T>::read(v, 1 );
 	typedef void (T::*M)(P1, P2) const;	
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 
-	(self->*method)(p1.getter.get(v,2), p2.getter.get(v,3));		
+	(self->*method)(p1.getter.read(v,2), p2.getter.read(v,3));		
 	
 	return 0;
 }
 
 template<class T,class P1, class P2, class R>
-SQInteger _sqbind_sqmethod_2r(HSQUIRRELVM v) {
+int _sqbind_sqmethod_2r(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );		
+	T* self = &SqBind<T>::read(v, 1 );		
 	typedef R (T::*M)(P1, P2);
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	
-	R r = (self->*method)(p1.getter.get(v,2), p2.getter.get(v,3));		
+	R r = (self->*method)(p1.getter.read(v,2), p2.getter.read(v,3));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
 
 template<class T,class P1, class P2, class R>
-SQInteger _sqbind_sqmethod_2rc(HSQUIRRELVM v) {
+int _sqbind_sqmethod_2rc(HSKVM v) {
 
-	const T* self = &SqBind<T>::get(v, 1 );		
+	const T* self = &SqBind<T>::read(v, 1 );		
 	typedef R (T::*M)(P1, P2) const;
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	
-	R r = (self->*method)(p1.getter.get(v,2), p2.getter.get(v,3));		
+	R r = (self->*method)(p1.getter.read(v,2), p2.getter.read(v,3));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
 
 template<class T,class P1, class P2>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, P2) ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  void (T::*method)(P1, P2) ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -435,7 +435,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, 
 }
 
 template<class T,class P1, class P2>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, P2) const ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  void (T::*method)(P1, P2) const ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -447,7 +447,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, 
 }
 
 template<class T,class P1, class P2 ,class R>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2) ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  R (T::*method)(P1, P2) ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -459,7 +459,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2)
 }
 
 template<class T,class P1, class P2,class R>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2) const ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  R (T::*method)(P1, P2) const ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -476,16 +476,16 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2)
 // otherwise overload won't work
 
 template<class VM,class P1, class P2>
-SQInteger _sqbind_sqfunction_2(VM v) {
+int _sqbind_sqfunction_2(VM v) {
 
 	typedef void (*F)(P1, P2);	
 	F*functionptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&functionptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&functionptr,NULL);
 	F function = *functionptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 
-	(function)(p1.getter.get(v,2), p2.getter.get(v,3));		
+	(function)(p1.getter.read(v,2), p2.getter.read(v,3));		
 	
 	return 0;
 }
@@ -493,16 +493,16 @@ SQInteger _sqbind_sqfunction_2(VM v) {
 
 
 template<class VM,class P1, class P2, class R>
-SQInteger _sqbind_sqfunction_2r(VM v) {
+int _sqbind_sqfunction_2r(VM v) {
 
 	typedef R (*F)(P1, P2);
 	F*functionptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&functionptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&functionptr,NULL);
 	F function = *functionptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	
-	R r = (function)(p1.getter.get(v,2), p2.getter.get(v,3));		
+	R r = (function)(p1.getter.read(v,2), p2.getter.read(v,3));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
@@ -546,75 +546,75 @@ void sqbind_function( VM v, const SQChar *p_name,  R (*function)(P1, P2), const 
 /////////////////////
 
 template<class T,class P1, class P2, class P3 >
-SQInteger _sqbind_sqmethod_3(HSQUIRRELVM v) {
+int _sqbind_sqmethod_3(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );
+	T* self = &SqBind<T>::read(v, 1 );
 	typedef void (T::*M)(P1, P2, P3);	
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	SqCParam<P3> p3;
 
-	(self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4));		
+	(self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4));		
 	
 	return 0;
 }
 
 template<class T,class P1, class P2, class P3 >
-SQInteger _sqbind_sqmethod_3c(HSQUIRRELVM v) {
+int _sqbind_sqmethod_3c(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );
+	T* self = &SqBind<T>::read(v, 1 );
 	typedef void (T::*M)(P1, P2, P3) const;	
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	SqCParam<P3> p3;
 
-	(self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4));		
+	(self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4));		
 	
 	return 0;
 }
 
 template<class T,class P1, class P2, class P3, class R>
-SQInteger _sqbind_sqmethod_3r(HSQUIRRELVM v) {
+int _sqbind_sqmethod_3r(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );		
+	T* self = &SqBind<T>::read(v, 1 );		
 	typedef R (T::*M)(P1, P2, P3);
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	SqCParam<P3> p3;
 	
-	R r = (self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4));		
+	R r = (self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
 
 template<class T,class P1, class P2, class P3, class R>
-SQInteger _sqbind_sqmethod_3rc(HSQUIRRELVM v) {
+int _sqbind_sqmethod_3rc(HSKVM v) {
 
-	const T* self = &SqBind<T>::get(v, 1 );		
+	const T* self = &SqBind<T>::read(v, 1 );		
 	typedef R (T::*M)(P1, P2, P3) const;
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	SqCParam<P3> p3;
 	
-	R r = (self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4));		
+	R r = (self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
 
 template<class T,class P1, class P2, class P3>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3) ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3) ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -626,7 +626,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, 
 }
 
 template<class T,class P1, class P2, class P3>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3) const ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3) const ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -638,7 +638,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, 
 }
 
 template<class T,class P1, class P2, class P3 ,class R>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3) ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3) ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -650,7 +650,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2,
 }
 
 template<class T,class P1, class P2, class P3,class R>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3) const ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3) const ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -667,17 +667,17 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2,
 // otherwise overload won't work
 
 template<class VM,class P1, class P2, class P3>
-SQInteger _sqbind_sqfunction_3(VM v) {
+int _sqbind_sqfunction_3(VM v) {
 
 	typedef void (*F)(P1, P2, P3);	
 	F*functionptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&functionptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&functionptr,NULL);
 	F function = *functionptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	SqCParam<P3> p3;
 
-	(function)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4));		
+	(function)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4));		
 	
 	return 0;
 }
@@ -685,17 +685,17 @@ SQInteger _sqbind_sqfunction_3(VM v) {
 
 
 template<class VM,class P1, class P2, class P3, class R>
-SQInteger _sqbind_sqfunction_3r(VM v) {
+int _sqbind_sqfunction_3r(VM v) {
 
 	typedef R (*F)(P1, P2, P3);
 	F*functionptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&functionptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&functionptr,NULL);
 	F function = *functionptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	SqCParam<P3> p3;
 	
-	R r = (function)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4));		
+	R r = (function)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
@@ -739,79 +739,79 @@ void sqbind_function( VM v, const SQChar *p_name,  R (*function)(P1, P2, P3), co
 /////////////////////
 
 template<class T,class P1, class P2, class P3, class P4 >
-SQInteger _sqbind_sqmethod_4(HSQUIRRELVM v) {
+int _sqbind_sqmethod_4(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );
+	T* self = &SqBind<T>::read(v, 1 );
 	typedef void (T::*M)(P1, P2, P3, P4);	
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	SqCParam<P3> p3;
 	SqCParam<P4> p4;
 
-	(self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5));		
+	(self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5));		
 	
 	return 0;
 }
 
 template<class T,class P1, class P2, class P3, class P4 >
-SQInteger _sqbind_sqmethod_4c(HSQUIRRELVM v) {
+int _sqbind_sqmethod_4c(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );
+	T* self = &SqBind<T>::read(v, 1 );
 	typedef void (T::*M)(P1, P2, P3, P4) const;	
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	SqCParam<P3> p3;
 	SqCParam<P4> p4;
 
-	(self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5));		
+	(self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5));		
 	
 	return 0;
 }
 
 template<class T,class P1, class P2, class P3, class P4, class R>
-SQInteger _sqbind_sqmethod_4r(HSQUIRRELVM v) {
+int _sqbind_sqmethod_4r(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );		
+	T* self = &SqBind<T>::read(v, 1 );		
 	typedef R (T::*M)(P1, P2, P3, P4);
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	SqCParam<P3> p3;
 	SqCParam<P4> p4;
 	
-	R r = (self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5));		
+	R r = (self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
 
 template<class T,class P1, class P2, class P3, class P4, class R>
-SQInteger _sqbind_sqmethod_4rc(HSQUIRRELVM v) {
+int _sqbind_sqmethod_4rc(HSKVM v) {
 
-	const T* self = &SqBind<T>::get(v, 1 );		
+	const T* self = &SqBind<T>::read(v, 1 );		
 	typedef R (T::*M)(P1, P2, P3, P4) const;
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	SqCParam<P3> p3;
 	SqCParam<P4> p4;
 	
-	R r = (self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5));		
+	R r = (self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
 
 template<class T,class P1, class P2, class P3, class P4>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3, P4) ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3, P4) ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -823,7 +823,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, 
 }
 
 template<class T,class P1, class P2, class P3, class P4>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3, P4) const ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3, P4) const ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -835,7 +835,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, 
 }
 
 template<class T,class P1, class P2, class P3, class P4 ,class R>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3, P4) ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3, P4) ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -847,7 +847,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2,
 }
 
 template<class T,class P1, class P2, class P3, class P4,class R>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3, P4) const ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3, P4) const ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -864,18 +864,18 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2,
 // otherwise overload won't work
 
 template<class VM,class P1, class P2, class P3, class P4>
-SQInteger _sqbind_sqfunction_4(VM v) {
+int _sqbind_sqfunction_4(VM v) {
 
 	typedef void (*F)(P1, P2, P3, P4);	
 	F*functionptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&functionptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&functionptr,NULL);
 	F function = *functionptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	SqCParam<P3> p3;
 	SqCParam<P4> p4;
 
-	(function)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5));		
+	(function)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5));		
 	
 	return 0;
 }
@@ -883,18 +883,18 @@ SQInteger _sqbind_sqfunction_4(VM v) {
 
 
 template<class VM,class P1, class P2, class P3, class P4, class R>
-SQInteger _sqbind_sqfunction_4r(VM v) {
+int _sqbind_sqfunction_4r(VM v) {
 
 	typedef R (*F)(P1, P2, P3, P4);
 	F*functionptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&functionptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&functionptr,NULL);
 	F function = *functionptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
 	SqCParam<P3> p3;
 	SqCParam<P4> p4;
 	
-	R r = (function)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5));		
+	R r = (function)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
@@ -938,12 +938,12 @@ void sqbind_function( VM v, const SQChar *p_name,  R (*function)(P1, P2, P3, P4)
 /////////////////////
 
 template<class T,class P1, class P2, class P3, class P4, class P5 >
-SQInteger _sqbind_sqmethod_5(HSQUIRRELVM v) {
+int _sqbind_sqmethod_5(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );
+	T* self = &SqBind<T>::read(v, 1 );
 	typedef void (T::*M)(P1, P2, P3, P4, P5);	
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
@@ -951,18 +951,18 @@ SQInteger _sqbind_sqmethod_5(HSQUIRRELVM v) {
 	SqCParam<P4> p4;
 	SqCParam<P5> p5;
 
-	(self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5), p5.getter.get(v,6));		
+	(self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5), p5.getter.read(v,6));		
 	
 	return 0;
 }
 
 template<class T,class P1, class P2, class P3, class P4, class P5 >
-SQInteger _sqbind_sqmethod_5c(HSQUIRRELVM v) {
+int _sqbind_sqmethod_5c(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );
+	T* self = &SqBind<T>::read(v, 1 );
 	typedef void (T::*M)(P1, P2, P3, P4, P5) const;	
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
@@ -970,18 +970,18 @@ SQInteger _sqbind_sqmethod_5c(HSQUIRRELVM v) {
 	SqCParam<P4> p4;
 	SqCParam<P5> p5;
 
-	(self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5), p5.getter.get(v,6));		
+	(self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5), p5.getter.read(v,6));		
 	
 	return 0;
 }
 
 template<class T,class P1, class P2, class P3, class P4, class P5, class R>
-SQInteger _sqbind_sqmethod_5r(HSQUIRRELVM v) {
+int _sqbind_sqmethod_5r(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );		
+	T* self = &SqBind<T>::read(v, 1 );		
 	typedef R (T::*M)(P1, P2, P3, P4, P5);
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
@@ -989,18 +989,18 @@ SQInteger _sqbind_sqmethod_5r(HSQUIRRELVM v) {
 	SqCParam<P4> p4;
 	SqCParam<P5> p5;
 	
-	R r = (self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5), p5.getter.get(v,6));		
+	R r = (self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5), p5.getter.read(v,6));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
 
 template<class T,class P1, class P2, class P3, class P4, class P5, class R>
-SQInteger _sqbind_sqmethod_5rc(HSQUIRRELVM v) {
+int _sqbind_sqmethod_5rc(HSKVM v) {
 
-	const T* self = &SqBind<T>::get(v, 1 );		
+	const T* self = &SqBind<T>::read(v, 1 );		
 	typedef R (T::*M)(P1, P2, P3, P4, P5) const;
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
@@ -1008,13 +1008,13 @@ SQInteger _sqbind_sqmethod_5rc(HSQUIRRELVM v) {
 	SqCParam<P4> p4;
 	SqCParam<P5> p5;
 	
-	R r = (self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5), p5.getter.get(v,6));		
+	R r = (self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5), p5.getter.read(v,6));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
 
 template<class T,class P1, class P2, class P3, class P4, class P5>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3, P4, P5) ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3, P4, P5) ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -1026,7 +1026,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, 
 }
 
 template<class T,class P1, class P2, class P3, class P4, class P5>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3, P4, P5) const ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3, P4, P5) const ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -1038,7 +1038,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, 
 }
 
 template<class T,class P1, class P2, class P3, class P4, class P5 ,class R>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3, P4, P5) ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3, P4, P5) ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -1050,7 +1050,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2,
 }
 
 template<class T,class P1, class P2, class P3, class P4, class P5,class R>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3, P4, P5) const ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3, P4, P5) const ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -1067,11 +1067,11 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2,
 // otherwise overload won't work
 
 template<class VM,class P1, class P2, class P3, class P4, class P5>
-SQInteger _sqbind_sqfunction_5(VM v) {
+int _sqbind_sqfunction_5(VM v) {
 
 	typedef void (*F)(P1, P2, P3, P4, P5);	
 	F*functionptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&functionptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&functionptr,NULL);
 	F function = *functionptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
@@ -1079,7 +1079,7 @@ SQInteger _sqbind_sqfunction_5(VM v) {
 	SqCParam<P4> p4;
 	SqCParam<P5> p5;
 
-	(function)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5), p5.getter.get(v,6));		
+	(function)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5), p5.getter.read(v,6));		
 	
 	return 0;
 }
@@ -1087,11 +1087,11 @@ SQInteger _sqbind_sqfunction_5(VM v) {
 
 
 template<class VM,class P1, class P2, class P3, class P4, class P5, class R>
-SQInteger _sqbind_sqfunction_5r(VM v) {
+int _sqbind_sqfunction_5r(VM v) {
 
 	typedef R (*F)(P1, P2, P3, P4, P5);
 	F*functionptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&functionptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&functionptr,NULL);
 	F function = *functionptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
@@ -1099,7 +1099,7 @@ SQInteger _sqbind_sqfunction_5r(VM v) {
 	SqCParam<P4> p4;
 	SqCParam<P5> p5;
 	
-	R r = (function)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5), p5.getter.get(v,6));		
+	R r = (function)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5), p5.getter.read(v,6));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
@@ -1143,12 +1143,12 @@ void sqbind_function( VM v, const SQChar *p_name,  R (*function)(P1, P2, P3, P4,
 /////////////////////
 
 template<class T,class P1, class P2, class P3, class P4, class P5, class P6 >
-SQInteger _sqbind_sqmethod_6(HSQUIRRELVM v) {
+int _sqbind_sqmethod_6(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );
+	T* self = &SqBind<T>::read(v, 1 );
 	typedef void (T::*M)(P1, P2, P3, P4, P5, P6);	
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
@@ -1157,18 +1157,18 @@ SQInteger _sqbind_sqmethod_6(HSQUIRRELVM v) {
 	SqCParam<P5> p5;
 	SqCParam<P6> p6;
 
-	(self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5), p5.getter.get(v,6), p6.getter.get(v,7));		
+	(self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5), p5.getter.read(v,6), p6.getter.read(v,7));		
 	
 	return 0;
 }
 
 template<class T,class P1, class P2, class P3, class P4, class P5, class P6 >
-SQInteger _sqbind_sqmethod_6c(HSQUIRRELVM v) {
+int _sqbind_sqmethod_6c(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );
+	T* self = &SqBind<T>::read(v, 1 );
 	typedef void (T::*M)(P1, P2, P3, P4, P5, P6) const;	
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
@@ -1177,18 +1177,18 @@ SQInteger _sqbind_sqmethod_6c(HSQUIRRELVM v) {
 	SqCParam<P5> p5;
 	SqCParam<P6> p6;
 
-	(self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5), p5.getter.get(v,6), p6.getter.get(v,7));		
+	(self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5), p5.getter.read(v,6), p6.getter.read(v,7));		
 	
 	return 0;
 }
 
 template<class T,class P1, class P2, class P3, class P4, class P5, class P6, class R>
-SQInteger _sqbind_sqmethod_6r(HSQUIRRELVM v) {
+int _sqbind_sqmethod_6r(HSKVM v) {
 
-	T* self = &SqBind<T>::get(v, 1 );		
+	T* self = &SqBind<T>::read(v, 1 );		
 	typedef R (T::*M)(P1, P2, P3, P4, P5, P6);
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
@@ -1197,18 +1197,18 @@ SQInteger _sqbind_sqmethod_6r(HSQUIRRELVM v) {
 	SqCParam<P5> p5;
 	SqCParam<P6> p6;
 	
-	R r = (self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5), p5.getter.get(v,6), p6.getter.get(v,7));		
+	R r = (self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5), p5.getter.read(v,6), p6.getter.read(v,7));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
 
 template<class T,class P1, class P2, class P3, class P4, class P5, class P6, class R>
-SQInteger _sqbind_sqmethod_6rc(HSQUIRRELVM v) {
+int _sqbind_sqmethod_6rc(HSKVM v) {
 
-	const T* self = &SqBind<T>::get(v, 1 );		
+	const T* self = &SqBind<T>::read(v, 1 );		
 	typedef R (T::*M)(P1, P2, P3, P4, P5, P6) const;
 	M*methodptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&methodptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&methodptr,NULL);
 	M method = *methodptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
@@ -1217,13 +1217,13 @@ SQInteger _sqbind_sqmethod_6rc(HSQUIRRELVM v) {
 	SqCParam<P5> p5;
 	SqCParam<P6> p6;
 	
-	R r = (self->*method)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5), p5.getter.get(v,6), p6.getter.get(v,7));		
+	R r = (self->*method)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5), p5.getter.read(v,6), p6.getter.read(v,7));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }
 
 template<class T,class P1, class P2, class P3, class P4, class P5, class P6>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3, P4, P5, P6) ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3, P4, P5, P6) ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -1235,7 +1235,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, 
 }
 
 template<class T,class P1, class P2, class P3, class P4, class P5, class P6>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3, P4, P5, P6) const ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  void (T::*method)(P1, P2, P3, P4, P5, P6) const ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -1247,7 +1247,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  void (T::*method)(P1, 
 }
 
 template<class T,class P1, class P2, class P3, class P4, class P5, class P6 ,class R>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3, P4, P5, P6) ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3, P4, P5, P6) ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -1259,7 +1259,7 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2,
 }
 
 template<class T,class P1, class P2, class P3, class P4, class P5, class P6,class R>
-void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3, P4, P5, P6) const ) {
+void sqbind_method( HSKVM v, const SQChar *p_name,  R (T::*method)(P1, P2, P3, P4, P5, P6) const ) {
 
 	sq_pushobject(v,SqBind<T>::get_id()); // push class
 	sq_pushstring(v,p_name,-1);
@@ -1276,11 +1276,11 @@ void sqbind_method( HSQUIRRELVM v, const SQChar *p_name,  R (T::*method)(P1, P2,
 // otherwise overload won't work
 
 template<class VM,class P1, class P2, class P3, class P4, class P5, class P6>
-SQInteger _sqbind_sqfunction_6(VM v) {
+int _sqbind_sqfunction_6(VM v) {
 
 	typedef void (*F)(P1, P2, P3, P4, P5, P6);	
 	F*functionptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&functionptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&functionptr,NULL);
 	F function = *functionptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
@@ -1289,7 +1289,7 @@ SQInteger _sqbind_sqfunction_6(VM v) {
 	SqCParam<P5> p5;
 	SqCParam<P6> p6;
 
-	(function)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5), p5.getter.get(v,6), p6.getter.get(v,7));		
+	(function)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5), p5.getter.read(v,6), p6.getter.read(v,7));		
 	
 	return 0;
 }
@@ -1297,11 +1297,11 @@ SQInteger _sqbind_sqfunction_6(VM v) {
 
 
 template<class VM,class P1, class P2, class P3, class P4, class P5, class P6, class R>
-SQInteger _sqbind_sqfunction_6r(VM v) {
+int _sqbind_sqfunction_6r(VM v) {
 
 	typedef R (*F)(P1, P2, P3, P4, P5, P6);
 	F*functionptr;	
-	sq_getuserdata(v,-1,(SQUserPointer*)&functionptr,NULL);
+	sq_getuserdata(v,-1,(PVOID*)&functionptr,NULL);
 	F function = *functionptr;
 	SqCParam<P1> p1;
 	SqCParam<P2> p2;
@@ -1310,7 +1310,7 @@ SQInteger _sqbind_sqfunction_6r(VM v) {
 	SqCParam<P5> p5;
 	SqCParam<P6> p6;
 	
-	R r = (function)(p1.getter.get(v,2), p2.getter.get(v,3), p3.getter.get(v,4), p4.getter.get(v,5), p5.getter.get(v,6), p6.getter.get(v,7));		
+	R r = (function)(p1.getter.read(v,2), p2.getter.read(v,3), p3.getter.read(v,4), p4.getter.read(v,5), p5.getter.read(v,6), p6.getter.read(v,7));		
 	_SQBC( R )::push(v, r );
 	return 1;
 }

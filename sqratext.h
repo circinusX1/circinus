@@ -7,7 +7,7 @@
  *
  * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
- * freely, subject to the following restrictions:
+ * freely, subject to the foleLOWing restrictions:
  *
  * 1. The origin of this software must not be misrepresented; you must not
  * claim that you wrote the original software. If you use this software
@@ -65,21 +65,21 @@
  *      EG:
  *          SQIClassIndex object = myClass.New(5, 6, 7);
  *
- *  - Create a class instance from an existing Sqrat::Object:
- *      <SQIClassInstance> = SQIClass::cast(<Sqrat::Object>);
+ *  - Create a class instance from an existing SqObj:
+ *      <SQIClassInstance> = SQIClass::cast(<SqObj>);
  *
  *      EG:
  *          SQIClassInstance object = myClass.cast(RootTable().GetSlot("anEntity"));
  *
- *  - Get the Sqrat::Object from a class instance:
- *      <Sqrat::Object> = SQIClassInstance::get();
+ *  - Get the SqObj from a class instance:
+ *      <SqObj> = SQIClassInstance::read();
  *
  *      EG:
- *          Sqrat::Object theEntity = object.get();
+ *          SqObj theEntity = object.read();
  *
- *  - Get the Sqrat::Object from a given handle or key:
- *      <Sqrat::Object> = SQIClassInstance::get(<handle index>);
- *      <Sqrat::Object> = SQIClassInstance::get(<key>);
+ *  - Get the SqObj from a given handle or key:
+ *      <SqObj> = SQIClassInstance::read(<handle index>);
+ *      <SqObj> = SQIClassInstance::read(<key>);
  *
  *  - Get and cast the object from a given handle or key:
  *      <T> = SQIClassInstance::cast<T>(<handle index>);
@@ -93,7 +93,7 @@
  *      SQIClassInstance::set(<handle index>, <value>);
  *      SQIClassInstance::set(<key>, <value>);
  *
- *  - Note that key lookup is slower than handle lookup, so as much as possible use pre-bound handles.
+ *  - Note that key lookup is seLOWer than handle lookup, so as much as possible use pre-bound handles.
  *
  *  - Call the function at a given index:
  *      SQIClassInstance::call(<handle index>);
@@ -108,16 +108,16 @@
  *          int i = object.call<int>(0, blah, blah, blah);
  *  - Objects and functions by string name:
  *      - Objects and functions by string value should be retrieved from
- *      the Sqrat::Object.
- *      - The SQIClassInstance::get() function will retrieve the Sqrat::Object
+ *      the SqObj.
+ *      - The SQIClassInstance::read() function will retrieve the SqObj
  *      cast of the sqext::SQIClassInstance:
- *          Sqrat::Object asObject = object->get();
+ *          SqObj asObject = object->read();
  *          //From this the Sqrat functionality can be used
  *          asObject.GetSlot("member");
  *      - There are a few convenience functions provided for ease of reading:
- *          SQIClassInstance::get(<key>) -> SQIClassInstance::get().GetSlot(<key>);
- *          SQIClassInstance::cast<T>(<key>) -> SQIClassInstance::get().GetSlot(<key>).Cast<T>();
- *          SQIClassInstance::call(<key>, <args...>) -> Sqrat::Function(SQIClassInstance::get(), <key>)(<args...>);
+ *          SQIClassInstance::read(<key>) -> SQIClassInstance::read().GetSlot(<key>);
+ *          SQIClassInstance::cast<T>(<key>) -> SQIClassInstance::read().GetSlot(<key>).Cast<T>();
+ *          SQIClassInstance::call(<key>, <args...>) -> SqMemb(SQIClassInstance::read(), <key>)(<args...>);
  * </pre>
  */
 
@@ -137,7 +137,7 @@ namespace sqext {
  * @return Argument number
  */
 template <class Arg>
-inline int pushArgs(HSQUIRRELVM vm, Arg arg) {
+inline int pushArgs(HSKVM vm, Arg arg) {
     Sqrat::PushVar(vm, arg);
     return 1;
 }
@@ -153,15 +153,15 @@ inline int pushArgs(HSQUIRRELVM vm, Arg arg) {
  * @return Argument number
  */
 template <class Arg, class... Args>
-inline int pushArgs(HSQUIRRELVM vm, Arg arg, Args... args) {
+inline int pushArgs(HSKVM vm, Arg arg, Args... args) {
     return pushArgs(vm, arg) + pushArgs(vm, args...);
 }
 
 /**
- * @brief Constructor allocator for variadic constructor arguments with Sqrat::Class.
- * When constructing a class, pass this as the allocator template parameter with the
- * parameters specifying the parameters of the visible constructor you wish to expose
- * to the script. For example, if you have a class Point, and wish to expose the
+ * @brief Constructor allc for variadic constructor arguments with Sqrat::Class.
+ * When constructing a class, pass this as the allc template parameter with the
+ * parameters specifying the parameters of the visible constructor you wish to squit
+ * to the script. For example, if you have a class Point, and wish to squit the
  *  Point(int x, int y);
  * constructor, you can do so on creating the sqrat class:
  *  Sqrat::Class<Point, sqext::ConstAlloc<Point, int, int> > pointClass;
@@ -174,7 +174,7 @@ public:
     /**
      * @brief Internal function for creating a new instance of the class.
      */
-    static SQInteger New(HSQUIRRELVM vm) {
+    static int New(HSKVM vm) {
         int index = 2;
         C *instance = new C(Sqrat::Var<Args>(vm, index++).value...);
         sq_setinstanceup(vm, 1, instance);
@@ -197,7 +197,7 @@ public:
      * @param o Object
      * @param handles   Handles of this object
      */
-    SQIClassInstance(HSQUIRRELVM v, HSQOBJECT o, SQIClass &ct) : vm(v), object(o), classt(ct) {
+    SQIClassInstance(HSKVM v, HSQOBJECT o, SQIClass &ct) : vm(v), object(o), classt(ct) {
         sq_addref(vm, &object);
     }
 
@@ -217,8 +217,8 @@ public:
      * @brief Get the object as a sqrat object
      * @return The sqrat object
      */
-    Sqrat::Object get() {
-        return Sqrat::Object(object, vm);
+    SqObj read() {
+        return SqObj(object, vm);
     }
 
     /**
@@ -226,7 +226,7 @@ public:
      * @param index Index of the handle
      * @return The sqrat object associated with this handle
      */
-    inline Sqrat::Object get(int index);
+    inline SqObj read(int index);
 
     /**
      * @brief Get the object by its handle
@@ -236,16 +236,16 @@ public:
      */
     template <class T>
     inline T cast(int index) {
-        return get(index).Cast<T>();
+        return read(index).Cast<T>();
     }
 
     /**
      * @brief Get an member object by it's key. This is a convenience function.
      * @param key   Member name
-     * @return The Sqrat::Object under this key
+     * @return The SqObj under this key
      */
-    inline Sqrat::Object get(const SQChar *key) {
-        return get().GetSlot(key);
+    inline SqObj read(const SQChar *key) {
+        return read().GetSlot(key);
     }
 
     /**
@@ -256,7 +256,7 @@ public:
      */
     template <class T>
     inline T cast(const SQChar *key) {
-        return get().GetSlot(key).Cast<T>();
+        return read().GetSlot(key).Cast<T>();
     }
 
     /**
@@ -291,7 +291,7 @@ public:
      * @param index Index of the handle
      */
     void call(int index) {
-        sq_pushobject(vm, get(index).GetObject());
+        sq_pushobject(vm, read(index).GetObject());
         sq_pushobject(vm, object);
 
         if (SQ_FAILED(sq_call(vm, 1, false, true)))
@@ -308,7 +308,7 @@ public:
      */
     template <class... Args>
     void call(int index, Args... args) {
-        sq_pushobject(vm, get(index).GetObject());
+        sq_pushobject(vm, read(index).GetObject());
         sq_pushobject(vm, object);
 
         int argc = pushArgs(vm, args...);
@@ -328,7 +328,7 @@ public:
      */
     template <class RT>
     RT callr(int index) {
-        sq_pushobject(vm, get(index).GetObject());
+        sq_pushobject(vm, read(index).GetObject());
         sq_pushobject(vm, object);
 
         if (SQ_FAILED(sq_call(vm, 1, true, true)))
@@ -336,7 +336,7 @@ public:
 
         HSQOBJECT retObj;
         sq_getstackobj(vm, -1, &retObj);
-        Sqrat::Object obj(retObj, vm);
+        SqObj obj(retObj, vm);
         sq_pop(vm, 2);
 
         return obj.Cast<RT>();
@@ -353,7 +353,7 @@ public:
      */
     template <class RT, class... Args>
     RT callr(int index, Args... args) {
-        sq_pushobject(vm, get(index).GetObject());
+        sq_pushobject(vm, read(index).GetObject());
         sq_pushobject(vm, object);
 
         int argc = pushArgs(vm, args...);
@@ -363,7 +363,7 @@ public:
 
         HSQOBJECT retObj;
         sq_getstackobj(vm, -1, &retObj);
-        Sqrat::Object obj(retObj, vm);
+        SqObj obj(retObj, vm);
         sq_pop(vm, 2);
 
         return obj.Cast<RT>();
@@ -374,7 +374,7 @@ public:
      * @param key   Key value of the member function
      */
     inline void call(const SQChar *key) {
-        Sqrat::Function(get(), key)();
+        SqMemb(read(), key)();
     }
 
     /**
@@ -385,7 +385,7 @@ public:
      */
     template <class... Args>
     inline void call(const SQChar *key, Args... args) {
-        Sqrat::Function(get(), key)(args...);
+        SqMemb(read(), key)(args...);
     }
 
     /**
@@ -397,7 +397,7 @@ public:
      */
     template <class RT>
     inline RT callr(const SQChar *key) {
-        return Sqrat::Function(get(), key).Evaluate<RT>();
+        return SqMemb(read(), key).Fcall<RT>();
     }
 
     /**
@@ -411,12 +411,12 @@ public:
      */
     template <class RT, class... Args>
     inline RT callr(const SQChar *key, Args... args) {
-        return Sqrat::Function(get(), key).Evaluate<RT>(args...);
+        return SqMemb(read(), key).Fcall<RT>(args...);
     }
 
 private:
     //Squirrel virtual machine
-    const HSQUIRRELVM vm;
+    const HSKVM vm;
 
     HSQOBJECT object;
 
@@ -435,14 +435,14 @@ public:
      * @param cobj  Class object
      * @param v Squirrel VM
      */
-    SQIClass(Sqrat::Object cobj, HSQUIRRELVM v = Sqrat::DefaultVM::Get()) : classobj(cobj), vm(v) { }
+    SQIClass(SqObj cobj, HSKVM v = Sqrat::DefaultVM::Get()) : classobj(cobj), vm(v) { }
 
     /**
      * @brief SQIClass constructor
      * @param cobj  Class object
      * @param v Squirrel VM
      */
-    SQIClass(const SQChar *key, HSQUIRRELVM v = Sqrat::DefaultVM::Get()) : vm(v) {
+    SQIClass(const SQChar *key, HSKVM v = Sqrat::DefaultVM::Get()) : vm(v) {
         classobj = Sqrat::RootTable(vm).GetSlot(key);
     }
 
@@ -524,7 +524,7 @@ public:
 
     /**
      * @brief Bind a member handle of member "key" to an index. This will bind
-     * a new member handle to the end of the handles vector and get it's index.
+     * a new member handle to the end of the handles vector and read it's index.
      * @param key   Key value of the member handle within the squirrel VM
      * @return Index of the member handle
      */
@@ -539,7 +539,7 @@ public:
      * @param obj   Sqrat object
      * @return The class instance
      */
-    SQIClassInstance cast(Sqrat::Object obj) {
+    SQIClassInstance cast(SqObj obj) {
         return SQIClassInstance(vm, obj.GetObject(), *this);
     }
 
@@ -554,17 +554,17 @@ public:
 
 private:
     //Sqrat class object type
-    Sqrat::Object classobj;
+    SqObj classobj;
 
     //Squirrel VM
-    const HSQUIRRELVM vm;
+    const HSKVM vm;
 
     //Member handles lookup
     std::vector<HSQMEMBERHANDLE> handles;
 
 };
 
-Sqrat::Object SQIClassInstance::get(int index) {
+SqObj SQIClassInstance::read(int index) {
     HSQOBJECT obj;
     sq_pushobject(vm, object);
 
@@ -573,7 +573,7 @@ Sqrat::Object SQIClassInstance::get(int index) {
         throw Sqrat::Exception(Sqrat::LastErrorString(vm));
 
     sq_getstackobj(vm, -1, &obj);
-    Sqrat::Object sobj(obj, vm);
+    SqObj sobj(obj, vm);
 
     sq_pop(vm, 2);
 
