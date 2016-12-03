@@ -1,163 +1,177 @@
-/*
-Copyright (c) 2014-2016 PANGEEA.DPT All rights reserved.
+#ifndef SHELL_H
+#define SHELL_H
 
-Redistribution and use in source and binary forms are permitted
-provided that the above copyright notice and this paragraph are
-duplicated in all such forms and that any documentation,
-advertising materials, and other materials related to such
-distribution and use acknowledge that the software was developed
-by the https://github.com/pangeea. The name of the
-https://github.com/pangeea may not be used to endorse or promote
-products derived from this software without specific prior written permission.
-THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR
-IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-*/
-
-#ifndef DIVAIS_EMBIX_
-#define DIVAIS_EMBIX_
-
-#include <string>
 #include <vector>
-#include <string>
-#include <cstdio>
-#include <stdint.h>
-#include <stddef.h>
-#include <iostream>
-#include <inttypes.h>
-#include "squirrel.h"
-#include "sqrat.h"
-#include "jsadaptor.h"
-#include "../modules/iper.h"
+#include "sqwrap.h"
+#include "icombase.h"
+#include "main.h"
+#include "plugins.h"
+#include "iodata.h"
 
-class   Divais;
-#define MAX_BUFF_SZ 128000
-
-extern  SQVM*       ModVM;
-extern  sq_api*     ModPtrs;
-void    set_sq_ctx(HSKVM vm, sq_api* ptrs);
-
-typedef    std::map<I_IDev*, std::string>  devsmap_t;
-
-
-
-typedef enum EPIN_CHANGE
-{
-    eNONE = 0,
-    e0,
-    e1,
-    eCHANGE
-}EPIN_CHANGE;
-
-typedef enum EPIN_DIR
-{   eIn = 0x1,
-    eOut = 0x2,
-    eInOut = 0x3
-}EPIN_DIR;
-
-
-extern  int      IDX;
-
-extern const char* __stypes[];
-extern const char* __scats[];
-
-
-class Divais : public I_IDev
+class Device : public OsThread, public IDevice
 {
 public:
-	Divais(E_TYPE etype):_mon_dirt(false),_monitor(false),_etype(etype)
-	{
-		char t[16];
-		::sprintf(t,"D_%d",++IDX);
-		_name = t;
-		_ukey = t;
-	}
-	Divais(E_TYPE etype, const char* name):_name(name?name:""),
-		_mon_dirt(false),
-		_monitor(false),
-		_etype(etype)
-	{
-		char t[32];
-		if(_name.empty())
-		{
-			::sprintf(t,"D_%d",++IDX);
-			_name = t;
-			_ukey = t;
-		}
-		else {
-			_ukey = _name;
-		}
-	}
-	virtual ~Divais();
-	void  ctx_it(Sqrat::Object& o, const char* dev_key);
-	const char* name()const{return _name.c_str();};
-	const char* dev_key()const{return _ukey.c_str();};
-	void  reset();
-	bool is_monitorred(size_t t){
-		if(_monitor){
-			bool dirt = _touch_it(t);
-			return _monitor && dirt;
-		}
-		return false;
-	}
-	void    set_name(const char* name){_name=name;}
-	virtual bool iopen(int rm=0)=0;
-	virtual void iclose()=0;
-	virtual bool set_value(const char* key, const char* value);
-	virtual const char* get_value(const char* key);
-	virtual const any_t& get_data()const;
-	static EPERIPH Get_cat(const char* cat);
-	virtual void   sync(const char* filter);
-	virtual Sqrat::Object object();
-protected:
-	virtual bool	_write_now(const any_t& a)=0;
-	virtual size_t  _read_now(any_t& _curdata, const char* filter)=0;
-	virtual bool	_set_values(const char* key, const char* value);
-	virtual const char*	_get_values(const char* key);
-	Sqrat::Object&	_so(){return _o;}
-	virtual bool	_touch_it(size_t t)=0;
-	bool			_check_dirt();
+    Device();
+    Device(const char* cred, const char* name, int mode);
+    ~Device();
+    void thread_main();
 
+    //
+    // string/binary read functions
+    //
+    const char*  gets();
+    const char*  gets(int to);
+    Sqrat::Array read();
+    Sqrat::Array read(int to);
+
+    //
+    // string write functions
+    //
+    int puts(const char*);                                  // puts
+    const char* putsgets(const char* s);                    // puts gets
+    const char* putsgets(const char* s, int);               // puts gets timout
+    int putsexpect(const char* p, const char* e);           // puts expect
+    int putsexpect(const char* p, const char* e, int to);   // puts expect to
+    int putscb(const char*, Sqrat::Function f);             // puts cb
+    void publish();
+    int testcb(Sqrat::Function f);
+    //
+    // string write functions appends nl
+    //
+    int putsnl(const char*);
+    const char* putsnlgets(const char* s);
+    const char* putsnlgets(const char* s, int);
+    int putsnlexpect(const char* p, const char* e);
+    int putsnlexpect(const char* p, const char* e, int to);
+    int putsnlcb(const char*, Sqrat::Function f);
+
+    //
+    // string write functions multiline strings
+    //
+    int putsml(const char*);
+    int putsmlcb(const char*, Sqrat::Function f);
+
+    //
+    // binary array
+    //
+    int write(Sqrat::Array a);
+    Sqrat::Array writeread(Sqrat::Array a);
+    Sqrat::Array writeread(Sqrat::Array a, int);
+    int writeexpect(Sqrat::Array a, Sqrat::Array b);
+    int writeexpect(Sqrat::Array a, Sqrat::Array b, int to);
+    int writecb(Sqrat::Array a, Sqrat::Function f);
+
+    int putctrl(char);
+
+    int strexpect(const char*,int to);      // expects to see char*
+    int strexpect(const char*);             //  expects to see char*
+    int binexpect(Sqrat::Array a, int to);  //  expects to see a
+    int binexpect(Sqrat::Array a);          //  expects to see a
+
+    Sqrat::Array readmin(int);              // wait for minimum int bytes/chars
+    Sqrat::Array readmin(int,int);          // then returns the value
+    const char* getsmin(int);
+    const char* getsmin(int,int);
+
+    int expectany(int to);                  // any activity on outout from device
+    int expectany();
+
+    int sendkey(const char* key);
+    int sendkeycb(const char* key, Sqrat::Function f);
+    int sendkeyexpect(const char* key, const char* expect, int to);
+    int sendkeyexpect(const char* key, const char* expect);
+
+    int settimeout(int tos, int selectto);
+    void setspeed(int apart);
+    int seteol(const char* cmd);
+    int open();
+    int issteady(int atleast);
+    void shellio();
+    const char* coin();
+    void printout(int to);
+    int setbuff(int sz);
+    int mode()const{return _binary;}
+    int setbinary(int t){_binary=t; return 0;}
+    bool isopen();
+    int close();
+    void setpriority(int pr);
+    void addDev(IComm* pc);
+    void remDev(IComm* pc);
+    int  devEvent(IComm*, IDevice::D_MSG, cbyte*, int);
+    void flush();
+    void flushin();
+    int sent();
+    void autoflush(bool );
+    void setdebug(int l);
+    int binwrite(cbyte*, int);
+    size_t  moveData(uint8_t* pb, size_t& len);
+    const char* name()const;
+    int setoptions(const char*);
+    int reconnect(int to);
+    int waitOnline(int tos);
+    void discardDevData(const std::vector<size_t>& ids, int how);
+    int  routeMessage(int msg, const uint8_t* data=0, size_t len=0);
+    bool useptr()const{return _useptr;}
+    int escape(const char* , int);
+    int removeFile();
+    int createFile();
 protected:
-    std::string     _name;
-    std::string     _ukey;
-	any_t			_curdata;
-	any_t			_old_data;
-	std::string     _forjson;
-    bool            _mon_dirt;
-    bool            _monitor;
-    Sqrat::Object   _o;
-    E_TYPE          _etype;
+    void _onReceived(cbyte* data, int len);
+    void _onClosed();
+    bstring  _toBinary(const char* string);
+    std::string _toString(cbyte* binary, int len);
+    int _waitCompletion();
+    int _notifyWaiting();
+    void _warnonSend();
 private:
-    Sqrat::Function  _oset_value;
-    Sqrat::Function  _oget_value;
+    IComm*  _createInstance(const char*, const char*);
+
+private:
+    bstring     _boutret;
+    bstring     _tmp;
+    IComm*      _pc;
+    bool        _ended;
+    int         _tout;
+    int         _binary;
+    bool        _cancall;
+    int         _priority;
+    std::string _eol;
+    std::string _name;
+    IoData      _io;
+    bool        _devdatateractiv;
+    SoEntry*    _plugin;
+    char        _cred[128];
+    int         _sent;
+    bool        _useptr;
+    Sqrat::Function _callback;
+    bool         _autoflush;
 };
 
-#define OVERW(B1,B2)															\
-	void ctx_it(Sqrat::Object& o,const char* dev_key){B2::ctx_it(o, dev_key);}	\
-	bool iopen(int em=O_RDWR){return B1::iopen(em);}							\
-	void iclose(){B1::iclose();}												\
-	void on_event(E_VENT e, const uint8_t* buff, int len, int options=0);			\
-	bool _touch_it(size_t t);
+inline std::istream& getlinecrlf(std::istream& is, std::string& t)
+{
+    t.clear();
+    std::istream::sentry se(is, true);
+    std::streambuf* sb = is.rdbuf();
 
-#define IS_SNULL(per) per==0 || (per[0]=='(' && per[1]=='n')
+    for(;;) {
+        int c = sb->sbumpc();
+        switch (c) {
+        case '\n':
+            return is;
+        case '\r':
+            if(sb->sgetc() == '\n')
+                sb->sbumpc();
+            return is;
+        case EOF:
+            // Also handle the case when the last line has no line ending
+            if(t.empty())
+                is.setstate(std::ios::eofbit);
+            return is;
+        default:
+            t += (char)c;
+        }
+    }
+}
 
-#define VIRT_NOT_USED()	\
-int     fread(uint8_t* buff, int len){return 0;}; \
-int     fwrite(const uint8_t* buff, int len){return 0;}; \
-int     do_ioctl(int ctl, int val){return 0;}; \
-int     do_ioctl(int ctl, uint8_t* buf, int expect){return 0;};
 
-
-#define GETER_SYSCAT()  if(key[0]=='s')  return sf().c_str();   \
-						if(key[0]=='k')  return __scats[peer_of()]; \
-						return EMPTYS;
-
-#define NOPOS std::string::npos
-#define EMPTYS ""
-#define READDEV "*"
-#define IS_STR(s)  (s && *s)
-
-
-#endif // PLUG_EMBIX_
-
+#endif // SHELL_H
