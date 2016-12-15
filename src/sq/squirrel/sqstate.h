@@ -13,39 +13,39 @@ struct SQStringTable
 {
     SQStringTable(SQSharedState*ss);
     ~SQStringTable();
-    SQString *Add(const SQChar *,SQInteger len);
+    SQString *Add(const SQChar *,int len);
     void Remove(SQString *);
 private:
-    void Resize(SQInteger size);
-    void AllocNodes(SQInteger size);
+    void Resize(int size);
+    void AllocNodes(int size);
     SQString **_strings;
-    SQUnsignedInteger _numofslots;
-    SQUnsignedInteger _slotused;
+    size_t _numofslots;
+    size_t _slotused;
     SQSharedState *_sharedstate;
 };
 
 struct RefTable {
     struct RefNode {
         SQObjectPtr obj;
-        SQUnsignedInteger refs;
+        size_t refs;
         struct RefNode *next;
     };
     RefTable();
     ~RefTable();
     void AddRef(SQObject &obj);
-    SQBool Release(SQObject &obj);
-    SQUnsignedInteger GetRefCount(SQObject &obj);
+    bool Release(SQObject &obj);
+    size_t GetRefCount(SQObject &obj);
 #ifndef NO_GARBAGE_COLLECTOR
     void Mark(SQCollectable **chain);
 #endif
     void Finalize();
 private:
-    RefNode *Get(SQObject &obj,SQHash &mainpos,RefNode **prev,bool add);
-    RefNode *Add(SQHash mainpos,SQObject &obj);
-    void Resize(SQUnsignedInteger size);
-    void AllocNodes(SQUnsignedInteger size);
-    SQUnsignedInteger _numofslots;
-    SQUnsignedInteger _slotused;
+    RefNode *Get(SQObject &obj,size_t &mainpos,RefNode **prev,bool add);
+    RefNode *Add(size_t mainpos,SQObject &obj);
+    void Resize(size_t size);
+    void AllocNodes(size_t size);
+    size_t _numofslots;
+    size_t _slotused;
     RefNode *_nodes;
     RefNode *_freelist;
     RefNode **_buckets;
@@ -62,12 +62,12 @@ struct SQSharedState
     ~SQSharedState();
     void Init();
 public:
-    SQChar* GetScratchPad(SQInteger size);
-    SQInteger GetMetaMethodIdxByName(const SQObjectPtr &name);
+    SQChar* GetScratchPad(int size);
+    int GetMetaMethodIdxByName(const SQObjectPtr &name);
 #ifndef NO_GARBAGE_COLLECTOR
-    SQInteger CollectGarbage(SQVM *vm);
+    int CollectGarbage(SQVM *vm);
     void RunMark(SQVM *vm,SQCollectable **tchain);
-    SQInteger ResurrectUnreachable(SQVM *vm);
+    int ResurrectUnreachable(SQVM *vm);
     static void MarkObject(SQObjectPtr &o,SQCollectable **chain);
 #endif
     SQObjectPtrVec *_metamethods;
@@ -109,11 +109,11 @@ public:
     SQPRINTFUNCTION _errorfunc;
     bool _debuginfo;
     bool _notifyallexceptions;
-    SQUserPointer _foreignptr;
+    PVOID _foreignptr;
     SQRELEASEHOOK _releasehook;
 private:
     SQChar *_scratchpad;
-    SQInteger _scratchpadsize;
+    int _scratchpadsize;
 };
 
 #define _sp(s) (_sharedstate->GetScratchPad(s))

@@ -1,25 +1,5 @@
 
-#ifdef _SQ64
-
-#ifdef _MSC_VER
-typedef __int64 SQInteger;
-typedef unsigned __int64 SQUnsignedInteger;
-typedef unsigned __int64 SQHash; /*should be the same size of a pointer*/
-#else
-typedef long long SQInteger;
-typedef unsigned long long SQUnsignedInteger;
-typedef unsigned long long SQHash; /*should be the same size of a pointer*/
-#endif
-typedef int SQInt32;
-typedef unsigned int SQUnsignedInteger32;
-#else
-typedef int SQInteger;
-typedef int SQInt32; /*must be 32 bits(also on 64bits processors)*/
-typedef unsigned int SQUnsignedInteger32; /*must be 32 bits(also on 64bits processors)*/
-typedef unsigned int SQUnsignedInteger;
-typedef unsigned int SQHash; /*should be the same size of a pointer*/
-#endif
-
+#include <stdint.h>
 
 #ifdef SQUSEDOUBLE
 typedef double SQFloat;
@@ -35,7 +15,7 @@ typedef long long SQRawObjectVal; //must be 64bits
 #endif
 #define SQ_OBJECT_RAWINIT() { _unVal.raw = 0; }
 #else
-typedef SQUnsignedInteger SQRawObjectVal; //is 32 bits on 32 bits builds and 64 bits otherwise
+typedef size_t SQRawObjectVal; //is 32 bits on 32 bits builds and 64 bits otherwise
 #define SQ_OBJECT_RAWINIT()
 #endif
 
@@ -47,9 +27,8 @@ typedef SQUnsignedInteger SQRawObjectVal; //is 32 bits on 32 bits builds and 64 
 #endif
 #endif
 
-typedef void* SQUserPointer;
-typedef SQUnsignedInteger SQBool;
-typedef SQInteger SQRESULT;
+typedef void* PVOID;
+typedef int   SQRESULT;
 
 #ifdef SQUNICODE
 #include <wchar.h>
@@ -140,7 +119,7 @@ typedef char SQChar;
 
 #ifdef _SQ64
 #define _PRINT_INT_PREC _SC("ll")
-#define _PRINT_INT_FMT _SC("%lld")
+#define _PRINT_INT_FMT _SC("%d")
 #else
 #define _PRINT_INT_FMT _SC("%d")
 #endif

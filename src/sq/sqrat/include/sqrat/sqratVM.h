@@ -30,7 +30,7 @@
 
 #include <squirrel.h>
 #include <sqrat.h>
-
+#include "sqr_imp_exp.h"
 #include <iostream>
 #include <stdarg.h>
 #include <stdio.h>
@@ -61,24 +61,24 @@ class SqratVM
 {
 private:
 
-    HSQUIRRELVM m_vm;
+    HSKVM m_vm;
     Sqrat::RootTable* m_rootTable;
     Sqrat::Script* m_script;
     Sqrat::string m_lastErrorMsg;
 
-    static void s_addVM(HSQUIRRELVM vm, SqratVM* sqratvm)
+    static void s_addVM(HSKVM vm, SqratVM* sqratvm)
     {
         // TODO for user: use mutex to lock ms_sqratVMs if necessary for your uses
         ms_sqratVMs().insert(std::make_pair(vm, sqratvm));
     }
 
-    static void s_deleteVM(HSQUIRRELVM vm)
+    static void s_deleteVM(HSKVM vm)
     {
         // TODO for user: use mutex to lock ms_sqratVMs if necessary for your uses
         ms_sqratVMs().erase(vm);
     }
 
-    static SqratVM* s_getVM(HSQUIRRELVM vm)
+    static SqratVM* s_getVM(HSKVM vm)
     {
         // TODO for user: use mutex to lock ms_sqratVMs if necessary for your uses
         return ms_sqratVMs()[vm];
@@ -86,9 +86,9 @@ private:
 
 private:
 
-    static SQRAT_API unordered_map<HSQUIRRELVM, SqratVM*>::type& ms_sqratVMs();
+    static SQRAT_API unordered_map<HSKVM, SqratVM*>::type& ms_sqratVMs();
 
-    static void printFunc(HSQUIRRELVM /*v*/, const SQChar *s, ...)
+    static void printMemb(HSKVM /*v*/, const SQChar *s, ...)
     {
         va_list vl;
         va_start(vl, s);
@@ -96,13 +96,13 @@ private:
         va_end(vl);
     }
 
-    static SQInteger runtimeErrorHandler(HSQUIRRELVM v)
+    static int runtimeErrorHandler(HSKVM v)
     {
         const SQChar *sErr = 0;
-        if(sq_gettop(v) >= 1)
+        if(SQ_PTRS->gettop(v) >= 1)
         {
             Sqrat::string& errStr = s_getVM(v)->m_lastErrorMsg;
-            if(SQ_SUCCEEDED(sq_getstring(v, 2, &sErr)))
+            if(SQ_SUCCEEDED(SQ_PTRS->getstring(v, 2, &sErr)))
             {
                 errStr = sErr;
             }
@@ -114,11 +114,11 @@ private:
         return 0;
     }
 
-    static void compilerErrorHandler(HSQUIRRELVM v,
+    static void compilerErrorHandler(HSKVM v,
                                      const SQChar* desc,
                                      const SQChar* source,
-                                     SQInteger line,
-                                     SQInteger column)
+                                     int line,
+                                     int column)
     {
         SQChar buf[512];
         scsprintf(buf, _SC("%s:%d:%d: %s"), source, (int) line, (int) column, desc);
@@ -142,7 +142,7 @@ public:
     static const unsigned char LIB_IO   = 0x01;                                              ///< Input/Output library
     static const unsigned char LIB_BLOB = 0x02;                                              ///< Blob library
     static const unsigned char LIB_MATH = 0x04;                                              ///< Math library
-    static const unsigned char LIB_SYST = 0x08;                                              ///< System library
+    static const unsigned char LIB_SYST = 0x08;                                              ///< Arhic library
     static const unsigned char LIB_STR  = 0x10;                                              ///< String library
     static const unsigned char LIB_ALL  = LIB_IO | LIB_BLOB | LIB_MATH | LIB_SYST | LIB_STR; ///< All libraries
 
@@ -153,14 +153,14 @@ public:
     /// \param libsToLoad       Specifies what standard Squirrel libraries should be loaded
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    SqratVM(int initialStackSize = 1024, unsigned char libsToLoad = LIB_ALL): m_vm(sq_open(initialStackSize))
+    SqratVM(int initialStackSize = 1024, unsigned char libsToLoad = LIB_ALL): m_vm(SQ_PTRS->open(initialStackSize))
         , m_rootTable(new Sqrat::RootTable(m_vm))
         , m_script(new Sqrat::Script(m_vm))
         , m_lastErrorMsg()
     {
         s_addVM(m_vm, this);
         //register std libs
-        sq_pushroottable(m_vm);
+        SQ_PTRS->pushroottable(m_vm);
         if (libsToLoad & LIB_IO)
             sqstd_register_iolib(m_vm);
         if (libsToLoad & LIB_BLOB)
@@ -171,8 +171,8 @@ public:
             sqstd_register_systemlib(m_vm);
         if (libsToLoad & LIB_STR)
             sqstd_register_stringlib(m_vm);
-        sq_pop(m_vm, 1);
-        SetPrintFunc(printFunc, printFunc);
+        SQ_PTRS->pop(m_vm, 1);
+        SetPrintMemb(printMemb, printMemb);
         SetErrorHandler(runtimeErrorHandler, compilerErrorHandler);
     }
 
@@ -185,7 +185,7 @@ public:
         s_deleteVM(m_vm);
         delete m_script;
         delete m_rootTable;
-        sq_close(m_vm);
+        SQ_PTRS->close(m_vm);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -194,7 +194,7 @@ public:
     /// \return Underlying Squirrel VM
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    HSQUIRRELVM GetVM()
+    HSKVM GetVM()
     {
         return m_vm;
     }
@@ -246,16 +246,16 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// Sets the print function of the virtual machine (a default one is set in the constructor)
     ///
-    /// \param printFunc A pointer to the print func or NULL to disable the output
-    /// \param errFunc   A pointer to the error func or NULL to disable the output
+    /// \param printMemb A pointer to the print func or NULL to disable the output
+    /// \param errMemb   A pointer to the error func or NULL to disable the output
     ///
     /// \remarks
     /// The print function is used by the built-in Squirrel print function to output text.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void SetPrintFunc(SQPRINTFUNCTION printFunc, SQPRINTFUNCTION errFunc)
+    void SetPrintMemb(SQPRINTFUNCTION printMemb, SQPRINTFUNCTION errMemb)
     {
-        sq_setprintfunc(m_vm, printFunc, errFunc);
+        SQ_PTRS->setprintfunc(m_vm, printMemb, errMemb);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -267,9 +267,9 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void SetErrorHandler(SQFUNCTION runErr, SQCOMPILERERROR comErr)
     {
-        sq_newclosure(m_vm, runErr, 0);
-        sq_seterrorhandler(m_vm);
-        sq_setcompilererrorhandler(m_vm, comErr);
+        SQ_PTRS->newclosure(m_vm, runErr, 0);
+        SQ_PTRS->seterrorhandler(m_vm);
+        SQ_PTRS->setcompilererrorhandler(m_vm, comErr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -337,8 +337,8 @@ public:
 };
 
 #if !defined(SCRAT_IMPORT)
-inline unordered_map<HSQUIRRELVM, SqratVM*>::type& SqratVM::ms_sqratVMs() {
-    static unordered_map<HSQUIRRELVM, SqratVM*>::type ms;
+inline unordered_map<HSKVM, SqratVM*>::type& SqratVM::ms_sqratVMs() {
+    static unordered_map<HSKVM, SqratVM*>::type ms;
     return ms;
 }
 #endif

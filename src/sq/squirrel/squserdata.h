@@ -10,7 +10,7 @@ struct SQUserData : SQDelegable
         REMOVE_FROM_CHAIN(&_ss(this)->_gc_chain, this);
         SetDelegate(NULL);
     }
-    static SQUserData* Create(SQSharedState *ss, SQInteger size)
+    static SQUserData* Create(SQSharedState *ss, int size)
     {
         SQUserData* ud = (SQUserData*)SQ_MALLOC(sq_aligning(sizeof(SQUserData))+size);
         new (ud) SQUserData(ss);
@@ -24,16 +24,16 @@ struct SQUserData : SQDelegable
     SQObjectType GetType(){ return OT_USERDATA;}
 #endif
     void Release() {
-        if (_hook) _hook((SQUserPointer)sq_aligning(this + 1),_size);
-        SQInteger tsize = _size;
+        if (_hook) _hook((PVOID)sq_aligning(this + 1),_size);
+        int tsize = _size;
         this->~SQUserData();
         SQ_FREE(this, sq_aligning(sizeof(SQUserData)) + tsize);
     }
 
 
-    SQInteger _size;
+    int _size;
     SQRELEASEHOOK _hook;
-    SQUserPointer _typetag;
+    PVOID _typetag;
     //SQChar _val[1];
 };
 

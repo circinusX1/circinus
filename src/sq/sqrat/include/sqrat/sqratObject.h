@@ -30,7 +30,7 @@
 
 #include <squirrel.h>
 #include <string.h>
-
+#include "sqr_imp_exp.h"
 #include "sqratAllocator.h"
 #include "sqratTypes.h"
 #include "sqratOverloadMethods.h"
@@ -42,19 +42,19 @@ namespace Sqrat {
 /// The base class for classes that represent Squirrel objects
 ///
 /// \remarks
-/// All Object and derived classes MUST be destroyed before calling sq_close or your application will crash when exiting.
+/// All Object and derived classes MUST be destroyed before calling SQ_PTRS->close or your application will crash when exiting.
 ///
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class Object {
 protected:
 
 /// @cond DEV
-    HSQUIRRELVM vm;
+    HSKVM vm;
     HSQOBJECT obj;
     bool release;
 
-    Object(HSQUIRRELVM v, bool releaseOnDestroy = true) : vm(v), release(releaseOnDestroy) {
-        sq_resetobject(&obj);
+    Object(HSKVM v, bool releaseOnDestroy = true) : vm(v), release(releaseOnDestroy) {
+        SQ_PTRS->resetobject(&obj);
     }
 /// @endcond
 
@@ -65,7 +65,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Object() : vm(0), release(true) {
-        sq_resetobject(&obj);
+        SQ_PTRS->resetobject(&obj);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Object(const Object& so) : vm(so.vm), obj(so.obj), release(so.release) {
-        sq_addref(vm, &obj);
+        SQ_PTRS->addref(vm, &obj);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,8 +85,8 @@ public:
     /// \param v VM that the object will exist in
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Object(HSQOBJECT o, HSQUIRRELVM v = DefaultVM::Get()) : vm(v), obj(o), release(true) {
-        sq_addref(vm, &obj);
+    Object(HSQOBJECT o, HSKVM v = DefaultVM::Get()) : vm(v), obj(o), release(true) {
+        SQ_PTRS->addref(vm, &obj);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,10 +99,29 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class T>
-    Object(T* instance, HSQUIRRELVM v = DefaultVM::Get()) : vm(v), release(true) {
+    Object(T* instance, HSKVM v = DefaultVM::Get()) : vm(v), release(true) {
         ClassType<T>::PushInstance(vm, instance);
-        sq_getstackobj(vm, -1, &obj);
-        sq_addref(vm, &obj);
+        SQ_PTRS->getstackobj(vm, -1, &obj);
+        SQ_PTRS->addref(vm, &obj);
+    }
+
+
+    template<class T>
+    Object(T* instance, bool b, HSKVM v = DefaultVM::Get()) : vm(v), release(b) {
+        ClassType<T>::PushInstance(vm, instance);
+        SQ_PTRS->getstackobj(vm, -1, &obj);
+        SQ_PTRS->addref(vm, &obj);
+    }
+
+
+    template <class T>
+    void BindCppObject(T* instance)
+    {
+        Release();
+        vm  = DefaultVM::Get();
+        ClassType<T>::PushInstance(vm, instance);
+        SQ_PTRS->getstackobj(vm, -1, &obj);
+        SQ_PTRS->addref(vm, &obj);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +150,7 @@ public:
         vm = so.vm;
         obj = so.obj;
         release = so.release;
-        sq_addref(vm, &GetObject());
+        SQ_PTRS->addref(vm, &GetObject());
         return *this;
     }
 
@@ -141,7 +160,7 @@ public:
     /// \return Squirrel VM associated with the Object
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    HSQUIRRELVM& GetVM() {
+    HSKVM& GetVM() {
         return vm;
     }
 
@@ -151,7 +170,7 @@ public:
     /// \return Squirrel VM associated with the Object
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    HSQUIRRELVM GetVM() const {
+    HSKVM GetVM() const {
         return vm;
     }
 
@@ -209,8 +228,8 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void Release() {
         if(vm){
-            sq_release(vm, &obj);
-            sq_resetobject(&obj);
+            SQ_PTRS->release(vm, &obj);
+            SQ_PTRS->resetobject(&obj);
             vm=0;
         }
     }
@@ -220,7 +239,7 @@ public:
 
     void    AddRef()
     {
-        sq_addref(vm, &obj);
+        SQ_PTRS->addref(vm, &obj);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -233,24 +252,24 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Object GetSlot(const SQChar* slot) const {
         HSQOBJECT slotObj;
-        sq_pushobject(vm, GetObject());
-        sq_pushstring(vm, slot, -1);
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->pushstring(vm, slot, -1);
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if(SQ_FAILED(sq_get(vm, -2))) {
-            sq_pop(vm, 1);
+        if(SQ_FAILED(SQ_PTRS->get(vm, -2))) {
+            SQ_PTRS->pop(vm, 1);
             return Object(vm); // Return a NULL object
         } else {
-            sq_getstackobj(vm, -1, &slotObj);
+            SQ_PTRS->getstackobj(vm, -1, &slotObj);
             Object ret(slotObj, vm); // must addref before the pop!
-            sq_pop(vm, 2);
+            SQ_PTRS->pop(vm, 2);
             return ret;
         }
 #else
-        sq_get(vm, -2);
-        sq_getstackobj(vm, -1, &slotObj);
+        SQ_PTRS->get(vm, -2);
+        SQ_PTRS->getstackobj(vm, -1, &slotObj);
         Object ret(slotObj, vm); // must addref before the pop!
-        sq_pop(vm, 2);
+        SQ_PTRS->pop(vm, 2);
         return ret;
 #endif
     }
@@ -263,26 +282,26 @@ public:
     /// \return An Object representing the value of the slot (can be a null object if nothing was found)
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Object GetSlot(SQInteger index) const {
+    Object GetSlot(int index) const {
         HSQOBJECT slotObj;
-        sq_pushobject(vm, GetObject());
-        sq_pushinteger(vm, index);
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->pushinteger(vm, index);
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if(SQ_FAILED(sq_get(vm, -2))) {
-            sq_pop(vm, 1);
+        if(SQ_FAILED(SQ_PTRS->get(vm, -2))) {
+            SQ_PTRS->pop(vm, 1);
             return Object(vm); // Return a NULL object
         } else {
-            sq_getstackobj(vm, -1, &slotObj);
+            SQ_PTRS->getstackobj(vm, -1, &slotObj);
             Object ret(slotObj, vm); // must addref before the pop!
-            sq_pop(vm, 2);
+            SQ_PTRS->pop(vm, 2);
             return ret;
         }
 #else
-        sq_get(vm, -2);
-        sq_getstackobj(vm, -1, &slotObj);
+        SQ_PTRS->get(vm, -2);
+        SQ_PTRS->getstackobj(vm, -1, &slotObj);
         Object ret(slotObj, vm); // must addref before the pop!
-        sq_pop(vm, 2);
+        SQ_PTRS->pop(vm, 2);
         return ret;
 #endif
     }
@@ -300,9 +319,9 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <class T>
     T Cast(int index=-1) const {
-        sq_pushobject(vm, GetObject());
+        SQ_PTRS->pushobject(vm, GetObject());
         T ret = Var<T>(vm, index).value;
-        sq_pop(vm, 1);
+        SQ_PTRS->pop(vm, 1);
         return ret;
     }
 
@@ -328,10 +347,10 @@ public:
     /// \return Size of Object
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    SQInteger GetSize() const {
-        sq_pushobject(vm, GetObject());
-        SQInteger ret = sq_getsize(vm, -1);
-        sq_pop(vm, 1);
+    int GetSize() const {
+        SQ_PTRS->pushobject(vm, GetObject());
+        int ret = SQ_PTRS->getsize(vm, -1);
+        SQ_PTRS->pop(vm, 1);
         return ret;
     }
 
@@ -351,8 +370,8 @@ public:
         iterator()
         {
             Index = 0;
-            sq_resetobject(&Key);
-            sq_resetobject(&Value);
+            SQ_PTRS->resetobject(&Key);
+            SQ_PTRS->resetobject(&Value);
             Key._type = OT_NULL;
             Value._type = OT_NULL;
         }
@@ -363,7 +382,7 @@ public:
         /// \return String or NULL
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const SQChar* getName() { return sq_objtostring(&Key); }
+        const SQChar* getName() { return SQ_PTRS->objtostring(&Key); }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// Gets the Squirrel object for the key the iterator is on
@@ -384,11 +403,11 @@ public:
 
         HSQOBJECT Key;
         HSQOBJECT Value;
-        SQInteger Index;
+        int Index;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// Used to go through all the slots in an Object (same limitations as sq_next)
+    /// Used to go through all the slots in an Object (same limitations as SQ_PTRS->next)
     ///
     /// \param iter An iterator being used for going through the slots
     ///
@@ -397,19 +416,19 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     bool Next(iterator& iter) const
     {
-        sq_pushobject(vm,obj);
-        sq_pushinteger(vm,iter.Index);
-        if(SQ_SUCCEEDED(sq_next(vm,-2)))
+        SQ_PTRS->pushobject(vm,obj);
+        SQ_PTRS->pushinteger(vm,iter.Index);
+        if(SQ_SUCCEEDED(SQ_PTRS->next(vm,-2)))
         {
-            sq_getstackobj(vm,-1,&iter.Value);
-            sq_getstackobj(vm,-2,&iter.Key);
-            sq_getinteger(vm,-3,&iter.Index);
-            sq_pop(vm,4);
+            SQ_PTRS->getstackobj(vm,-1,&iter.Value);
+            SQ_PTRS->getstackobj(vm,-2,&iter.Key);
+            SQ_PTRS->getinteger(vm,-3,&iter.Index);
+            SQ_PTRS->pop(vm,4);
             return true;
         }
         else
         {
-            sq_pop(vm,2);
+            SQ_PTRS->pop(vm,2);
             return false;
         }
     }
@@ -418,87 +437,109 @@ protected:
 /// @cond DEV
 
     // Bind a function and it's associated Squirrel closure to the object
-    inline void BindFunc(const SQChar* name, void* method, size_t methodSize, SQFUNCTION func, bool staticVar = false) {
-        sq_pushobject(vm, GetObject());
-        sq_pushstring(vm, name, -1);
+    inline void BindMemb(const SQChar* name, void* method, size_t methodSize,
+                         SQFUNCTION func,  bool staticVar = false, int nargs=0)
+    {
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->pushstring(vm, name, -1);
 
-        SQUserPointer methodPtr = sq_newuserdata(vm, static_cast<SQUnsignedInteger>(methodSize));
+        PVOID methodPtr = SQ_PTRS->newuserdata(vm, static_cast<size_t>(methodSize));
         memcpy(methodPtr, method, methodSize);
 
-        sq_newclosure(vm, func, 1);
-        sq_newslot(vm, -3, staticVar);
-        sq_pop(vm,1); // pop table
+        SQ_PTRS->newclosure(vm, func, 1, nargs);
+        SQ_PTRS->newslot(vm, -3, staticVar);
+        SQ_PTRS->pop(vm,1); // pop table
     }
 
-    inline void BindFunc(const SQInteger index, void* method, size_t methodSize, SQFUNCTION func, bool staticVar = false) {
-        sq_pushobject(vm, GetObject());
-        sq_pushinteger(vm, index);
+    inline void BindMemb(const int index, void* method, size_t methodSize,
+                         SQFUNCTION func, bool staticVar = false) {
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->pushinteger(vm, index);
 
-        SQUserPointer methodPtr = sq_newuserdata(vm, static_cast<SQUnsignedInteger>(methodSize));
+        PVOID methodPtr = SQ_PTRS->newuserdata(vm, static_cast<size_t>(methodSize));
         memcpy(methodPtr, method, methodSize);
 
-        sq_newclosure(vm, func, 1);
-        sq_newslot(vm, -3, staticVar);
-        sq_pop(vm,1); // pop table
+        SQ_PTRS->newclosure(vm, func, 1, 0);
+        SQ_PTRS->newslot(vm, -3, staticVar);
+        SQ_PTRS->pop(vm,1); // pop table
     }
+
+    inline void BindMembRt(const SQChar* name,
+                           void* method,
+                           size_t methodSize,
+                           SQFUNCTION_RT func,
+                           int nargs,
+                           bool staticVar = false)
+    {
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->pushstring(vm, name, -1);
+
+        PVOID methodPtr = SQ_PTRS->newuserdata(vm, static_cast<size_t>(methodSize));
+        memcpy(methodPtr, method, methodSize);
+
+        SQ_PTRS->newclosure_rt(vm, func, 1, nargs);
+        SQ_PTRS->newslot(vm, -3, staticVar);
+        SQ_PTRS->pop(vm,1); // pop table
+    }
+
 
 
     // Bind a function and it's associated Squirrel closure to the object
     inline void BindOverload(const SQChar* name, void* method, size_t methodSize, SQFUNCTION func, SQFUNCTION overload, int argCount, bool staticVar = false) {
         string overloadName = SqOverloadName::Get(name, argCount);
 
-        sq_pushobject(vm, GetObject());
+        SQ_PTRS->pushobject(vm, GetObject());
 
         // Bind overload handler
-        sq_pushstring(vm, name, -1);
-        sq_pushstring(vm, name, -1); // function name is passed as a free variable
-        sq_newclosure(vm, overload, 1);
-        sq_newslot(vm, -3, staticVar);
+        SQ_PTRS->pushstring(vm, name, -1);
+        SQ_PTRS->pushstring(vm, name, -1); // function name is passed as a free variable
+        SQ_PTRS->newclosure(vm, overload, 1, 0);
+        SQ_PTRS->newslot(vm, -3, staticVar);
 
         // Bind overloaded function
-        sq_pushstring(vm, overloadName.c_str(), -1);
-        SQUserPointer methodPtr = sq_newuserdata(vm, static_cast<SQUnsignedInteger>(methodSize));
+        SQ_PTRS->pushstring(vm, overloadName.c_str(), -1);
+        PVOID methodPtr = SQ_PTRS->newuserdata(vm, static_cast<size_t>(methodSize));
         memcpy(methodPtr, method, methodSize);
-        sq_newclosure(vm, func, 1);
-        sq_newslot(vm, -3, staticVar);
+        SQ_PTRS->newclosure(vm, func, 1, 0);
+        SQ_PTRS->newslot(vm, -3, staticVar);
 
-        sq_pop(vm,1); // pop table
+        SQ_PTRS->pop(vm,1); // pop table
     }
 
     // Set the value of a variable on the object. Changes to values set this way are not reciprocated
     template<class V>
     inline void BindValue(const SQChar* name, const V& val, bool staticVar = false) {
-        sq_pushobject(vm, GetObject());
-        sq_pushstring(vm, name, -1);
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->pushstring(vm, name, -1);
         PushVar(vm, val);
-        sq_newslot(vm, -3, staticVar);
-        sq_pop(vm,1); // pop table
+        SQ_PTRS->newslot(vm, -3, staticVar);
+        SQ_PTRS->pop(vm,1); // pop table
     }
     template<class V>
-    inline void BindValue(const SQInteger index, const V& val, bool staticVar = false) {
-        sq_pushobject(vm, GetObject());
-        sq_pushinteger(vm, index);
+    inline void BindValue(const int index, const V& val, bool staticVar = false) {
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->pushinteger(vm, index);
         PushVar(vm, val);
-        sq_newslot(vm, -3, staticVar);
-        sq_pop(vm,1); // pop table
+        SQ_PTRS->newslot(vm, -3, staticVar);
+        SQ_PTRS->pop(vm,1); // pop table
     }
 
     // Set the value of an instance on the object. Changes to values set this way are reciprocated back to the source instance
     template<class V>
     inline void BindInstance(const SQChar* name, V* val, bool staticVar = false) {
-        sq_pushobject(vm, GetObject());
-        sq_pushstring(vm, name, -1);
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->pushstring(vm, name, -1);
         PushVar(vm, val);
-        sq_newslot(vm, -3, staticVar);
-        sq_pop(vm,1); // pop table
+        SQ_PTRS->newslot(vm, -3, staticVar);
+        SQ_PTRS->pop(vm,1); // pop table
     }
     template<class V>
-    inline void BindInstance(const SQInteger index, V* val, bool staticVar = false) {
-        sq_pushobject(vm, GetObject());
-        sq_pushinteger(vm, index);
+    inline void BindInstance(const int index, V* val, bool staticVar = false) {
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->pushinteger(vm, index);
         PushVar(vm, val);
-        sq_newslot(vm, -3, staticVar);
-        sq_pop(vm,1); // pop table
+        SQ_PTRS->newslot(vm, -3, staticVar);
+        SQ_PTRS->pop(vm,1); // pop table
     }
 
 /// @endcond
@@ -507,11 +548,11 @@ protected:
 /// @cond DEV
 template<>
 inline void Object::BindValue<int>(const SQChar* name, const int & val, bool staticVar /* = false */) {
-    sq_pushobject(vm, GetObject());
-    sq_pushstring(vm, name, -1);
+    SQ_PTRS->pushobject(vm, GetObject());
+    SQ_PTRS->pushstring(vm, name, -1);
     PushVar<int>(vm, val);
-    sq_newslot(vm, -3, staticVar);
-    sq_pop(vm,1); // pop table
+    SQ_PTRS->newslot(vm, -3, staticVar);
+    SQ_PTRS->pop(vm,1); // pop table
 }
 /// @endcond
 
@@ -533,9 +574,9 @@ struct Var<Object> {
     /// This function MUST have its Error handled if it occurred.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSQUIRRELVM vm, SQInteger idx) {
+    Var(HSKVM vm, int idx) {
         HSQOBJECT sqValue;
-        sq_getstackobj(vm, idx, &sqValue);
+        SQ_PTRS->getstackobj(vm, idx, &sqValue);
         value = Object(sqValue, vm);
     }
 
@@ -546,8 +587,8 @@ struct Var<Object> {
     /// \param value Value to push on to the VM's stack
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void push(HSQUIRRELVM vm, const Object& value) {
-        sq_pushobject(vm, value.GetObject());
+    static void push(HSKVM vm, const Object& value) {
+        SQ_PTRS->pushobject(vm, value.GetObject());
     }
 };
 
@@ -555,13 +596,13 @@ struct Var<Object> {
 /// Used to get and push Object instances to and from the stack as references (Object is always a reference)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-struct Var<Object&> : Var<Object> {Var(HSQUIRRELVM vm, SQInteger idx) : Var<Object>(vm, idx) {}};
+struct Var<Object&> : Var<Object> {Var(HSKVM vm, int idx) : Var<Object>(vm, idx) {}};
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Used to get and push Object instances to and from the stack as references (Object is always a reference)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-struct Var<const Object&> : Var<Object> {Var(HSQUIRRELVM vm, SQInteger idx) : Var<Object>(vm, idx) {}};
+struct Var<const Object&> : Var<Object> {Var(HSKVM vm, int idx) : Var<Object>(vm, idx) {}};
 
 }
 

@@ -20,8 +20,8 @@ typedef sqvector<SQClassMember> SQClassMemberVec;
 
 #define _ismethod(o) (_integer(o)&MEMBER_TYPE_METHOD)
 #define _isfield(o) (_integer(o)&MEMBER_TYPE_FIELD)
-#define _make_method_idx(i) ((SQInteger)(MEMBER_TYPE_METHOD|i))
-#define _make_field_idx(i) ((SQInteger)(MEMBER_TYPE_FIELD|i))
+#define _make_method_idx(i) ((int)(MEMBER_TYPE_METHOD|i))
+#define _make_field_idx(i) ((int)(MEMBER_TYPE_FIELD|i))
 #define _member_type(o) (_integer(o)&0xFF000000)
 #define _member_idx(o) (_integer(o)&0x00FFFFFF)
 
@@ -69,7 +69,7 @@ public:
     void Mark(SQCollectable ** );
     SQObjectType GetType() {return OT_CLASS;}
 #endif
-    SQInteger Next(const SQObjectPtr &refpos, SQObjectPtr &outkey, SQObjectPtr &outval);
+    int Next(const SQObjectPtr &refpos, SQObjectPtr &outkey, SQObjectPtr &outval);
     SQInstance *CreateInstance();
     SQTable *_members;
     SQClass *_base;
@@ -77,11 +77,11 @@ public:
     SQClassMemberVec _methods;
     SQObjectPtr _metamethods[MT_LAST];
     SQObjectPtr _attributes;
-    SQUserPointer _typetag;
+    PVOID _typetag;
     SQRELEASEHOOK _hook;
     bool _locked;
-    SQInteger _constructoridx;
-    SQInteger _udsize;
+    int _constructoridx;
+    int _udsize;
 };
 
 #define calcinstancesize(_theclass_) \
@@ -90,12 +90,12 @@ public:
 struct SQInstance : public SQDelegable
 {
     void Init(SQSharedState *ss);
-    SQInstance(SQSharedState *ss, SQClass *c, SQInteger memsize);
-    SQInstance(SQSharedState *ss, SQInstance *c, SQInteger memsize);
+    SQInstance(SQSharedState *ss, SQClass *c, int memsize);
+    SQInstance(SQSharedState *ss, SQInstance *c, int memsize);
 public:
     static SQInstance* Create(SQSharedState *ss,SQClass *theclass) {
 
-        SQInteger size = calcinstancesize(theclass);
+        int size = calcinstancesize(theclass);
         SQInstance *newinst = (SQInstance *)SQ_MALLOC(size);
         new (newinst) SQInstance(ss, theclass,size);
         if(theclass->_udsize) {
@@ -105,7 +105,7 @@ public:
     }
     SQInstance *Clone(SQSharedState *ss)
     {
-        SQInteger size = calcinstancesize(_class);
+        int size = calcinstancesize(_class);
         SQInstance *newinst = (SQInstance *)SQ_MALLOC(size);
         new (newinst) SQInstance(ss, this,size);
         if(_class->_udsize) {
@@ -140,7 +140,7 @@ public:
         if (_hook) { _hook(_userpointer,0);}
         _uiRef--;
         if(_uiRef > 0) return;
-        SQInteger size = _memsize;
+        int size = _memsize;
         this->~SQInstance();
         SQ_FREE(this, size);
     }
@@ -153,9 +153,9 @@ public:
     bool GetMetaMethod(SQVM *v,SQMetaMethod mm,SQObjectPtr &res);
 
     SQClass *_class;
-    SQUserPointer _userpointer;
+    PVOID _userpointer;
     SQRELEASEHOOK _hook;
-    SQInteger _memsize;
+    int _memsize;
     SQObjectPtr _values[1];
 };
 

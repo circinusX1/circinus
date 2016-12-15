@@ -5,17 +5,17 @@
 #include <assert.h>
 #include <stdarg.h>
 
-void sqstd_printcallstack(HSQUIRRELVM v)
+void sqstd_printcallstack(HSKVM v)
 {
     SQPRINTFUNCTION pf = sq_geterrorfunc(v);
     if(pf) {
         SQStackInfos si;
-        SQInteger i;
+        int i;
         SQFloat f;
         const SQChar *s;
-        SQInteger level=1; //1 is to skip this function that is level 0
+        int level=1; //1 is to skip this function that is level 0
         const SQChar *name=0;
-        SQInteger seq=0;
+        int seq=0;
         pf(v,_SC("\nCALLSTACK\n"));
         while(SQ_SUCCEEDED(sq_stackinfos(v,level,&si)))
         {
@@ -85,7 +85,7 @@ void sqstd_printcallstack(HSQUIRRELVM v)
                     pf(v,_SC("[%s] WEAKREF\n"),name);
                     break;
                 case OT_BOOL:{
-                    SQBool bval;
+                    bool bval;
                     sq_getbool(v,-1,&bval);
                     pf(v,_SC("[%s] %s\n"),name,bval == SQTrue ? _SC("true"):_SC("false"));
                              }
@@ -98,7 +98,7 @@ void sqstd_printcallstack(HSQUIRRELVM v)
     }
 }
 
-static SQInteger _sqstd_aux_printerror(HSQUIRRELVM v)
+static int _sqstd_aux_printerror(HSKVM v)
 {
     SQPRINTFUNCTION pf = sq_geterrorfunc(v);
     if(pf) {
@@ -116,7 +116,7 @@ static SQInteger _sqstd_aux_printerror(HSQUIRRELVM v)
     return 0;
 }
 
-void _sqstd_compiler_error(HSQUIRRELVM v,const SQChar *sErr,const SQChar *sSource,SQInteger line,SQInteger column)
+void _sqstd_compiler_error(HSKVM v,const SQChar *sErr,const SQChar *sSource,int line,int column)
 {
     SQPRINTFUNCTION pf = sq_geterrorfunc(v);
     if(pf) {
@@ -124,21 +124,21 @@ void _sqstd_compiler_error(HSQUIRRELVM v,const SQChar *sErr,const SQChar *sSourc
     }
 }
 
-void sqstd_seterrorhandlers(HSQUIRRELVM v)
+void sqstd_seterrorhandlers(HSKVM v)
 {
     sq_setcompilererrorhandler(v,_sqstd_compiler_error);
     sq_newclosure(v,_sqstd_aux_printerror,0);
     sq_seterrorhandler(v);
 }
 
-SQRESULT sqstd_throwerrorf(HSQUIRRELVM v,const SQChar *err,...)
+SQRESULT sqstd_throwerrorf(HSKVM v,const SQChar *err,...)
 {
-    SQInteger n=256;
+    int n=256;
     va_list args;
 begin:
     va_start(args,err);
     SQChar *b=sq_getscratchpad(v,n);
-    SQInteger r=scvsprintf(b,n,err,args);
+    int r=scvsprintf(b,n,err,args);
     va_end(args);
     if (r>=n) {
         n=r+1;//required+null

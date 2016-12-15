@@ -13,7 +13,7 @@ private:
     SQClosure(SQSharedState *ss,SQFunctionProto *func){_function = func; __ObjAddRef(_function); _base = NULL; INIT_CHAIN();ADD_TO_CHAIN(&_ss(this)->_gc_chain,this); _env = NULL; _root=NULL;}
 public:
     static SQClosure *Create(SQSharedState *ss,SQFunctionProto *func,SQWeakRef *root){
-        SQInteger size = _CALC_CLOSURE_SIZE(func);
+        int size = _CALC_CLOSURE_SIZE(func);
         SQClosure *nc=(SQClosure*)SQ_MALLOC(size);
         new (nc) SQClosure(ss,func);
         nc->_outervalues = (SQObjectPtr *)(nc + 1);
@@ -26,7 +26,7 @@ public:
     }
     void Release(){
         SQFunctionProto *f = _function;
-        SQInteger size = _CALC_CLOSURE_SIZE(f);
+        int size = _CALC_CLOSURE_SIZE(f);
         _DESTRUCT_VECTOR(SQObjectPtr,f->_noutervalues,_outervalues);
         _DESTRUCT_VECTOR(SQObjectPtr,f->_ndefaultparams,_defaultparams);
         __ObjRelease(_function);
@@ -51,8 +51,8 @@ public:
     }
     ~SQClosure();
 
-    bool Save(SQVM *v,SQUserPointer up,SQWRITEFUNC write);
-    static bool Load(SQVM *v,SQUserPointer up,SQREADFUNC read,SQObjectPtr &ret);
+    bool Save(SQVM *v,PVOID up,SQWRITEFUNC write);
+    static bool Load(SQVM *v,PVOID up,SQREADFUNC read,SQObjectPtr &ret);
 #ifndef NO_GARBAGE_COLLECTOR
     void Mark(SQCollectable **chain);
     void Finalize(){
@@ -99,7 +99,7 @@ public:
 #endif
 
     SQObjectPtr *_valptr;  /* pointer to value on stack, or _value below */
-    SQInteger    _idx;     /* idx in stack array, for relocation */
+    int    _idx;     /* idx in stack array, for relocation */
     SQObjectPtr  _value;   /* value of outer after stack frame is closed */
     SQOuter     *_next;    /* pointer to next outer when frame is open   */
 };
@@ -128,7 +128,7 @@ public:
         sq_delete(this,SQGenerator);
     }
 
-    bool Yield(SQVM *v,SQInteger target);
+    bool Yield(SQVM *v,int target);
     bool Resume(SQVM *v,SQObjectPtr &dest);
 #ifndef NO_GARBAGE_COLLECTOR
     void Mark(SQCollectable **chain);
@@ -147,21 +147,54 @@ public:
 struct SQNativeClosure : public CHAINABLE_OBJ
 {
 private:
-    SQNativeClosure(SQSharedState *ss,SQFUNCTION func){_function=func;INIT_CHAIN();ADD_TO_CHAIN(&_ss(this)->_gc_chain,this); _env = NULL;}
-public:
-    static SQNativeClosure *Create(SQSharedState *ss,SQFUNCTION func,SQInteger nouters)
+    SQNativeClosure(SQSharedState *ss,SQFUNCTION func)
     {
-        SQInteger size = _CALC_NATVIVECLOSURE_SIZE(nouters);
+        _function = func;
+        _functionrt = nullptr;
+        INIT_CHAIN();
+        ADD_TO_CHAIN(&_ss(this)->_gc_chain,this);
+        _env = NULL;
+    }
+
+    SQNativeClosure(SQSharedState *ss, SQFUNCTION_RT func)
+    {
+        _functionrt = func;
+        _function = nullptr;
+        INIT_CHAIN();
+        ADD_TO_CHAIN(&_ss(this)->_gc_chain,this);
+        _env = NULL;
+    }
+
+public:
+    static SQNativeClosure *Create(SQSharedState *ss,SQFUNCTION func,int nouters)
+    {
+        int size = _CALC_NATVIVECLOSURE_SIZE(nouters);
         SQNativeClosure *nc=(SQNativeClosure*)SQ_MALLOC(size);
         new (nc) SQNativeClosure(ss,func);
         nc->_outervalues = (SQObjectPtr *)(nc + 1);
         nc->_noutervalues = nouters;
+        nc->_args =0;
+        _CONSTRUCT_VECTOR(SQObjectPtr,nc->_noutervalues,nc->_outervalues);
+        return nc;
+    }
+    // mco
+    static SQNativeClosure *CreateRt(SQSharedState *ss,
+                                     SQFUNCTION_RT func,
+                                     int nargs,
+                                     int nouters)
+    {
+        int size = _CALC_NATVIVECLOSURE_SIZE(nouters);
+        SQNativeClosure *nc=(SQNativeClosure*)SQ_MALLOC(size);
+        new (nc) SQNativeClosure(ss,func);
+        nc->_outervalues = (SQObjectPtr *)(nc + 1);
+        nc->_noutervalues = nouters;
+        nc->_args = nargs;
         _CONSTRUCT_VECTOR(SQObjectPtr,nc->_noutervalues,nc->_outervalues);
         return nc;
     }
     SQNativeClosure *Clone()
     {
-        SQNativeClosure * ret = SQNativeClosure::Create(_opt_ss(this),_function,_noutervalues);
+        SQNativeClosure *ret = SQNativeClosure::Create(_opt_ss(this),_function,_noutervalues);
         ret->_env = _env;
         if(ret->_env) __ObjAddRef(ret->_env);
         ret->_name = _name;
@@ -176,7 +209,7 @@ public:
         REMOVE_FROM_CHAIN(&_ss(this)->_gc_chain,this);
     }
     void Release(){
-        SQInteger size = _CALC_NATVIVECLOSURE_SIZE(_noutervalues);
+        int size = _CALC_NATVIVECLOSURE_SIZE(_noutervalues);
         _DESTRUCT_VECTOR(SQObjectPtr,_noutervalues,_outervalues);
         this->~SQNativeClosure();
         sq_free(this,size);
@@ -187,13 +220,15 @@ public:
     void Finalize() { _NULL_SQOBJECT_VECTOR(_outervalues,_noutervalues); }
     SQObjectType GetType() {return OT_NATIVECLOSURE;}
 #endif
-    SQInteger _nparamscheck;
-    SQIntVec _typecheck;
+    int         _nparamscheck;
+    SQIntVec    _typecheck;
     SQObjectPtr *_outervalues;
-    SQUnsignedInteger _noutervalues;
-    SQWeakRef *_env;
-    SQFUNCTION _function;
+    size_t      _noutervalues;
+    SQWeakRef   *_env;
+    SQFUNCTION      _function;
+    SQFUNCTION_RT   _functionrt;
     SQObjectPtr _name;
+    int         _args;
 };
 
 

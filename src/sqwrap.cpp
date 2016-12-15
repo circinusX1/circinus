@@ -1,50 +1,77 @@
 /*
-    Author: Marius Octavian Chincisan, Jan-Aug 2012
-    Copyright: Marius C.O.
+Copyright (c) 2014-2016 PANGEEA.DPT All rights reserved.
+
+Redistribution and use in source and binary forms are permitted
+provided that the above copyright notice and this paragraph are
+duplicated in all such forms and that any documentation,
+advertising materials, and other materials related to such
+distribution and use acknowledge that the software was developed
+by the https://github.com/pangeea. The name of the
+https://github.com/pangeea may not be used to endorse or promote
+products derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
 
 #include <assert.h>
 #include <stdarg.h>
 #include <iostream>
+#include <string>
 #include "sqwrap.h"
-#include "icombase.h"
 #include "osthread.h"
+#include "logs.h"
+#include "dlconfig.h"
+#include "psingle.h"
 
-static __thread HookPrint _hook_print;
-static __thread HSQUIRRELVM __vm;
+
+//static __thread HookPrint _hook_print;
+//static __thread HSKVM __vm;
+
+static HookPrint _hook_print;
+HSKVM               __vm;
+extern std::string SqErrStr;
+
+class               __sq_env;
+class               SqEnvi;
+SqEnvi*             __sq_env;
+BaseSqEnvi*         __bsqenv;
 
 /*static*/
-void SqEnv::set_print_foo(HookPrint  hp)
+void SqEnvi::set_print_foo(HookPrint  hp)
 {
     _hook_print = hp;
 }
 
-SqEnv::SqEnv(size_t sz):_vm(0)
+SqEnvi::SqEnvi(size_t sz):_vm(0)
 {
-    AutoLock a(&_m);
+    //AutoLock a(&_m);
+
     _init(sz);
+    acquire();
 }
 
-SqEnv::~SqEnv()
+SqEnvi::~SqEnvi()
 {
-    AutoLock a(&_m);
-    assert(_vm);
-    Sqrat::DefaultVM::Set(*_vm);
-    sq_close(*_vm);
-    *_vm = 0;
+    __sq_env = nullptr;
+    __bsqenv = nullptr;
+    if(*_vm){
+        Sqrat::DefaultVM::Set(*_vm);
+        sq_close(*_vm);
+        *_vm = 0;
+    }
 }
 
-void SqEnv::_init(size_t sz)
+void SqEnvi::_init(size_t sz)
 {
-
-    AutoLock a(&_m);
+    //AutoLock a(&_m);
     __vm = sq_open(sz);
     _vm= &__vm;
 
     assert( _vm );
     Sqrat::DefaultVM::Set(*_vm);
-    sq_setprintfunc(*_vm, SqEnv::print_func, SqEnv::print_func);
-    sq_newclosure(*_vm, SqEnv::error_handler,0);
+    sq_setprintfunc(*_vm, SqEnvi::print_func, SqEnvi::print_func);
+    sq_newclosure(*_vm, SqEnvi::error_handler,0);
     sq_seterrorhandler(*_vm);
     //sq
     sq_pushroottable(*_vm);
@@ -55,84 +82,83 @@ void SqEnv::_init(size_t sz)
     sqstd_register_systemlib(*_vm);
 
     sqstd_seterrorhandlers(*_vm);
-    sqstd_printcallstack(*_vm);
-
-//    setnativedebughook(_vmsys,debug_hook);
+    //sqstd_printcallstack(*_vm);
+    //    setnativedebughook(_vmsys,debug_hook);
     sq_notifyallexceptions(*_vm, true);
+    __sq_env      = this;
+    __bsqenv      = this;
+
 }
 
-void SqEnv::debug_hook(HSQUIRRELVM /*v*/,
-                       SQInteger tip/*type*/,
-                       const SQChar * s/*sourcename*/,
-                       SQInteger line/*line*/,
-                       const SQChar * func/*funcname*/)
+void SqEnvi::debug_hook(HSKVM /*v*/,
+                        int tip/*type*/,
+                        const SQChar * s/*sourcename*/,
+                        int line/*line*/,
+                        const SQChar * func/*funcname*/)
 {
     //AutoLock a(&_m);
-    char buff[512];
-    sprintf (buff, "%d: %d  %s, %s\n",(int)tip, (int)line, func,s);
+    char buff[8912];
+    snprintf (buff,8911, "%d: %d  %s, %s\n",(int)tip, (int)line, func,s);
     if(_hook_print){
         _hook_print(buff);
     }else{
-        LOGERR(buff);
+        std::cout << buff;
+        std::cout.flush();
     }
+    SqErrStr += buff;
 }
 
-void SqEnv::print_func(HSQUIRRELVM, const SQChar * s,...)
+void SqEnvi::print_func(HSKVM, const SQChar * s,...)
 {
     //AutoLock a(&_m);
-    char szBuffer[16384];
+    char szBuffer[4096];
 
     va_list args;
     va_start(args, s);
     ::vsnprintf(szBuffer,sizeof(szBuffer)-1, s, args);
     va_end(args);
-    if(_hook_print){
-        _hook_print(szBuffer);
-    }else{
-        std::cout << szBuffer << std::flush;
+
+    SqErrStr += szBuffer;
+    if(SqErrStr.find("ERROR")!=std::string::npos)
+    {
+        LOGE(SqErrStr.c_str());
     }
+    else
+    {
+        if(_hook_print)
+        {
+            _hook_print(szBuffer);
+        }
+        else
+        {
+            std::cout << szBuffer;
+            std::cout.flush();
+        }
+    }
+    debunk_error(SqErrStr);
 }
 
-
-SQInteger SqEnv::error_handler(HSQUIRRELVM v)
+int SqEnvi::error_handler(HSKVM v)
 {
     //AutoLock a(&_m);
     const SQChar *sErr = 0;
-#ifdef __linux
-    std::cout << KRED;
-#else
-    std::cout << tclr::red;
-#endif
     if(sq_gettop(v)>=1)
     {
         if(SQ_SUCCEEDED(sq_getstring(v,2,&sErr)))
         {
-            if(_hook_print){
-                _hook_print(sErr);
-            }else{
-                std::cout << _SC("A Script Error Occured: ") << sErr  << "\n";
-            }
+            LOGEX("A Script Error Occured: " << sErr);
         }
         else
         {
-            if(_hook_print){
-                _hook_print("Unknown Script Error");
-            }else{
-                std::cout << _SC("An Unknown Script Error Occured.") << sErr << "\n";
-            }
+            LOGEX("Unknown Error Occured");
         }
     }
-#ifdef __linux
-    std::cout << RST;
-#else
-    std::cout << tclr::white;
-#endif
     return 0;
 }
 
-MyScript* SqEnv:: compile_script_new(const SQChar* s,  const SQChar * debugInfo)const
+EngScript* SqEnvi::compile_script_new(const SQChar* s,  const SQChar * debugInfo)const
 {
-    AutoLock a(&_m);
+    //AutoLock a(&_m);
     Sqrat::DefaultVM::Set(*_vm);
 
     (void)debugInfo;
@@ -144,52 +170,100 @@ MyScript* SqEnv:: compile_script_new(const SQChar* s,  const SQChar * debugInfo)
     }
     sq_getstackobj(*_vm,-1,&obj);
     //sq_pop(_vm,1); //mco
-    return new MyScript(*_vm, obj);
+    return new EngScript(*_vm, obj);
 }
 
-MyScript SqEnv::compile_script(const std::string& s,  const SQChar * debugInfo)const
+int SqEnvi::push_main(bool call)
 {
-    AutoLock a(&_m);
+    if(call==false)
+    {
+        SQChar* main_foo = _SC("main(context());");
+        if(SQ_FAILED(SQ_PTRS->compilebuffer(theVM(),
+                                            main_foo,
+                                            ::strlen(main_foo), _SC(""), true)))
+        {
+            return SQ_ERROR;
+        }
+        return 0;
+    }
+    SQ_PTRS->pushroottable(theVM());
+    SQ_PTRS->call(theVM(), 1, 0, 1);
+    SQ_PTRS->remove(theVM(), -1);
+    return 0;
+}
+
+
+EngScript SqEnvi::compile_script(const std::string& s,  const SQChar * debugInfo)
+{
+    char cwd[PATH_MAX];
+    char cwdf[PATH_MAX];
     Sqrat::DefaultVM::Set(*_vm);
 
+    _script = s;
     (void)debugInfo;
     SQObject obj;
-    if(SQ_FAILED(sqstd_loadfile(*_vm, s.c_str(), true)))
+
+#if 1
+    ::getcwd(cwd, PATH_MAX-1);
+    ::sprintf(cwdf,"%s/%s",cwd,s.c_str());
+    if(::access(cwdf,0)!=0)
     {
-        //return false;
+        LOGE("Cannot find: " << cwdf);
+    }
+    sprintf(cwd,"cp %s /tmp/os.embix && echo 'main(context());' >> /tmp/os.embix ", cwdf);
+    ::system(cwd);
+    if(SQ_FAILED(sqstd_loadfile(*_vm, "/tmp/os.embix", true)))
+    {
         throw Sqrat::Exception(Sqrat::LastErrorString(*_vm));
     }
+#else
+    if(::access(_script.c_str(),0)!=0)
+    {
+        LOGE("Cannot find: " << _script);
+    }
+    push_main(false);
+    if(SQ_FAILED(sqstd_loadfile(*_vm, _script.c_str(), true)))
+    {
+        throw Sqrat::Exception(Sqrat::LastErrorString(*_vm));
+    }
+    push_main(true);
+
+#endif
     sq_getstackobj(*_vm,-1,&obj);
     //sq_pop(_vm,1); //mco
-    return MyScript(*_vm, obj);
+    return EngScript(*_vm, obj);
 }
 
-MyScript SqEnv::compile_buffer(const SQChar *s,  size_t length, const SQChar * debugInfo)const
+EngScript SqEnvi::compile_buffer(const SQChar *s,  size_t length, const SQChar * debugInfo)const
 {
-    AutoLock a(&_m);
+    //AutoLock a(&_m);
     Sqrat::DefaultVM::Set(*_vm);
 
     SQObject obj;
     if(SQ_FAILED(sq_compilebuffer(*_vm, s,
-                                  static_cast<SQInteger>(length),
+                                  static_cast<int>(length),
                                   debugInfo, true)))
     {
         throw Sqrat::Exception(Sqrat::LastErrorString(*_vm));
     }
     sq_getstackobj(*_vm,-1,&obj);
-    return MyScript(*_vm, obj);
+    return EngScript(*_vm, obj);
 }
 
-MyScript SqEnv::compile_buffer(const std::string& s, const SQChar * debugInfo)const
+EngScript SqEnvi::compile_buffer(const std::string& s, const SQChar * debugInfo)const
 {
-    return SqEnv::compile_buffer(_SC(s.c_str()), s.length(), debugInfo);
+    return SqEnvi::compile_buffer(_SC(s.c_str()), s.length(), debugInfo);
 }
 
-void SqEnv::reset()
+void SqEnvi::reset()
 {
-    AutoLock a(&_m);
+    //AutoLock a(&_m);
     sq_pop(*_vm, 1);
-	sq_close(*this->_vm);
-	this->_init();
+    sq_close(*this->_vm);
+    this->_init();
+}
+
+void SqEnvi::debunk_error(const std::string& err)
+{
 }
 

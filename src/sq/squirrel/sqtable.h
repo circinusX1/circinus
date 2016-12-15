@@ -1,23 +1,26 @@
 /*  see copyright notice in squirrel.h */
 #ifndef _SQTABLE_H_
 #define _SQTABLE_H_
+
+#include <stdint.h>
 /*
 * The following code is based on Lua 4.0 (Copyright 1994-2002 Tecgraf, PUC-Rio.)
 * http://www.lua.org/copyright.html#4
 * http://www.lua.org/source/4.0.1/src_ltable.c.html
 */
-
+#include "sqobject.h"
 #include "sqstring.h"
 
 
-#define hashptr(p)  ((SQHash)(((SQInteger)p) >> 3))
+#define hashptr(p)  ((size_t)(((size_t)p) >> 3))
 
-inline SQHash HashObj(const SQObjectPtr &key)
+inline size_t HashObj(const SQObjectPtr &key)
 {
     switch(sq_type(key)) {
         case OT_STRING:     return _string(key)->_hash;
-        case OT_FLOAT:      return (SQHash)((SQInteger)_float(key));
-        case OT_BOOL: case OT_INTEGER:  return (SQHash)((SQInteger)_integer(key));
+        case OT_FLOAT:      return (size_t)((int)_float(key));
+        case OT_BOOL:
+        case OT_INTEGER:    return (size_t)((int)_integer(key));
         default:            return hashptr(key._unVal.pRefCounted);
     }
 }
@@ -34,16 +37,16 @@ private:
     };
     _HashNode *_firstfree;
     _HashNode *_nodes;
-    SQInteger _numofnodes;
-    SQInteger _usednodes;
+    int _numofnodes;
+    int _usednodes;
 
 ///////////////////////////
-    void AllocNodes(SQInteger nSize);
+    void AllocNodes(int nSize);
     void Rehash(bool force);
-    SQTable(SQSharedState *ss, SQInteger nInitialSize);
+    SQTable(SQSharedState *ss, int nInitialSize);
     void _ClearNodes();
 public:
-    static SQTable* Create(SQSharedState *ss,SQInteger nInitialSize)
+    static SQTable* Create(SQSharedState *ss,int nInitialSize)
     {
         SQTable *newtable = (SQTable*)SQ_MALLOC(sizeof(SQTable));
         new (newtable) SQTable(ss, nInitialSize);
@@ -56,14 +59,14 @@ public:
     {
         SetDelegate(NULL);
         REMOVE_FROM_CHAIN(&_sharedstate->_gc_chain, this);
-        for (SQInteger i = 0; i < _numofnodes; i++) _nodes[i].~_HashNode();
+        for (int i = 0; i < _numofnodes; i++) _nodes[i].~_HashNode();
         SQ_FREE(_nodes, _numofnodes * sizeof(_HashNode));
     }
 #ifndef NO_GARBAGE_COLLECTOR
     void Mark(SQCollectable **chain);
     SQObjectType GetType() {return OT_TABLE;}
 #endif
-    inline _HashNode *_Get(const SQObjectPtr &key,SQHash hash)
+    inline _HashNode *_Get(const SQObjectPtr &key,size_t hash)
     {
         _HashNode *n = &_nodes[hash];
         do{
@@ -74,9 +77,9 @@ public:
         return NULL;
     }
     //for compiler use
-    inline bool GetStr(const SQChar* key,SQInteger keylen,SQObjectPtr &val)
+    inline bool GetStr(const SQChar* key,int keylen,SQObjectPtr &val)
     {
-        SQHash hash = _hashstr(key,keylen);
+        size_t hash = _hashstr(key,keylen);
         _HashNode *n = &_nodes[hash & (_numofnodes - 1)];
         _HashNode *res = NULL;
         do{
@@ -96,9 +99,9 @@ public:
     bool Set(const SQObjectPtr &key, const SQObjectPtr &val);
     //returns true if a new slot has been created false if it was already present
     bool NewSlot(const SQObjectPtr &key,const SQObjectPtr &val);
-    SQInteger Next(bool getweakrefs,const SQObjectPtr &refpos, SQObjectPtr &outkey, SQObjectPtr &outval);
+    int Next(bool getweakrefs,const SQObjectPtr &refpos, SQObjectPtr &outkey, SQObjectPtr &outval);
 
-    SQInteger CountUsed(){ return _usednodes;}
+    int CountUsed(){ return _usednodes;}
     void Clear();
     void Release()
     {

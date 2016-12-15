@@ -33,6 +33,7 @@
 #include <squirrel.h>
 #include <string.h>
 #include <algorithm>
+#include "sqr_imp_exp.h"
 #if defined(SCRAT_USE_CXX11_OPTIMIZATIONS)
 #include <unordered_map>
 #endif
@@ -195,8 +196,8 @@ class WeakPtr;
 class DefaultVM {
 private:
 
-    static HSQUIRRELVM& staticVm() {
-        static HSQUIRRELVM vm;
+    static HSKVM& staticVm() {
+        static HSKVM vm;
         return vm;
     }
 
@@ -208,7 +209,7 @@ public:
     /// \return Default VM
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static HSQUIRRELVM Get() {
+    static HSKVM Get() {
         return staticVm();
     }
 
@@ -218,7 +219,7 @@ public:
     /// \param vm New default VM
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void Set(HSQUIRRELVM vm) {
+    static void Set(HSKVM vm) {
         staticVm() = vm;
     }
 };
@@ -257,11 +258,11 @@ public:
     /// \param vm Target VM
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void Clear(HSQUIRRELVM vm) {
-        sq_pushregistrytable(vm);
-        sq_pushstring(vm, "__error", -1);
-        sq_rawdeleteslot(vm, -2, false);
-        sq_pop(vm, 1);
+    static void Clear(HSKVM vm) {
+        SQ_PTRS->pushregistrytable(vm);
+        SQ_PTRS->pushstring(vm, "__error", -1);
+        SQ_PTRS->rawdeleteslot(vm, -2, false);
+        SQ_PTRS->pop(vm, 1);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,22 +273,22 @@ public:
     /// \return String containing a nice error message
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static string Message(HSQUIRRELVM vm) {
-        sq_pushregistrytable(vm);
-        sq_pushstring(vm, "__error", -1);
-        if (SQ_SUCCEEDED(sq_rawget(vm, -2))) {
+    static string Message(HSKVM vm) {
+        SQ_PTRS->pushregistrytable(vm);
+        SQ_PTRS->pushstring(vm, "__error", -1);
+        if (SQ_SUCCEEDED(SQ_PTRS->rawget(vm, -2))) {
             string** ud;
-            sq_getuserdata(vm, -1, (SQUserPointer*)&ud, NULL);
-            sq_pop(vm, 1);
+            SQ_PTRS->getuserdata(vm, -1, (PVOID*)&ud, NULL);
+            SQ_PTRS->pop(vm, 1);
             string err = **ud;
-            sq_pushstring(vm, "__error", -1);
-            sq_rawdeleteslot(vm, -2, false);
-            sq_pop(vm, 1);
+            SQ_PTRS->pushstring(vm, "__error", -1);
+            SQ_PTRS->rawdeleteslot(vm, -2, false);
+            SQ_PTRS->pop(vm, 1);
             return err;
         }
-        sq_pushstring(vm, "__error", -1);
-        sq_rawdeleteslot(vm, -2, false);
-        sq_pop(vm, 1);
+        SQ_PTRS->pushstring(vm, "__error", -1);
+        SQ_PTRS->rawdeleteslot(vm, -2, false);
+        SQ_PTRS->pop(vm, 1);
         return string(_SC("an unknown error has occurred"));
     }
 
@@ -299,14 +300,14 @@ public:
     /// \return True if an error has occurred, otherwise false
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static bool Occurred(HSQUIRRELVM vm) {
-        sq_pushregistrytable(vm);
-        sq_pushstring(vm, "__error", -1);
-        if (SQ_SUCCEEDED(sq_rawget(vm, -2))) {
-            sq_pop(vm, 2);
+    static bool Occurred(HSKVM vm) {
+        SQ_PTRS->pushregistrytable(vm);
+        SQ_PTRS->pushstring(vm, "__error", -1);
+        if (SQ_SUCCEEDED(SQ_PTRS->rawget(vm, -2))) {
+            SQ_PTRS->pop(vm, 2);
             return true;
         }
-        sq_pop(vm, 1);
+        SQ_PTRS->pop(vm, 1);
         return false;
     }
 
@@ -317,26 +318,26 @@ public:
     /// \param err A nice error message
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void Throw(HSQUIRRELVM vm, const string& err) {
-        sq_pushregistrytable(vm);
-        sq_pushstring(vm, "__error", -1);
-        if (SQ_FAILED(sq_rawget(vm, -2))) {
-            sq_pushstring(vm, "__error", -1);
-            string** ud = reinterpret_cast<string**>(sq_newuserdata(vm, sizeof(string*)));
-*ud = new string(err);
-            sq_setreleasehook(vm, -1, &error_cleanup_hook);
-            sq_rawset(vm, -3);
-            sq_pop(vm, 1);
+    static void Throw(HSKVM vm, const string& err) {
+        SQ_PTRS->pushregistrytable(vm);
+        SQ_PTRS->pushstring(vm, "__error", -1);
+        if (SQ_FAILED(SQ_PTRS->rawget(vm, -2))) {
+            SQ_PTRS->pushstring(vm, "__error", -1);
+            string** ud = reinterpret_cast<string**>(SQ_PTRS->newuserdata(vm, sizeof(string*)));
+            *ud = new string(err);
+            SQ_PTRS->setreleasehook(vm, -1, &error_cleanup_hook);
+            SQ_PTRS->rawset(vm, -3);
+            SQ_PTRS->pop(vm, 1);
             return;
         }
-        sq_pop(vm, 2);
+        SQ_PTRS->pop(vm, 2);
     }
 
 private:
 
     Error() {}
 
-    static SQInteger error_cleanup_hook(SQUserPointer ptr, SQInteger size) {
+    static int error_cleanup_hook(PVOID ptr, int size) {
         SQUNUSED(size);
         string** ud = reinterpret_cast<string**>(ptr);
         delete *ud;
@@ -435,7 +436,7 @@ private:
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// Returns a string that has been formatted to give a nice type error message (for usage with Class::SquirrelFunc)
+/// Returns a string that has been formatted to give a nice type error message (for usage with Class::SquirrelMemb)
 ///
 /// \param vm           VM the error occurred with
 /// \param idx          Index on the stack of the argument that had a type error
@@ -444,16 +445,16 @@ private:
 /// \return String containing a nice type error message
 ///
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline string FormatTypeError(HSQUIRRELVM vm, SQInteger idx, const string& expectedType) {
+inline string FormatTypeError(HSKVM vm, int idx, const string& expectedType) {
     string err = _SC("wrong type (") + expectedType + _SC(" expected");
 #if (SQUIRREL_VERSION_NUMBER>= 200) && (SQUIRREL_VERSION_NUMBER < 300) // Squirrel 2.x
     err = err + _SC(")");
 #else // Squirrel 3.x
-    if (SQ_SUCCEEDED(sq_typeof(vm, idx))) {
+    if (SQ_SUCCEEDED(SQ_PTRS->ptr_typeof(vm, idx))) {
         const SQChar* actualType;
-        sq_tostring(vm, -1);
-        sq_getstring(vm, -1, &actualType);
-        sq_pop(vm, 2);
+        SQ_PTRS->tostring(vm, -1);
+        SQ_PTRS->getstring(vm, -1, &actualType);
+        SQ_PTRS->pop(vm, 2);
         err = err + _SC(", got ") + actualType + _SC(")");
     } else {
         err = err + _SC(", got unknown)");
@@ -470,16 +471,16 @@ inline string FormatTypeError(HSQUIRRELVM vm, SQInteger idx, const string& expec
 /// \return String containing a nice error message
 ///
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline string LastErrorString(HSQUIRRELVM vm) {
+inline string LastErrorString(HSKVM vm) {
     const SQChar* sqErr;
-    sq_getlasterror(vm);
-    if (sq_gettype(vm, -1) == OT_NULL) {
-        sq_pop(vm, 1);
+    SQ_PTRS->getlasterror(vm);
+    if (SQ_PTRS->gettype(vm, -1) == OT_NULL) {
+        SQ_PTRS->pop(vm, 1);
         return string();
     }
-    sq_tostring(vm, -1);
-    sq_getstring(vm, -1, &sqErr);
-    sq_pop(vm, 2);
+    SQ_PTRS->tostring(vm, -1);
+    SQ_PTRS->getstring(vm, -1, &sqErr);
+    SQ_PTRS->pop(vm, 2);
     return string(sqErr);
 }
 
@@ -569,8 +570,8 @@ public:
             m_RefCount         = copy.m_RefCount;
             m_RefCountRefCount = copy.m_RefCountRefCount;
 
-*m_RefCount         += 1;
-*m_RefCountRefCount += 1;
+            *m_RefCount         += 1;
+            *m_RefCountRefCount += 1;
         }
         else
         {
@@ -597,8 +598,8 @@ public:
             m_RefCount         = copy.m_RefCount;
             m_RefCountRefCount = copy.m_RefCountRefCount;
 
-*m_RefCount         += 1;
-*m_RefCountRefCount += 1;
+            *m_RefCount         += 1;
+            *m_RefCountRefCount += 1;
         }
         else
         {
@@ -625,8 +626,8 @@ public:
             m_RefCount         = copy.m_RefCount;
             m_RefCountRefCount = copy.m_RefCountRefCount;
 
-*m_RefCount         += 1;
-*m_RefCountRefCount += 1;
+            *m_RefCount         += 1;
+            *m_RefCountRefCount += 1;
         }
         else
         {
@@ -660,14 +661,14 @@ public:
             Reset();
 
             if (copy.Get() != NULL)
-{
-    m_Ptr  = copy.Get();
-    m_RefCount         = copy.m_RefCount;
-    m_RefCountRefCount = copy.m_RefCountRefCount;
+            {
+                m_Ptr  = copy.Get();
+                m_RefCount         = copy.m_RefCount;
+                m_RefCountRefCount = copy.m_RefCountRefCount;
 
-    *m_RefCount         += 1;
-    *m_RefCountRefCount += 1;
-}
+                *m_RefCount         += 1;
+                *m_RefCountRefCount += 1;
+            }
         }
 
         return *this;
@@ -694,8 +695,8 @@ public:
             m_RefCount         = copy.m_RefCount;
             m_RefCountRefCount = copy.m_RefCountRefCount;
 
-*m_RefCount         += 1;
-*m_RefCountRefCount += 1;
+            *m_RefCount         += 1;
+            *m_RefCountRefCount += 1;
         }
 
         return *this;
@@ -750,19 +751,19 @@ public:
     {
         if (m_Ptr != NULL)
         {
-*m_RefCount         -= 1;
-*m_RefCountRefCount -= 1;
+            *m_RefCount         -= 1;
+            *m_RefCountRefCount -= 1;
 
             if (*m_RefCount == 0)
-{
-    delete m_Ptr;
-}
+            {
+                delete m_Ptr;
+            }
 
             if (*m_RefCountRefCount == 0)
-{
-    delete m_RefCount;
-    delete m_RefCountRefCount;
-}
+            {
+                delete m_RefCount;
+                delete m_RefCountRefCount;
+            }
 
             m_Ptr  = NULL;
             m_RefCount         = NULL;
@@ -923,7 +924,6 @@ public:
     {
         if(m_Ptr==0){
             std::string x = "script: method/variable inexistent or no return value from function" ;
-            exit_app();
             throw Sqrat::Exception(x);
         }
         return m_Ptr;
@@ -983,7 +983,7 @@ public:
             m_RefCount         = copy.m_RefCount;
             m_RefCountRefCount = copy.m_RefCountRefCount;
 
-*m_RefCountRefCount += 1;
+            *m_RefCountRefCount += 1;
         }
         else
         {
@@ -1010,7 +1010,7 @@ public:
             m_RefCount         = copy.m_RefCount;
             m_RefCountRefCount = copy.m_RefCountRefCount;
 
-*m_RefCountRefCount += 1;
+            *m_RefCountRefCount += 1;
         }
         else
         {
@@ -1037,7 +1037,7 @@ public:
             m_RefCount         = copy.m_RefCount;
             m_RefCountRefCount = copy.m_RefCountRefCount;
 
-*m_RefCountRefCount += 1;
+            *m_RefCountRefCount += 1;
         }
         else
         {
@@ -1071,13 +1071,13 @@ public:
             Reset();
 
             if (copy.m_Ptr != NULL)
-{
-    m_Ptr  = copy.m_Ptr;
-    m_RefCount         = copy.m_RefCount;
-    m_RefCountRefCount = copy.m_RefCountRefCount;
+            {
+                m_Ptr  = copy.m_Ptr;
+                m_RefCount         = copy.m_RefCount;
+                m_RefCountRefCount = copy.m_RefCountRefCount;
 
-    *m_RefCountRefCount += 1;
-}
+                *m_RefCountRefCount += 1;
+            }
         }
 
         return *this;
@@ -1104,7 +1104,7 @@ public:
             m_RefCount         = copy.m_RefCount;
             m_RefCountRefCount = copy.m_RefCountRefCount;
 
-*m_RefCountRefCount += 1;
+            *m_RefCountRefCount += 1;
         }
 
         return *this;
@@ -1131,7 +1131,7 @@ public:
             m_RefCount         = copy.m_RefCount;
             m_RefCountRefCount = copy.m_RefCountRefCount;
 
-*m_RefCountRefCount += 1;
+            *m_RefCountRefCount += 1;
         }
 
         return *this;
@@ -1163,8 +1163,8 @@ public:
             other.m_RefCount         = m_RefCount;
             other.m_RefCountRefCount = m_RefCountRefCount;
 
-*m_RefCount         += 1;
-*m_RefCountRefCount += 1;
+            *m_RefCount         += 1;
+            *m_RefCountRefCount += 1;
         }
         return other;
     }
@@ -1177,13 +1177,13 @@ public:
     {
         if (m_Ptr != NULL)
         {
-*m_RefCountRefCount -= 1;
+            *m_RefCountRefCount -= 1;
 
             if (*m_RefCountRefCount == 0)
-{
-    delete m_RefCount;
-    delete m_RefCountRefCount;
-}
+            {
+                delete m_RefCount;
+                delete m_RefCountRefCount;
+            }
 
             m_Ptr  = NULL;
             m_RefCount         = NULL;

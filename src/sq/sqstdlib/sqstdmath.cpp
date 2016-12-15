@@ -1,17 +1,18 @@
 /* see copyright notice in squirrel.h */
 #include <squirrel.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <sqstdmath.h>
 
-#define SINGLE_ARG_FUNC(_funcname) static SQInteger math_##_funcname(HSQUIRRELVM v){ \
+#define SINGLE_ARG_FUNC(_funcname) static int math_##_funcname(HSKVM v){ \
     SQFloat f; \
     sq_getfloat(v,2,&f); \
     sq_pushfloat(v,(SQFloat)_funcname(f)); \
     return 1; \
 }
 
-#define TWO_ARGS_FUNC(_funcname) static SQInteger math_##_funcname(HSQUIRRELVM v){ \
+#define TWO_ARGS_FUNC(_funcname) static int math_##_funcname(HSKVM v){ \
     SQFloat p1,p2; \
     sq_getfloat(v,2,&p1); \
     sq_getfloat(v,3,&p2); \
@@ -19,26 +20,26 @@
     return 1; \
 }
 
-static SQInteger math_srand(HSQUIRRELVM v)
+static int math_srand(HSKVM v)
 {
-    SQInteger i;
+    int i;
     if(SQ_FAILED(sq_getinteger(v,2,&i)))
         return sq_throwerror(v,_SC("invalid param"));
     srand((unsigned int)i);
     return 0;
 }
 
-static SQInteger math_rand(HSQUIRRELVM v)
+static int math_rand(HSKVM v)
 {
     sq_pushinteger(v,rand());
     return 1;
 }
 
-static SQInteger math_abs(HSQUIRRELVM v)
+static int math_abs(HSKVM v)
 {
-    SQInteger n;
+    int n;
     sq_getinteger(v,2,&n);
-    sq_pushinteger(v,(SQInteger)abs((int)n));
+    sq_pushinteger(v,(int)abs((int)n));
     return 1;
 }
 
@@ -57,6 +58,8 @@ TWO_ARGS_FUNC(pow)
 SINGLE_ARG_FUNC(floor)
 SINGLE_ARG_FUNC(ceil)
 SINGLE_ARG_FUNC(exp)
+// SINGLE_ARG_FUNC(atoi)
+// SINGLE_ARG_FUNC(itoa)
 
 #define _DECL_FUNC(name,nparams,tycheck) {_SC(#name),math_##name,nparams,tycheck}
 static const SQRegFunction mathlib_funcs[] = {
@@ -78,6 +81,8 @@ static const SQRegFunction mathlib_funcs[] = {
     _DECL_FUNC(rand,1,NULL),
     _DECL_FUNC(fabs,2,_SC(".n")),
     _DECL_FUNC(abs,2,_SC(".n")),
+//    _DECL_FUNC(atoi,2,_SC(".s")),
+//    _DECL_FUNC(itoa,2,_SC(".n")),
     {NULL,(SQFUNCTION)0,0,NULL}
 };
 #undef _DECL_FUNC
@@ -86,9 +91,9 @@ static const SQRegFunction mathlib_funcs[] = {
 #define M_PI (3.14159265358979323846)
 #endif
 
-SQRESULT sqstd_register_mathlib(HSQUIRRELVM v)
+SQRESULT sqstd_register_mathlib(HSKVM v)
 {
-    SQInteger i=0;
+    int i=0;
     while(mathlib_funcs[i].name!=0) {
         sq_pushstring(v,mathlib_funcs[i].name,-1);
         sq_newclosure(v,mathlib_funcs[i].f,0);

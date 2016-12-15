@@ -13,7 +13,7 @@
 #include <stdarg.h>
 #include <ctype.h>
 
-static bool str2num(const SQChar *s,SQObjectPtr &res,SQInteger base)
+static bool str2num(const SQChar *s,SQObjectPtr &res,int base)
 {
     SQChar *end;
     const SQChar *e = s;
@@ -34,45 +34,45 @@ static bool str2num(const SQChar *s,SQObjectPtr &res,SQInteger base)
         res = r;
     }
     else{
-        SQInteger r = SQInteger(scstrtol(s,&end,(int)base));
+        int r = int(scstrtol(s,&end,(int)base));
         if(s == end) return false;
         res = r;
     }
     return true;
 }
 
-static SQInteger base_dummy(HSQUIRRELVM SQ_UNUSED_ARG(v))
+static int base_dummy(HSKVM SQ_UNUSED_ARG(v))
 {
     return 0;
 }
 
 #ifndef NO_GARBAGE_COLLECTOR
-static SQInteger base_collectgarbage(HSQUIRRELVM v)
+static int base_collectgarbage(HSKVM v)
 {
     sq_pushinteger(v, sq_collectgarbage(v));
     return 1;
 }
-static SQInteger base_resurectureachable(HSQUIRRELVM v)
+static int base_resurectureachable(HSKVM v)
 {
     sq_resurrectunreachable(v);
     return 1;
 }
 #endif
 
-static SQInteger base_getroottable(HSQUIRRELVM v)
+static int base_getroottable(HSKVM v)
 {
     v->Push(v->_roottable);
     return 1;
 }
 
-static SQInteger base_getconsttable(HSQUIRRELVM v)
+static int base_getconsttable(HSKVM v)
 {
     v->Push(_ss(v)->_consts);
     return 1;
 }
 
 
-static SQInteger base_setroottable(HSQUIRRELVM v)
+static int base_setroottable(HSKVM v)
 {
     SQObjectPtr o = v->_roottable;
     if(SQ_FAILED(sq_setroottable(v))) return SQ_ERROR;
@@ -80,7 +80,7 @@ static SQInteger base_setroottable(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger base_setconsttable(HSQUIRRELVM v)
+static int base_setconsttable(HSKVM v)
 {
     SQObjectPtr o = _ss(v)->_consts;
     if(SQ_FAILED(sq_setconsttable(v))) return SQ_ERROR;
@@ -88,19 +88,19 @@ static SQInteger base_setconsttable(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger base_seterrorhandler(HSQUIRRELVM v)
+static int base_seterrorhandler(HSKVM v)
 {
     sq_seterrorhandler(v);
     return 0;
 }
 
-static SQInteger base_setdebughook(HSQUIRRELVM v)
+static int base_setdebughook(HSKVM v)
 {
     sq_setdebughook(v);
     return 0;
 }
 
-static SQInteger base_enabledebuginfo(HSQUIRRELVM v)
+static int base_enabledebuginfo(HSKVM v)
 {
     SQObjectPtr &o=stack_get(v,2);
 
@@ -108,10 +108,10 @@ static SQInteger base_enabledebuginfo(HSQUIRRELVM v)
     return 0;
 }
 
-static SQInteger __getcallstackinfos(HSQUIRRELVM v,SQInteger level)
+static int __getcallstackinfos(HSKVM v,int level)
 {
     SQStackInfos si;
-    SQInteger seq = 0;
+    int seq = 0;
     const SQChar *name = NULL;
 
     if (SQ_SUCCEEDED(sq_stackinfos(v, level, &si)))
@@ -146,17 +146,17 @@ static SQInteger __getcallstackinfos(HSQUIRRELVM v,SQInteger level)
 
     return 0;
 }
-static SQInteger base_getstackinfos(HSQUIRRELVM v)
+static int base_getstackinfos(HSKVM v)
 {
-    SQInteger level;
+    int level;
     sq_getinteger(v, -1, &level);
     return __getcallstackinfos(v,level);
 }
 
-static SQInteger base_assert(HSQUIRRELVM v)
+static int base_assert(HSKVM v)
 {
     if(SQVM::IsFalse(stack_get(v,2))){
-        SQInteger top = sq_gettop(v);
+        int top = sq_gettop(v);
         if (top>2 && SQ_SUCCEEDED(sq_tostring(v,3))) {
             const SQChar *str = 0;
             if (SQ_SUCCEEDED(sq_getstring(v,-1,&str))) {
@@ -168,9 +168,9 @@ static SQInteger base_assert(HSQUIRRELVM v)
     return 0;
 }
 
-static SQInteger get_slice_params(HSQUIRRELVM v,SQInteger &sidx,SQInteger &eidx,SQObjectPtr &o)
+static int get_slice_params(HSKVM v,int &sidx,int &eidx,SQObjectPtr &o)
 {
-    SQInteger top = sq_gettop(v);
+    int top = sq_gettop(v);
     sidx=0;
     eidx=0;
     o=stack_get(v,1);
@@ -192,7 +192,7 @@ static SQInteger get_slice_params(HSQUIRRELVM v,SQInteger &sidx,SQInteger &eidx,
     return 1;
 }
 
-static SQInteger base_print(HSQUIRRELVM v)
+static int base_print(HSKVM v)
 {
     const SQChar *str;
     if(SQ_SUCCEEDED(sq_tostring(v,2)))
@@ -205,7 +205,7 @@ static SQInteger base_print(HSQUIRRELVM v)
     return SQ_ERROR;
 }
 
-static SQInteger base_error(HSQUIRRELVM v)
+static int base_error(HSKVM v)
 {
     const SQChar *str;
     if(SQ_SUCCEEDED(sq_tostring(v,2)))
@@ -218,11 +218,11 @@ static SQInteger base_error(HSQUIRRELVM v)
     return SQ_ERROR;
 }
 
-static SQInteger base_compilestring(HSQUIRRELVM v)
+static int base_compilestring(HSKVM v)
 {
-    SQInteger nargs=sq_gettop(v);
+    int nargs=sq_gettop(v);
     const SQChar *src=NULL,*name=_SC("unnamedbuffer");
-    SQInteger size;
+    int size;
     sq_getstring(v,2,&src);
     size=sq_getsize(v,2);
     if(nargs>2){
@@ -234,21 +234,21 @@ static SQInteger base_compilestring(HSQUIRRELVM v)
         return SQ_ERROR;
 }
 
-static SQInteger base_newthread(HSQUIRRELVM v)
+static int base_newthread(HSKVM v)
 {
     SQObjectPtr &func = stack_get(v,2);
-    SQInteger stksize = (_closure(func)->_function->_stacksize << 1) +2;
-    HSQUIRRELVM newv = sq_newthread(v, (stksize < MIN_STACK_OVERHEAD + 2)? MIN_STACK_OVERHEAD + 2 : stksize);
+    int stksize = (_closure(func)->_function->_stacksize << 1) +2;
+    HSKVM newv = sq_newthread(v, (stksize < MIN_STACK_OVERHEAD + 2)? MIN_STACK_OVERHEAD + 2 : stksize);
     sq_move(newv,v,-2);
     return 1;
 }
 
-static SQInteger base_suspend(HSQUIRRELVM v)
+static int base_suspend(HSKVM v)
 {
     return sq_suspendvm(v);
 }
 
-static SQInteger base_array(HSQUIRRELVM v)
+static int base_array(HSKVM v)
 {
     SQArray *a;
     SQObject &size = stack_get(v,2);
@@ -263,14 +263,14 @@ static SQInteger base_array(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger base_type(HSQUIRRELVM v)
+static int base_type(HSKVM v)
 {
     SQObjectPtr &o = stack_get(v,2);
     v->Push(SQString::Create(_ss(v),GetTypeName(o),-1));
     return 1;
 }
 
-static SQInteger base_callee(HSQUIRRELVM v)
+static int base_callee(HSKVM v)
 {
     if(v->_callsstacksize > 1)
     {
@@ -307,9 +307,9 @@ static const SQRegFunction base_funcs[]={
     {NULL,(SQFUNCTION)0,0,NULL}
 };
 
-void sq_base_register(HSQUIRRELVM v)
+void sq_base_register(HSKVM v)
 {
-    SQInteger i=0;
+    int i=0;
     sq_pushroottable(v);
     while(base_funcs[i].name!=0) {
         sq_pushstring(v,base_funcs[i].name,-1);
@@ -330,7 +330,7 @@ void sq_base_register(HSQUIRRELVM v)
     sq_pushinteger(v,sizeof(SQChar));
     sq_newslot(v,-3, SQFalse);
     sq_pushstring(v,_SC("_intsize_"),-1);
-    sq_pushinteger(v,sizeof(SQInteger));
+    sq_pushinteger(v,sizeof(int));
     sq_newslot(v,-3, SQFalse);
     sq_pushstring(v,_SC("_floatsize_"),-1);
     sq_pushinteger(v,sizeof(SQFloat));
@@ -338,13 +338,13 @@ void sq_base_register(HSQUIRRELVM v)
     sq_pop(v,1);
 }
 
-static SQInteger default_delegate_len(HSQUIRRELVM v)
+static int default_delegate_len(HSKVM v)
 {
-    v->Push(SQInteger(sq_getsize(v,1)));
+    v->Push(int(sq_getsize(v,1)));
     return 1;
 }
 
-static SQInteger default_delegate_tofloat(HSQUIRRELVM v)
+static int default_delegate_tofloat(HSKVM v)
 {
     SQObjectPtr &o=stack_get(v,1);
     switch(sq_type(o)){
@@ -369,10 +369,10 @@ static SQInteger default_delegate_tofloat(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger default_delegate_tointeger(HSQUIRRELVM v)
+static int default_delegate_tointeger(HSKVM v)
 {
     SQObjectPtr &o=stack_get(v,1);
-    SQInteger base = 10;
+    int base = 10;
     if(sq_gettop(v) > 1) {
         sq_getinteger(v,2,&base);
     }
@@ -389,7 +389,7 @@ static SQInteger default_delegate_tointeger(HSQUIRRELVM v)
         v->Push(SQObjectPtr(tointeger(o)));
         break;
     case OT_BOOL:
-        v->Push(SQObjectPtr(_integer(o)?(SQInteger)1:(SQInteger)0));
+        v->Push(SQObjectPtr(_integer(o)?(int)1:(int)0));
         break;
     default:
         v->PushNull();
@@ -398,26 +398,26 @@ static SQInteger default_delegate_tointeger(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger default_delegate_tostring(HSQUIRRELVM v)
+static int default_delegate_tostring(HSKVM v)
 {
     if(SQ_FAILED(sq_tostring(v,1)))
         return SQ_ERROR;
     return 1;
 }
 
-static SQInteger obj_delegate_weakref(HSQUIRRELVM v)
+static int obj_delegate_weakref(HSKVM v)
 {
     sq_weakref(v,1);
     return 1;
 }
 
-static SQInteger obj_clear(HSQUIRRELVM v)
+static int obj_clear(HSKVM v)
 {
     return SQ_SUCCEEDED(sq_clear(v,-1)) ? 1 : SQ_ERROR;
 }
 
 
-static SQInteger number_delegate_tochar(HSQUIRRELVM v)
+static int number_delegate_tochar(HSKVM v)
 {
     SQObject &o=stack_get(v,1);
     SQChar c = (SQChar)tointeger(o);
@@ -430,7 +430,7 @@ static SQInteger number_delegate_tochar(HSQUIRRELVM v)
 /////////////////////////////////////////////////////////////////
 //TABLE DEFAULT DELEGATE
 
-static SQInteger table_rawdelete(HSQUIRRELVM v)
+static int table_rawdelete(HSKVM v)
 {
     if(SQ_FAILED(sq_rawdeleteslot(v,1,SQTrue)))
         return SQ_ERROR;
@@ -438,7 +438,7 @@ static SQInteger table_rawdelete(HSQUIRRELVM v)
 }
 
 
-static SQInteger container_rawexists(HSQUIRRELVM v)
+static int container_rawexists(HSKVM v)
 {
     if(SQ_SUCCEEDED(sq_rawget(v,-2))) {
         sq_pushbool(v,SQTrue);
@@ -448,18 +448,18 @@ static SQInteger container_rawexists(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger container_rawset(HSQUIRRELVM v)
+static int container_rawset(HSKVM v)
 {
     return SQ_SUCCEEDED(sq_rawset(v,-3)) ? 1 : SQ_ERROR;
 }
 
 
-static SQInteger container_rawget(HSQUIRRELVM v)
+static int container_rawget(HSKVM v)
 {
     return SQ_SUCCEEDED(sq_rawget(v,-2))?1:SQ_ERROR;
 }
 
-static SQInteger table_setdelegate(HSQUIRRELVM v)
+static int table_setdelegate(HSKVM v)
 {
     if(SQ_FAILED(sq_setdelegate(v,-2)))
         return SQ_ERROR;
@@ -467,21 +467,21 @@ static SQInteger table_setdelegate(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger table_getdelegate(HSQUIRRELVM v)
+static int table_getdelegate(HSKVM v)
 {
     return SQ_SUCCEEDED(sq_getdelegate(v,-1))?1:SQ_ERROR;
 }
 
-static SQInteger table_filter(HSQUIRRELVM v)
+static int table_filter(HSKVM v)
 {
     SQObject &o = stack_get(v,1);
     SQTable *tbl = _table(o);
     SQObjectPtr ret = SQTable::Create(_ss(v),0);
 
     SQObjectPtr itr, key, val;
-    SQInteger nitr;
+    int nitr;
     while((nitr = tbl->Next(false, itr, key, val)) != -1) {
-        itr = (SQInteger)nitr;
+        itr = (int)nitr;
 
         v->Push(o);
         v->Push(key);
@@ -499,19 +499,19 @@ static SQInteger table_filter(HSQUIRRELVM v)
     return 1;
 }
 
-#define TABLE_TO_ARRAY_FUNC(_funcname_,_valname_) static SQInteger _funcname_(HSQUIRRELVM v) \
+#define TABLE_TO_ARRAY_FUNC(_funcname_,_valname_) static int _funcname_(HSKVM v) \
 { \
 	SQObject &o = stack_get(v, 1); \
 	SQTable *t = _table(o); \
 	SQObjectPtr itr, key, val; \
 	SQObjectPtr _null; \
-	SQInteger nitr, n = 0; \
-	SQInteger nitems = t->CountUsed(); \
+	int nitr, n = 0; \
+	int nitems = t->CountUsed(); \
 	SQArray *a = SQArray::Create(_ss(v), nitems); \
 	a->Resize(nitems, _null); \
 	if (nitems) { \
 		while ((nitr = t->Next(false, itr, key, val)) != -1) { \
-			itr = (SQInteger)nitr; \
+			itr = (int)nitr; \
 			a->Set(n, _valname_); \
 			n++; \
 		} \
@@ -526,6 +526,7 @@ TABLE_TO_ARRAY_FUNC(table_values, val)
 
 const SQRegFunction SQSharedState::_table_default_delegate_funcz[]={
     {_SC("len"),default_delegate_len,1, _SC("t")},
+    {_SC("size"),default_delegate_len,1, _SC("t")},
     {_SC("rawget"),container_rawget,2, _SC("t")},
     {_SC("rawset"),container_rawset,3, _SC("t")},
     {_SC("rawdelete"),table_rawdelete,2, _SC("t")},
@@ -543,29 +544,29 @@ const SQRegFunction SQSharedState::_table_default_delegate_funcz[]={
 
 //ARRAY DEFAULT DELEGATE///////////////////////////////////////
 
-static SQInteger array_append(HSQUIRRELVM v)
+static int array_append(HSKVM v)
 {
     return SQ_SUCCEEDED(sq_arrayappend(v,-2)) ? 1 : SQ_ERROR;
 }
 
-static SQInteger array_extend(HSQUIRRELVM v)
+static int array_extend(HSKVM v)
 {
     _array(stack_get(v,1))->Extend(_array(stack_get(v,2)));
     sq_pop(v,1);
     return 1;
 }
 
-static SQInteger array_reverse(HSQUIRRELVM v)
+static int array_reverse(HSKVM v)
 {
     return SQ_SUCCEEDED(sq_arrayreverse(v,-1)) ? 1 : SQ_ERROR;
 }
 
-static SQInteger array_pop(HSQUIRRELVM v)
+static int array_pop(HSKVM v)
 {
     return SQ_SUCCEEDED(sq_arraypop(v,1,SQTrue))?1:SQ_ERROR;
 }
 
-static SQInteger array_top(HSQUIRRELVM v)
+static int array_top(HSKVM v)
 {
     SQObject &o=stack_get(v,1);
     if(_array(o)->Size()>0){
@@ -575,7 +576,7 @@ static SQInteger array_top(HSQUIRRELVM v)
     else return sq_throwerror(v,_SC("top() on a empty array"));
 }
 
-static SQInteger array_insert(HSQUIRRELVM v)
+static int array_insert(HSKVM v)
 {
     SQObject &o=stack_get(v,1);
     SQObject &idx=stack_get(v,2);
@@ -586,7 +587,7 @@ static SQInteger array_insert(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger array_remove(HSQUIRRELVM v)
+static int array_remove(HSKVM v)
 {
     SQObject &o = stack_get(v, 1);
     SQObject &idx = stack_get(v, 2);
@@ -600,13 +601,13 @@ static SQInteger array_remove(HSQUIRRELVM v)
     return sq_throwerror(v, _SC("idx out of range"));
 }
 
-static SQInteger array_resize(HSQUIRRELVM v)
+static int array_resize(HSKVM v)
 {
     SQObject &o = stack_get(v, 1);
     SQObject &nsize = stack_get(v, 2);
     SQObjectPtr fill;
     if(sq_isnumeric(nsize)) {
-        SQInteger sz = tointeger(nsize);
+        int sz = tointeger(nsize);
         if (sz<0)
           return sq_throwerror(v, _SC("resizing to negative length"));
 
@@ -619,25 +620,25 @@ static SQInteger array_resize(HSQUIRRELVM v)
     return sq_throwerror(v, _SC("size must be a number"));
 }
 
-static SQInteger __map_array(SQArray *dest,SQArray *src,HSQUIRRELVM v) {
+static int __map_array(SQArray *dest,SQArray *src,HSKVM v) {
     SQObjectPtr temp;
-    SQInteger size = src->Size();
+    int size = src->Size();
     SQObject &closure = stack_get(v, 2);
     v->Push(closure);
 
-    SQInteger nArgs=0;
+    int nArgs=0;
     if(sq_type(closure) == OT_CLOSURE) {
         nArgs = _closure(closure)->_function->_nparameters;
     }
     else if (sq_type(closure) == OT_NATIVECLOSURE) {
-        SQInteger nParamsCheck = _nativeclosure(closure)->_nparamscheck;
+        int nParamsCheck = _nativeclosure(closure)->_nparamscheck;
         if (nParamsCheck > 0)
             nArgs = nParamsCheck;
         else // push all params when there is no check or only minimal count set
             nArgs = 4;
     }
 
-    for(SQInteger n = 0; n < size; n++) {
+    for(int n = 0; n < size; n++) {
         src->Get(n,temp);
         v->Push(src);
         v->Push(temp);
@@ -655,10 +656,10 @@ static SQInteger __map_array(SQArray *dest,SQArray *src,HSQUIRRELVM v) {
     return 0;
 }
 
-static SQInteger array_map(HSQUIRRELVM v)
+static int array_map(HSKVM v)
 {
     SQObject &o = stack_get(v,1);
-    SQInteger size = _array(o)->Size();
+    int size = _array(o)->Size();
     SQObjectPtr ret = SQArray::Create(_ss(v),size);
     if(SQ_FAILED(__map_array(_array(ret),_array(o),v)))
         return SQ_ERROR;
@@ -666,7 +667,7 @@ static SQInteger array_map(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger array_apply(HSQUIRRELVM v)
+static int array_apply(HSKVM v)
 {
     SQObject &o = stack_get(v,1);
     if(SQ_FAILED(__map_array(_array(o),_array(o),v)))
@@ -675,13 +676,13 @@ static SQInteger array_apply(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger array_reduce(HSQUIRRELVM v)
+static int array_reduce(HSKVM v)
 {
     SQObject &o = stack_get(v,1);
     SQArray *a = _array(o);
-    SQInteger size = a->Size();
+    int size = a->Size();
     SQObjectPtr res;
-    SQInteger iterStart;
+    int iterStart;
     if (sq_gettop(v)>2) {
         res = stack_get(v,3);
         iterStart = 0;
@@ -694,7 +695,7 @@ static SQInteger array_reduce(HSQUIRRELVM v)
     if (size > iterStart) {
         SQObjectPtr other;
         v->Push(stack_get(v,2));
-        for (SQInteger n = iterStart; n < size; n++) {
+        for (int n = iterStart; n < size; n++) {
             a->Get(n,other);
             v->Push(o);
             v->Push(res);
@@ -711,14 +712,14 @@ static SQInteger array_reduce(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger array_filter(HSQUIRRELVM v)
+static int array_filter(HSKVM v)
 {
     SQObject &o = stack_get(v,1);
     SQArray *a = _array(o);
     SQObjectPtr ret = SQArray::Create(_ss(v),0);
-    SQInteger size = a->Size();
+    int size = a->Size();
     SQObjectPtr val;
-    for(SQInteger n = 0; n < size; n++) {
+    for(int n = 0; n < size; n++) {
         a->Get(n,val);
         v->Push(o);
         v->Push(n);
@@ -735,14 +736,14 @@ static SQInteger array_filter(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger array_find(HSQUIRRELVM v)
+static int array_find(HSKVM v)
 {
     SQObject &o = stack_get(v,1);
     SQObjectPtr &val = stack_get(v,2);
     SQArray *a = _array(o);
-    SQInteger size = a->Size();
+    int size = a->Size();
     SQObjectPtr temp;
-    for(SQInteger n = 0; n < size; n++) {
+    for(int n = 0; n < size; n++) {
         bool res = false;
         a->Get(n,temp);
         if(SQVM::IsEqual(temp,val,res) && res) {
@@ -754,13 +755,13 @@ static SQInteger array_find(HSQUIRRELVM v)
 }
 
 
-static bool _sort_compare(HSQUIRRELVM v,SQObjectPtr &a,SQObjectPtr &b,SQInteger func,SQInteger &ret)
+static bool _sort_compare(HSKVM v,SQObjectPtr &a,SQObjectPtr &b,int func,int &ret)
 {
     if(func < 0) {
         if(!v->ObjCmp(a,b,ret)) return false;
     }
     else {
-        SQInteger top = sq_gettop(v);
+        int top = sq_gettop(v);
         sq_push(v, func);
         sq_pushroottable(v);
         v->Push(a);
@@ -780,12 +781,12 @@ static bool _sort_compare(HSQUIRRELVM v,SQObjectPtr &a,SQObjectPtr &b,SQInteger 
     return true;
 }
 
-static bool _hsort_sift_down(HSQUIRRELVM v,SQArray *arr, SQInteger root, SQInteger bottom, SQInteger func)
+static bool _hsort_sift_down(HSKVM v,SQArray *arr, int root, int bottom, int func)
 {
-    SQInteger maxChild;
-    SQInteger done = 0;
-    SQInteger ret;
-    SQInteger root2;
+    int maxChild;
+    int done = 0;
+    int ret;
+    int root2;
     while (((root2 = root * 2) <= bottom) && (!done))
     {
         if (root2 == bottom) {
@@ -820,11 +821,11 @@ static bool _hsort_sift_down(HSQUIRRELVM v,SQArray *arr, SQInteger root, SQInteg
     return true;
 }
 
-static bool _hsort(HSQUIRRELVM v,SQObjectPtr &arr, SQInteger SQ_UNUSED_ARG(l), SQInteger SQ_UNUSED_ARG(r),SQInteger func)
+static bool _hsort(HSKVM v,SQObjectPtr &arr, int SQ_UNUSED_ARG(l), int SQ_UNUSED_ARG(r),int func)
 {
     SQArray *a = _array(arr);
-    SQInteger i;
-    SQInteger array_size = a->Size();
+    int i;
+    int array_size = a->Size();
     for (i = (array_size / 2); i >= 0; i--) {
         if(!_hsort_sift_down(v,a, i, array_size - 1,func)) return false;
     }
@@ -837,9 +838,9 @@ static bool _hsort(HSQUIRRELVM v,SQObjectPtr &arr, SQInteger SQ_UNUSED_ARG(l), S
     return true;
 }
 
-static SQInteger array_sort(HSQUIRRELVM v)
+static int array_sort(HSKVM v)
 {
-    SQInteger func = -1;
+    int func = -1;
     SQObjectPtr &o = stack_get(v,1);
     if(_array(o)->Size() > 1) {
         if(sq_gettop(v) == 2) func = 2;
@@ -851,20 +852,20 @@ static SQInteger array_sort(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger array_slice(HSQUIRRELVM v)
+static int array_slice(HSKVM v)
 {
-    SQInteger sidx,eidx;
+    int sidx,eidx;
     SQObjectPtr o;
     if(get_slice_params(v,sidx,eidx,o)==-1)return -1;
-    SQInteger alen = _array(o)->Size();
+    int alen = _array(o)->Size();
     if(sidx < 0)sidx = alen + sidx;
     if(eidx < 0)eidx = alen + eidx;
     if(eidx < sidx)return sq_throwerror(v,_SC("wrong indexes"));
     if(eidx > alen || sidx < 0)return sq_throwerror(v, _SC("slice out of range"));
     SQArray *arr=SQArray::Create(_ss(v),eidx-sidx);
     SQObjectPtr t;
-    SQInteger count=0;
-    for(SQInteger i=sidx;i<eidx;i++){
+    int count=0;
+    for(int i=sidx;i<eidx;i++){
         _array(o)->Get(i,t);
         arr->Set(count++,t);
     }
@@ -875,6 +876,7 @@ static SQInteger array_slice(HSQUIRRELVM v)
 
 const SQRegFunction SQSharedState::_array_default_delegate_funcz[]={
     {_SC("len"),default_delegate_len,1, _SC("a")},
+    {_SC("size"),default_delegate_len,1, _SC("a")},
     {_SC("append"),array_append,2, _SC("a")},
     {_SC("extend"),array_extend,2, _SC("aa")},
     {_SC("push"),array_append,2, _SC("a")},
@@ -886,6 +888,7 @@ const SQRegFunction SQSharedState::_array_default_delegate_funcz[]={
     {_SC("reverse"),array_reverse,1, _SC("a")},
     {_SC("sort"),array_sort,-1, _SC("ac")},
     {_SC("slice"),array_slice,-1, _SC("ann")},
+    {_SC("split"),array_slice,-1, _SC("ann")},
     {_SC("weakref"),obj_delegate_weakref,1, NULL },
     {_SC("tostring"),default_delegate_tostring,1, _SC(".")},
     {_SC("clear"),obj_clear,1, _SC(".")},
@@ -898,12 +901,12 @@ const SQRegFunction SQSharedState::_array_default_delegate_funcz[]={
 };
 
 //STRING DEFAULT DELEGATE//////////////////////////
-static SQInteger string_slice(HSQUIRRELVM v)
+static int string_slice(HSKVM v)
 {
-    SQInteger sidx,eidx;
+    int sidx,eidx;
     SQObjectPtr o;
     if(SQ_FAILED(get_slice_params(v,sidx,eidx,o)))return -1;
-    SQInteger slen = _string(o)->_len;
+    int slen = _string(o)->_len;
     if(sidx < 0)sidx = slen + sidx;
     if(eidx < 0)eidx = slen + eidx;
     if(eidx < sidx) return sq_throwerror(v,_SC("wrong indexes"));
@@ -912,16 +915,16 @@ static SQInteger string_slice(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger string_find(HSQUIRRELVM v)
+static int string_find(HSKVM v)
 {
-    SQInteger top,start_idx=0;
+    int top,start_idx=0;
     const SQChar *str,*substr,*ret;
     if(((top=sq_gettop(v))>1) && SQ_SUCCEEDED(sq_getstring(v,1,&str)) && SQ_SUCCEEDED(sq_getstring(v,2,&substr))){
         if(top>2)sq_getinteger(v,3,&start_idx);
         if((sq_getsize(v,1)>start_idx) && (start_idx>=0)){
             ret=scstrstr(&str[start_idx],substr);
             if(ret){
-                sq_pushinteger(v,(SQInteger)(ret-str));
+                sq_pushinteger(v,(int)(ret-str));
                 return 1;
             }
         }
@@ -930,21 +933,21 @@ static SQInteger string_find(HSQUIRRELVM v)
     return sq_throwerror(v,_SC("invalid param"));
 }
 
-#define STRING_TOFUNCZ(func) static SQInteger string_##func(HSQUIRRELVM v) \
+#define STRING_TOFUNCZ(func) static int string_##func(HSKVM v) \
 {\
-    SQInteger sidx,eidx; \
+    int sidx,eidx; \
     SQObjectPtr str; \
     if(SQ_FAILED(get_slice_params(v,sidx,eidx,str)))return -1; \
-    SQInteger slen = _string(str)->_len; \
+    int slen = _string(str)->_len; \
     if(sidx < 0)sidx = slen + sidx; \
     if(eidx < 0)eidx = slen + eidx; \
     if(eidx < sidx) return sq_throwerror(v,_SC("wrong indexes")); \
     if(eidx > slen || sidx < 0) return sq_throwerror(v,_SC("slice out of range")); \
-    SQInteger len=_string(str)->_len; \
+    int len=_string(str)->_len; \
     const SQChar *sthis=_stringval(str); \
     SQChar *snew=(_ss(v)->GetScratchPad(sq_rsl(len))); \
     memcpy(snew,sthis,sq_rsl(len));\
-    for(SQInteger i=sidx;i<eidx;i++) snew[i] = func(sthis[i]); \
+    for(int i=sidx;i<eidx;i++) snew[i] = func(sthis[i]); \
     v->Push(SQString::Create(_ss(v),snew,len)); \
     return 1; \
 }
@@ -955,10 +958,12 @@ STRING_TOFUNCZ(toupper)
 
 const SQRegFunction SQSharedState::_string_default_delegate_funcz[]={
     {_SC("len"),default_delegate_len,1, _SC("s")},
+    {_SC("size"),default_delegate_len,1, _SC("s")},
     {_SC("tointeger"),default_delegate_tointeger,-1, _SC("sn")},
     {_SC("tofloat"),default_delegate_tofloat,1, _SC("s")},
     {_SC("tostring"),default_delegate_tostring,1, _SC(".")},
     {_SC("slice"),string_slice,-1, _SC("s n  n")},
+    {_SC("split"),string_slice,-1, _SC("s n  n")},
     {_SC("find"),string_find,-2, _SC("s s n")},
     {_SC("tolower"),string_tolower,-1, _SC("s n n")},
     {_SC("toupper"),string_toupper,-1, _SC("s n n")},
@@ -977,12 +982,12 @@ const SQRegFunction SQSharedState::_number_default_delegate_funcz[]={
 };
 
 //CLOSURE DEFAULT DELEGATE//////////////////////////
-static SQInteger closure_pcall(HSQUIRRELVM v)
+static int closure_pcall(HSKVM v)
 {
     return SQ_SUCCEEDED(sq_call(v,sq_gettop(v)-1,SQTrue,SQFalse))?1:SQ_ERROR;
 }
 
-static SQInteger closure_call(HSQUIRRELVM v)
+static int closure_call(HSKVM v)
 {
 	SQObjectPtr &c = stack_get(v, -1);
 	if (sq_type(c) == OT_CLOSURE && (_closure(c)->_function->_bgenerator == false))
@@ -992,59 +997,59 @@ static SQInteger closure_call(HSQUIRRELVM v)
 	return SQ_SUCCEEDED(sq_call(v, sq_gettop(v) - 1, SQTrue, SQTrue)) ? 1 : SQ_ERROR;
 }
 
-static SQInteger _closure_acall(HSQUIRRELVM v,SQBool raiseerror)
+static int _closure_acall(HSKVM v,bool raiseerror)
 {
     SQArray *aparams=_array(stack_get(v,2));
-    SQInteger nparams=aparams->Size();
+    int nparams=aparams->Size();
     v->Push(stack_get(v,1));
-    for(SQInteger i=0;i<nparams;i++)v->Push(aparams->_values[i]);
+    for(int i=0;i<nparams;i++)v->Push(aparams->_values[i]);
     return SQ_SUCCEEDED(sq_call(v,nparams,SQTrue,raiseerror))?1:SQ_ERROR;
 }
 
-static SQInteger closure_acall(HSQUIRRELVM v)
+static int closure_acall(HSKVM v)
 {
     return _closure_acall(v,SQTrue);
 }
 
-static SQInteger closure_pacall(HSQUIRRELVM v)
+static int closure_pacall(HSKVM v)
 {
     return _closure_acall(v,SQFalse);
 }
 
-static SQInteger closure_bindenv(HSQUIRRELVM v)
+static int closure_bindenv(HSKVM v)
 {
     if(SQ_FAILED(sq_bindenv(v,1)))
         return SQ_ERROR;
     return 1;
 }
 
-static SQInteger closure_getroot(HSQUIRRELVM v)
+static int closure_getroot(HSKVM v)
 {
     if(SQ_FAILED(sq_getclosureroot(v,-1)))
         return SQ_ERROR;
     return 1;
 }
 
-static SQInteger closure_setroot(HSQUIRRELVM v)
+static int closure_setroot(HSKVM v)
 {
     if(SQ_FAILED(sq_setclosureroot(v,-2)))
         return SQ_ERROR;
     return 1;
 }
 
-static SQInteger closure_getinfos(HSQUIRRELVM v) {
+static int closure_getinfos(HSKVM v) {
     SQObject o = stack_get(v,1);
     SQTable *res = SQTable::Create(_ss(v),4);
     if(sq_type(o) == OT_CLOSURE) {
         SQFunctionProto *f = _closure(o)->_function;
-        SQInteger nparams = f->_nparameters + (f->_varparams?1:0);
+        int nparams = f->_nparameters + (f->_varparams?1:0);
         SQObjectPtr params = SQArray::Create(_ss(v),nparams);
     SQObjectPtr defparams = SQArray::Create(_ss(v),f->_ndefaultparams);
-        for(SQInteger n = 0; n<f->_nparameters; n++) {
-            _array(params)->Set((SQInteger)n,f->_parameters[n]);
+        for(int n = 0; n<f->_nparameters; n++) {
+            _array(params)->Set((int)n,f->_parameters[n]);
         }
-    for(SQInteger j = 0; j<f->_ndefaultparams; j++) {
-            _array(defparams)->Set((SQInteger)j,_closure(o)->_defaultparams[j]);
+    for(int j = 0; j<f->_ndefaultparams; j++) {
+            _array(defparams)->Set((int)j,_closure(o)->_defaultparams[j]);
         }
         if(f->_varparams) {
             _array(params)->Set(nparams-1,SQString::Create(_ss(v),_SC("..."),-1));
@@ -1065,8 +1070,8 @@ static SQInteger closure_getinfos(HSQUIRRELVM v) {
         if(nc->_typecheck.size() > 0) {
             typecheck =
                 SQArray::Create(_ss(v), nc->_typecheck.size());
-            for(SQUnsignedInteger n = 0; n<nc->_typecheck.size(); n++) {
-                    _array(typecheck)->Set((SQInteger)n,nc->_typecheck[n]);
+            for(size_t n = 0; n<nc->_typecheck.size(); n++) {
+                    _array(typecheck)->Set((int)n,nc->_typecheck[n]);
             }
         }
         res->NewSlot(SQString::Create(_ss(v),_SC("typecheck"),-1),typecheck);
@@ -1092,7 +1097,7 @@ const SQRegFunction SQSharedState::_closure_default_delegate_funcz[]={
 };
 
 //GENERATOR DEFAULT DELEGATE
-static SQInteger generator_getstatus(HSQUIRRELVM v)
+static int generator_getstatus(HSKVM v)
 {
     SQObject &o=stack_get(v,1);
     switch(_generator(o)->_state){
@@ -1111,13 +1116,13 @@ const SQRegFunction SQSharedState::_generator_default_delegate_funcz[]={
 };
 
 //THREAD DEFAULT DELEGATE
-static SQInteger thread_call(HSQUIRRELVM v)
+static int thread_call(HSKVM v)
 {
     SQObjectPtr o = stack_get(v,1);
     if(sq_type(o) == OT_THREAD) {
-        SQInteger nparams = sq_gettop(v);
+        int nparams = sq_gettop(v);
         _thread(o)->Push(_thread(o)->_roottable);
-        for(SQInteger i = 2; i<(nparams+1); i++)
+        for(int i = 2; i<(nparams+1); i++)
             sq_move(_thread(o),v,i);
         if(SQ_SUCCEEDED(sq_call(_thread(o),nparams,SQTrue,SQTrue))) {
             sq_move(v,_thread(o),-1);
@@ -1130,12 +1135,12 @@ static SQInteger thread_call(HSQUIRRELVM v)
     return sq_throwerror(v,_SC("wrong parameter"));
 }
 
-static SQInteger thread_wakeup(HSQUIRRELVM v)
+static int thread_wakeup(HSKVM v)
 {
     SQObjectPtr o = stack_get(v,1);
     if(sq_type(o) == OT_THREAD) {
         SQVM *thread = _thread(o);
-        SQInteger state = sq_getvmstate(thread);
+        int state = sq_getvmstate(thread);
         if(state != SQ_VMSTATE_SUSPENDED) {
             switch(state) {
                 case SQ_VMSTATE_IDLE:
@@ -1147,7 +1152,7 @@ static SQInteger thread_wakeup(HSQUIRRELVM v)
             }
         }
 
-        SQInteger wakeupret = sq_gettop(v)>1?SQTrue:SQFalse;
+        int wakeupret = sq_gettop(v)>1?SQTrue:SQFalse;
         if(wakeupret) {
             sq_move(thread,v,2);
         }
@@ -1166,12 +1171,12 @@ static SQInteger thread_wakeup(HSQUIRRELVM v)
     return sq_throwerror(v,_SC("wrong parameter"));
 }
 
-static SQInteger thread_wakeupthrow(HSQUIRRELVM v)
+static int thread_wakeupthrow(HSKVM v)
 {
     SQObjectPtr o = stack_get(v,1);
     if(sq_type(o) == OT_THREAD) {
         SQVM *thread = _thread(o);
-        SQInteger state = sq_getvmstate(thread);
+        int state = sq_getvmstate(thread);
         if(state != SQ_VMSTATE_SUSPENDED) {
             switch(state) {
                 case SQ_VMSTATE_IDLE:
@@ -1185,7 +1190,7 @@ static SQInteger thread_wakeupthrow(HSQUIRRELVM v)
 
         sq_move(thread,v,2);
         sq_throwobject(thread);
-        SQBool rethrow_error = SQTrue;
+        bool rethrow_error = SQTrue;
         if(sq_gettop(v) > 2) {
             sq_getbool(v,3,&rethrow_error);
         }
@@ -1207,7 +1212,7 @@ static SQInteger thread_wakeupthrow(HSQUIRRELVM v)
     return sq_throwerror(v,_SC("wrong parameter"));
 }
 
-static SQInteger thread_getstatus(HSQUIRRELVM v)
+static int thread_getstatus(HSKVM v)
 {
     SQObjectPtr &o = stack_get(v,1);
     switch(sq_getvmstate(_thread(o))) {
@@ -1226,13 +1231,13 @@ static SQInteger thread_getstatus(HSQUIRRELVM v)
     return 1;
 }
 
-static SQInteger thread_getstackinfos(HSQUIRRELVM v)
+static int thread_getstackinfos(HSKVM v)
 {
     SQObjectPtr o = stack_get(v,1);
     if(sq_type(o) == OT_THREAD) {
         SQVM *thread = _thread(o);
-        SQInteger threadtop = sq_gettop(thread);
-        SQInteger level;
+        int threadtop = sq_gettop(thread);
+        int level;
         sq_getinteger(v,-1,&level);
         SQRESULT res = __getcallstackinfos(thread,level);
         if(SQ_FAILED(res))
@@ -1270,30 +1275,30 @@ const SQRegFunction SQSharedState::_thread_default_delegate_funcz[] = {
     {NULL,(SQFUNCTION)0,0,NULL}
 };
 
-static SQInteger class_getattributes(HSQUIRRELVM v)
+static int class_getattributes(HSKVM v)
 {
     return SQ_SUCCEEDED(sq_getattributes(v,-2))?1:SQ_ERROR;
 }
 
-static SQInteger class_setattributes(HSQUIRRELVM v)
+static int class_setattributes(HSKVM v)
 {
     return SQ_SUCCEEDED(sq_setattributes(v,-3))?1:SQ_ERROR;
 }
 
-static SQInteger class_instance(HSQUIRRELVM v)
+static int class_instance(HSKVM v)
 {
     return SQ_SUCCEEDED(sq_createinstance(v,-1))?1:SQ_ERROR;
 }
 
-static SQInteger class_getbase(HSQUIRRELVM v)
+static int class_getbase(HSKVM v)
 {
     return SQ_SUCCEEDED(sq_getbase(v,-1))?1:SQ_ERROR;
 }
 
-static SQInteger class_newmember(HSQUIRRELVM v)
+static int class_newmember(HSKVM v)
 {
-    SQInteger top = sq_gettop(v);
-    SQBool bstatic = SQFalse;
+    int top = sq_gettop(v);
+    bool bstatic = SQFalse;
     if(top == 5)
     {
         sq_tobool(v,-1,&bstatic);
@@ -1306,10 +1311,10 @@ static SQInteger class_newmember(HSQUIRRELVM v)
     return SQ_SUCCEEDED(sq_newmember(v,-4,bstatic))?1:SQ_ERROR;
 }
 
-static SQInteger class_rawnewmember(HSQUIRRELVM v)
+static int class_rawnewmember(HSKVM v)
 {
-    SQInteger top = sq_gettop(v);
-    SQBool bstatic = SQFalse;
+    int top = sq_gettop(v);
+    bool bstatic = SQFalse;
     if(top == 5)
     {
         sq_tobool(v,-1,&bstatic);
@@ -1338,7 +1343,7 @@ const SQRegFunction SQSharedState::_class_default_delegate_funcz[] = {
 };
 
 
-static SQInteger instance_getclass(HSQUIRRELVM v)
+static int instance_getclass(HSKVM v)
 {
     if(SQ_SUCCEEDED(sq_getclass(v,1)))
         return 1;
@@ -1355,7 +1360,7 @@ const SQRegFunction SQSharedState::_instance_default_delegate_funcz[] = {
     {NULL,(SQFUNCTION)0,0,NULL}
 };
 
-static SQInteger weakref_ref(HSQUIRRELVM v)
+static int weakref_ref(HSKVM v)
 {
     if(SQ_FAILED(sq_getweakrefval(v,1)))
         return SQ_ERROR;

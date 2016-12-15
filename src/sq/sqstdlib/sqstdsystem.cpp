@@ -20,7 +20,7 @@
 #define screname rename
 #endif
 
-static SQInteger _system_getenv(HSQUIRRELVM v)
+static int _system_getenv(HSKVM v)
 {
     const SQChar *s;
     if(SQ_SUCCEEDED(sq_getstring(v,2,&s))){
@@ -31,7 +31,7 @@ static SQInteger _system_getenv(HSQUIRRELVM v)
 }
 
 
-static SQInteger _system_system(HSQUIRRELVM v)
+static int _system_system(HSKVM v)
 {
     const SQChar *s;
     if(SQ_SUCCEEDED(sq_getstring(v,2,&s))){
@@ -42,20 +42,20 @@ static SQInteger _system_system(HSQUIRRELVM v)
 }
 
 
-static SQInteger _system_clock(HSQUIRRELVM v)
+static int _system_clock(HSKVM v)
 {
     sq_pushfloat(v,((SQFloat)clock())/(SQFloat)CLOCKS_PER_SEC);
     return 1;
 }
 
-static SQInteger _system_time(HSQUIRRELVM v)
+static int _system_time(HSKVM v)
 {
-    SQInteger t = (SQInteger)time(NULL);
+    int t = (int)time(NULL);
     sq_pushinteger(v,t);
     return 1;
 }
 
-static SQInteger _system_remove(HSQUIRRELVM v)
+static int _system_remove(HSKVM v)
 {
     const SQChar *s;
     sq_getstring(v,2,&s);
@@ -64,7 +64,7 @@ static SQInteger _system_remove(HSQUIRRELVM v)
     return 0;
 }
 
-static SQInteger _system_rename(HSQUIRRELVM v)
+static int _system_rename(HSKVM v)
 {
     const SQChar *oldn,*newn;
     sq_getstring(v,2,&oldn);
@@ -74,23 +74,23 @@ static SQInteger _system_rename(HSQUIRRELVM v)
     return 0;
 }
 
-static void _set_integer_slot(HSQUIRRELVM v,const SQChar *name,SQInteger val)
+static void _set_integer_slot(HSKVM v,const SQChar *name,int val)
 {
     sq_pushstring(v,name,-1);
     sq_pushinteger(v,val);
     sq_rawset(v,-3);
 }
 
-static SQInteger _system_date(HSQUIRRELVM v)
+static int _system_date(HSKVM v)
 {
     time_t t;
-    SQInteger it;
-    SQInteger format = 'l';
+    int it;
+    int format = 'l';
     if(sq_gettop(v) > 1) {
         sq_getinteger(v,2,&it);
         t = it;
         if(sq_gettop(v) > 2) {
-            sq_getinteger(v,3,(SQInteger*)&format);
+            sq_getinteger(v,3,(int*)&format);
         }
     }
     else {
@@ -130,9 +130,9 @@ static const SQRegFunction systemlib_funcs[]={
 };
 #undef _DECL_FUNC
 
-SQInteger sqstd_register_systemlib(HSQUIRRELVM v)
+int sqstd_register_systemlib(HSKVM v)
 {
-    SQInteger i=0;
+    int i=0;
     while(systemlib_funcs[i].name!=0)
     {
         sq_pushstring(v,systemlib_funcs[i].name,-1);

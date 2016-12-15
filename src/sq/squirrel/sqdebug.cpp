@@ -8,9 +8,9 @@
 #include "sqclosure.h"
 #include "sqstring.h"
 
-SQRESULT sq_getfunctioninfo(HSQUIRRELVM v,SQInteger level,SQFunctionInfo *fi)
+SQRESULT sq_getfunctioninfo(HSKVM v,int level,SQFunctionInfo *fi)
 {
-    SQInteger cssize = v->_callsstacksize;
+    int cssize = v->_callsstacksize;
     if (cssize > level) {
         SQVM::CallInfo &ci = v->_callsstack[cssize-level-1];
         if(sq_isclosure(ci._closure)) {
@@ -26,9 +26,9 @@ SQRESULT sq_getfunctioninfo(HSQUIRRELVM v,SQInteger level,SQFunctionInfo *fi)
     return sq_throwerror(v,_SC("the object is not a closure"));
 }
 
-SQRESULT sq_stackinfos(HSQUIRRELVM v, SQInteger level, SQStackInfos *si)
+SQRESULT sq_stackinfos(HSKVM v, int level, SQStackInfos *si)
 {
-    SQInteger cssize = v->_callsstacksize;
+    int cssize = v->_callsstacksize;
     if (cssize > level) {
         memset(si, 0, sizeof(SQStackInfos));
         SQVM::CallInfo &ci = v->_callsstack[cssize-level-1];
@@ -60,7 +60,7 @@ void SQVM::Raise_Error(const SQChar *s, ...)
 {
     va_list vl;
     va_start(vl, s);
-    SQInteger buffersize = (SQInteger)scstrlen(s)+(NUMBER_MAX_CHAR*2);
+    int buffersize = (int)scstrlen(s)+(NUMBER_MAX_CHAR*2);
     scvsprintf(_sp(sq_rsl(buffersize)),buffersize, s, vl);
     va_end(vl);
     _lasterror = SQString::Create(_ss(this),_spval,-1);
@@ -91,7 +91,7 @@ SQString *SQVM::PrintObjVal(const SQObjectPtr &o)
 void SQVM::Raise_IdxError(const SQObjectPtr &o)
 {
     SQObjectPtr oval = PrintObjVal(o);
-    Raise_Error(_SC("the index '%.50s' does not exist"), _stringval(oval));
+    Raise_Error(_SC("the variable '%.50s' does not exist"), _stringval(oval));
 }
 
 void SQVM::Raise_CompareError(const SQObject &o1, const SQObject &o2)
@@ -101,13 +101,13 @@ void SQVM::Raise_CompareError(const SQObject &o1, const SQObject &o2)
 }
 
 
-void SQVM::Raise_ParamTypeError(SQInteger nparam,SQInteger typemask,SQInteger type)
+void SQVM::Raise_ParamTypeError(int nparam,int typemask,int type)
 {
     SQObjectPtr exptypes = SQString::Create(_ss(this), _SC(""), -1);
-    SQInteger found = 0;
-    for(SQInteger i=0; i<16; i++)
+    int found = 0;
+    for(int i=0; i<16; i++)
     {
-        SQInteger mask = ((SQInteger)1) << i;
+        int mask = ((int)1) << i;
         if(typemask & (mask)) {
             if(found>0) StringCat(exptypes,SQString::Create(_ss(this), _SC("|"), -1), exptypes);
             found ++;

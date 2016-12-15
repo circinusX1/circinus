@@ -30,7 +30,7 @@
 
 #include <squirrel.h>
 #include <string.h>
-
+#include "sqr_imp_exp.h"
 #include "sqratObject.h"
 
 namespace Sqrat {
@@ -59,12 +59,12 @@ public:
     /// \param createTable Whether the underlying table that values are bound to is created by the constructor
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Enumeration(HSQUIRRELVM v = DefaultVM::Get(), bool createTable = true) : Object(v, false) {
+    Enumeration(HSKVM v = DefaultVM::Get(), bool createTable = true) : Object(v, false) {
         if(createTable) {
-            sq_newtable(vm);
-            sq_getstackobj(vm,-1,&obj);
-            sq_addref(vm, &obj);
-            sq_pop(vm,1);
+            SQ_PTRS->newtable(vm);
+            SQ_PTRS->getstackobj(vm,-1,&obj);
+            SQ_PTRS->addref(vm, &obj);
+            SQ_PTRS->pop(vm,1);
         }
     }
 
@@ -128,10 +128,10 @@ public:
     /// \param v VM to get the ConstTable for
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ConstTable(HSQUIRRELVM v = DefaultVM::Get()) : Enumeration(v, false) {
-        sq_pushconsttable(vm);
-        sq_getstackobj(vm,-1, &obj);
-        sq_pop(v,1); // No addref needed, since the consttable is always around
+    ConstTable(HSKVM v = DefaultVM::Get()) : Enumeration(v, false) {
+        SQ_PTRS->pushconsttable(vm);
+        SQ_PTRS->getstackobj(vm,-1, &obj);
+        SQ_PTRS->pop(v,1); // No addref needed, since the consttable is always around
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,11 +186,11 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ConstTable& Enum(const SQChar* name, Enumeration& en) {
-        sq_pushobject(vm, GetObject());
-        sq_pushstring(vm, name, -1);
-        sq_pushobject(vm, en.GetObject());
-        sq_newslot(vm, -3, false);
-        sq_pop(vm,1); // pop table
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->pushstring(vm, name, -1);
+        SQ_PTRS->pushobject(vm, en.GetObject());
+        SQ_PTRS->newslot(vm, -3, false);
+        SQ_PTRS->pop(vm,1); // pop table
         return *this;
     }
 };

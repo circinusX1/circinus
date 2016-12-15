@@ -30,7 +30,7 @@
 
 #include <squirrel.h>
 #include <string.h>
-
+#include "sqr_imp_exp.h"
 #include "sqratObject.h"
 #include "sqratTypes.h"
 
@@ -58,7 +58,7 @@ public:
 /// @endcond
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// DefaultAllocator is the allocator to use for Class that can both be constructed and copied
+/// DefaultAllocator is the allc to use for Class that can both be constructed and copied
 ///
 /// \tparam C Type of class
 ///
@@ -99,15 +99,15 @@ public:
     /// \param ptr Should be the return value from a call to the new operator
     ///
     /// \remarks
-    /// This function should only need to be used when custom constructors are bound with Class::SquirrelFunc.
+    /// This function should only need to be used when custom constructors are bound with Class::SquirrelMemb.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void SetInstance(HSQUIRRELVM vm, SQInteger idx, C* ptr)
+    static void SetInstance(HSKVM vm, int idx, C* ptr)
     {
         ClassData<C>* cd = ClassType<C>::getClassData(vm);
-        sq_setinstanceup(vm, idx, new std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >(ptr, cd->instances));
-        sq_setreleasehook(vm, idx, &Delete);
-        sq_getstackobj(vm, idx, &((*cd->instances)[ptr]));
+        SQ_PTRS->setinstanceup(vm, idx, new std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >(ptr, cd->instances));
+        SQ_PTRS->setreleasehook(vm, idx, &Delete);
+        SQ_PTRS->getstackobj(vm, idx, &((*cd->instances)[ptr]));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,7 +118,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static SQInteger New(HSQUIRRELVM vm) {
+    static int New(HSKVM vm) {
         SetInstance(vm, 1, NewC<C, is_default_constructible<C>::value >().p);
         return 0;
     }
@@ -127,50 +127,50 @@ public:
     /// @cond DEV
     /// following iNew functions are used only if constructors are bound via Ctor() in Sqrat::Class (safe to ignore)
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         return New(vm);
     }
 
     template <typename A1>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
             a2.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2,typename A3>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
         Var<A3> a3(vm, 4);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
@@ -178,19 +178,19 @@ public:
             a3.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
         Var<A3> a3(vm, 4);
         Var<A4> a4(vm, 5);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
@@ -199,12 +199,12 @@ public:
             a4.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -212,7 +212,7 @@ public:
         Var<A4> a4(vm, 5);
         Var<A5> a5(vm, 6);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
@@ -222,12 +222,12 @@ public:
             a5.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -236,7 +236,7 @@ public:
         Var<A5> a5(vm, 6);
         Var<A6> a6(vm, 7);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
@@ -247,12 +247,12 @@ public:
             a6.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6,typename A7>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -262,7 +262,7 @@ public:
         Var<A6> a6(vm, 7);
         Var<A7> a7(vm, 8);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
@@ -274,12 +274,12 @@ public:
             a7.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6,typename A7,typename A8>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -290,7 +290,7 @@ public:
         Var<A7> a7(vm, 8);
         Var<A8> a8(vm, 9);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
@@ -303,12 +303,12 @@ public:
             a8.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6,typename A7,typename A8,typename A9>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -320,7 +320,7 @@ public:
         Var<A8> a8(vm, 9);
         Var<A9> a9(vm, 10);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
@@ -334,7 +334,7 @@ public:
             a9.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
@@ -352,7 +352,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static SQInteger Copy(HSQUIRRELVM vm, SQInteger idx, const void* value) {
+    static int Copy(HSKVM vm, int idx, const void* value) {
         SetInstance(vm, idx, new C(*static_cast<const C*>(value)));
         return 0;
     }
@@ -366,7 +366,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static SQInteger Delete(SQUserPointer ptr, SQInteger size) {
+    static int Delete(PVOID ptr, int size) {
         SQUNUSED(size);
         std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >* instance = reinterpret_cast<std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >*>(ptr);
         instance->second->erase(instance->first);
@@ -377,7 +377,7 @@ public:
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// NoConstructor is the allocator to use for Class that can NOT be constructed or copied
+/// NoConstructor is the allc to use for Class that can NOT be constructed or copied
 ///
 /// \tparam C Type of class
 ///
@@ -394,28 +394,28 @@ public:
     /// \param ptr Should be the return value from a call to the new operator
     ///
     /// \remarks
-    /// This function should only need to be used when custom constructors are bound with Class::SquirrelFunc.
+    /// This function should only need to be used when custom constructors are bound with Class::SquirrelMemb.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void SetInstance(HSQUIRRELVM vm, SQInteger idx, C* ptr)
+    static void SetInstance(HSKVM vm, int idx, C* ptr)
     {
         ClassData<C>* cd = ClassType<C>::getClassData(vm);
-        sq_setinstanceup(vm, idx, new std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >(ptr, cd->instance));
-        sq_setreleasehook(vm, idx, &Delete);
-        sq_getstackobj(vm, idx, &((*cd->instances)[ptr]));
+        SQ_PTRS->setinstanceup(vm, idx, new std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >(ptr, cd->instance));
+        SQ_PTRS->setreleasehook(vm, idx, &Delete);
+        SQ_PTRS->getstackobj(vm, idx, &((*cd->instances)[ptr]));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// Called by Sqrat to set up an instance on the stack for the template class (not allowed in this allocator)
+    /// Called by Sqrat to set up an instance on the stack for the template class (not allowed in this allc)
     ///
     /// \param vm VM that has an instance object of the correct type at position 1 in its stack
     ///
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static SQInteger New(HSQUIRRELVM vm) {
+    static int New(HSKVM vm) {
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        return sq_throwerror(vm, (ClassType<C>::ClassName() + string(_SC(" constructing is not allowed"))).c_str());
+        return SQ_PTRS->throwerror(vm, (ClassType<C>::ClassName() + string(_SC(" constructing is not allowed"))).c_str());
 #else
         SQUNUSED(vm);
         return 0;
@@ -423,7 +423,7 @@ public:
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// Called by Sqrat to set up the instance at idx on the stack as a copy of a value of the same type (not used in this allocator)
+    /// Called by Sqrat to set up the instance at idx on the stack as a copy of a value of the same type (not used in this allc)
     ///
     /// \param vm    VM that has an instance object of the correct type at idx
     /// \param idx   Index of the stack that the instance object is at
@@ -432,11 +432,11 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static SQInteger Copy(HSQUIRRELVM vm, SQInteger idx, const void* value) {
+    static int Copy(HSKVM vm, int idx, const void* value) {
         SQUNUSED(vm);
         SQUNUSED(idx);
         SQUNUSED(value);
-        return sq_throwerror(vm, (ClassType<C>::ClassName() + string(_SC(" cloning is not allowed"))).c_str());
+        return SQ_PTRS->throwerror(vm, (ClassType<C>::ClassName() + string(_SC(" cloning is not allowed"))).c_str());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -448,7 +448,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static SQInteger Delete(SQUserPointer ptr, SQInteger size) {
+    static int Delete(PVOID ptr, int size) {
         SQUNUSED(size);
         std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >* instance = reinterpret_cast<std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >*>(ptr);
         instance->second->erase(instance->first);
@@ -459,7 +459,7 @@ public:
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// CopyOnly is the allocator to use for Class that can be copied but not constructed
+/// CopyOnly is the allc to use for Class that can be copied but not constructed
 ///
 /// \tparam C Type of class
 ///
@@ -476,28 +476,28 @@ public:
     /// \param ptr Should be the return value from a call to the new operator
     ///
     /// \remarks
-    /// This function should only need to be used when custom constructors are bound with Class::SquirrelFunc.
+    /// This function should only need to be used when custom constructors are bound with Class::SquirrelMemb.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void SetInstance(HSQUIRRELVM vm, SQInteger idx, C* ptr)
+    static void SetInstance(HSKVM vm, int idx, C* ptr)
     {
         ClassData<C>* cd = ClassType<C>::getClassData(vm);
-        sq_setinstanceup(vm, idx, new std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >(ptr, cd->instances));
-        sq_setreleasehook(vm, idx, &Delete);
-        sq_getstackobj(vm, idx, &((*cd->instances)[ptr]));
+        SQ_PTRS->setinstanceup(vm, idx, new std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >(ptr, cd->instances));
+        SQ_PTRS->setreleasehook(vm, idx, &Delete);
+        SQ_PTRS->getstackobj(vm, idx, &((*cd->instances)[ptr]));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// Called by Sqrat to set up an instance on the stack for the template class (not allowed in this allocator)
+    /// Called by Sqrat to set up an instance on the stack for the template class (not allowed in this allc)
     ///
     /// \param vm VM that has an instance object of the correct type at position 1 in its stack
     ///
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static SQInteger New(HSQUIRRELVM vm) {
+    static int New(HSKVM vm) {
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        return sq_throwerror(vm, (ClassType<C>::ClassName() + string(_SC(" constructing is not allowed"))).c_str());
+        return SQ_PTRS->throwerror(vm, (ClassType<C>::ClassName() + string(_SC(" constructing is not allowed"))).c_str());
 #else
         SQUNUSED(vm);
         return 0;
@@ -514,7 +514,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static SQInteger Copy(HSQUIRRELVM vm, SQInteger idx, const void* value) {
+    static int Copy(HSKVM vm, int idx, const void* value) {
         SetInstance(vm, idx, new C(*static_cast<const C*>(value)));
         return 0;
     }
@@ -528,7 +528,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static SQInteger Delete(SQUserPointer ptr, SQInteger size) {
+    static int Delete(PVOID ptr, int size) {
         SQUNUSED(size);
         std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >* instance = reinterpret_cast<std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >*>(ptr);
         instance->second->erase(instance->first);
@@ -540,7 +540,7 @@ public:
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// NoCopy is the allocator to use for Class that can be constructed but not copied
+/// NoCopy is the allc to use for Class that can be constructed but not copied
 ///
 /// \tparam C Type of class
 ///
@@ -581,15 +581,15 @@ public:
     /// \param ptr Should be the return value from a call to the new operator
     ///
     /// \remarks
-    /// This function should only need to be used when custom constructors are bound with Class::SquirrelFunc.
+    /// This function should only need to be used when custom constructors are bound with Class::SquirrelMemb.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void SetInstance(HSQUIRRELVM vm, SQInteger idx, C* ptr)
+    static void SetInstance(HSKVM vm, int idx, C* ptr)
     {
         ClassData<C>* cd = ClassType<C>::getClassData(vm);
-        sq_setinstanceup(vm, idx, new std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >(ptr, cd->instances));
-        sq_setreleasehook(vm, idx, &Delete);
-        sq_getstackobj(vm, idx, &((*cd->instances)[ptr]));
+        SQ_PTRS->setinstanceup(vm, idx, new std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >(ptr, cd->instances));
+        SQ_PTRS->setreleasehook(vm, idx, &Delete);
+        SQ_PTRS->getstackobj(vm, idx, &((*cd->instances)[ptr]));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -600,7 +600,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static SQInteger New(HSQUIRRELVM vm) {
+    static int New(HSKVM vm) {
         SetInstance(vm, 1, NewC<C, is_default_constructible<C>::value >().p);
         return 0;
     }
@@ -609,50 +609,50 @@ public:
     /// @cond DEV
     /// following iNew functions are used only if constructors are bound via Ctor() in Sqrat::Class (safe to ignore)
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         return New(vm);
     }
 
     template <typename A1>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
             a2.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2,typename A3>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
         Var<A3> a3(vm, 4);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
@@ -660,19 +660,19 @@ public:
             a3.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
         Var<A3> a3(vm, 4);
         Var<A4> a4(vm, 5);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
@@ -681,12 +681,12 @@ public:
             a4.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -694,7 +694,7 @@ public:
         Var<A4> a4(vm, 5);
         Var<A5> a5(vm, 6);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
@@ -704,12 +704,12 @@ public:
             a5.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -718,7 +718,7 @@ public:
         Var<A5> a5(vm, 6);
         Var<A6> a6(vm, 7);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
@@ -729,12 +729,12 @@ public:
             a6.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6,typename A7>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -744,7 +744,7 @@ public:
         Var<A6> a6(vm, 7);
         Var<A7> a7(vm, 8);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
@@ -756,12 +756,12 @@ public:
             a7.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6,typename A7,typename A8>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -772,7 +772,7 @@ public:
         Var<A7> a7(vm, 8);
         Var<A8> a8(vm, 9);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
@@ -785,12 +785,12 @@ public:
             a8.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6,typename A7,typename A8,typename A9>
-    static SQInteger iNew(HSQUIRRELVM vm) {
+    static int iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -802,7 +802,7 @@ public:
         Var<A8> a8(vm, 9);
         Var<A9> a9(vm, 10);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SetInstance(vm, 1, new C(
             a1.value,
@@ -816,14 +816,14 @@ public:
             a9.value
         ));
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
     /// @endcond
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// Called by Sqrat to set up the instance at idx on the stack as a copy of a value of the same type (not used in this allocator)
+    /// Called by Sqrat to set up the instance at idx on the stack as a copy of a value of the same type (not used in this allc)
     ///
     /// \param vm    VM that has an instance object of the correct type at idx
     /// \param idx   Index of the stack that the instance object is at
@@ -832,11 +832,11 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static SQInteger Copy(HSQUIRRELVM vm, SQInteger idx, const void* value) {
+    static int Copy(HSKVM vm, int idx, const void* value) {
         SQUNUSED(vm);
         SQUNUSED(idx);
         SQUNUSED(value);
-        return sq_throwerror(vm, (ClassType<C>::ClassName() + string(_SC(" cloning is not allowed"))).c_str());
+        return SQ_PTRS->throwerror(vm, (ClassType<C>::ClassName() + string(_SC(" cloning is not allowed"))).c_str());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -848,7 +848,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static SQInteger Delete(SQUserPointer ptr, SQInteger size) {
+    static int Delete(PVOID ptr, int size) {
         SQUNUSED(size);
         std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >* instance = reinterpret_cast<std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >*>(ptr);
         instance->second->erase(instance->first);

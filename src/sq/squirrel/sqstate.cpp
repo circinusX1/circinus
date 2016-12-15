@@ -29,13 +29,13 @@ SQSharedState::SQSharedState()
 
 #define newmetamethod(s) {  \
     _metamethods->push_back(SQString::Create(this,s));  \
-    _table(_metamethodsmap)->NewSlot(_metamethods->back(),(SQInteger)(_metamethods->size()-1)); \
+    _table(_metamethodsmap)->NewSlot(_metamethods->back(),(int)(_metamethods->size()-1)); \
     }
 
 bool CompileTypemask(SQIntVec &res,const SQChar *typemask)
 {
-    SQInteger i = 0;
-    SQInteger mask = 0;
+    int i = 0;
+    int mask = 0;
     while(typemask[i] != 0) {
         switch(typemask[i]) {
             case 'o': mask |= _RT_NULL; break;
@@ -75,7 +75,7 @@ bool CompileTypemask(SQIntVec &res,const SQChar *typemask)
 
 SQTable *CreateDefaultDelegate(SQSharedState *ss,const SQRegFunction *funcz)
 {
-    SQInteger i=0;
+    int i=0;
     SQTable *t=SQTable::Create(ss,0);
     while(funcz[i].name!=0){
         SQNativeClosure *nc = SQNativeClosure::Create(ss,funcz[i].f,0);
@@ -210,7 +210,7 @@ SQSharedState::~SQSharedState()
 }
 
 
-SQInteger SQSharedState::GetMetaMethodIdxByName(const SQObjectPtr &name)
+int SQSharedState::GetMetaMethodIdxByName(const SQObjectPtr &name)
 {
     if(sq_type(name) != OT_STRING)
         return -1;
@@ -264,9 +264,9 @@ void SQSharedState::RunMark(SQVM* SQ_UNUSED_ARG(vm),SQCollectable **tchain)
 
 }
 
-SQInteger SQSharedState::ResurrectUnreachable(SQVM *vm)
+int SQSharedState::ResurrectUnreachable(SQVM *vm)
 {
-    SQInteger n=0;
+    int n=0;
     SQCollectable *tchain=NULL;
 
     RunMark(vm,&tchain);
@@ -318,9 +318,9 @@ SQInteger SQSharedState::ResurrectUnreachable(SQVM *vm)
     return n;
 }
 
-SQInteger SQSharedState::CollectGarbage(SQVM *vm)
+int SQSharedState::CollectGarbage(SQVM *vm)
 {
-    SQInteger n = 0;
+    int n = 0;
     SQCollectable *tchain = NULL;
 
     RunMark(vm,&tchain);
@@ -371,9 +371,9 @@ void SQCollectable::RemoveFromChain(SQCollectable **chain,SQCollectable *c)
 }
 #endif
 
-SQChar* SQSharedState::GetScratchPad(SQInteger size)
+SQChar* SQSharedState::GetScratchPad(int size)
 {
-    SQInteger newsize;
+    int newsize;
     if(size>0) {
         if(_scratchpadsize < size) {
             newsize = size + (size>>1);
@@ -397,7 +397,7 @@ RefTable::RefTable()
 void RefTable::Finalize()
 {
     RefNode *nodes = _nodes;
-    for(SQUnsignedInteger n = 0; n < _numofslots; n++) {
+    for(size_t n = 0; n < _numofslots; n++) {
         nodes->obj.Null();
         nodes++;
     }
@@ -412,7 +412,7 @@ RefTable::~RefTable()
 void RefTable::Mark(SQCollectable **chain)
 {
     RefNode *nodes = (RefNode *)_nodes;
-    for(SQUnsignedInteger n = 0; n < _numofslots; n++) {
+    for(size_t n = 0; n < _numofslots; n++) {
         if(sq_type(nodes->obj) != OT_NULL) {
             SQSharedState::MarkObject(nodes->obj,chain);
         }
@@ -423,24 +423,24 @@ void RefTable::Mark(SQCollectable **chain)
 
 void RefTable::AddRef(SQObject &obj)
 {
-    SQHash mainpos;
+    size_t mainpos;
     RefNode *prev;
     RefNode *ref = Get(obj,mainpos,&prev,true);
     ref->refs++;
 }
 
-SQUnsignedInteger RefTable::GetRefCount(SQObject &obj)
+size_t RefTable::GetRefCount(SQObject &obj)
 {
-     SQHash mainpos;
+     size_t mainpos;
      RefNode *prev;
      RefNode *ref = Get(obj,mainpos,&prev,true);
      return ref->refs;
 }
 
 
-SQBool RefTable::Release(SQObject &obj)
+bool RefTable::Release(SQObject &obj)
 {
-    SQHash mainpos;
+    size_t mainpos;
     RefNode *prev;
     RefNode *ref = Get(obj,mainpos,&prev,false);
     if(ref) {
@@ -466,15 +466,15 @@ SQBool RefTable::Release(SQObject &obj)
     return SQFalse;
 }
 
-void RefTable::Resize(SQUnsignedInteger size)
+void RefTable::Resize(size_t size)
 {
     RefNode **oldbucks = _buckets;
     RefNode *t = _nodes;
-    SQUnsignedInteger oldnumofslots = _numofslots;
+    size_t oldnumofslots = _numofslots;
     AllocNodes(size);
     //rehash
-    SQUnsignedInteger nfound = 0;
-    for(SQUnsignedInteger n = 0; n < oldnumofslots; n++) {
+    size_t nfound = 0;
+    for(size_t n = 0; n < oldnumofslots; n++) {
         if(sq_type(t->obj) != OT_NULL) {
             //add back;
             assert(t->refs != 0);
@@ -489,7 +489,7 @@ void RefTable::Resize(SQUnsignedInteger size)
     SQ_FREE(oldbucks,(oldnumofslots * sizeof(RefNode *)) + (oldnumofslots * sizeof(RefNode)));
 }
 
-RefTable::RefNode *RefTable::Add(SQHash mainpos,SQObject &obj)
+RefTable::RefNode *RefTable::Add(size_t mainpos,SQObject &obj)
 {
     RefNode *t = _buckets[mainpos];
     RefNode *newnode = _freelist;
@@ -502,7 +502,7 @@ RefTable::RefNode *RefTable::Add(SQHash mainpos,SQObject &obj)
     return newnode;
 }
 
-RefTable::RefNode *RefTable::Get(SQObject &obj,SQHash &mainpos,RefNode **prev,bool add)
+RefTable::RefNode *RefTable::Get(SQObject &obj,size_t &mainpos,RefNode **prev,bool add)
 {
     RefNode *ref;
     mainpos = ::HashObj(obj)&(_numofslots-1);
@@ -524,14 +524,14 @@ RefTable::RefNode *RefTable::Get(SQObject &obj,SQHash &mainpos,RefNode **prev,bo
     return ref;
 }
 
-void RefTable::AllocNodes(SQUnsignedInteger size)
+void RefTable::AllocNodes(size_t size)
 {
     RefNode **bucks;
     RefNode *nodes;
     bucks = (RefNode **)SQ_MALLOC((size * sizeof(RefNode *)) + (size * sizeof(RefNode)));
     nodes = (RefNode *)&bucks[size];
     RefNode *temp = nodes;
-    SQUnsignedInteger n;
+    size_t n;
     for(n = 0; n < size - 1; n++) {
         bucks[n] = NULL;
         temp->refs = 0;
@@ -570,19 +570,19 @@ SQStringTable::~SQStringTable()
     _strings = NULL;
 }
 
-void SQStringTable::AllocNodes(SQInteger size)
+void SQStringTable::AllocNodes(int size)
 {
     _numofslots = size;
     _strings = (SQString**)SQ_MALLOC(sizeof(SQString*)*_numofslots);
     memset(_strings,0,sizeof(SQString*)*_numofslots);
 }
 
-SQString *SQStringTable::Add(const SQChar *news,SQInteger len)
+SQString *SQStringTable::Add(const SQChar *news,int len)
 {
     if(len<0)
-        len = (SQInteger)scstrlen(news);
-    SQHash newhash = ::_hashstr(news,len);
-    SQHash h = newhash&(_numofslots-1);
+        len = (int)scstrlen(news);
+    size_t newhash = ::_hashstr(news,len);
+    size_t h = newhash&(_numofslots-1);
     SQString *s;
     for (s = _strings[h]; s; s = s->_next){
         if(s->_len == len && (!memcmp(news,s->_val,sq_rsl(len))))
@@ -604,16 +604,16 @@ SQString *SQStringTable::Add(const SQChar *news,SQInteger len)
     return t;
 }
 
-void SQStringTable::Resize(SQInteger size)
+void SQStringTable::Resize(int size)
 {
-    SQInteger oldsize=_numofslots;
+    int oldsize=_numofslots;
     SQString **oldtable=_strings;
     AllocNodes(size);
-    for (SQInteger i=0; i<oldsize; i++){
+    for (int i=0; i<oldsize; i++){
         SQString *p = oldtable[i];
         while(p){
             SQString *next = p->_next;
-            SQHash h = p->_hash&(_numofslots-1);
+            size_t h = p->_hash&(_numofslots-1);
             p->_next = _strings[h];
             _strings[h] = p;
             p = next;
@@ -626,7 +626,7 @@ void SQStringTable::Remove(SQString *bs)
 {
     SQString *s;
     SQString *prev=NULL;
-    SQHash h = bs->_hash&(_numofslots - 1);
+    size_t h = bs->_hash&(_numofslots - 1);
 
     for (s = _strings[h]; s; ){
         if(s == bs){
@@ -635,7 +635,7 @@ void SQStringTable::Remove(SQString *bs)
             else
                 _strings[h] = s->_next;
             _slotused--;
-            SQInteger slen = s->_len;
+            int slen = s->_len;
             s->~SQString();
             SQ_FREE(s,sizeof(SQString) + sq_rsl(slen));
             return;

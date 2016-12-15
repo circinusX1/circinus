@@ -30,7 +30,10 @@
 #define _SCRAT_GLOBAL_METHODS_H_
 
 #include <squirrel.h>
+#include "sqr_imp_exp.h"
 #include "sqratTypes.h"
+
+extern tagSQObjectType param_types[16];
 
 namespace Sqrat {
 
@@ -45,192 +48,192 @@ public:
 
     // Arg Count 0
     template <bool overloaded /*= false*/>
-    static SQInteger Func0(HSQUIRRELVM vm) {
+    static int Memb0(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != 2) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)();
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        R ret = (*method)();
+                R ret = (*method)();
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 1
-    template <class A1, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func1(HSQUIRRELVM vm) {
+    template <class A1, int startIdx, bool overloaded /*= false*/>
+    static int Memb1(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 1) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 1) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)(A1);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R ret = (*method)(
                     a1.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 2
-    template <class A1, class A2, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func2(HSQUIRRELVM vm) {
+    template <class A1, class A2, int startIdx, bool overloaded /*= false*/>
+    static int Memb2(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 2) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 2) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)(A1, A2);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
-
+        R ret;
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
-        R ret = (*method)(
+        ret = (*method)(
                     a1.value,
                     a2.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 3
-    template <class A1, class A2, class A3, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func3(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, int startIdx, bool overloaded /*= false*/>
+    static int Memb3(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 3) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 3) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)(A1, A2, A3);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R ret = (*method)(
                     a1.value,
                     a2.value,
                     a3.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 4
-    template <class A1, class A2, class A3, class A4, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func4(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, int startIdx, bool overloaded /*= false*/>
+    static int Memb4(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 4) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 4) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)(A1, A2, A3, A4);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R ret = (*method)(
                     a1.value,
                     a2.value,
                     a3.value,
                     a4.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 5
-    template <class A1, class A2, class A3, class A4, class A5, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func5(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, int startIdx, bool overloaded /*= false*/>
+    static int Memb5(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 5) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 5) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)(A1, A2, A3, A4, A5);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
         Var<A5> a5(vm, startIdx + 4);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R ret = (*method)(
                     a1.value,
@@ -238,40 +241,40 @@ public:
                     a3.value,
                     a4.value,
                     a5.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
-
+#ifdef RAT_MANY_ARGS
     // Arg Count 6
-    template <class A1, class A2, class A3, class A4, class A5, class A6, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func6(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, int startIdx, bool overloaded /*= false*/>
+    static int Memb6(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 6) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 6) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)(A1, A2, A3, A4, A5, A6);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
         Var<A5> a5(vm, startIdx + 4);
         Var<A6> a6(vm, startIdx + 5);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R ret = (*method)(
                     a1.value,
@@ -280,33 +283,33 @@ public:
                     a4.value,
                     a5.value,
                     a6.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 7
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func7(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, int startIdx, bool overloaded /*= false*/>
+    static int Memb7(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 7) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 7) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)(A1, A2, A3, A4, A5, A6, A7);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -314,7 +317,7 @@ public:
         Var<A6> a6(vm, startIdx + 5);
         Var<A7> a7(vm, startIdx + 6);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R ret = (*method)(
                     a1.value,
@@ -324,33 +327,33 @@ public:
                     a5.value,
                     a6.value,
                     a7.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 8
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func8(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, int startIdx, bool overloaded /*= false*/>
+    static int Memb8(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 8) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 8) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)(A1, A2, A3, A4, A5, A6, A7, A8);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -359,7 +362,7 @@ public:
         Var<A7> a7(vm, startIdx + 6);
         Var<A8> a8(vm, startIdx + 7);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R ret = (*method)(
                     a1.value,
@@ -370,33 +373,33 @@ public:
                     a6.value,
                     a7.value,
                     a8.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 9
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func9(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, int startIdx, bool overloaded /*= false*/>
+    static int Memb9(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 9) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 9) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -406,7 +409,7 @@ public:
         Var<A8> a8(vm, startIdx + 7);
         Var<A9> a9(vm, startIdx + 8);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R ret = (*method)(
                     a1.value,
@@ -418,33 +421,33 @@ public:
                     a7.value,
                     a8.value,
                     a9.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 10
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func10(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, int startIdx, bool overloaded /*= false*/>
+    static int Memb10(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 10) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 10) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -455,7 +458,7 @@ public:
         Var<A9> a9(vm, startIdx + 8);
         Var<A10> a10(vm, startIdx + 9);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R ret = (*method)(
                     a1.value,
@@ -468,33 +471,33 @@ public:
                     a8.value,
                     a9.value,
                     a10.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 11
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func11(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, int startIdx, bool overloaded /*= false*/>
+    static int Memb11(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 11) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 11) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -506,7 +509,7 @@ public:
         Var<A10> a10(vm, startIdx + 9);
         Var<A11> a11(vm, startIdx + 10);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R ret = (*method)(
                     a1.value,
@@ -520,33 +523,33 @@ public:
                     a9.value,
                     a10.value,
                     a11.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 12
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func12(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, int startIdx, bool overloaded /*= false*/>
+    static int Memb12(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 12) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 12) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -559,7 +562,7 @@ public:
         Var<A11> a11(vm, startIdx + 10);
         Var<A12> a12(vm, startIdx + 11);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R ret = (*method)(
                     a1.value,
@@ -574,33 +577,33 @@ public:
                     a10.value,
                     a11.value,
                     a12.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 13
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func13(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, int startIdx, bool overloaded /*= false*/>
+    static int Memb13(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 13) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 13) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -614,7 +617,7 @@ public:
         Var<A12> a12(vm, startIdx + 11);
         Var<A13> a13(vm, startIdx + 12);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R ret = (*method)(
                     a1.value,
@@ -630,33 +633,33 @@ public:
                     a11.value,
                     a12.value,
                     a13.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 14
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func14(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, int startIdx, bool overloaded /*= false*/>
+    static int Memb14(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 14) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 14) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -671,7 +674,7 @@ public:
         Var<A13> a13(vm, startIdx + 12);
         Var<A14> a14(vm, startIdx + 13);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R ret = (*method)(
                     a1.value,
@@ -688,16 +691,17 @@ public:
                     a12.value,
                     a13.value,
                     a14.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
+#endif
 };
 
 
@@ -711,192 +715,192 @@ public:
 
     // Arg Count 0
     template <bool overloaded /*= false*/>
-    static SQInteger Func0(HSQUIRRELVM vm) {
+    static int Memb0(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != 2) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)();
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        R& ret = (*method)();
+                R& ret = (*method)();
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 1
-    template <class A1, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func1(HSQUIRRELVM vm) {
+    template <class A1, int startIdx, bool overloaded /*= false*/>
+    static int Memb1(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 1) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 1) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)(A1);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R& ret = (*method)(
                     a1.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 2
-    template <class A1, class A2, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func2(HSQUIRRELVM vm) {
+    template <class A1, class A2, int startIdx, bool overloaded /*= false*/>
+    static int Memb2(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 2) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 2) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)(A1, A2);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R& ret = (*method)(
                     a1.value,
                     a2.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 3
-    template <class A1, class A2, class A3, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func3(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, int startIdx, bool overloaded /*= false*/>
+    static int Memb3(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 3) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 3) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)(A1, A2, A3);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R& ret = (*method)(
                     a1.value,
                     a2.value,
                     a3.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 4
-    template <class A1, class A2, class A3, class A4, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func4(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, int startIdx, bool overloaded /*= false*/>
+    static int Memb4(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 4) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 4) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)(A1, A2, A3, A4);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R& ret = (*method)(
                     a1.value,
                     a2.value,
                     a3.value,
                     a4.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 5
-    template <class A1, class A2, class A3, class A4, class A5, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func5(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, int startIdx, bool overloaded /*= false*/>
+    static int Memb5(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 5) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 5) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)(A1, A2, A3, A4, A5);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
         Var<A5> a5(vm, startIdx + 4);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R& ret = (*method)(
                     a1.value,
@@ -904,40 +908,40 @@ public:
                     a3.value,
                     a4.value,
                     a5.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
-
+#ifdef RAT_MANY_ARGS
     // Arg Count 6
-    template <class A1, class A2, class A3, class A4, class A5, class A6, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func6(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, int startIdx, bool overloaded /*= false*/>
+    static int Memb6(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 6) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 6) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)(A1, A2, A3, A4, A5, A6);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
         Var<A5> a5(vm, startIdx + 4);
         Var<A6> a6(vm, startIdx + 5);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R& ret = (*method)(
                     a1.value,
@@ -946,33 +950,33 @@ public:
                     a4.value,
                     a5.value,
                     a6.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 7
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func7(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, int startIdx, bool overloaded /*= false*/>
+    static int Memb7(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 7) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 7) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)(A1, A2, A3, A4, A5, A6, A7);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -980,7 +984,7 @@ public:
         Var<A6> a6(vm, startIdx + 5);
         Var<A7> a7(vm, startIdx + 6);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R& ret = (*method)(
                     a1.value,
@@ -990,33 +994,33 @@ public:
                     a5.value,
                     a6.value,
                     a7.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 8
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func8(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, int startIdx, bool overloaded /*= false*/>
+    static int Memb8(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 8) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 8) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)(A1, A2, A3, A4, A5, A6, A7, A8);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1025,7 +1029,7 @@ public:
         Var<A7> a7(vm, startIdx + 6);
         Var<A8> a8(vm, startIdx + 7);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R& ret = (*method)(
                     a1.value,
@@ -1036,33 +1040,33 @@ public:
                     a6.value,
                     a7.value,
                     a8.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 9
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func9(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, int startIdx, bool overloaded /*= false*/>
+    static int Memb9(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 9) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 9) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1072,7 +1076,7 @@ public:
         Var<A8> a8(vm, startIdx + 7);
         Var<A9> a9(vm, startIdx + 8);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R& ret = (*method)(
                     a1.value,
@@ -1084,33 +1088,33 @@ public:
                     a7.value,
                     a8.value,
                     a9.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 10
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func10(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, int startIdx, bool overloaded /*= false*/>
+    static int Memb10(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 10) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 10) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1121,7 +1125,7 @@ public:
         Var<A9> a9(vm, startIdx + 8);
         Var<A10> a10(vm, startIdx + 9);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R& ret = (*method)(
                     a1.value,
@@ -1134,33 +1138,33 @@ public:
                     a8.value,
                     a9.value,
                     a10.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 11
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func11(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, int startIdx, bool overloaded /*= false*/>
+    static int Memb11(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 11) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 11) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1172,7 +1176,7 @@ public:
         Var<A10> a10(vm, startIdx + 9);
         Var<A11> a11(vm, startIdx + 10);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R& ret = (*method)(
                     a1.value,
@@ -1186,33 +1190,33 @@ public:
                     a9.value,
                     a10.value,
                     a11.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 12
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func12(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, int startIdx, bool overloaded /*= false*/>
+    static int Memb12(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 12) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 12) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1225,7 +1229,7 @@ public:
         Var<A11> a11(vm, startIdx + 10);
         Var<A12> a12(vm, startIdx + 11);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R& ret = (*method)(
                     a1.value,
@@ -1240,33 +1244,33 @@ public:
                     a10.value,
                     a11.value,
                     a12.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 13
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func13(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, int startIdx, bool overloaded /*= false*/>
+    static int Memb13(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 13) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 13) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1280,7 +1284,7 @@ public:
         Var<A12> a12(vm, startIdx + 11);
         Var<A13> a13(vm, startIdx + 12);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R& ret = (*method)(
                     a1.value,
@@ -1296,33 +1300,33 @@ public:
                     a11.value,
                     a12.value,
                     a13.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
 
     // Arg Count 14
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func14(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, int startIdx, bool overloaded /*= false*/>
+    static int Memb14(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 14) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 14) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef R& (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1337,7 +1341,7 @@ public:
         Var<A13> a13(vm, startIdx + 12);
         Var<A14> a14(vm, startIdx + 13);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         R& ret = (*method)(
                     a1.value,
@@ -1354,16 +1358,17 @@ public:
                     a12.value,
                     a13.value,
                     a14.value
-                );
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         PushVarR(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 1;
     }
+#endif// #ifdef RAT_MANY_ARGS
 };
 
 
@@ -1374,264 +1379,293 @@ public:
 template <>
 class SqGlobal<void> {
 public:
-
-    // Arg Count 0
     template <bool overloaded /*= false*/>
-    static SQInteger Func0(HSQUIRRELVM vm) {
+    static int MembRt(HSKVM vm, bool rv, int nargs)
+    {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != 2) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)();
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        (*method)();
+                (*method)();
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
+        //PushVar(vm, ret);
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
-        return 0;
+        return 1;
+    }
+
+
+    // Arg Count 0
+    template <bool overloaded /*= false*/>
+    static int Memb0(HSKVM vm) {
+/** mco-out
+#if !defined (SCRAT_NO_ERROR_CHECKING)
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+        }
+#endif
+*/
+
+        typedef void (*M)();
+        M* method;
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
+        printf("PTR = %p %p\n",&method, method);
+
+        SQTRY()
+                (*method)();
+        SQCATCH_NOEXCEPT(vm) {
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
+        }
+        //PushVar(vm, ret);
+        SQCATCH(vm) {
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
+        }
+        return 1;
     }
 
     // Arg Count 1
-    template <class A1, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func1(HSQUIRRELVM vm) {
+    template <class A1, int startIdx, bool overloaded /*= false*/>
+    static int Memb1(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 1) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 1) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)(A1);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         (*method)(
-            a1.value
-        );
+                    a1.value
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
 
     // Arg Count 2
-    template <class A1, class A2, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func2(HSQUIRRELVM vm) {
+    template <class A1, class A2, int startIdx, bool overloaded /*= false*/>
+    static int Memb2(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 2) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 2) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)(A1, A2);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         (*method)(
-            a1.value,
-            a2.value
-        );
+                    a1.value,
+                    a2.value
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
 
     // Arg Count 3
-    template <class A1, class A2, class A3, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func3(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, int startIdx, bool overloaded /*= false*/>
+    static int Memb3(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 3) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 3) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)(A1, A2, A3);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         (*method)(
-            a1.value,
-            a2.value,
-            a3.value
-        );
+                    a1.value,
+                    a2.value,
+                    a3.value
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
 
     // Arg Count 4
-    template <class A1, class A2, class A3, class A4, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func4(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, int startIdx, bool overloaded /*= false*/>
+    static int Memb4(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 4) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 4) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)(A1, A2, A3, A4);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         (*method)(
-            a1.value,
-            a2.value,
-            a3.value,
-            a4.value
-        );
+                    a1.value,
+                    a2.value,
+                    a3.value,
+                    a4.value
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
 
     // Arg Count 5
-    template <class A1, class A2, class A3, class A4, class A5, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func5(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, int startIdx, bool overloaded /*= false*/>
+    static int Memb5(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 5) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 5) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)(A1, A2, A3, A4, A5);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
         Var<A5> a5(vm, startIdx + 4);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         (*method)(
-            a1.value,
-            a2.value,
-            a3.value,
-            a4.value,
-            a5.value
-        );
+                    a1.value,
+                    a2.value,
+                    a3.value,
+                    a4.value,
+                    a5.value
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
-
+#ifdef RAT_MANY_ARGS
     // Arg Count 6
-    template <class A1, class A2, class A3, class A4, class A5, class A6, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func6(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, int startIdx, bool overloaded /*= false*/>
+    static int Memb6(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 6) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 6) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)(A1, A2, A3, A4, A5, A6);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
         Var<A5> a5(vm, startIdx + 4);
         Var<A6> a6(vm, startIdx + 5);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         (*method)(
-            a1.value,
-            a2.value,
-            a3.value,
-            a4.value,
-            a5.value,
-            a6.value
-        );
+                    a1.value,
+                    a2.value,
+                    a3.value,
+                    a4.value,
+                    a5.value,
+                    a6.value
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
 
     // Arg Count 7
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func7(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, int startIdx, bool overloaded /*= false*/>
+    static int Memb7(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 7) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 7) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)(A1, A2, A3, A4, A5, A6, A7);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1639,42 +1673,42 @@ public:
         Var<A6> a6(vm, startIdx + 5);
         Var<A7> a7(vm, startIdx + 6);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         (*method)(
-            a1.value,
-            a2.value,
-            a3.value,
-            a4.value,
-            a5.value,
-            a6.value,
-            a7.value
-        );
+                    a1.value,
+                    a2.value,
+                    a3.value,
+                    a4.value,
+                    a5.value,
+                    a6.value,
+                    a7.value
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
 
     // Arg Count 8
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func8(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, int startIdx, bool overloaded /*= false*/>
+    static int Memb8(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 8) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 8) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)(A1, A2, A3, A4, A5, A6, A7, A8);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1683,43 +1717,43 @@ public:
         Var<A7> a7(vm, startIdx + 6);
         Var<A8> a8(vm, startIdx + 7);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         (*method)(
-            a1.value,
-            a2.value,
-            a3.value,
-            a4.value,
-            a5.value,
-            a6.value,
-            a7.value,
-            a8.value
-        );
+                    a1.value,
+                    a2.value,
+                    a3.value,
+                    a4.value,
+                    a5.value,
+                    a6.value,
+                    a7.value,
+                    a8.value
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
 
     // Arg Count 9
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func9(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, int startIdx, bool overloaded /*= false*/>
+    static int Memb9(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 9) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 9) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1729,44 +1763,44 @@ public:
         Var<A8> a8(vm, startIdx + 7);
         Var<A9> a9(vm, startIdx + 8);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         (*method)(
-            a1.value,
-            a2.value,
-            a3.value,
-            a4.value,
-            a5.value,
-            a6.value,
-            a7.value,
-            a8.value,
-            a9.value
-        );
+                    a1.value,
+                    a2.value,
+                    a3.value,
+                    a4.value,
+                    a5.value,
+                    a6.value,
+                    a7.value,
+                    a8.value,
+                    a9.value
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
 
     // Arg Count 10
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func10(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, int startIdx, bool overloaded /*= false*/>
+    static int Memb10(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 10) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 10) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1777,45 +1811,45 @@ public:
         Var<A9> a9(vm, startIdx + 8);
         Var<A10> a10(vm, startIdx + 9);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         (*method)(
-            a1.value,
-            a2.value,
-            a3.value,
-            a4.value,
-            a5.value,
-            a6.value,
-            a7.value,
-            a8.value,
-            a9.value,
-            a10.value
-        );
+                    a1.value,
+                    a2.value,
+                    a3.value,
+                    a4.value,
+                    a5.value,
+                    a6.value,
+                    a7.value,
+                    a8.value,
+                    a9.value,
+                    a10.value
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
 
     // Arg Count 11
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func11(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, int startIdx, bool overloaded /*= false*/>
+    static int Memb11(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 11) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 11) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1827,46 +1861,46 @@ public:
         Var<A10> a10(vm, startIdx + 9);
         Var<A11> a11(vm, startIdx + 10);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         (*method)(
-            a1.value,
-            a2.value,
-            a3.value,
-            a4.value,
-            a5.value,
-            a6.value,
-            a7.value,
-            a8.value,
-            a9.value,
-            a10.value,
-            a11.value
-        );
+                    a1.value,
+                    a2.value,
+                    a3.value,
+                    a4.value,
+                    a5.value,
+                    a6.value,
+                    a7.value,
+                    a8.value,
+                    a9.value,
+                    a10.value,
+                    a11.value
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
 
     // Arg Count 12
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func12(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, int startIdx, bool overloaded /*= false*/>
+    static int Memb12(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 12) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 12) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1879,47 +1913,47 @@ public:
         Var<A11> a11(vm, startIdx + 10);
         Var<A12> a12(vm, startIdx + 11);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         (*method)(
-            a1.value,
-            a2.value,
-            a3.value,
-            a4.value,
-            a5.value,
-            a6.value,
-            a7.value,
-            a8.value,
-            a9.value,
-            a10.value,
-            a11.value,
-            a12.value
-        );
+                    a1.value,
+                    a2.value,
+                    a3.value,
+                    a4.value,
+                    a5.value,
+                    a6.value,
+                    a7.value,
+                    a8.value,
+                    a9.value,
+                    a10.value,
+                    a11.value,
+                    a12.value
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
 
     // Arg Count 13
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func13(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, int startIdx, bool overloaded /*= false*/>
+    static int Memb13(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 13) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 13) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1933,48 +1967,48 @@ public:
         Var<A12> a12(vm, startIdx + 11);
         Var<A13> a13(vm, startIdx + 12);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         (*method)(
-            a1.value,
-            a2.value,
-            a3.value,
-            a4.value,
-            a5.value,
-            a6.value,
-            a7.value,
-            a8.value,
-            a9.value,
-            a10.value,
-            a11.value,
-            a12.value,
-            a13.value
-        );
+                    a1.value,
+                    a2.value,
+                    a3.value,
+                    a4.value,
+                    a5.value,
+                    a6.value,
+                    a7.value,
+                    a8.value,
+                    a9.value,
+                    a10.value,
+                    a11.value,
+                    a12.value,
+                    a13.value
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
 
     // Arg Count 14
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, SQInteger startIdx, bool overloaded /*= false*/>
-    static SQInteger Func14(HSQUIRRELVM vm) {
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, int startIdx, bool overloaded /*= false*/>
+    static int Memb14(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (!SQRAT_CONST_CONDITION(overloaded) && sq_gettop(vm) != startIdx + 14) {
-            return sq_throwerror(vm, _SC("wrong number of parameters"));
+        if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != startIdx + 14) {
+            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
         }
 #endif
 
         typedef void (*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14);
         M* method;
-        sq_getuserdata(vm, -1, (SQUserPointer*)&method, NULL);
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
 
         SQTRY()
-        Var<A1> a1(vm, startIdx);
+                Var<A1> a1(vm, startIdx);
         Var<A2> a2(vm, startIdx + 1);
         Var<A3> a3(vm, startIdx + 2);
         Var<A4> a4(vm, startIdx + 3);
@@ -1989,219 +2023,306 @@ public:
         Var<A13> a13(vm, startIdx + 12);
         Var<A14> a14(vm, startIdx + 13);
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         (*method)(
-            a1.value,
-            a2.value,
-            a3.value,
-            a4.value,
-            a5.value,
-            a6.value,
-            a7.value,
-            a8.value,
-            a9.value,
-            a10.value,
-            a11.value,
-            a12.value,
-            a13.value,
-            a14.value
-        );
+                    a1.value,
+                    a2.value,
+                    a3.value,
+                    a4.value,
+                    a5.value,
+                    a6.value,
+                    a7.value,
+                    a8.value,
+                    a9.value,
+                    a10.value,
+                    a11.value,
+                    a12.value,
+                    a13.value,
+                    a14.value
+                    );
         SQCATCH_NOEXCEPT(vm) {
-            return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT_NOEXCEPT(vm));
         }
         SQCATCH(vm) {
-            return sq_throwerror(vm, SQWHAT(vm));
+            return SQ_PTRS->throwerror(vm, SQWHAT(vm));
         }
         return 0;
     }
+#endif
+    // Arg C mco-mco RUNTIME
+    typedef any_tsize (*type_r0)(void);
+    typedef any_tsize (*type_r1)(any_tsize);
+    typedef any_tsize (*type_r2)(any_tsize,any_tsize);
+    typedef any_tsize (*type_r3)(any_tsize,any_tsize,any_tsize);
+    typedef any_tsize (*type_r4)(any_tsize,any_tsize,any_tsize,any_tsize);
+
+    typedef void (*type_v0)(void);
+    typedef void (*type_v1)(any_tsize);
+    typedef void (*type_v2)(any_tsize,any_tsize);
+    typedef void (*type_v3)(any_tsize,any_tsize,any_tsize);
+    typedef void (*type_v4)(any_tsize,any_tsize,any_tsize,any_tsize);
+
+    typedef int (*right_t)(const char* , int);
+
+    template <int startIdx, bool overloaded /*= false*/>
+    static int MembX(HSKVM vm, int nargs)
+    {
+        bool rv=false;
+        union{
+            const char* s;
+            int         i;
+            float       f;
+            bool        b;
+            size_t       v;
+        } u [5];
+        if(nargs < 0){rv=true; nargs = -nargs;}
+
+        typedef int (*M)();
+        M* method;
+        SQ_PTRS->getuserdata(vm, -1, (PVOID*)&method, NULL);
+
+        for(int i = 0; i < nargs; i++)
+        {
+            switch(param_types[i+1])
+            {
+                case OT_INTEGER:
+                {
+                    Var<int> a(vm, startIdx+i+1);
+                    u[i].i=a.value;
+                }break;
+                case OT_FLOAT:
+                {
+                    Var<float> a(vm, startIdx+i+1);
+                    u[i].f=a.value;
+                }break;
+                case OT_BOOL:
+                {
+                    Var<bool> a(vm, startIdx+i+1);
+                    u[i].b=a.value;
+                }break;
+                case OT_STRING:
+                {
+                    Var<const char*> a(vm, startIdx+i+1);
+                    u[i].s=a.value;
+                }break;
+                default:
+                    return SQ_PTRS->throwerror(vm, "Unlnown type for shared library function parameter");
+                break;
+            }
+        }
+        if(rv)
+        {
+            any_tsize r;
+            switch(nargs)
+            {
+            case 0:{ r=((type_r0)(*method))();} break;
+            case 1:{ r=((type_r1)(*method))(u[0].v);} break;
+            case 2:{ r=((type_r2)(*method))(u[0].v,u[1].v);} break;
+            case 3:{ r=((type_r3)(*method))(u[0].v,u[1].v,u[2].v);} break;
+            case 4:{ r=((type_r4)(*method))(u[0].v,u[1].v,u[2].v,u[3].v);} break;
+            }
+            PushVarR(vm, r);
+        }
+        else
+        {
+            switch(nargs)
+            {
+            case 0:{ ((type_v0)(*method))();} break;
+            case 1:{ ((type_v1)(*method))(u[0].v);} break;
+            case 2:{ ((type_v2)(*method))(u[0].v,u[1].v);} break;
+            case 3:{ ((type_v3)(*method))(u[0].v,u[1].v,u[2].v);} break;
+            case 4:{ ((type_v4)(*method))(u[0].v,u[1].v,u[2].v,u[3].v);} break;
+            }
+        }
+        return 0;
+    }
+
 };
 
 
-//
-// Global Function Resolvers
-//
 
 // Arg Count 0
 template <class R>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)()) {
-    return &SqGlobal<R>::template Func0<false>;
+SQFUNCTION SqGlobalMemb(R (* /*method*/)()) {
+    return &SqGlobal<R>::template Memb0<false>;
 }
 
 // Arg Count 0
 template <class R>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)()) {
-    return &SqGlobal<R&>::template Func0<false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)()) {
+    return &SqGlobal<R&>::template Memb0<false>;
 }
 
 // Arg Count 1
 template <class R, class A1>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)(A1)) {
-    return &SqGlobal<R>::template Func1<A1, 2, false>;
+SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1)) {
+    return &SqGlobal<R>::template Memb1<A1, 2, false>;
 }
 
 // Arg Count 1
 template <class R, class A1>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1)) {
-    return &SqGlobal<R&>::template Func1<A1, 2, false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1)) {
+    return &SqGlobal<R&>::template Memb1<A1, 2, false>;
 }
 
 // Arg Count 2
 template <class R, class A1, class A2>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)(A1, A2)) {
-    return &SqGlobal<R>::template Func2<A1, A2, 2, false>;
+SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2)) {
+    return &SqGlobal<R>::template Memb2<A1, A2, 2, false>;
 }
 
 // Arg Count 2
 template <class R, class A1, class A2>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1, A2)) {
-    return &SqGlobal<R&>::template Func2<A1, A2, 2, false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2)) {
+    return &SqGlobal<R&>::template Memb2<A1, A2, 2, false>;
 }
 
 // Arg Count 3
 template <class R, class A1, class A2, class A3>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)(A1, A2, A3)) {
-    return &SqGlobal<R>::template Func3<A1, A2, A3, 2, false>;
+SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2, A3)) {
+    return &SqGlobal<R>::template Memb3<A1, A2, A3, 2, false>;
 }
 
 // Arg Count 3
 template <class R, class A1, class A2, class A3>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1, A2, A3)) {
-    return &SqGlobal<R&>::template Func3<A1, A2, A3, 2, false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2, A3)) {
+    return &SqGlobal<R&>::template Memb3<A1, A2, A3, 2, false>;
 }
 
 // Arg Count 4
 template <class R, class A1, class A2, class A3, class A4>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)(A1, A2, A3, A4)) {
-    return &SqGlobal<R>::template Func4<A1, A2, A3, A4, 2, false>;
+SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2, A3, A4)) {
+    return &SqGlobal<R>::template Memb4<A1, A2, A3, A4, 2, false>;
 }
 
 // Arg Count 4
 template <class R, class A1, class A2, class A3, class A4>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4)) {
-    return &SqGlobal<R&>::template Func4<A1, A2, A3, A4, 2, false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4)) {
+    return &SqGlobal<R&>::template Memb4<A1, A2, A3, A4, 2, false>;
 }
 
 // Arg Count 5
 template <class R, class A1, class A2, class A3, class A4, class A5>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5)) {
-    return &SqGlobal<R>::template Func5<A1, A2, A3, A4, A5, 2, false>;
+SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5)) {
+    return &SqGlobal<R>::template Memb5<A1, A2, A3, A4, A5, 2, false>;
 }
 
 // Arg Count 5
 template <class R, class A1, class A2, class A3, class A4, class A5>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5)) {
-    return &SqGlobal<R&>::template Func5<A1, A2, A3, A4, A5, 2, false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5)) {
+    return &SqGlobal<R&>::template Memb5<A1, A2, A3, A4, A5, 2, false>;
+}
+
+// Arg Count 6
+#ifdef RAT_MANY_ARGS
+template <class R, class A1, class A2, class A3, class A4, class A5, class A6>
+SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6)) {
+    return &SqGlobal<R>::template Memb6<A1, A2, A3, A4, A5, A6, 2, false>;
 }
 
 // Arg Count 6
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6)) {
-    return &SqGlobal<R>::template Func6<A1, A2, A3, A4, A5, A6, 2, false>;
-}
-
-// Arg Count 6
-template <class R, class A1, class A2, class A3, class A4, class A5, class A6>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6)) {
-    return &SqGlobal<R&>::template Func6<A1, A2, A3, A4, A5, A6, 2, false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6)) {
+    return &SqGlobal<R&>::template Memb6<A1, A2, A3, A4, A5, A6, 2, false>;
 }
 
 // Arg Count 7
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7)) {
-    return &SqGlobal<R>::template Func7<A1, A2, A3, A4, A5, A6, A7, 2, false>;
+SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7)) {
+    return &SqGlobal<R>::template Memb7<A1, A2, A3, A4, A5, A6, A7, 2, false>;
 }
 
 // Arg Count 7
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7)) {
-    return &SqGlobal<R&>::template Func7<A1, A2, A3, A4, A5, A6, A7, 2, false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7)) {
+    return &SqGlobal<R&>::template Memb7<A1, A2, A3, A4, A5, A6, A7, 2, false>;
 }
 
 // Arg Count 8
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8)) {
-    return &SqGlobal<R>::template Func8<A1, A2, A3, A4, A5, A6, A7, A8, 2, false>;
+SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8)) {
+    return &SqGlobal<R>::template Memb8<A1, A2, A3, A4, A5, A6, A7, A8, 2, false>;
 }
 
 // Arg Count 8
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8)) {
-    return &SqGlobal<R&>::template Func8<A1, A2, A3, A4, A5, A6, A7, A8, 2, false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8)) {
+    return &SqGlobal<R&>::template Memb8<A1, A2, A3, A4, A5, A6, A7, A8, 2, false>;
 }
 
 // Arg Count 9
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9)) {
-    return &SqGlobal<R>::template Func9<A1, A2, A3, A4, A5, A6, A7, A8, A9, 2, false>;
+SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9)) {
+    return &SqGlobal<R>::template Memb9<A1, A2, A3, A4, A5, A6, A7, A8, A9, 2, false>;
 }
 
 // Arg Count 9
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9)) {
-    return &SqGlobal<R&>::template Func9<A1, A2, A3, A4, A5, A6, A7, A8, A9, 2, false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9)) {
+    return &SqGlobal<R&>::template Memb9<A1, A2, A3, A4, A5, A6, A7, A8, A9, 2, false>;
 }
 
 // Arg Count 10
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)) {
-    return &SqGlobal<R>::template Func10<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, 2, false>;
+SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)) {
+    return &SqGlobal<R>::template Memb10<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, 2, false>;
 }
 
 // Arg Count 10
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)) {
-    return &SqGlobal<R&>::template Func10<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, 2, false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)) {
+    return &SqGlobal<R&>::template Memb10<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, 2, false>;
 }
 
 // Arg Count 11
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)) {
-    return &SqGlobal<R>::template Func11<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, 2, false>;
+SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)) {
+    return &SqGlobal<R>::template Memb11<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, 2, false>;
 }
 
 // Arg Count 11
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)) {
-    return &SqGlobal<R&>::template Func11<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, 2, false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)) {
+    return &SqGlobal<R&>::template Memb11<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, 2, false>;
 }
 
 // Arg Count 12
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)) {
-    return &SqGlobal<R>::template Func12<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, 2, false>;
+SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)) {
+    return &SqGlobal<R>::template Memb12<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, 2, false>;
 }
 
 // Arg Count 12
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)) {
-    return &SqGlobal<R&>::template Func12<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, 2, false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)) {
+    return &SqGlobal<R&>::template Memb12<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, 2, false>;
 }
 
 // Arg Count 13
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)) {
-    return &SqGlobal<R>::template Func13<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 2, false>;
+SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)) {
+    return &SqGlobal<R>::template Memb13<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 2, false>;
 }
 
 // Arg Count 13
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)) {
-    return &SqGlobal<R&>::template Func13<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 2, false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)) {
+    return &SqGlobal<R&>::template Memb13<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 2, false>;
 }
 
 // Arg Count 14
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14>
-SQFUNCTION SqGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)) {
-    return &SqGlobal<R>::template Func14<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, 2, false>;
+SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)) {
+    return &SqGlobal<R>::template Memb14<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, 2, false>;
 }
 
 // Arg Count 14
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14>
-SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)) {
-    return &SqGlobal<R&>::template Func14<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, 2, false>;
+SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)) {
+    return &SqGlobal<R&>::template Memb14<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, 2, false>;
 }
-
+#endif //#ifdef RAT_MANY_ARGS
 
 //
 // Member Global Function Resolvers
@@ -2209,171 +2330,181 @@ SQFUNCTION SqGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A1
 
 // Arg Count 1
 template <class R, class A1>
-SQFUNCTION SqMemberGlobalFunc(R (* /*method*/)(A1)) {
-    return &SqGlobal<R>::template Func1<A1, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1)) {
+    return &SqGlobal<R>::template Memb1<A1, 1, false>;
 }
 
 // Arg Count 1
 template <class R, class A1>
-SQFUNCTION SqMemberGlobalFunc(R& (* /*method*/)(A1)) {
-    return &SqGlobal<R&>::template Func1<A1, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1)) {
+    return &SqGlobal<R&>::template Memb1<A1, 1, false>;
 }
 
 // Arg Count 2
 template <class R, class A1, class A2>
-SQFUNCTION SqMemberGlobalFunc(R (* /*method*/)(A1, A2)) {
-    return &SqGlobal<R>::template Func2<A1, A2, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2)) {
+    return &SqGlobal<R>::template Memb2<A1, A2, 1, false>;
 }
 
 // Arg Count 2
 template <class R, class A1, class A2>
-SQFUNCTION SqMemberGlobalFunc(R& (* /*method*/)(A1, A2)) {
-    return &SqGlobal<R&>::template Func2<A1, A2, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1, A2)) {
+    return &SqGlobal<R&>::template Memb2<A1, A2, 1, false>;
 }
 
 // Arg Count 3
 template <class R, class A1, class A2, class A3>
-SQFUNCTION SqMemberGlobalFunc(R (* /*method*/)(A1, A2, A3)) {
-    return &SqGlobal<R>::template Func3<A1, A2, A3, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2, A3)) {
+    return &SqGlobal<R>::template Memb3<A1, A2, A3, 1, false>;
 }
 
 // Arg Count 3
 template <class R, class A1, class A2, class A3>
-SQFUNCTION SqMemberGlobalFunc(R& (* /*method*/)(A1, A2, A3)) {
-    return &SqGlobal<R&>::template Func3<A1, A2, A3, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1, A2, A3)) {
+    return &SqGlobal<R&>::template Memb3<A1, A2, A3, 1, false>;
 }
 
 // Arg Count 4
 template <class R, class A1, class A2, class A3, class A4>
-SQFUNCTION SqMemberGlobalFunc(R (* /*method*/)(A1, A2, A3, A4)) {
-    return &SqGlobal<R>::template Func4<A1, A2, A3, A4, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2, A3, A4)) {
+    return &SqGlobal<R>::template Memb4<A1, A2, A3, A4, 1, false>;
 }
 
 // Arg Count 4
 template <class R, class A1, class A2, class A3, class A4>
-SQFUNCTION SqMemberGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4)) {
-    return &SqGlobal<R&>::template Func4<A1, A2, A3, A4, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4)) {
+    return &SqGlobal<R&>::template Memb4<A1, A2, A3, A4, 1, false>;
 }
 
 // Arg Count 5
 template <class R, class A1, class A2, class A3, class A4, class A5>
-SQFUNCTION SqMemberGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5)) {
-    return &SqGlobal<R>::template Func5<A1, A2, A3, A4, A5, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5)) {
+    return &SqGlobal<R>::template Memb5<A1, A2, A3, A4, A5, 1, false>;
 }
 
 // Arg Count 5
 template <class R, class A1, class A2, class A3, class A4, class A5>
-SQFUNCTION SqMemberGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5)) {
-    return &SqGlobal<R&>::template Func5<A1, A2, A3, A4, A5, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5)) {
+    return &SqGlobal<R&>::template Memb5<A1, A2, A3, A4, A5, 1, false>;
+}
+
+#ifdef RAT_MANY_ARGS
+// Arg Count 6
+template <class R, class A1, class A2, class A3, class A4, class A5, class A6>
+SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6)) {
+    return &SqGlobal<R>::template Memb6<A1, A2, A3, A4, A5, A6, 1, false>;
 }
 
 // Arg Count 6
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6>
-SQFUNCTION SqMemberGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6)) {
-    return &SqGlobal<R>::template Func6<A1, A2, A3, A4, A5, A6, 1, false>;
-}
-
-// Arg Count 6
-template <class R, class A1, class A2, class A3, class A4, class A5, class A6>
-SQFUNCTION SqMemberGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6)) {
-    return &SqGlobal<R&>::template Func6<A1, A2, A3, A4, A5, A6, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6)) {
+    return &SqGlobal<R&>::template Memb6<A1, A2, A3, A4, A5, A6, 1, false>;
 }
 
 // Arg Count 7
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
-SQFUNCTION SqMemberGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7)) {
-    return &SqGlobal<R>::template Func7<A1, A2, A3, A4, A5, A6, A7, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7)) {
+    return &SqGlobal<R>::template Memb7<A1, A2, A3, A4, A5, A6, A7, 1, false>;
 }
 
 // Arg Count 7
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
-SQFUNCTION SqMemberGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7)) {
-    return &SqGlobal<R&>::template Func7<A1, A2, A3, A4, A5, A6, A7, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7)) {
+    return &SqGlobal<R&>::template Memb7<A1, A2, A3, A4, A5, A6, A7, 1, false>;
 }
 
 // Arg Count 8
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
-SQFUNCTION SqMemberGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8)) {
-    return &SqGlobal<R>::template Func8<A1, A2, A3, A4, A5, A6, A7, A8, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8)) {
+    return &SqGlobal<R>::template Memb8<A1, A2, A3, A4, A5, A6, A7, A8, 1, false>;
 }
 
 // Arg Count 8
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
-SQFUNCTION SqMemberGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8)) {
-    return &SqGlobal<R&>::template Func8<A1, A2, A3, A4, A5, A6, A7, A8, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8)) {
+    return &SqGlobal<R&>::template Memb8<A1, A2, A3, A4, A5, A6, A7, A8, 1, false>;
 }
 
 // Arg Count 9
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
-SQFUNCTION SqMemberGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9)) {
-    return &SqGlobal<R>::template Func9<A1, A2, A3, A4, A5, A6, A7, A8, A9, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9)) {
+    return &SqGlobal<R>::template Memb9<A1, A2, A3, A4, A5, A6, A7, A8, A9, 1, false>;
 }
 
 // Arg Count 9
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
-SQFUNCTION SqMemberGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9)) {
-    return &SqGlobal<R&>::template Func9<A1, A2, A3, A4, A5, A6, A7, A8, A9, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9)) {
+    return &SqGlobal<R&>::template Memb9<A1, A2, A3, A4, A5, A6, A7, A8, A9, 1, false>;
 }
 
 // Arg Count 10
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10>
-SQFUNCTION SqMemberGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)) {
-    return &SqGlobal<R>::template Func10<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)) {
+    return &SqGlobal<R>::template Memb10<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, 1, false>;
 }
 
 // Arg Count 10
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10>
-SQFUNCTION SqMemberGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)) {
-    return &SqGlobal<R&>::template Func10<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)) {
+    return &SqGlobal<R&>::template Memb10<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, 1, false>;
 }
 
 // Arg Count 11
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11>
-SQFUNCTION SqMemberGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)) {
-    return &SqGlobal<R>::template Func11<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)) {
+    return &SqGlobal<R>::template Memb11<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, 1, false>;
 }
 
 // Arg Count 11
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11>
-SQFUNCTION SqMemberGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)) {
-    return &SqGlobal<R&>::template Func11<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)) {
+    return &SqGlobal<R&>::template Memb11<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, 1, false>;
 }
 
 // Arg Count 12
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12>
-SQFUNCTION SqMemberGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)) {
-    return &SqGlobal<R>::template Func12<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)) {
+    return &SqGlobal<R>::template Memb12<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, 1, false>;
 }
 
 // Arg Count 12
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12>
-SQFUNCTION SqMemberGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)) {
-    return &SqGlobal<R&>::template Func12<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)) {
+    return &SqGlobal<R&>::template Memb12<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, 1, false>;
 }
 
 // Arg Count 13
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13>
-SQFUNCTION SqMemberGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)) {
-    return &SqGlobal<R>::template Func13<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)) {
+    return &SqGlobal<R>::template Memb13<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 1, false>;
 }
 
 // Arg Count 13
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13>
-SQFUNCTION SqMemberGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)) {
-    return &SqGlobal<R&>::template Func13<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)) {
+    return &SqGlobal<R&>::template Memb13<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 1, false>;
 }
 
 // Arg Count 14
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14>
-SQFUNCTION SqMemberGlobalFunc(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)) {
-    return &SqGlobal<R>::template Func14<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, 1, false>;
+SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)) {
+    return &SqGlobal<R>::template Memb14<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, 1, false>;
+}
+#endif // RAT_MANY_ARGS
+
+
+// Arg Count X mco-mco get for FUNC the SQFUNC
+template <class R>
+SQFUNCTION_RT SqGlobalMembRt(R& (* /*method*/)()) {
+    return &SqGlobal<R&>::template MembX<1,false>;
 }
 
-// Arg Count 14
-template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14>
-SQFUNCTION SqMemberGlobalFunc(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)) {
-    return &SqGlobal<R&>::template Func14<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, 1, false>;
+// Arg Count X
+template <class R>
+SQFUNCTION_RT SqGlobalMembRt(R (* /*method*/)()) {
+    return &SqGlobal<R>::template MembX<1,false>;
 }
+
 
 /// @endcond
 

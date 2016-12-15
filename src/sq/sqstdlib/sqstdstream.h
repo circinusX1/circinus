@@ -2,17 +2,17 @@
 #ifndef _SQSTD_STREAM_H_
 #define _SQSTD_STREAM_H_
 
-SQInteger _stream_readblob(HSQUIRRELVM v);
-SQInteger _stream_readline(HSQUIRRELVM v);
-SQInteger _stream_readn(HSQUIRRELVM v);
-SQInteger _stream_writeblob(HSQUIRRELVM v);
-SQInteger _stream_writen(HSQUIRRELVM v);
-SQInteger _stream_seek(HSQUIRRELVM v);
-SQInteger _stream_tell(HSQUIRRELVM v);
-SQInteger _stream_len(HSQUIRRELVM v);
-SQInteger _stream_eos(HSQUIRRELVM v);
-SQInteger _stream_flush(HSQUIRRELVM v);
+int _stream_readblob(HSKVM v);
+int _stream_readline(HSKVM v);
+int _stream_readn(HSKVM v);
+int _stream_writeblob(HSKVM v);
+int _stream_writen(HSKVM v);
+int _stream_seek(HSKVM v);
+int _stream_tell(HSKVM v);
+int _stream_len(HSKVM v);
+int _stream_eos(HSKVM v);
+int _stream_flush(HSKVM v);
 
 #define _DECL_STREAM_FUNC(name,nparams,typecheck) {_SC(#name),_stream_##name,nparams,typecheck}
-SQRESULT declare_stream(HSQUIRRELVM v,const SQChar* name,SQUserPointer typetag,const SQChar* reg_name,const SQRegFunction *methods,const SQRegFunction *globals);
+SQRESULT declare_stream(HSKVM v,const SQChar* name,PVOID typetag,const SQChar* reg_name,const SQRegFunction *methods,const SQRegFunction *globals);
 #endif /*_SQSTD_STREAM_H_*/

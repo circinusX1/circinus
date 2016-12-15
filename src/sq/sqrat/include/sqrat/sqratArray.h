@@ -30,7 +30,7 @@
 
 #include <squirrel.h>
 #include <string.h>
-
+#include "sqr_imp_exp.h"
 #include "sqratObject.h"
 #include "sqratFunction.h"
 #include "sqratGlobalMethods.h"
@@ -49,7 +49,7 @@ public:
     /// \param v VM that the array will exist in
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ArrayBase(HSQUIRRELVM v = DefaultVM::Get()) : Object(v, true) {
+    ArrayBase(HSKVM v = DefaultVM::Get()) : Object(v, true) {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,13 +62,13 @@ public:
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// Construct the ArrayBase from a HSQOBJECT and HSQUIRRELVM that already exist
+    /// Construct the ArrayBase from a HSQOBJECT and HSKVM that already exist
     ///
     /// \param o Squirrel object that should already represent a Squirrel array
     /// \param v Squirrel VM that contains the Squirrel object given
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ArrayBase(HSQOBJECT o, HSQUIRRELVM v = DefaultVM::Get()) : Object(o, v) {
+    ArrayBase(HSQOBJECT o, HSKVM v = DefaultVM::Get()) : Object(o, v) {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,12 +81,12 @@ public:
     /// Bind cannot be called "inline" like other functions because it introduces order-of-initialization bugs.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void Bind(const SQInteger index, Object& obj) {
-        sq_pushobject(vm, GetObject());
-        sq_pushinteger(vm, index);
-        sq_pushobject(vm, obj.GetObject());
-        sq_set(vm, -3);
-        sq_pop(vm,1); // pop array
+    void Bind(const int index, Object& obj) {
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->pushinteger(vm, index);
+        SQ_PTRS->pushobject(vm, obj.GetObject());
+        SQ_PTRS->set(vm, -3);
+        SQ_PTRS->pop(vm,1); // pop array
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,12 +98,12 @@ public:
     /// \return The Array itself so the call can be chained
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ArrayBase& SquirrelFunc(const SQInteger index, SQFUNCTION func) {
-        sq_pushobject(vm, GetObject());
-        sq_pushinteger(vm, index);
-        sq_newclosure(vm, func, 0);
-        sq_set(vm, -3);
-        sq_pop(vm,1); // pop array
+    ArrayBase& SquirrelMemb(const int index, SQFUNCTION func) {
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->pushinteger(vm, index);
+        SQ_PTRS->newclosure(vm, func, 0, 0);
+        SQ_PTRS->set(vm, -3);
+        SQ_PTRS->pop(vm,1); // pop array
         return *this;
     }
 
@@ -119,12 +119,12 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class V>
-    ArrayBase& SetValue(const SQInteger index, const V& val) {
-        sq_pushobject(vm, GetObject());
-        sq_pushinteger(vm, index);
+    ArrayBase& SetValue(const int index, const V& val) {
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->pushinteger(vm, index);
         PushVar(vm, val);
-        sq_set(vm, -3);
-        sq_pop(vm,1); // pop array
+        SQ_PTRS->set(vm, -3);
+        SQ_PTRS->pop(vm,1); // pop array
         return *this;
     }
 
@@ -140,7 +140,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class V>
-    ArrayBase& SetInstance(const SQInteger index, V* val) {
+    ArrayBase& SetInstance(const int index, V* val) {
         BindInstance<V>(index, val, false);
         return *this;
     }
@@ -157,8 +157,8 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class F>
-    ArrayBase& Func(const SQInteger index, F method) {
-        BindFunc(index, &method, sizeof(method), SqGlobalFunc(method));
+    ArrayBase& Functor(const int index, F method) {
+        BindMemb(index, &method, sizeof(method), SqGlobalMemb(method));
         return *this;
     }
 
@@ -178,30 +178,30 @@ public:
     template <typename T>
     SharedPtr<T> GetValue(int index)
     {
-        sq_pushobject(vm, obj);
-        sq_pushinteger(vm, index);
+        SQ_PTRS->pushobject(vm, obj);
+        SQ_PTRS->pushinteger(vm, index);
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (SQ_FAILED(sq_get(vm, -2))) {
-            sq_pop(vm, 1);
+        if (SQ_FAILED(SQ_PTRS->get(vm, -2))) {
+            SQ_PTRS->pop(vm, 1);
             SQTHROW(vm, _SC("illegal index"));
             return SharedPtr<T>();
         }
 #else
-        sq_get(vm, -2);
+        SQ_PTRS->get(vm, -2);
 #endif
         SQTRY()
         Var<SharedPtr<T> > element(vm, -1);
         SQCATCH_NOEXCEPT(vm) {
-            sq_pop(vm, 2);
+            SQ_PTRS->pop(vm, 2);
             return SharedPtr<T>();
         }
-        sq_pop(vm, 2);
+        SQ_PTRS->pop(vm, 2);
         return element.value;
         SQCATCH(vm) {
 #if defined (SCRAT_USE_EXCEPTIONS)
             SQUNUSED(e); // avoid "unreferenced local variable" warning
 #endif
-            sq_pop(vm, 2);
+            SQ_PTRS->pop(vm, 2);
             SQRETHROW(vm);
         }
         return SharedPtr<T>(); // avoid "not all control paths return a value" warning
@@ -215,26 +215,26 @@ public:
     /// \return Function found in the Array (null if failed)
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Function GetFunction(const SQInteger index) {
+    Function GetFunction(const int index) {
         HSQOBJECT funcObj;
-        sq_pushobject(vm, GetObject());
-        sq_pushinteger(vm, index);
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->pushinteger(vm, index);
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if(SQ_FAILED(sq_get(vm, -2))) {
-            sq_pop(vm, 1);
+        if(SQ_FAILED(SQ_PTRS->get(vm, -2))) {
+            SQ_PTRS->pop(vm, 1);
             return Function();
         }
-        SQObjectType value_type = sq_gettype(vm, -1);
+        SQObjectType value_type = SQ_PTRS->gettype(vm, -1);
         if (value_type != OT_CLOSURE && value_type != OT_NATIVECLOSURE) {
-            sq_pop(vm, 2);
+            SQ_PTRS->pop(vm, 2);
             return Function();
         }
 #else
-        sq_get(vm, -2);
+        SQ_PTRS->get(vm, -2);
 #endif
-        sq_getstackobj(vm, -1, &funcObj);
+        SQ_PTRS->getstackobj(vm, -1, &funcObj);
         Function ret(vm, GetObject(), funcObj); // must addref before the pop!
-        sq_pop(vm, 2);
+        SQ_PTRS->pop(vm, 2);
         return ret;
     }
 
@@ -254,36 +254,36 @@ public:
     void GetArray(T* array, int size)
     {
         HSQOBJECT value = GetObject();
-        sq_pushobject(vm, value);
+        SQ_PTRS->pushobject(vm, value);
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if (size > sq_getsize(vm, -1)) {
-            sq_pop(vm, 1);
+        if (size > SQ_PTRS->getsize(vm, -1)) {
+            SQ_PTRS->pop(vm, 1);
             SQTHROW(vm, _SC("array buffer size too big"));
             return;
         }
 #endif
-        sq_pushnull(vm);
-        SQInteger i;
-        while (SQ_SUCCEEDED(sq_next(vm, -2))) {
-            sq_getinteger(vm, -2, &i);
+        SQ_PTRS->pushnull(vm);
+        int i;
+        while (SQ_SUCCEEDED(SQ_PTRS->next(vm, -2))) {
+            SQ_PTRS->getinteger(vm, -2, &i);
             if (i >= size) break;
             SQTRY()
             Var<const T&> element(vm, -1);
             SQCATCH_NOEXCEPT(vm) {
-                sq_pop(vm, 4);
+                SQ_PTRS->pop(vm, 4);
                 return;
             }
-            sq_pop(vm, 2);
+            SQ_PTRS->pop(vm, 2);
             array[i] = element.value;
             SQCATCH(vm) {
 #if defined (SCRAT_USE_EXCEPTIONS)
                 SQUNUSED(e); // avoid "unreferenced local variable" warning
 #endif
-                sq_pop(vm, 4);
+                SQ_PTRS->pop(vm, 4);
                 SQRETHROW(vm);
             }
         }
-        sq_pop(vm, 2); // pops the null iterator and the array object
+        SQ_PTRS->pop(vm, 2); // pops the null iterator and the array object
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -298,10 +298,10 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class V>
     ArrayBase& Append(const V& val) {
-        sq_pushobject(vm, GetObject());
+        SQ_PTRS->pushobject(vm, GetObject());
         PushVar(vm, val);
-        sq_arrayappend(vm, -2);
-        sq_pop(vm,1); // pop array
+        SQ_PTRS->arrayappend(vm, -2);
+        SQ_PTRS->pop(vm,1); // pop array
         return *this;
     }
 
@@ -317,10 +317,10 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class V>
     ArrayBase& Append(V* val) {
-        sq_pushobject(vm, GetObject());
+        SQ_PTRS->pushobject(vm, GetObject());
         PushVar(vm, val);
-        sq_arrayappend(vm, -2);
-        sq_pop(vm,1); // pop array
+        SQ_PTRS->arrayappend(vm, -2);
+        SQ_PTRS->pop(vm,1); // pop array
         return *this;
     }
 
@@ -336,11 +336,11 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class V>
-    ArrayBase& Insert(const SQInteger destpos, const V& val) {
-        sq_pushobject(vm, GetObject());
+    ArrayBase& Insert(const int destpos, const V& val) {
+        SQ_PTRS->pushobject(vm, GetObject());
         PushVar(vm, val);
-        sq_arrayinsert(vm, -2, destpos);
-        sq_pop(vm,1); // pop array
+        SQ_PTRS->arrayinsert(vm, -2, destpos);
+        SQ_PTRS->pop(vm,1); // pop array
         return *this;
     }
 
@@ -356,11 +356,11 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class V>
-    ArrayBase& Insert(const SQInteger destpos, V* val) {
-        sq_pushobject(vm, GetObject());
+    ArrayBase& Insert(const int destpos, V* val) {
+        SQ_PTRS->pushobject(vm, GetObject());
         PushVar(vm, val);
-        sq_arrayinsert(vm, -2, destpos);
-        sq_pop(vm,1); // pop array
+        SQ_PTRS->arrayinsert(vm, -2, destpos);
+        SQ_PTRS->pop(vm,1); // pop array
         return *this;
     }
 
@@ -372,14 +372,14 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Object Pop() {
         HSQOBJECT slotObj;
-        sq_pushobject(vm, GetObject());
-        if(SQ_FAILED(sq_arraypop(vm, -1, true))) {
-            sq_pop(vm, 1);
+        SQ_PTRS->pushobject(vm, GetObject());
+        if(SQ_FAILED(SQ_PTRS->arraypop(vm, -1, true))) {
+            SQ_PTRS->pop(vm, 1);
             return Object(); // Return a NULL object
         } else {
-            sq_getstackobj(vm, -1, &slotObj);
+            SQ_PTRS->getstackobj(vm, -1, &slotObj);
             Object ret(slotObj, vm);
-            sq_pop(vm, 2);
+            SQ_PTRS->pop(vm, 2);
             return ret;
         }
     }
@@ -392,10 +392,10 @@ public:
     /// \return The Array itself so the call can be chained
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ArrayBase& Remove(const SQInteger itemidx) {
-        sq_pushobject(vm, GetObject());
-        sq_arrayremove(vm, -1, itemidx);
-        sq_pop(vm,1); // pop array
+    ArrayBase& Remove(const int itemidx) {
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->arrayremove(vm, -1, itemidx);
+        SQ_PTRS->pop(vm,1); // pop array
         return *this;
     }
 
@@ -407,10 +407,10 @@ public:
     /// \return The Array itself so the call can be chained
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ArrayBase& Resize(const SQInteger newsize) {
-        sq_pushobject(vm, GetObject());
-        sq_arrayresize(vm, -1, newsize);
-        sq_pop(vm,1); // pop array
+    ArrayBase& Resize(const int newsize) {
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->arrayresize(vm, -1, newsize);
+        SQ_PTRS->pop(vm,1); // pop array
         return *this;
     }
 
@@ -421,9 +421,9 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ArrayBase& Reverse() {
-        sq_pushobject(vm, GetObject());
-        sq_arrayreverse(vm, -1);
-        sq_pop(vm,1); // pop array
+        SQ_PTRS->pushobject(vm, GetObject());
+        SQ_PTRS->arrayreverse(vm, -1);
+        SQ_PTRS->pop(vm,1); // pop array
         return *this;
     }
 
@@ -433,11 +433,11 @@ public:
     /// \return Length in number of elements
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    SQInteger Length() const
+    int Length() const
     {
-        sq_pushobject(vm, obj);
-        SQInteger r = sq_getsize(vm, -1);
-        sq_pop(vm, 1);
+        SQ_PTRS->pushobject(vm, obj);
+        int r = SQ_PTRS->getsize(vm, -1);
+        SQ_PTRS->pop(vm, 1);
         return r;
     }
 };
@@ -465,11 +465,11 @@ public:
     /// \param size An optional size hint
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Array(HSQUIRRELVM v, const SQInteger size = 0) : ArrayBase(v) {
-        sq_newarray(vm, size);
-        sq_getstackobj(vm,-1,&obj);
-        sq_addref(vm, &obj);
-        sq_pop(vm,1);
+    Array(HSKVM v, const int size = 0) : ArrayBase(v) {
+        SQ_PTRS->newarray(vm, size);
+        SQ_PTRS->getstackobj(vm,-1,&obj);
+        SQ_PTRS->addref(vm, &obj);
+        SQ_PTRS->pop(vm,1);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -482,13 +482,13 @@ public:
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// Construct the Array from a HSQOBJECT and HSQUIRRELVM that already exist
+    /// Construct the Array from a HSQOBJECT and HSKVM that already exist
     ///
     /// \param o Squirrel object that should already represent a Squirrel array
     /// \param v Squirrel VM that contains the Squirrel object given
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Array(HSQOBJECT o, HSQUIRRELVM v = DefaultVM::Get()) : ArrayBase(o, v) {
+    Array(HSQOBJECT o, HSKVM v = DefaultVM::Get()) : ArrayBase(o, v) {
     }
 };
 
@@ -510,13 +510,13 @@ struct Var<Array> {
     /// This function MUST have its Error handled if it occurred.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSQUIRRELVM vm, SQInteger idx) {
+    Var(HSKVM vm, int idx) {
         HSQOBJECT obj;
-        sq_resetobject(&obj);
-        sq_getstackobj(vm,idx,&obj);
+        SQ_PTRS->resetobject(&obj);
+        SQ_PTRS->getstackobj(vm,idx,&obj);
         value = Array(obj, vm);
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        SQObjectType value_type = sq_gettype(vm, idx);
+        SQObjectType value_type = SQ_PTRS->gettype(vm, idx);
         if (value_type != OT_ARRAY) {
             SQTHROW(vm, FormatTypeError(vm, idx, _SC("array")));
         }
@@ -530,11 +530,11 @@ struct Var<Array> {
     /// \param value Value to push on to the VM's stack
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void push(HSQUIRRELVM vm, const Array& value) {
+    static void push(HSKVM vm, const Array& value) {
         HSQOBJECT obj;
-        sq_resetobject(&obj);
+        SQ_PTRS->resetobject(&obj);
         obj = value.GetObject();
-        sq_pushobject(vm,obj);
+        SQ_PTRS->pushobject(vm,obj);
     }
 };
 
@@ -542,13 +542,13 @@ struct Var<Array> {
 /// Used to get and push Array instances to and from the stack as references (arrays are always references in Squirrel)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-struct Var<Array&> : Var<Array> {Var(HSQUIRRELVM vm, SQInteger idx) : Var<Array>(vm, idx) {}};
+struct Var<Array&> : Var<Array> {Var(HSKVM vm, int idx) : Var<Array>(vm, idx) {}};
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Used to get and push Array instances to and from the stack as references (arrays are always references in Squirrel)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-struct Var<const Array&> : Var<Array> {Var(HSQUIRRELVM vm, SQInteger idx) : Var<Array>(vm, idx) {}};
+struct Var<const Array&> : Var<Array> {Var(HSKVM vm, int idx) : Var<Array>(vm, idx) {}};
 
 }
 

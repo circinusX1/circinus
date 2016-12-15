@@ -31,7 +31,7 @@
 #include <typeinfo>
 #include <squirrel.h>
 #include <string.h>
-
+#include "sqr_imp_exp.h"
 #include "sqratObject.h"
 #include "sqratClassType.h"
 #include "sqratMemberMethods.h"
@@ -45,12 +45,12 @@ namespace Sqrat
 /// Facilitates exposing a C++ class with no base class to Squirrel
 ///
 /// \tparam C Class type to expose
-/// \tparam A An allocator to use when instantiating and destroying class instances of this type in Squirrel
+/// \tparam A An allc to use when instantiating and destroying class instances of this type in Squirrel
 ///
 /// \remarks
-/// DefaultAllocator is used if no allocator is specified. This should be sufficent for most classes,
+/// DefaultAllocator is used if no allc is specified. This should be sufficent for most classes,
 /// but if specific behavior is desired, it can be overridden. If the class should not be instantiated from
-/// Squirrel the NoConstructor allocator may be used. See NoCopy and CopyOnly too.
+/// Squirrel the NoConstructor allc may be used. See NoCopy and CopyOnly too.
 ///
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<class C, class A = DefaultAllocator<C> >
@@ -58,7 +58,7 @@ class Class : public Object
 {
 private:
 
-    static SQInteger cleanup_hook(SQUserPointer ptr, SQInteger size) {
+    static int cleanup_hook(PVOID ptr, int size) {
         SQUNUSED(size);
         ClassData<C>** ud = reinterpret_cast<ClassData<C>**>(ptr);
         delete *ud;
@@ -72,7 +72,7 @@ public:
     ///
     /// A Class object doesnt do anything on its own.
     /// It must be told what methods and variables it contains.
-    /// This is done using Class methods such as Class::Func and Class::Var.
+    /// This is done using Class methods such as Class::Functor and Class::Var.
     /// Then the Class must be exposed to Squirrel.
     /// This is usually done by calling TableBase::Bind on a RootTable with the Class.
     ///
@@ -81,28 +81,28 @@ public:
     /// \param createClass Should class type data be created? (almost always should be true - don't worry about it)
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Class(HSQUIRRELVM v, const string& className, bool createClass = true) : Object(v, false) {
+    Class(HSKVM v, const string& className, bool createClass = true) : Object(v, false) {
         if (createClass && !ClassType<C>::hasClassData(v)) {
-            sq_pushregistrytable(v);
-            sq_pushstring(v, "__classes", -1);
-            if (SQ_FAILED(sq_rawget(v, -2))) {
-                sq_newtable(v);
-                sq_pushstring(v, "__classes", -1);
-                sq_push(v, -2);
-                sq_rawset(v, -4);
+            SQ_PTRS->pushregistrytable(v);
+            SQ_PTRS->pushstring(v, "__classes", -1);
+            if (SQ_FAILED(SQ_PTRS->rawget(v, -2))) {
+                SQ_PTRS->newtable(v);
+                SQ_PTRS->pushstring(v, "__classes", -1);
+                SQ_PTRS->push(v, -2);
+                SQ_PTRS->rawset(v, -4);
             }
-            sq_pushstring(v, className.c_str(), -1);
-            ClassData<C>** ud = reinterpret_cast<ClassData<C>**>(sq_newuserdata(v, sizeof(ClassData<C>*)));
+            SQ_PTRS->pushstring(v, className.c_str(), -1);
+            ClassData<C>** ud = reinterpret_cast<ClassData<C>**>(SQ_PTRS->newuserdata(v, sizeof(ClassData<C>*)));
             *ud = new ClassData<C>;
-            sq_setreleasehook(v, -1, &cleanup_hook);
-            sq_rawset(v, -3);
-            sq_pop(v, 2);
+            SQ_PTRS->setreleasehook(v, -1, &cleanup_hook);
+            SQ_PTRS->rawset(v, -3);
+            SQ_PTRS->pop(v, 2);
 
             ClassData<C>* cd = *ud;
 
             if (ClassType<C>::getStaticClassData().Expired()) {
                 cd->staticData.Init(new StaticClassData<C, void>);
-                cd->staticData->copyFunc  = &A::Copy;
+                cd->staticData->copyMemb  = &A::Copy;
                 cd->staticData->className = string(className);
                 cd->staticData->baseClass = NULL;
 
@@ -112,12 +112,12 @@ public:
             }
 
             HSQOBJECT& classObj = cd->classObj;
-            sq_resetobject(&classObj);
+            SQ_PTRS->resetobject(&classObj);
 
-            sq_newclass(v, false);
-            sq_getstackobj(v, -1, &classObj);
-            sq_addref(v, &classObj); // must addref before the pop!
-            sq_pop(v, 1);
+            SQ_PTRS->newclass(v, false);
+            SQ_PTRS->getstackobj(v, -1, &classObj);
+            SQ_PTRS->addref(v, &classObj); // must addref before the pop!
+            SQ_PTRS->pop(v, 1);
             InitClass(cd);
         }
     }
@@ -284,12 +284,12 @@ public:
 
         if(getMethod != NULL) {
             // Add the getter
-            BindAccessor(name, &getMethod, sizeof(getMethod), SqMemberOverloadedFunc(getMethod), cd->getTable);
+            BindAccessor(name, &getMethod, sizeof(getMethod), SqMemberOverloadedMemb(getMethod), cd->getTable);
         }
 
         if(setMethod != NULL) {
             // Add the setter
-            BindAccessor(name, &setMethod, sizeof(setMethod), SqMemberOverloadedFunc(setMethod), cd->setTable);
+            BindAccessor(name, &setMethod, sizeof(setMethod), SqMemberOverloadedMemb(setMethod), cd->setTable);
         }
 
         return *this;
@@ -317,12 +317,12 @@ public:
 
         if(getMethod != NULL) {
             // Add the getter
-            BindAccessor(name, &getMethod, sizeof(getMethod), SqMemberGlobalOverloadedFunc(getMethod), cd->getTable);
+            BindAccessor(name, &getMethod, sizeof(getMethod), SqMemberGlobalOverloadedMemb(getMethod), cd->getTable);
         }
 
         if(setMethod != NULL) {
             // Add the setter
-            BindAccessor(name, &setMethod, sizeof(setMethod), SqMemberGlobalOverloadedFunc(setMethod), cd->setTable);
+            BindAccessor(name, &setMethod, sizeof(setMethod), SqMemberGlobalOverloadedMemb(setMethod), cd->setTable);
         }
 
         return *this;
@@ -345,7 +345,7 @@ public:
     template<class F>
     Class& Prop(const SQChar* name, F getMethod) {
         // Add the getter
-        BindAccessor(name, &getMethod, sizeof(getMethod), SqMemberOverloadedFunc(getMethod), ClassType<C>::getClassData(vm)->getTable);
+        BindAccessor(name, &getMethod, sizeof(getMethod), SqMemberOverloadedMemb(getMethod), ClassType<C>::getClassData(vm)->getTable);
 
         return *this;
     }
@@ -367,7 +367,7 @@ public:
     template<class F>
     Class& GlobalProp(const SQChar* name, F getMethod) {
         // Add the getter
-        BindAccessor(name, &getMethod, sizeof(getMethod), SqMemberGlobalOverloadedFunc(getMethod), ClassType<C>::getClassData(vm)->getTable);
+        BindAccessor(name, &getMethod, sizeof(getMethod), SqMemberGlobalOverloadedMemb(getMethod), ClassType<C>::getClassData(vm)->getTable);
 
         return *this;
     }
@@ -384,11 +384,17 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class F>
-    Class& Func(const SQChar* name, F method) {
-        BindFunc(name, &method, sizeof(method), SqMemberFunc(method));
+    Class& Functor(const SQChar* name, F method) {
+        BindMemb(name, &method, sizeof(method), SqMemberMemb(method));
         return *this;
     }
 
+
+    template<class F, class B>
+    Class& Membb(const SQChar* name, B method) {
+        BindMemb(name, &method, sizeof(method), SqMemberMemb(method));
+        return *this;
+    }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// Binds a class function with overloading enabled
     ///
@@ -406,7 +412,7 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class F>
     Class& Overload(const SQChar* name, F method) {
-        BindOverload(name, &method, sizeof(method), SqMemberOverloadedFunc(method), SqOverloadFunc(method), SqGetArgCount(method));
+        BindOverload(name, &method, sizeof(method), SqMemberOverloadedMemb(method), SqOverloadMemb(method), SqGetArgCount(method));
         return *this;
     }
 
@@ -422,8 +428,8 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class F>
-    Class& GlobalFunc(const SQChar* name, F method) {
-        BindFunc(name, &method, sizeof(method), SqMemberGlobalFunc(method));
+    Class& GlobalMemb(const SQChar* name, F method) {
+        BindMemb(name, &method, sizeof(method), SqMemberGlobalMemb(method));
         return *this;
     }
 
@@ -439,8 +445,8 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class F>
-    Class& StaticFunc(const SQChar* name, F method) {
-        BindFunc(name, &method, sizeof(method), SqGlobalFunc(method));
+    Class& StaticMemb(const SQChar* name, F method) {
+        BindMemb(name, &method, sizeof(method), SqGlobalMemb(method));
         return *this;
     }
 
@@ -461,7 +467,7 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class F>
     Class& GlobalOverload(const SQChar* name, F method) {
-        BindOverload(name, &method, sizeof(method), SqMemberGlobalOverloadedFunc(method), SqOverloadFunc(method), SqGetArgCount(method) - 1);
+        BindOverload(name, &method, sizeof(method), SqMemberGlobalOverloadedMemb(method), SqOverloadMemb(method), SqGetArgCount(method) - 1);
         return *this;
     }
 
@@ -482,7 +488,7 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class F>
     Class& StaticOverload(const SQChar* name, F method) {
-        BindOverload(name, &method, sizeof(method), SqGlobalOverloadedFunc(method), SqOverloadFunc(method), SqGetArgCount(method));
+        BindOverload(name, &method, sizeof(method), SqGlobalOverloadedMemb(method), SqOverloadMemb(method), SqGetArgCount(method));
         return *this;
     }
 
@@ -499,12 +505,12 @@ public:
     /// stack and all arguments will be after that index in the order they were given to the function.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Class& SquirrelFunc(const SQChar* name, SQFUNCTION func) {
-        sq_pushobject(vm, ClassType<C>::getClassData(vm)->classObj);
-        sq_pushstring(vm, name, -1);
-        sq_newclosure(vm, func, 0);
-        sq_newslot(vm, -3, false);
-        sq_pop(vm, 1); // pop table
+    Class& SquirrelMemb(const SQChar* name, SQFUNCTION func) {
+        SQ_PTRS->pushobject(vm, ClassType<C>::getClassData(vm)->classObj);
+        SQ_PTRS->pushstring(vm, name, -1);
+        SQ_PTRS->newclosure(vm, func, 0);
+        SQ_PTRS->newslot(vm, -3, false);
+        SQ_PTRS->pop(vm, 1); // pop table
 
         return *this;
     }
@@ -520,24 +526,24 @@ public:
     Function GetFunction(const SQChar* name) {
         ClassData<C>* cd = ClassType<C>::getClassData(vm);
         HSQOBJECT funcObj;
-        sq_pushobject(vm, cd->classObj);
-        sq_pushstring(vm, name, -1);
+        SQ_PTRS->pushobject(vm, cd->classObj);
+        SQ_PTRS->pushstring(vm, name, -1);
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if(SQ_FAILED(sq_get(vm, -2))) {
-            sq_pop(vm, 1);
+        if(SQ_FAILED(SQ_PTRS->get(vm, -2))) {
+            SQ_PTRS->pop(vm, 1);
             return Function();
         }
-        SQObjectType value_type = sq_gettype(vm, -1);
+        SQObjectType value_type = SQ_PTRS->gettype(vm, -1);
         if (value_type != OT_CLOSURE && value_type != OT_NATIVECLOSURE) {
-            sq_pop(vm, 2);
+            SQ_PTRS->pop(vm, 2);
             return Function();
         }
 #else
-        sq_get(vm, -2);
+        SQ_PTRS->get(vm, -2);
 #endif
-        sq_getstackobj(vm, -1, &funcObj);
+        SQ_PTRS->getstackobj(vm, -1, &funcObj);
         Function ret(vm, cd->classObj, funcObj); // must addref before the pop!
-        sq_pop(vm, 2);
+        SQ_PTRS->pop(vm, 2);
         return ret;
     }
 
@@ -545,17 +551,17 @@ protected:
 
 /// @cond DEV
 
-    static SQInteger ClassWeakref(HSQUIRRELVM vm) {
-        sq_weakref(vm, -1);
+    static int ClassWeakref(HSKVM vm) {
+        SQ_PTRS->weakref(vm, -1);
         return 1;
     }
 
-    static SQInteger ClassTypeof(HSQUIRRELVM vm) {
-        sq_pushstring(vm, ClassType<C>::ClassName().c_str(), -1);
+    static int ClassTypeof(HSKVM vm) {
+        SQ_PTRS->pushstring(vm, ClassType<C>::ClassName().c_str(), -1);
         return 1;
     }
 
-    static SQInteger ClassCloned(HSQUIRRELVM vm) {
+    static int ClassCloned(HSKVM vm) {
         SQTRY()
         Sqrat::Var<const C*> other(vm, 2);
         SQCATCH_NOEXCEPT(vm) {
@@ -563,9 +569,9 @@ protected:
             return SQ_ERROR;
         }
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        return ClassType<C>::CopyFunc()(vm, 1, other.value);
+        return ClassType<C>::CopyMemb()(vm, 1, other.value);
 #else
-        ClassType<C>::CopyFunc()(vm, 1, other.value);
+        ClassType<C>::CopyMemb()(vm, 1, other.value);
         return 0;
 #endif
         SQCATCH(vm) {
@@ -581,88 +587,88 @@ protected:
         cd->instances.Init(new typename unordered_map<C*, HSQOBJECT>::type);
 
         // push the class
-        sq_pushobject(vm, cd->classObj);
+        SQ_PTRS->pushobject(vm, cd->classObj);
 
         // set the typetag of the class
-        sq_settypetag(vm, -1, cd->staticData.Get());
+        SQ_PTRS->settypetag(vm, -1, cd->staticData.Get());
 
         // add the default constructor
-        sq_pushstring(vm, _SC("constructor"), -1);
-        sq_newclosure(vm, &A::New, 0);
-        sq_newslot(vm, -3, false);
+        SQ_PTRS->pushstring(vm, _SC("constructor"), -1);
+        SQ_PTRS->newclosure(vm, &A::New, 0,0);
+        SQ_PTRS->newslot(vm, -3, false);
 
         // add the set table (static)
         HSQOBJECT& setTable = cd->setTable;
-        sq_resetobject(&setTable);
-        sq_pushstring(vm, _SC("__setTable"), -1);
-        sq_newtable(vm);
-        sq_getstackobj(vm, -1, &setTable);
-        sq_addref(vm, &setTable);
-        sq_newslot(vm, -3, true);
+        SQ_PTRS->resetobject(&setTable);
+        SQ_PTRS->pushstring(vm, _SC("__setTable"), -1);
+        SQ_PTRS->newtable(vm);
+        SQ_PTRS->getstackobj(vm, -1, &setTable);
+        SQ_PTRS->addref(vm, &setTable);
+        SQ_PTRS->newslot(vm, -3, true);
 
         // add the get table (static)
         HSQOBJECT& getTable = cd->getTable;
-        sq_resetobject(&getTable);
-        sq_pushstring(vm, _SC("__getTable"), -1);
-        sq_newtable(vm);
-        sq_getstackobj(vm, -1, &getTable);
-        sq_addref(vm, &getTable);
-        sq_newslot(vm, -3, true);
+        SQ_PTRS->resetobject(&getTable);
+        SQ_PTRS->pushstring(vm, _SC("__getTable"), -1);
+        SQ_PTRS->newtable(vm);
+        SQ_PTRS->getstackobj(vm, -1, &getTable);
+        SQ_PTRS->addref(vm, &getTable);
+        SQ_PTRS->newslot(vm, -3, true);
 
         // override _set
-        sq_pushstring(vm, _SC("_set"), -1);
-        sq_pushobject(vm, setTable); // Push the set table as a free variable
-        sq_newclosure(vm, &sqVarSet, 1);
-        sq_newslot(vm, -3, false);
+        SQ_PTRS->pushstring(vm, _SC("_set"), -1);
+        SQ_PTRS->pushobject(vm, setTable); // Push the set table as a free variable
+        SQ_PTRS->newclosure(vm, &sqVarSet, 1,0);
+        SQ_PTRS->newslot(vm, -3, false);
 
         // override _get
-        sq_pushstring(vm, _SC("_get"), -1);
-        sq_pushobject(vm, getTable); // Push the get table as a free variable
-        sq_newclosure(vm, &sqVarGet, 1);
-        sq_newslot(vm, -3, false);
+        SQ_PTRS->pushstring(vm, _SC("_get"), -1);
+        SQ_PTRS->pushobject(vm, getTable); // Push the get table as a free variable
+        SQ_PTRS->newclosure(vm, &sqVarGet, 1,0);
+        SQ_PTRS->newslot(vm, -3, false);
 
         // add weakref (apparently not provided by default)
-        sq_pushstring(vm, _SC("weakref"), -1);
-        sq_newclosure(vm, &Class::ClassWeakref, 0);
-        sq_newslot(vm, -3, false);
+        SQ_PTRS->pushstring(vm, _SC("weakref"), -1);
+        SQ_PTRS->newclosure(vm, &Class::ClassWeakref, 0,0);
+        SQ_PTRS->newslot(vm, -3, false);
 
         // add _typeof
-        sq_pushstring(vm, _SC("_typeof"), -1);
-        sq_newclosure(vm, &Class::ClassTypeof, 0);
-        sq_newslot(vm, -3, false);
+        SQ_PTRS->pushstring(vm, _SC("_typeof"), -1);
+        SQ_PTRS->newclosure(vm, &Class::ClassTypeof, 0,0);
+        SQ_PTRS->newslot(vm, -3, false);
 
         // add _cloned
-        sq_pushstring(vm, _SC("_cloned"), -1);
-        sq_newclosure(vm, &Class::ClassCloned, 0);
-        sq_newslot(vm, -3, false);
+        SQ_PTRS->pushstring(vm, _SC("_cloned"), -1);
+        SQ_PTRS->newclosure(vm, &Class::ClassCloned, 0,0);
+        SQ_PTRS->newslot(vm, -3, false);
 
         // pop the class
-        sq_pop(vm, 1);
+        SQ_PTRS->pop(vm, 1);
     }
 
     // Helper function used to bind getters and setters
     inline void BindAccessor(const SQChar* name, void* var, size_t varSize, SQFUNCTION func, HSQOBJECT table) {
         // Push the get or set table
-        sq_pushobject(vm, table);
-        sq_pushstring(vm, name, -1);
+        SQ_PTRS->pushobject(vm, table);
+        SQ_PTRS->pushstring(vm, name, -1);
 
         // Push the variable offset as a free variable
-        SQUserPointer varPtr = sq_newuserdata(vm, static_cast<SQUnsignedInteger>(varSize));
+        PVOID varPtr = SQ_PTRS->newuserdata(vm, static_cast<size_t>(varSize));
         memcpy(varPtr, var, varSize);
 
         // Create the accessor function
-        sq_newclosure(vm, func, 1);
+        SQ_PTRS->newclosure(vm, func, 1);
 
         // Add the accessor to the table
-        sq_newslot(vm, -3, false);
+        SQ_PTRS->newslot(vm, -3, false);
 
         // Pop get/set table
-        sq_pop(vm, 1);
+        SQ_PTRS->pop(vm, 1);
     }
 
     // constructor binding
-    Class& BindConstructor(SQFUNCTION method, SQInteger nParams, const SQChar *name = 0) {
-        SQFUNCTION overload = SqOverloadFunc(method);
+    Class& BindConstructor(SQFUNCTION method, int nParams, const SQChar *name = 0) {
+        SQFUNCTION overload = SqOverloadMemb(method);
         bool alternative_global = false;
         if (name == 0)
             name = _SC("constructor");
@@ -672,26 +678,26 @@ protected:
         if (!alternative_global )
         {
             // push the class
-            sq_pushobject(vm, ClassType<C>::getClassData(vm)->classObj);
+            SQ_PTRS->pushobject(vm, ClassType<C>::getClassData(vm)->classObj);
         }
         else
         {
             // the containing environment is the root table??
-            sq_pushroottable(vm);
+            SQ_PTRS->pushroottable(vm);
         }
 
         // Bind overload handler
-        sq_pushstring(vm, name, -1);
-        sq_pushstring(vm, name, -1); // function name is passed as a free variable
-        sq_newclosure(vm, overload, 1);
-        sq_newslot(vm, -3, false);
+        SQ_PTRS->pushstring(vm, name, -1);
+        SQ_PTRS->pushstring(vm, name, -1); // function name is passed as a free variable
+        SQ_PTRS->newclosure(vm, overload, 1,0);
+        SQ_PTRS->newslot(vm, -3, false);
 
-        // Bind overloaded allocator function
-        sq_pushstring(vm, overloadName.c_str(), -1);
-        sq_newclosure(vm, method, 0);
-        sq_setparamscheck(vm,nParams + 1,NULL);
-        sq_newslot(vm, -3, false);
-        sq_pop(vm, 1);
+        // Bind overloaded allc function
+        SQ_PTRS->pushstring(vm, overloadName.c_str(), -1);
+        SQ_PTRS->newclosure(vm, method, 0,0);
+        SQ_PTRS->setparamscheck(vm,nParams + 1,NULL);
+        SQ_PTRS->newslot(vm, -3, false);
+        SQ_PTRS->pop(vm, 1);
         return *this;
     }
 
@@ -888,15 +894,15 @@ public:
 ///
 /// \tparam C Class type to expose
 /// \tparam B Base class type (must already be bound)
-/// \tparam A An allocator to use when instantiating and destroying class instances of this type in Squirrel
+/// \tparam A An allc to use when instantiating and destroying class instances of this type in Squirrel
 ///
 /// \remarks
 /// Classes in Squirrel are single-inheritance only, and as such Sqrat only allows for single inheritance as well.
 ///
 /// \remarks
-/// DefaultAllocator is used if no allocator is specified. This should be sufficent for most classes,
+/// DefaultAllocator is used if no allc is specified. This should be sufficent for most classes,
 /// but if specific behavior is desired, it can be overridden. If the class should not be instantiated from
-/// Squirrel the NoConstructor allocator may be used. See NoCopy and CopyOnly too.
+/// Squirrel the NoConstructor allc may be used. See NoCopy and CopyOnly too.
 ///
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<class C, class B, class A = DefaultAllocator<C> >
@@ -904,7 +910,7 @@ class DerivedClass : public Class<C, A>
 {
 private:
 
-    static SQInteger cleanup_hook(SQUserPointer ptr, SQInteger size) {
+    static int cleanup_hook(PVOID ptr, int size) {
         SQUNUSED(size);
         ClassData<C>** ud = reinterpret_cast<ClassData<C>**>(ptr);
         delete *ud;
@@ -918,7 +924,7 @@ public:
     ///
     /// A DerivedClass object doesnt do anything on its own.
     /// It must be told what methods and variables it contains.
-    /// This is done using Class methods such as Class::Func and Class::Var.
+    /// This is done using Class methods such as Class::Functor and Class::Var.
     /// Then the DerivedClass must be exposed to Squirrel.
     /// This is usually done by calling TableBase::Bind on a RootTable with the DerivedClass.
     ///
@@ -929,29 +935,29 @@ public:
     /// You MUST bind the base class fully before constructing a derived class.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    DerivedClass(HSQUIRRELVM v, const string& className) : Class<C, A>(v, string(), false) {
+    DerivedClass(HSKVM v, const string& className) : Class<C, A>(v, string(), false) {
         if (!ClassType<C>::hasClassData(v)) {
-            sq_pushregistrytable(v);
-            sq_pushstring(v, "__classes", -1);
-            if (SQ_FAILED(sq_rawget(v, -2))) {
-                sq_newtable(v);
-                sq_pushstring(v, "__classes", -1);
-                sq_push(v, -2);
-                sq_rawset(v, -4);
+            SQ_PTRS->pushregistrytable(v);
+            SQ_PTRS->pushstring(v, "__classes", -1);
+            if (SQ_FAILED(SQ_PTRS->rawget(v, -2))) {
+                SQ_PTRS->newtable(v);
+                SQ_PTRS->pushstring(v, "__classes", -1);
+                SQ_PTRS->push(v, -2);
+                SQ_PTRS->rawset(v, -4);
             }
-            sq_pushstring(v, className.c_str(), -1);
-            ClassData<C>** ud = reinterpret_cast<ClassData<C>**>(sq_newuserdata(v, sizeof(ClassData<C>*)));
+            SQ_PTRS->pushstring(v, className.c_str(), -1);
+            ClassData<C>** ud = reinterpret_cast<ClassData<C>**>(SQ_PTRS->newuserdata(v, sizeof(ClassData<C>*)));
             *ud = new ClassData<C>;
-            sq_setreleasehook(v, -1, &cleanup_hook);
-            sq_rawset(v, -3);
-            sq_pop(v, 2);
+            SQ_PTRS->setreleasehook(v, -1, &cleanup_hook);
+            SQ_PTRS->rawset(v, -3);
+            SQ_PTRS->pop(v, 2);
 
             ClassData<B>* bd = ClassType<B>::getClassData(v);
             ClassData<C>* cd = *ud;
 
             if (ClassType<C>::getStaticClassData().Expired()) {
                 cd->staticData.Init(new StaticClassData<C, B>);
-                cd->staticData->copyFunc  = &A::Copy;
+                cd->staticData->copyMemb  = &A::Copy;
                 cd->staticData->className = string(className);
                 cd->staticData->baseClass = bd->staticData.Get();
 
@@ -961,13 +967,13 @@ public:
             }
 
             HSQOBJECT& classObj = cd->classObj;
-            sq_resetobject(&classObj);
+            SQ_PTRS->resetobject(&classObj);
 
-            sq_pushobject(v, bd->classObj);
-            sq_newclass(v, true);
-            sq_getstackobj(v, -1, &classObj);
-            sq_addref(v, &classObj); // must addref before the pop!
-            sq_pop(v, 1);
+            SQ_PTRS->pushobject(v, bd->classObj);
+            SQ_PTRS->newclass(v, true);
+            SQ_PTRS->getstackobj(v, -1, &classObj);
+            SQ_PTRS->addref(v, &classObj); // must addref before the pop!
+            SQ_PTRS->pop(v, 1);
             InitDerivedClass(v, cd, bd);
         }
     }
@@ -976,71 +982,71 @@ protected:
 
 /// @cond DEV
 
-    void InitDerivedClass(HSQUIRRELVM vm, ClassData<C>* cd, ClassData<B>* bd) {
+    void InitDerivedClass(HSKVM vm, ClassData<C>* cd, ClassData<B>* bd) {
         cd->instances.Init(new typename unordered_map<C*, HSQOBJECT>::type);
 
         // push the class
-        sq_pushobject(vm, cd->classObj);
+        SQ_PTRS->pushobject(vm, cd->classObj);
 
         // set the typetag of the class
-        sq_settypetag(vm, -1, cd->staticData.Get());
+        SQ_PTRS->settypetag(vm, -1, cd->staticData.Get());
 
         // add the default constructor
-        sq_pushstring(vm, _SC("constructor"), -1);
-        sq_newclosure(vm, &A::New, 0);
-        sq_newslot(vm, -3, false);
+        SQ_PTRS->pushstring(vm, _SC("constructor"), -1);
+        SQ_PTRS->newclosure(vm, &A::New, 0);
+        SQ_PTRS->newslot(vm, -3, false);
 
         // clone the base classes set table (static)
         HSQOBJECT& setTable = cd->setTable;
-        sq_resetobject(&setTable);
-        sq_pushobject(vm, bd->setTable);
-        sq_pushstring(vm, _SC("__setTable"), -1);
-        sq_clone(vm, -2);
-        sq_remove(vm, -3);
-        sq_getstackobj(vm, -1, &setTable);
-        sq_addref(vm, &setTable);
-        sq_newslot(vm, -3, true);
+        SQ_PTRS->resetobject(&setTable);
+        SQ_PTRS->pushobject(vm, bd->setTable);
+        SQ_PTRS->pushstring(vm, _SC("__setTable"), -1);
+        SQ_PTRS->clone(vm, -2);
+        SQ_PTRS->remove(vm, -3);
+        SQ_PTRS->getstackobj(vm, -1, &setTable);
+        SQ_PTRS->addref(vm, &setTable);
+        SQ_PTRS->newslot(vm, -3, true);
 
         // clone the base classes get table (static)
         HSQOBJECT& getTable = cd->getTable;
-        sq_resetobject(&getTable);
-        sq_pushobject(vm, bd->getTable);
-        sq_pushstring(vm, _SC("__getTable"), -1);
-        sq_clone(vm, -2);
-        sq_remove(vm, -3);
-        sq_getstackobj(vm, -1, &getTable);
-        sq_addref(vm, &getTable);
-        sq_newslot(vm, -3, true);
+        SQ_PTRS->resetobject(&getTable);
+        SQ_PTRS->pushobject(vm, bd->getTable);
+        SQ_PTRS->pushstring(vm, _SC("__getTable"), -1);
+        SQ_PTRS->clone(vm, -2);
+        SQ_PTRS->remove(vm, -3);
+        SQ_PTRS->getstackobj(vm, -1, &getTable);
+        SQ_PTRS->addref(vm, &getTable);
+        SQ_PTRS->newslot(vm, -3, true);
 
         // override _set
-        sq_pushstring(vm, _SC("_set"), -1);
-        sq_pushobject(vm, setTable); // Push the set table as a free variable
-        sq_newclosure(vm, sqVarSet, 1);
-        sq_newslot(vm, -3, false);
+        SQ_PTRS->pushstring(vm, _SC("_set"), -1);
+        SQ_PTRS->pushobject(vm, setTable); // Push the set table as a free variable
+        SQ_PTRS->newclosure(vm, sqVarSet, 1,0);
+        SQ_PTRS->newslot(vm, -3, false);
 
         // override _get
-        sq_pushstring(vm, _SC("_get"), -1);
-        sq_pushobject(vm, getTable); // Push the get table as a free variable
-        sq_newclosure(vm, sqVarGet, 1);
-        sq_newslot(vm, -3, false);
+        SQ_PTRS->pushstring(vm, _SC("_get"), -1);
+        SQ_PTRS->pushobject(vm, getTable); // Push the get table as a free variable
+        SQ_PTRS->newclosure(vm, sqVarGet, 1,0);
+        SQ_PTRS->newslot(vm, -3, false);
 
         // add weakref (apparently not provided by default)
-        sq_pushstring(vm, _SC("weakref"), -1);
-        sq_newclosure(vm, &Class<C, A>::ClassWeakref, 0);
-        sq_newslot(vm, -3, false);
+        SQ_PTRS->pushstring(vm, _SC("weakref"), -1);
+        SQ_PTRS->newclosure(vm, &Class<C, A>::ClassWeakref, 0);
+        SQ_PTRS->newslot(vm, -3, false);
 
         // add _typeof
-        sq_pushstring(vm, _SC("_typeof"), -1);
-        sq_newclosure(vm, &Class<C, A>::ClassTypeof, 0);
-        sq_newslot(vm, -3, false);
+        SQ_PTRS->pushstring(vm, _SC("_typeof"), -1);
+        SQ_PTRS->newclosure(vm, &Class<C, A>::ClassTypeof, 0);
+        SQ_PTRS->newslot(vm, -3, false);
 
         // add _cloned
-        sq_pushstring(vm, _SC("_cloned"), -1);
-        sq_newclosure(vm, &Class<C, A>::ClassCloned, 0);
-        sq_newslot(vm, -3, false);
+        SQ_PTRS->pushstring(vm, _SC("_cloned"), -1);
+        SQ_PTRS->newclosure(vm, &Class<C, A>::ClassCloned, 0);
+        SQ_PTRS->newslot(vm, -3, false);
 
         // pop the class
-        sq_pop(vm, 1);
+        SQ_PTRS->pop(vm, 1);
     }
 
 /// @endcond
