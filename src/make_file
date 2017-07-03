@@ -1,0 +1,181 @@
+ifndef BOARD_SETUP
+    $(error "Enviroment not set")
+endif
+BOARD=$(BOARD_SETUP)
+
+UNAME := $(shell uname)
+GCC=gcc
+ifeq ($(UNAME), Linux)
+	CCL=gcc
+	CPL=g++
+endif
+ifeq ($(UNAME), FreeBSD)
+	CCL=gcc
+	CPL=c++
+endif
+CC		  = $(TCC)$(CCL)
+CXX		  = $(TCC)$(CPL)
+RELFLAGS  = -O1 -s -DNDEBUG
+CFLAGS	  = -pipe -g -Wall -W -D_REENTRANT -fPIC -sysroot=$(ARM_EMBEDDED_SYSROOT)  $(REFLAGS)
+CXXFLAGS  = -pipe -std=c++14 -g -Wno-unused-parameter -Wall -W -D_REENTRANT -fPIC -DWITH_MAIN_MUTEX -D$(BOARD) $(REFLAGS)
+INCPATH	  = -Isq/include -Isq/squirrel -Isq/sqrat/include -Isq/sqrat -Isq/sqrat/include/sqrat -Idrivers -Idrivers/common  -Ibuiltin -Icomm -Irapidjson/include/ -Idrivers/platform/$(OSYSTEM)/$(BOARD) -I$(ARM_EMBEDDED_SYSROOT)/usr/include/
+LINK	  = $(TCC)g++
+LIBS	  = -L./../lib -lsqstdlib -L./../lib -lsquirrel 
+SYSTEM    = $(BOARD)
+
+###############################################################################
+ifeq ($(BOARD), beaglebone)
+ifeq (,$(wildcard $(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf/libsqlite3.so))
+$(error "libsqlite3.so is not installed on beaglebone rootfs system")
+endif	
+
+#
+# check libdl links if they are pointing into rootfs and not into /lib on host
+#
+SOFILE    = "$(shell readlink -f $(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf/libdl.so)"
+ifneq (,$(wildcard $(SOFILE)))
+    $(error "softlink: $(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf/libdl.so -> $(SOFILE) does not exist. Fix the links")
+endif
+
+SOFILE    = "$(shell readlink -f $(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf/libpthread.so)"
+ifneq (,$(wildcard $(SOFILE)))
+	$(error "softlink: $(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf/libpthread.so -> $(SOFILE) does not exist. Fix the links")
+endif
+	LDFLAGS   = -Xlinker -rpath-link=$(ARM_EMBEDDED_SYSROOT)/lib/arm-linux-gnueabihf -Xlinker -rpath-link=$(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf
+    LIBS	  += -L$(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf -lpthread
+    LIBS	  += -L$(ARM_EMBEDDED_SYSROOT)/lib/arm-linux-gnueabihf -ldl
+    LIBS	  += -L$(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf
+endif
+
+ifeq ($(BOARD), raspberrypi)
+ifeq (,$(wildcard $(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf/libsqlite3.so))
+$(error "libsqlite3.so is not installed on rpi rootfs system")
+endif
+
+#
+# check libdl links if they are pointing into rootfs and not into /lib on host
+#
+SOFILE    = "$(shell readlink -f $(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf/libdl.so)"
+ifneq (,$(wildcard $(SOFILE)))
+    $(error "softlink: $(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf/libdl.so -> $(SOFILE) does not exist. Fix the links")
+endif
+
+SOFILE    = "$(shell readlink -f $(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf/libpthread.so)"
+ifneq (,$(wildcard $(SOFILE)))
+	$(error "softlink: $(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf/libpthread.so -> $(SOFILE) does not exist. Fix the links")
+endif
+    LDFLAGS   = -Xlinker -rpath-link=$(ARM_EMBEDDED_SYSROOT)/lib/arm-linux-gnueabihf -Xlinker -rpath-link=$(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf
+    LIBS	  += -L$(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf -lpthread
+    LIBS	  += -L$(ARM_EMBEDDED_SYSROOT)/lib/arm-linux-gnueabihf -ldl
+    LIBS	  += -L$(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf
+endif
+
+ifeq ($(BOARD), thishost)
+ifeq (,$(wildcard /usr/lib/x86_64-linux-gnu/libsqlite3.so))
+$(error "libsqlite3.so is not installed on thishost system")
+endif	
+    LIBS	  += -lpthread
+    LIBS	  += -ldl
+endif
+#
+# on this host
+#
+# $(error "redefine BOARD to raspbberypi or beaglebone to build on this host")
+PARENT_FLD	= ./
+src	 = apis.cpp \
+    builtin/adcdev.cpp \
+    builtin/rawsock.cpp \
+    builtin/scrbase.cpp \
+    builtin/solib.cpp \
+    builtin/sshcomm.cpp \
+    builtin/uartdev.cpp \
+    builtin/usbdev.cpp \
+    comm/comcurl.cpp \
+    comm/comssh.cpp \
+    builtin/filedev.cpp \
+    builtin/gpiodev.cpp \
+    builtin/i2cdev.cpp \
+    database.cpp \
+    divais.cpp \
+    drivers/dcore.cpp \
+    drivers/fastmath.cpp \
+    inst.cpp \
+    jsadaptor.cpp \
+    logs.cpp \
+    main.cpp \
+    builtin/pwmdev.cpp \
+    restsrv.cpp \
+    sock.cpp \
+    builtin/spidev.cpp \
+    drivers/common/dlconfig.cpp \
+    sqratimport.cpp \
+    sqwrap.cpp \
+    sunset.cpp \
+    swdog.cpp \
+    drivers/platform/linux/${BOARD}/dadc.cpp \
+    drivers/platform/linux/${BOARD}/dfile.cpp \
+    drivers/platform/linux/${BOARD}/dgpio.cpp \
+    drivers/platform/linux/${BOARD}/di2c.cpp \
+    drivers/platform/linux/${BOARD}/dpwm.cpp \
+    drivers/platform/linux/${BOARD}/dserial.cpp \
+    drivers/platform/linux/${BOARD}/dusb.cpp \
+    drivers/platform/linux/${BOARD}/dsocket.cpp \
+    drivers/platform/linux/${BOARD}/dvspi.cpp
+
+obj = apis.o \
+    builtin/adcdev.o \
+    builtin/rawsock.o \
+    builtin/scrbase.o \
+    builtin/solib.o \
+    builtin/sshcomm.o \
+    builtin/uartdev.o \
+    builtin/usbdev.o \
+    comm/comcurl.o \
+    comm/comssh.o \
+    builtin/filedev.o \
+    builtin/gpiodev.o \
+    builtin/i2cdev.o \
+    database.o \
+    divais.o \
+    drivers/dcore.o \
+    drivers/fastmath.o \
+    inst.o \
+    jsadaptor.o \
+    logs.o \
+    main.o \
+    builtin/pwmdev.o \
+    restsrv.o \
+    sock.o \
+    builtin/spidev.o \
+    drivers/common/dlconfig.o \
+    sqratimport.o \
+    sqwrap.o \
+    sunset.o \
+    swdog.o \
+    drivers/platform/linux/${BOARD}/dadc.o \
+    drivers/platform/linux/${BOARD}/dfile.o \
+    drivers/platform/linux/${BOARD}/dgpio.o \
+    drivers/platform/linux/${BOARD}/di2c.o \
+    drivers/platform/linux/${BOARD}/dpwm.o \
+    drivers/platform/linux/${BOARD}/dserial.o \
+    drivers/platform/linux/${BOARD}/dusb.o \
+    drivers/platform/linux/${BOARD}/dsocket.o \
+    drivers/platform/linux/${BOARD}/dvspi.o
+
+#
+# when cannot link pthead or dll in cross compiler check symbolic links for do lib
+#
+CXXFLAGS += -std=gnu++14 -Wall -W -D_REENTRANT -fPIC -Isq/include -Isq/squirrel \
+             $(INCPATH) -I$(PARENT_FLD) $(LDFLAGS) --sysroot=$(ARM_EMBEDDED_SYSROOT)
+$(SYSTEM)-rembix: $(obj)
+	@echo BUILDING FOR ..................................................$(BOARD)
+	$(MAKE) -C ./sq/sqstdlib/
+	$(MAKE) -C ./sq/squirrel/
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
+	cp $(SYSTEM)-rembix ./../bin
+
+.PHONY: clean
+clean:
+	rm -f $(obj) *-rembix
+	find -name '*.o' | xargs rm
+	find -name 'build-*' | xargs rm -r 
