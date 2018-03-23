@@ -1,0 +1,57 @@
+/**
+  COPYRIGHT M.PANGEEA
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
+*/
+
+::using(eI2C|eGPIO|ePWMM|eSRV|eDB);
+::include("modules/_oled96.inc");
+
+/*
+sudo nano /lib/udev/rules.d/60-i2c-tools.rules
+KERNEL=="i2c-0"     , GROUP="i2c", MODE="0660"
+KERNEL=="i2c-[1-9]*", GROUP="i2c", MODE="0666"
+sudo adduser $USER i2c
+sudo service udev restart
+*/
+
+dbs   := DB(10000, 1000, "./database");
+json := SRV(8000,"rest");
+local s = Oled96(11, 0x3c, "OLED96");
+
+l1 := PIO(506,  DIR_OUT, LOW, "led");
+l2 := PIO(507,  DIR_OUT, HIGH, "led2");
+
+//s.autoopen(false);
+function main(a)
+{
+    var k;
+    s.autoopen(false);
+    if(s.xopen("128x64",0,0))
+    {
+        s.clear_display(0);
+        k = run_loop(kk, 1000);
+    }
+    s.xclose();
+    return k;
+}
+
+var K=10;
+function kk(ctx,dev)
+{
+    s.write_string(0,1, get_strtime() ,2);
+    K++;
+    println("L1=" + l1.set_toggle());
+    println("L2=" + l2.set_toggle());
+    sleep(1000);
+
+    ctx.get_dev("led2").set_toggle();
+    K--;
+    return K > 0 ? true : false;
+}
+

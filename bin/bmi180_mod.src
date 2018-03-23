@@ -1,0 +1,52 @@
+
+/**
+  COPYRIGHT M.PANGEEA
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
+*/
+::using(eI2C|eJSON);
+::loadmod("./modules/libbmi160.so","ACCEL");
+
+i2c := I2C(11, 0x68, "i2c");
+
+accel := ACCEL("i2c", "accel");
+
+server := SRV(8000,"xxx");
+
+function main(x)
+{
+    var data1 = accel.acceleration();
+    var data2 = accel.rotation();
+
+    do {
+        println("ACC " + data1.pop());
+    } while (data1.len() > 0);
+
+    do {
+        println("ACC " + data2.pop());
+    } while (data2.len() > 0);
+
+    return run_loop(l, -1);
+}
+
+function l(c, d)
+{
+
+    var data1 = accel.acceleration();
+    var data2 = accel.rotation();
+
+    do {
+        println("ACC " + data1.pop());
+    } while (data1.len() > 0);
+
+    do {
+        println("ACC " + data2.pop());
+    } while (data2.len() > 0);
+    return true;
+
+}

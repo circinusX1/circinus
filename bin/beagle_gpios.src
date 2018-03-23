@@ -1,0 +1,40 @@
+/**
+  COPYRIGHT M.PANGEEA
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
+*/
+
+::using(eGPIO|ePWM);
+
+system("config-pin P9.41 gpio");
+system("config-pin P9.42 gpio");
+system("config-pin P9.41 out");
+system("config-pin P9.42 in-");
+
+led    := PIO(20, DIR_OUT, LOW, "led");
+button := PIO(7, DIR_IN, LOW, "buton");
+
+
+function main(ctx)
+{
+    //int, int, int, const char*
+    led.set_value(LOW);
+    led.set_value(HIGH);
+    led.set_value(LOW);
+    return run(loop,10);
+}
+
+function loop(ctx,devs)
+{
+    led.set_value(HIGH);
+    suspend(200);
+    led.set_value(LOW);
+    suspend(200);
+    return true;
+}
+
