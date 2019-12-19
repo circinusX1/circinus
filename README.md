@@ -3,31 +3,37 @@
 ![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/embixico.png)
 
 ## GPIO, PWM, SPI, I2C SCRIPTING LANGUAGE FOR LINUX / FREEBSD 
-## NO DEPENDENCIES.
+##                    NO DEPENDENCIES. 
 ### REACTION TIME ~ 1ms (depending of your code)
-
-This is a self contained engine written in C++, I start it almost 13 years ago 
+##### Get automated systems up and running in a mater of few hours.
+   
+This is a self contained program written in C++. I start it almost 13 years ago using it 
 for a game engine automation (see Getic). Then from controlling a game engine I 
-took it and made a testing scripting adding UART telnet and ssh (see othe projects here). 
-Slowly I added SSH, TCP ...  then pins and bsx protocols.
+extended to do automation scripting adding UART telnet and ssh (see othe projects here). 
+Slowly I added SSH, TCP, I2C, ... GPIO's and so on.
 
- - Wiring PI (arduino) coding style.
- - Professional house keeping for heavy industrial projects.
- - If you have the sqlite installed it saves data into it.
- - Controlled by script or web queries
- - Can perform calls right into dynamic libraries.
-     - Very easy to add new modules as dynamic libraries.
-     - Code generator from any dynamic library to embix plugin
+    * Usage:
+```
+    rembix script_file.src
+    
+```
+where the script_file is a script like java/c++, but is not java neither c++. 
+The intrinsec language features can be browsed at: 
+    * http://squirrel-lang.org/   
+or from 
+    * https://developer.electricimp.com/squirrel/squirrelcrib
+Rembix specific API's are distributed electonically as PDF. Also they can be picked from the source code if you dont need the manual. 
 
-* Raspberry PI
-* Beaglebone(s)
-* iMX6
-* Nano PI
-* Cherry PI
-* for C.H.I.P
+It targets:
+    * Raspberry PI
+    * Beaglebone(s)
+    * iMX6
+    * Nano PI
+    * Cherry PI
+    * C.H.I.P
 
 
-#### Using PIO's and pwm  on R-PI sample
+### Sample code
 
 ```c++
 ::using(eGPIO|ePWM); // load what we use only 
@@ -78,7 +84,7 @@ function loop(ctx, dev)                // dev is not null when the monitored dev
 }
 ```
 
-#### a code for beaglebone
+#### BeagleBone sample
 
 ```c++
 /*
@@ -115,7 +121,7 @@ function loop(ctx, devs)
 
 ```
 
-#### code for reading a sensor
+#### code for reading some I2C sensor
 
 
 ```c++
@@ -713,6 +719,8 @@ function program_loop(ctx, dev)
 {
     println("LOOP ");
 
+    
+    * https://github.com/comarius/scrite
     mydev1.read_device();
     mydev2.read_device();
 
@@ -720,55 +728,23 @@ function program_loop(ctx, dev)
     return true;
 }
 
-
 ```
-
-### thr result peresented to JSON socket
-
-```
-    "another_dev":{
-        "etc":"xxxx",
-        "values":{
-            "sensor":4.5,
-            "flag":1,
-            "data":[
-                33,
-                61,
-                220,
-                135,
-                0
-            ]
-        },
-        "notes":"whatever"
-    },
-    "onedev":{
-        "etc":"xxxx",
-        "values":{
-            "sensor":4.5,
-            "flag":1,
-            "data":[
-                14,
-                130,
-                116,
-                65,
-                0
-            ]
-        },
-        "notes":"whatever"
-    },
-    "rs232":{
-        "ukey":"rs232",
-        "dpoints":[
-        ]
-    }
-
-}
-```
-
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L9RVWU5NUZ4YG)
 
-The SDK documentation will be mailed on the PayPal associated email as PDF when ammounts are over 9.99$. 
-
+The SDK documentation will be mailed on the PayPal associated email as PDF for a donation of minimum $25 USD. 
 
 ![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/emb3.png)
+
+
+Credits:
+    * https://github.com/albertodemichelis/squirrel
+    * https://github.com/hakase-labs/sqrat
+    * https://github.com/comarius/Easy-ssh_automation
+    * https://github.com/comarius/xomata
+    * https://github.com/comarius/scrite
+    * https://github.com/comarius/The-Ultra-C-Monex-
+    
+    
+
+
