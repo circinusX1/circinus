@@ -42,5 +42,6 @@ make-file
 ./docs/classes/*
 ./docs/design/*
 ./utils/*
+./TOOLS/*
 
 
