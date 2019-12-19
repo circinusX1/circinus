@@ -37,6 +37,12 @@ and parameters for each type of peripherial.
         * Cherry PI
         * C.H.I.P
 
+### What you can do with it
+
+You can automate a system in matter of few hours depending of the complexity of the automation. 
+You get out of the box a JSON output so you can build a web UI in few moves. For example you
+can make a STOVE or a HVAC or some funcy device. Makes your Embeded LINUX borad able to 
+talk over USB, UART, SSH, HTTP, TCP, I2C, SPI, while it can control GPIO,PWM and ADC pins.
 
 ### Sample code R-PI
 
