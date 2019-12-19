@@ -333,7 +333,7 @@ unsigned integer 32 -582691628  // print allways prints int,
    * use this tool from https://github.com/comarius/elf_resolver  
         * and extract all functions & signatures and some helper code
      
-libwiring.h
+libwiring.h generated code using above script tool
 
 ```
 #ifndef LIBR_RESOLVER_H
