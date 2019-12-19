@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014-2016 Marius.C All rights reserved.
+Copyright (c) 2014-2016 comarius.DPT All rights reserved.
 
 Redistribution and use in source and binary forms are permitted
 provided that the above copyright notice and this paragraph are

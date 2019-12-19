@@ -1,0 +1,89 @@
+format 222
+
+classcanvas 128002 class_ref 128002 // I2CDev
+  classdiagramsettings member_max_width 0 end
+  xyz 346 570 2000
+end
+classcanvas 128130 class_ref 128130 // DvI2c
+  classdiagramsettings member_max_width 0 end
+  xyz 452 413 2000
+end
+classcanvas 128258 class_ref 128258 // Divais
+  classdiagramsettings member_max_width 0 end
+  xyz 617 370 2000
+end
+classcanvas 128386 class_ref 128386 // Reg
+  classdiagramsettings member_max_width 0 end
+  xyz 18 241 2000
+end
+classcanvas 128514 class_ref 128514 // RtxBus
+  classdiagramsettings member_max_width 0 end
+  xyz 174 243 2000
+end
+classcanvas 129282 class_ref 128770 // IoOps
+  classdiagramsettings member_max_width 0 end
+  xyz 555 24 2000
+end
+classcanvas 129794 class_ref 135298 // Dvcore
+  classdiagramsettings member_max_width 0 end
+  xyz 386 227 2000
+end
+classcanvas 130050 class_ref 135426 // I_IDev
+  classdiagramsettings member_max_width 0 end
+  xyz 770 112 2000
+end
+classcanvas 130306 class_ref 135554 // ModuleCpp
+  classdiagramsettings member_max_width 0 end
+  color verylightorange
+  xyz 1007 581 2000
+end
+classcanvas 130818 class_ref 135682 // Api
+  classdiagramsettings member_max_width 0 end
+  xyz 1018 192 2000
+end
+relationcanvas 128642 relation_ref 128002 // <generalisation>
+  from ref 128002 z 2001 to ref 128130
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128770 relation_ref 128130 // <generalisation>
+  from ref 128002 z 2001 to ref 128258
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128898 relation_ref 128258 // <generalisation>
+  from ref 128002 z 2001 to ref 128386
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129026 relation_ref 128386 // <generalisation>
+  from ref 128002 z 2001 to ref 128514
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129666 relation_ref 128642 // <generalisation>
+  from ref 128130 z 2001 to ref 129282
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129922 relation_ref 135170 // <generalisation>
+  from ref 128130 z 2001 to ref 129794
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130178 relation_ref 135298 // <generalisation>
+  from ref 128258 z 2001 to ref 130050
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130690 relation_ref 135426 // <generalisation>
+  from ref 130306 z 2001 to ref 130050
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130946 relation_ref 135554 // <directional aggregation>
+  from ref 130818 z 2001 to ref 130050
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

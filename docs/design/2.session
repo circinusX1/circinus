@@ -1,0 +1,12 @@
+window_sizes 1920 984 254 1660 739 176
+cleanlooks_style
+diagrams
+  active  classdiagram_ref 128002 // cd
+    1660 739 100 A2 0 0
+end
+show_stereotypes
+open
+  class_ref 128002 // IWire
+  class_ref 128130 // IPlugDev
+end
+end

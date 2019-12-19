@@ -1,0 +1,404 @@
+format 222
+"p" // p
+  revision 2
+  modified_by 2 "marius"
+  // class settings
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
+  
+  classview 128002 "cv"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    classdiagram 128002 "cd"
+      classdiagramsettings draw_all_relations no member_max_width 0 end
+      size A3
+    end
+
+    class 128002 "I2CDev"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 128002 // <generalisation>
+	relation 128002 ---|>
+	  a public
+	    classrelation_ref 128002 // <generalisation>
+	  b parent class_ref 128130 // DvI2c
+      end
+
+      classrelation 128130 // <generalisation>
+	relation 128130 ---|>
+	  a public
+	    classrelation_ref 128130 // <generalisation>
+	  b parent class_ref 128258 // Divais
+      end
+
+      classrelation 128258 // <generalisation>
+	relation 128258 ---|>
+	  a public
+	    classrelation_ref 128258 // <generalisation>
+	  b parent class_ref 128386 // Reg
+      end
+
+      classrelation 128386 // <generalisation>
+	relation 128386 ---|>
+	  a public
+	    classrelation_ref 128386 // <generalisation>
+	  b parent class_ref 128514 // RtxBus
+      end
+    end
+
+    class 128130 "DvI2c"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 128514 // <realization>
+	relation 128514 -_-|>
+	  a public
+	    classrelation_ref 128514 // <realization>
+	  b parent class_ref 128642 // DvCore
+      end
+
+      classrelation 128642 // <generalisation>
+	relation 128642 ---|>
+	  a public
+	    classrelation_ref 128642 // <generalisation>
+	  b parent class_ref 128770 // IoOps
+      end
+
+      classrelation 135170 // <generalisation>
+	relation 135170 ---|>
+	  a public
+	    classrelation_ref 135170 // <generalisation>
+	  b parent class_ref 135298 // Dvcore
+      end
+    end
+
+    class 128258 "Divais"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 135298 // <generalisation>
+	relation 135298 ---|>
+	  a public
+	    classrelation_ref 135298 // <generalisation>
+	  b parent class_ref 135426 // I_IDev
+      end
+    end
+
+    class 128386 "Reg"
+      visibility package stereotype "I2CDev"
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
+    class 128514 "RtxBus"
+      visibility package stereotype "I2CDev"
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
+    class 128642 "DvCore"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      associated_diagram classdiagram_ref 128002 // cd
+    end
+
+    class 128770 "IoOps"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      associated_diagram classdiagram_ref 128002 // cd
+      operation 128258 "bread"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128386 "bwrite"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128514 "on_event"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128642 "iopen"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128770 "iclose"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128898 "err"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 129026 "perr_of"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 129154 "data_of"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+    end
+
+    class 135298 "Dvcore"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 128002 "_rd"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128130 "_wr()"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+    end
+
+    class 135426 "I_IDev"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 129282 "set_value"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 129410 "get_value"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 129538 "get_data"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 129666 "sync"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 129794 "name"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+    end
+
+    class 135554 "ModuleCpp"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 135426 // <generalisation>
+	relation 135426 ---|>
+	  a public
+	    classrelation_ref 135426 // <generalisation>
+	  b parent class_ref 135426 // I_IDev
+      end
+    end
+
+    class 135682 "Api"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 135554 // <directional aggregation>
+	relation 135554 o-->
+	  a role_name "" private
+	    classrelation_ref 135554 // <directional aggregation>
+	  b parent class_ref 135426 // I_IDev
+      end
+    end
+  end
+end

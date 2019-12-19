@@ -1,0 +1,211 @@
+format 222
+
+classcanvas 128130 class_ref 128002 // IWire
+  classdiagramsettings member_max_width 0 end
+  xyz 950 132 2000
+end
+classcanvas 128258 class_ref 128130 // IPlugDev
+  classdiagramsettings member_max_width 0 end
+  xyz 275 208 2000
+end
+classcanvas 128386 class_ref 128258 // ISysDev
+  classdiagramsettings member_max_width 0 end
+  xyz 753 36 2000
+end
+classcanvas 129666 class_ref 128770 // DvAdc
+  classdiagramsettings member_max_width 0 end
+  xyz 749 309 2000
+end
+classcanvas 129794 class_ref 128898 // DvI2c
+  classdiagramsettings member_max_width 0 end
+  xyz 891 399 2000
+end
+classcanvas 129922 class_ref 129026 // DvFile
+  classdiagramsettings member_max_width 0 end
+  xyz 958 452 2000
+end
+classcanvas 130050 class_ref 129154 // DvSerial
+  classdiagramsettings member_max_width 0 end
+  xyz 1037 491 2000
+end
+classcanvas 130178 class_ref 129282 // DvSpi
+  classdiagramsettings member_max_width 0 end
+  xyz 826 353 2000
+end
+classcanvas 132226 class_ref 129538 // PwmDev
+  classdiagramsettings member_max_width 0 end
+  xyz 163 521 2000
+end
+classcanvas 132610 class_ref 129666 // engin
+  classdiagramsettings member_max_width 0 end
+  xyz 54 222 2000
+end
+classcanvas 132994 class_ref 129794 // GpioDev
+  classdiagramsettings member_max_width 0 end
+  xyz 45 490 2000
+end
+classcanvas 133378 class_ref 129922 // I2cDev
+  classdiagramsettings member_max_width 0 end
+  xyz 384 555 2000
+end
+classcanvas 133506 class_ref 130050 // SpiDev
+  classdiagramsettings member_max_width 0 end
+  xyz 269 541 2000
+end
+classcanvas 133634 class_ref 130178 // UartDev
+  classdiagramsettings member_max_width 0 end
+  xyz 486 562 2000
+end
+classcanvas 134530 class_ref 130306 // UserDev
+  classdiagramsettings member_max_width 0 end
+  xyz 1145 146 2000
+end
+classcanvas 134658 class_ref 128130 // IPlugDev
+  classdiagramsettings member_max_width 0 end
+  xyz 1137.5 19.5 2000
+end
+classcanvas 135682 class_ref 130434 // DvPwm
+  classdiagramsettings member_max_width 0 end
+  xyz 650 256 2006
+end
+classcanvas 136066 class_ref 130562 // DvGpio
+  classdiagramsettings member_max_width 0 end
+  xyz 583 193 2012
+end
+relationcanvas 130306 relation_ref 128642 // <generalisation>
+  from ref 129666 z 2001 to ref 128386
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130434 relation_ref 128770 // <generalisation>
+  from ref 130178 z 2001 to ref 128386
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130562 relation_ref 128898 // <generalisation>
+  from ref 129794 z 2001 to ref 128386
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130690 relation_ref 129026 // <generalisation>
+  from ref 129922 z 2001 to ref 128386
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130818 relation_ref 129154 // <generalisation>
+  from ref 130050 z 2001 to ref 128386
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132482 relation_ref 130434 // <generalisation>
+  decenter_begin 574
+  from ref 132226 z 2001 to ref 128258
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132738 relation_ref 130562 // <aggregation>
+  from ref 132610 z 2001 to ref 128258
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 133250 relation_ref 130818 // <generalisation>
+  from ref 132994 z 2001 to ref 128258
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134146 relation_ref 131330 // <generalisation>
+  from ref 133378 z 2001 to ref 128258
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134274 relation_ref 131458 // <generalisation>
+  from ref 133506 z 2001 to ref 128258
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134402 relation_ref 131586 // <generalisation>
+  from ref 133634 z 2001 to ref 128258
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134786 relation_ref 131714 // <generalisation>
+  from ref 134530 z 2001 to ref 134658
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134914 relation_ref 131842 // <directional aggregation>
+  from ref 134530 z 2001 to ref 128130
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 135042 relation_ref 131970 // <generalisation>
+  from ref 130050 z 2001 to ref 128130
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 135170 relation_ref 132098 // <generalisation>
+  from ref 129922 z 2001 to ref 128130
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 135298 relation_ref 132226 // <generalisation>
+  from ref 129794 z 2001 to ref 128130
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 135426 relation_ref 132354 // <generalisation>
+  from ref 130178 z 2001 to ref 128130
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 135554 relation_ref 132482 // <generalisation>
+  from ref 129666 z 2001 to ref 128130
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 135810 relation_ref 132610 // <generalisation>
+  from ref 135682 z 2007 to ref 128130
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 135938 relation_ref 132738 // <generalisation>
+  from ref 135682 z 2007 to ref 128386
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 136194 relation_ref 132866 // <generalisation>
+  from ref 136066 z 2013 to ref 128386
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 136322 relation_ref 132994 // <generalisation>
+  from ref 136066 z 2013 to ref 128130
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 136450 relation_ref 133122 // <generalisation>
+  from ref 133634 z 2001 to ref 130050
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 136578 relation_ref 133250 // <generalisation>
+  from ref 133506 z 2001 to ref 130178
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 136706 relation_ref 133378 // <generalisation>
+  from ref 133378 z 2001 to ref 129794
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 136834 relation_ref 133506 // <generalisation>
+  from ref 132226 z 2007 to ref 135682
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 136962 relation_ref 133634 // <generalisation>
+  from ref 132994 z 2013 to ref 136066
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

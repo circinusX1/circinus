@@ -1,0 +1,14 @@
+window_sizes 1908 979 241 1661 734 176
+cleanlooks_style
+diagrams
+  active  classdiagram_ref 128002 // cd
+    1661 734 100 A3 0 0
+end
+show_stereotypes
+selected operation_ref 129794 // name
+open
+  class_ref 128770 // IoOps
+  class_ref 135298 // Dvcore
+  class_ref 135426 // I_IDev
+end
+end
