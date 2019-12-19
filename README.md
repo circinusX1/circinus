@@ -768,7 +768,7 @@ function program_loop(ctx, dev)
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L9RVWU5NUZ4YG)
 
-When donate some cash I you will send you the SDK documentation on the PayPal email as PDF. 
+The SDK documentation will be mailed on the PayPal associated email as PDF when ammounts are over 9.99$. 
 
 
 ![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/emb3.png)
