@@ -4,7 +4,7 @@
 
 ## GPIO, PWM, SPI, I2C SCRIPTING LANGUAGE FOR LINUX / FREEBSD 
 ## NO DEPENDENCIES.
-### FASTEST REACTION TIME ~ 1ms (depending of your code)
+### REACTION TIME ~ 1ms (depending of your code)
 
 This is a self contained engine written in C++, I start it almost 13 years ago 
 for a game engine automation (see Getic). Then from controlling a game engine I 
