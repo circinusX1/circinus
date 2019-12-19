@@ -1,6 +1,6 @@
 
 
-![logo](https://raw.githubusercontent.com/comarius/rembix/master/doc/embixico.png)
+![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/embixico.png)
 
 ## GPIO, PWM, SPI, I2C SCRIPTING LANGUAGE FOR LINUX / FREEBSD 
 ## NO DEPENDENCIES.
@@ -771,4 +771,4 @@ function program_loop(ctx, dev)
 When donate some cash I you will send you the SDK documentation on the PayPal email as PDF. 
 
 
-![logo](https://raw.githubusercontent.com/comarius/rembix/master/doc/emb3.png)
+![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/emb3.png)
