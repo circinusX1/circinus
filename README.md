@@ -722,7 +722,7 @@ Donations are owsom' appreciated
     *The makefile+intructions........100$
         *Additional help.............0$
         *Bug fixes...................0$
-    *Custom application & scripts....marrius9876[AT]gmail    
+    *Custom application & scripts....contact me here: https://www.meeiot.org/?p=contact.php    
     
 
 ![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/emb3.png)
