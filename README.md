@@ -41,28 +41,26 @@ and parameters for each type of peripherial.
 ### Sample code R-PI
 
 ```c++
-::using(eGPIO|ePWM); // load what we use only 
+::using(eGPIO|ePWM|eSRV);
 
-var l1 = PIO(26,  DIR_OUT, LOW, "led");   // if you add a name the device apears in Json report and database, otherwise not
+var l1 = PIO(26,  DIR_OUT, LOW, "led"); 
 var l2 = PIO(19,  DIR_OUT, HIGH, "led2");
 var l3 = PIO(13,  DIR_OUT, LOW, "led3");
 var l4 = PIO(6,   DIR_OUT, HIGH, "led4");
 var pb = PIO(21,  DIR_IN,  LOW, "button");
-var tone = PIO(17,  440, "buzer");        // this is a regular PIO PIO and will play a tone 'E'  (max 600..700 hz)
-var counter = PIO(4, -1000, "count");    // this PIO is connected to the buzzer to measure the frequency.
-                                          // can measure up to 500 hz. 
-                                         // the -1000 parameter indicates that it counts transitions for 1000 mseconds
+var tone = PIO(17,  440, "buzer");       // tone
+var counter = PIO(4, -1000, "count");    // frequence-meter
+                                        
 var pwm = PWM("0.0", 1000, 100, false, "pwm");  // this is a PWM, on chip 0 pwm 0, running a 1000Hz with default 100% pwm
 
-var json_interface = Json(8078);            // start a TCP Json server on port 8070
-var database_sqlite  = Database("/usr/share/embix/db1"); //  will save all devices values in database. (if sqlite is not present on the system, it does nothing then reporting warnings)
+var json_interface = SRV(8078);            // start a TCP Json server on port 8070
+var database_sqlite  = Database("/usr/share/embix/db1");
 
 var value = 1;
 var k = 0;
 
 function main(ctx)
 {
-    ctx.notify("appname");          // this is just a test
     pb.monitor(true);               // this PIO fires events into the loop when state changes. 
     l1.set_value(0);                // set this led to 0
     db.save_interval(15000);        // will save sensors/PIO's every 15 seconds
@@ -79,7 +77,7 @@ function loop(ctx, dev)                // dev is not null when the monitored dev
     value=!value;
     if(dev)   
     {
-          println("dev = " + dev.get_value()); // dev is set ony when the monitorred pin is triggered
+          println("dev = " + dev.get_value()); // dev is not null only when the monitorred pin is triggered
          return false; // end the program  
     }
     println("counter = " + counter.get_freq());  // this will print roughy 440
@@ -126,7 +124,7 @@ function loop(ctx, devs)
    Embix 2017
 */
 
-class BMP180 extends I2C /*this is an exposed class form the engine*/
+class BMP180 extends I2C /* I2C PWM PIO UART SPI SSH TCP SOCK are intrinsec rembix classes*/
 {
     BMPx8x_I2CADDR  = 0x77;
     BMPx8x_CtrlMeas  = 0xF4;
