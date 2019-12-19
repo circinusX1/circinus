@@ -21,15 +21,12 @@ Slowly I added SSH, TCP, I2C, ... GPIO's and so on.
 Where the script_file is a script like java/c++, but is not java neither c++. 
 
 The intrinsec language features can be browsed at: 
-
-    * http://squirrel-lang.org/   
-
-or from 
-
+   * http://squirrel-lang.org/   
    * https://developer.electricimp.com/squirrel/squirrelcrib
 
-Rembix specific API's are distributed electonically as PDF. 
-Also they can be picked from the source code if you dont need the manual. 
+Rembix help manual (The SDK) and build system makefiles are distributed electronically over the email.
+If you dont need the manual you can browse the c and samples code to figure out the objects classes methods 
+and parameters for each type of peripherial. 
 
 
     * It targets:
