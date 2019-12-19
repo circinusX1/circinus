@@ -716,17 +716,20 @@ function program_loop(ctx, dev)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L9RVWU5NUZ4YG)
 
 Donations are owsom' appreciated 
+
     *SDK manual.......................25$
     *A build for a specific target...200$
     *The makefile+intructions........100$
         *Additional help.............0$
         *Bug fixes...................0$
+    *Custom application & scripts....marrius9876[AT]gmail    
     
 
 ![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/emb3.png)
 
 
 Credits:
+
     *https://github.com/albertodemichelis/squirrel
     *https://github.com/hakase-labs/sqrat
     *https://github.com/comarius/Easy-ssh_automation
