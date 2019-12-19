@@ -271,7 +271,7 @@ function main(x)
 ```
 
 # Wow!
-### Or call directin to wiringpi.so library using arduino style if you donr want rembix management features
+### Or call directin to wiringpi.so library using arduino style.
 
 ```cpp
 ::using(eSOLIB); // load what we use only 
