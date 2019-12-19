@@ -1,44 +1,29 @@
 
-# embix comming on: Jan 2020 
 
-
-
-
-![logo](https://raw.githubusercontent.com/pangeea/xembe/master/doc/embixico.png)
+![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/embixico.png)
 
 ## GPIO, PWM, SPI, I2C SCRIPTING LANGUAGE FOR LINUX / FREEBSD 
 ## NO DEPENDENCIES.
-### C++ SUPER UBER PROFESSIONAL GRAGE CODING. 
-### Targets: R-PI, BBB, Nano-PI and more  
-### INDUSTRIAL GRADE SOFTWARE FOR PIO'S PWM'S I2C, SPI, UART & MUCH MORE
-### FASTEST REACTION TIME ~ 1Ms (depending of your code)
+### REACTION TIME ~ 1ms (depending of your code)
 
-    * No dependencies no obfuscated mumbo's jumbo's a'la nodejs and pyton. 
-
-This is a self contained engine written in C++, I start it almost 14 years ago for a game engine automation. 
-Then from controlling a game engine I took it and made a testing scripting adding UART telnet and ssh. 
-Slowly I added USB, I2C, SPI, GPIO's, PWM and son on. 
-Was heavily tested and runs clean with no memory leaks or fragmentation. 
-It exposes API's to a SCRIPT language similar to JAVA/C++ . 
-Is using  a modified Squirrel Script. 
-The script engine was changed to get the syntax closer to java script. 
-The differences are abount 15%.
+This is a self contained engine written in C++, I start it almost 13 years ago 
+for a game engine automation (see Getic). Then from controlling a game engine I 
+took it and made a testing scripting adding UART telnet and ssh (see othe projects here). 
+Slowly I added SSH, TCP ...  then pins and bsx protocols.
 
  - Wiring PI (arduino) coding style.
  - Professional house keeping for heavy industrial projects.
  - If you have the sqlite installed it saves data into it.
- - Controlled by script or 
-     - JSON over TCP as RESTFUL API's (for a web UI / or Qt UI)
- - Logs 
+ - Controlled by script or web queries
  - Can perform calls right into dynamic libraries.
      - Very easy to add new modules as dynamic libraries.
      - Code generator from any dynamic library to embix plugin
 
-* for raspberry PI
-* for beaglebone black & green
-* for iMX6
-* for nano pi
-* for cherry pi
+* Raspberry PI
+* Beaglebone(s)
+* iMX6
+* Nano PI
+* Cherry PI
 * for C.H.I.P
 
 
@@ -144,38 +129,12 @@ class BMP180 extends I2C /*this is an exposed class form the engine*/
     BMPx8x_I2CADDR  = 0x77;
     BMPx8x_CtrlMeas  = 0xF4;
     BMPx8x_TempConversion  = 0x2E;
-    BMPx8x_PresConversion0  = 0x34;
-    BMPx8x_Results  = 0xF6;
-    BMPx8x_minDelay  = 4;//require 4.5ms *1000/700 'turbo mode fix'= 6.4-Retry =4.4
-    BMPx8x_RetryDelay  = 2;//min delay for temp 4+2=6ms, max 4+2*20=44ms for pressure
-    BMPx8x_OverSampling  = 3;
-    bmp_ac1=0;
-    bmp_ac2=0;
-    bmp_ac3=0;
-    bmp_ac4=0;
-    bmp_ac5=0;
-    bmp_ac6=0;
-    bmp_b1=0;
-    bmp_b2=0;
-    bmp_b5=0;
-    bmp_mb=0;
-    bmp_mc=0;
-    bmp_md=0;
-
+    // removed for clarity
     constructor (i2cbus,addr,name)
     {
         bmp_ac1=-1;
         bmp_ac2=-1;
-        bmp_ac3=-1;
-        bmp_ac4=0;
-        bmp_ac5=0;
-        bmp_ac6=0;
-        bmp_b1=-1;
-        bmp_b2=-1;
-        bmp_b5=-1;
-        bmp_mb=-1;
-        bmp_mc=-1;
-        bmp_md=-1;
+        // removed for clarity
         base.constructor(this, i2cbus, addr, name);
     }
 
@@ -184,17 +143,8 @@ class BMP180 extends I2C /*this is an exposed class form the engine*/
         var  rValue = this.ioread(0xAA,22);
         assert(rValue.len()!=20,"error read");
         this.bmp_ac1=0s((rValue[0]<<8)|rValue[1]);
-        this.bmp_ac2=0s((rValue[2]<<8)|rValue[3]);
-        this.bmp_ac3=0s((rValue[4]<<8)|rValue[5]);
-        this.bmp_ac4=0w((rValue[6]<<8)|rValue[7]);
-        this.bmp_ac5=0w((rValue[8]<<8)|rValue[9]);
-        this.bmp_ac6=0w((rValue[10]<<8)|rValue[11]);
-        this.bmp_b1=0s((rValue[12]<<8)|rValue[13]);
-        this.bmp_b2=0s((rValue[14]<<8)|rValue[15]);
-        this.bmp_mb=0s((rValue[16]<<8)|rValue[17]);
-        this.bmp_mc=0s((rValue[18]<<8)|rValue[19]);
-        this.bmp_md=0s((rValue[20]<<8)|rValue[21]);
-    }
+        // removed for clarity
+}
     function   WaitForConversion()
     {
         var  d,counter=0;
@@ -219,27 +169,7 @@ class BMP180 extends I2C /*this is an exposed class form the engine*/
         if (WaitForConversion() == false )
             return -1;
         var  rValues = this.ioread(BMP180.BMPx8x_Results,3);
-        var  up = ((rValues[0] *65536) + rValues[1] *256) + rValues[2] ;
-        up = up >> (8-BMP180.BMPx8x_OverSampling);
-        var  x1, x2, x3, b3, b6, p;
-        var  b4, b7;
-        b6 = this.bmp_b5 - 4000;
-        x1 = 0i((this.bmp_b2 * (b6 * b6)/4096)/2048);
-        x2 = 0i((this.bmp_ac2 * b6)/2048);
-        x3 = 0i(x1 + x2);
-        b3 = 0i(((((this.bmp_ac1)*4 + x3) << BMP180.BMPx8x_OverSampling) + 2)/4);
-        x1 = 0i((this.bmp_ac3 * b6)/8192);
-        x2 = 0i((this.bmp_b1 * ((b6 * b6)/4096))/65536);
-        x3 = 0i(((x1 + x2) + 2)/4);
-        b4 = (this.bmp_ac4 * (x3 + 32768))/32768;
-        b7 = ((up - b3) * (50000>>BMP180.BMPx8x_OverSampling));
-        if (b7 < 0x80000000)
-            p = (b7<<1)/b4;
-        else
-            p = (b7/b4)*2;
-        x1 = 0i((p/256) * (p/256));
-        x1 = 0i((x1 * 3038)/65536);
-        x2 = 0i((-7357 * p)/65536);
+        // removed for clarity
         p =  0i(p + (x1 + x2 + 3791)/16);
         return (p);
     }
@@ -247,36 +177,11 @@ class BMP180 extends I2C /*this is an exposed class form the engine*/
     function   bmp_GetTemperature()
     {
         var  rValues;
-        this.iowrite(BMPx8x_CtrlMeas, [BMP180.BMPx8x_TempConversion]);
-        sleep (256+BMP180.BMPx8x_minDelay);
-        if (WaitForConversion() == false)
-            return -1;
-        sleep (256+BMP180.BMPx8x_minDelay);
-        rValues = this.ioread(BMP180.BMPx8x_Results,2);
-        var  ut = (rValues[0]*256)+rValues[1];
-
-        var  x1 = ((ut - this.bmp_ac6) * this.bmp_ac5)/32768;
-        var  x2 = (this.bmp_mc * 2048) / (x1 + this.bmp_md);
-        var  xbmp_b5 = x1 + x2;
-        var  result = float((xbmp_b5 + 8.0)/1.6);
+         // removed for clarity
+         var  result = float((xbmp_b5 + 8.0)/1.6);
         return float(result);
     }
 };
-
-/*
-  //uncomment to see all functions
-foreach(k, d in getroottable())
-{
- println(k +"="+ d);
- if(k=="class")
-{
- foreach(kk, dd in d)
-{
- println(""+ kk +"="+ dd);
-}
-}
-}
-*/
 
 function main(ctx)
 {
@@ -338,198 +243,6 @@ function main(a)
 }
 ```
 
-... and the included file
-
-```c++
-
-include("./plugins/_oledfont.js");
-
-system("config-pin P9.17 i2c");
-system("config-pin P9.18 i2c");
-
-
-class Oled96 extends I2C
-{
-    _oled_flip=false;     // unless they are not initialised they are / class
-    _oled_type="";
-    _iScreenOffset=0;
-    _ucscreen=[];
-
-    // 2, 0x3c
-    constructor(i2cbus, address, name)
-    {
-        // bind vars / instance (not per class)
-        _iScreenOffset = 0;
-        _oled_flip = false;
-        _oled_type = "";
-        _ucscreen=array(1024,0);
-
-        base.constructor(this, i2cbus, address, name); // on BBB I2C1 P9.17 P9.18
-    }
-
-    function close()
-    {
-        print("olce closing \n");
-        base.write(0x00,[0xae]);
-        base.close();
-    }
-
-    function open(oledtype, invert, flip)
-    {
-        print("call base.open\n");
-        if(base.open(0))
-        {
-            local init;
-            _oled_type = oledtype;
-            if(oledtype="128x32")
-            {
-                init=[0xae,0xd5,0x80,0xa8,0x1f,0xd3,0x00,
-                      0x40,0x8d,0x14,0xa1,0xc8,0xda,0x02,0x81,
-                      0x7f,0xd9,0xf1,0xdb,0x40,0xa4,0xa6,0xaf];
-            }
-            else
-            {
-                init=[0xae,0xa8,0x3f,0xd3,0x00,0x40,0xa1,
-                      0xc8,0xda,0x12,0x81,0xff,0xa4,0xa6,0xd5,
-                      0x80,0x8d,0x14,0xaf,0x20,0x02];
-            }
-            base.write(0x00, init);
-            if(invert)
-            {
-                base.write(0x00,[0xa7]);
-            }
-            if(flip)
-            {
-                base.write(0x00,[0xa0]);
-                base.write(0x00,[0xc0]);
-                _oled_flip=bflip;
-            }
-            return true;
-        }
-        return false;
-    }
-
-    function _set_pos(x,y)
-    {
-        _iScreenOffset = (y*128)+x;
-        if (_oled_type != "64x32") // visible display starts at column 32, row 4
-        {
-            x += 32; // display is centered in VRAM, so this is always true
-            if (_oled_flip == 0) // non-flipped display starts from line 4
-                y += 4;
-        }
-        else if (_oled_type == "132x64") // SH1106 has 128 pixels centered in 132
-        {
-            x += 2;
-        }
-
-        base.write(0, [0xb0 | y]);                  // go to page Y
-        base.write(0, [0x00 | (x & 0xf)]);          // // lower col addr
-        base.write(0, [0x10 | ((x >> 4) & 0xf)]);   // upper col addr
-    }
-
-    function _write_block(arr)
-    {
-        base.write(0x40, arr);
-        arrcpyn(_ucscreen, _iScreenOffset, arr);
-        _iScreenOffset += arr.len();
-    }
-
-    function _set_pixel(x, y, ucColor)
-    {
-        local uc = [0];
-        local ucOld = [0];
-
-        local i = ((y >> 3) * 128) + x;
-        if (i < 0 || i > 1023) // off the screen
-            return -1;
-        uc[0] = ucOld[0] = ucScreen[i];
-        uc[0] = uc[0] & ~(0x1 << (y & 7));
-        if (ucColor)
-        {
-            uc[0] = uc[0] | (0x1 << (y & 7));
-        }
-        if (uc[0] != ucOld[0]) // pixel changed
-        {
-            _set_pos(x, y>>3);
-            _write_block(uc);
-        }
-        return 0;
-    }
-
-    function write_string(x, y, szMsg, iSize)
-    {
-        local i, iLen;
-        local s = array(16);
-
-//	print("type ================= " + typeof szMsg + "\n");
-        iLen = szMsg.len();
-        if (iSize >= 3) // draw 16x32 font
-        {
-            if (iLen+x > 8) iLen = 8-x;
-            if (iLen < 0) return -1;
-            x *= 16;
-            for (i=0; i<iLen; i++)
-            {
-                s = ucFont.slice(9728 + (szMsg[i] * 64), 9728 + (szMsg[i] * 64)+16);
-                _set_pos(x+(i*16), y);
-                _write_block(s);
-
-                _set_pos(x+(i*16), y+1);
-                s = ucFont.slice(16 + 9728 + (szMsg[i] * 64), 16 + 9728 + (szMsg[i] * 64)+16);
-//                _write_block(s+16, 16);
-                _write_block(s);
-                _set_pos(x+(i*16), y+2);
-
-                s = ucFont.slice(32 + 9728 + (szMsg[i] * 64), 32 + 9728 + (szMsg[i] * 64)+16);
-                _write_block(s);
-                //			_set_pos(x+(i*16), y+3);
-                //			_write_block(s+48, 16);
-            }
-        }
-        else if (iSize >= 2) // draw 8x8 font
-        {
-            _set_pos(x*8, y);
-            if (iLen + x > 16) iLen = 16 - x; // can't display it
-            if (iLen < 0)return -1;
-
-            for (i=0; i<iLen; i++)
-            {
-                s = ucFont.slice(szMsg[i] * 8, szMsg[i] * 8 +  8);
-                _write_block(s); 			// write character pattern
-            }
-        }
-        else // 6x8
-        {
-            _set_pos(x*6, y);
-            if (iLen + x > 21) iLen = 21 - x;
-            if (iLen < 0) return -1;
-            for (i=0; i<iLen; i++)
-            {
-                s = ucSmallFont.slice(szMsg[i]*6, szMsg[i]*6+6);
-                _write_block(s);
-            }
-        }
-        return 0;
-    }
-
-    function clear_display(ucData)
-    {
-        local y;
-
-
-        local iLines = (_oled_type == "128x32" || _oled_type == "64x32") ? 4:8;
-        local iCols = (_oled_type == "64x32") ? 4:8;
-        local temp = array(iCols*16, ucData);
-        for (y=0; y<iLines; y++)
-        {
-            _set_pos(0,y); // set to (0,Y)
-            _write_block(temp); // fill with data byte
-        } // for y
-        return 0;
-    }
-};
-```
 
 ### using a C++ embix module
  
@@ -620,7 +333,7 @@ unsigned integer 32 -582691628  // print allways prints int,
    * use this tool from https://github.com/comarius/elf_resolver  
         * and extract all functions & signatures and some helper code
      
-libwiring.h
+libwiring.h generated code using above script tool
 
 ```
 #ifndef LIBR_RESOLVER_H
@@ -950,31 +663,6 @@ class MyDev  extends BASE
     }
 
     // called form Json interface upon a restuall api as  http://IP/onedev  or  http://IP/another_dev  
-    //  or for all sensors   as:    http://IP/
-    function get_json()                    // this is how you build a json, using the script table object
-    {
-        var json_obj = {
-            etc = "xxxx",
-            values = {
-                data = _data,
-                sensor = 4.5,
-                flag = true,
-            },
-            notes = "whatever"
-        }
-        return json_obj;
-    }
-
-    // called upon RESTULL call as http://IP/onedev/k=v&k=v&k=v...  or POST http://IP/onedev with JSON post
-    function set_json(json)            // decompose it and take action
-    {
-        foreach(k,v in json)
-        {
-            // send some over uart
-            _uart->puts("set value=5"); 
-        }
-    }
-
     // called when db needs data to be saved in the database
     function get_data()       // return array of max 5 values as integers or strings
     {
@@ -1077,11 +765,10 @@ function program_loop(ctx, dev)
 }
 ```
 
-My daily Job eats all the time. Make it stop!
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L9RVWU5NUZ4YG)
 
-Thank you.
+When donate some cash I you will send you the SDK documentation on the PayPal email as PDF. 
 
 
-![logo](https://raw.githubusercontent.com/pangeea/xembe/master/doc/emb3.png)
+![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/emb3.png)
