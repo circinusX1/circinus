@@ -9,7 +9,7 @@
 This is a self contained engine written in C++, I start it almost 13 years ago 
 for a game engine automation (see Getic). Then from controlling a game engine I 
 took it and made a testing scripting adding UART telnet and ssh (see othe projects here). 
-Slowly I added SSH, TCP, USN , then pins and protocols. Durring the time I got it to current stage.
+Slowly I added SSH, TCP ...  then pins and bsx protocols.
 
  - Wiring PI (arduino) coding style.
  - Professional house keeping for heavy industrial projects.
