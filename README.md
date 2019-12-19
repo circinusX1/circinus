@@ -243,8 +243,8 @@ function main(a)
 }
 ```
 
-### Extend rembix with custom modules calling wiringPi.so library, 
-### so wiringPi/arduino style can be used
+### Extend rembix with custom modules. Let's use wiringpi.so library, 
+### so wiringPi/arduino style coding can be used
  
 ```cpp
 ::using(eSOLIB); // load what we use only 
