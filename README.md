@@ -17,23 +17,31 @@ Slowly I added SSH, TCP, I2C, ... GPIO's and so on.
     rembix script_file.src
     
 ```
-where the script_file is a script like java/c++, but is not java neither c++. 
+
+Where the script_file is a script like java/c++, but is not java neither c++. 
+
 The intrinsec language features can be browsed at: 
+
     * http://squirrel-lang.org/   
+
 or from 
-    * https://developer.electricimp.com/squirrel/squirrelcrib
-Rembix specific API's are distributed electonically as PDF. Also they can be picked from the source code if you dont need the manual. 
 
-It targets:
-    * Raspberry PI
-    * Beaglebone(s)
-    * iMX6
-    * Nano PI
-    * Cherry PI
-    * C.H.I.P
+   * https://developer.electricimp.com/squirrel/squirrelcrib
+
+Rembix specific API's are distributed electonically as PDF. 
+Also they can be picked from the source code if you dont need the manual. 
 
 
-### Sample code
+    * It targets:
+        * Raspberry PI
+        * Beaglebone(s)
+        * iMX6
+        * Nano PI
+        * Cherry PI
+        * C.H.I.P
+
+
+### Sample code R-PI
 
 ```c++
 ::using(eGPIO|ePWM); // load what we use only 
@@ -62,8 +70,6 @@ function main(ctx)
     l1.set_value(0);                // set this led to 0
     db.save_interval(15000);        // will save sensors/PIO's every 15 seconds
     return run_loop(loop,1000);     // run loop() calling it at 1000 ms interval, though when pb state changes
-                                    // the function is called right away. If there are many monitors, the loop
-                                                        // will loop for each of them
 }
 
 function loop(ctx, dev)                // dev is not null when the monitored device has a change in state.
@@ -84,7 +90,7 @@ function loop(ctx, dev)                // dev is not null when the monitored dev
 }
 ```
 
-#### BeagleBone sample
+#### Sample for Beaglebone 
 
 ```c++
 /*
@@ -92,17 +98,13 @@ see GPIOs:
     root@hpp:/sys/class/gpio# cat /sys/kernel/debug/gpio
     gpiochip1: GPIOs 352-359, parent: hid/0003:10C4:EA90.0007, cp2112_gpio, can sleep
 */
-
 setdbg(0xf);
-
-
 reconfig_sys(eGPIO, ["/sys/class/gpio","gpio%d","gpiochip%d"]); //configure sys paths
 
 var l1 = PIO(26,  DIR_OUT, LOW,  "led");
 var l2 = PIO(19,  DIR_OUT, HIGH, "led2");
 var l3 = PIO(13,  DIR_OUT, LOW,  "led3");
 var l4 = PIO(6,   DIR_OUT, HIGH, "led4");
-
 
 function main(ctx)
 {
@@ -117,12 +119,9 @@ function loop(ctx, devs)
 {
     return true;
 }
-
-
 ```
 
-#### code for reading some I2C sensor
-
+#### Sample to read some I2c Sensor. 
 
 ```c++
 /*
@@ -212,7 +211,7 @@ function loop(ctx,userdata)
 }
 ```
 
-#### Controlling an OLED I2C display
+#### Sample to control OLED96 display
 
 ```c++
 
@@ -249,8 +248,8 @@ function main(a)
 }
 ```
 
-
-### using a C++ embix module
+### Extend rembix with custom modules calling wiringPi.so library, 
+### so wiringPi/arduino style can be used
  
 ```cpp
 ::using(eSOLIB); // load what we use only 
@@ -277,15 +276,12 @@ function main(x)
 ```
 
 # Wow!
-### calls functions right into a dynamic library
+### Or call directin to wiringpi.so library using arduino style if you donr want rembix management features
 
 ```cpp
 ::using(eSOLIB); // load what we use only 
 
-
-
 lib := LIB("libwiringPi.so");
-// grab functions
 lib.load("wiringPiSetupGpio",true,0);   // function name from the so ,function type has return value takes 0 params
 lib.load("digitalWrite",false,2);       // function name from the so ,function type no return 2 parameters
 lib.load("delay",0,1);                  // function name from the so ,function type no return takes one param
@@ -308,7 +304,7 @@ function main(x)
 
 ```
 
-### new types for byte operations when signed or unsigned values are important. 
+### I introduced into script new declarative tokens as 0o 0c 0s 0w 0i 0u for signed/usigned bit & strong typed operations
 
 ```cpp
 
@@ -322,7 +318,6 @@ function main(x)
 
 // prints
 
-
 hex size_t          1145361620
 octet 8             212
 char 8              -44
@@ -334,7 +329,7 @@ unsigned integer 32 -582691628  // print allways prints int,
 ```
 
 
-# Making an embix module
+# Sample for making an embix module wrapper around an existent library.
 
    * use this tool from https://github.com/comarius/elf_resolver  
         * and extract all functions & signatures and some helper code
@@ -539,7 +534,7 @@ inline const FUNCS_* load(void **ppdll)
 
 ```
 
-swiring.h
+swiring.h, This code you write.
 
 ```cpp
 #if !defined(_SIMPLEMODULE_H_)
@@ -646,11 +641,10 @@ int test(const char* s,int k)
 
 ```
 
-### a possible script for a custom device proxying data to a uart device
+### An extension module in a form of a script. Consult bin folder for latest versions
 
 ```java
 ::using(eUART|eJSON|eBASE); // load in VM only what we usee. New as Nov 29 !
-
 
 class MyDev  extends BASE
 {
@@ -704,26 +698,20 @@ class MyDev  extends BASE
 };
 
 // 2 devices
-mydev1 <- MyDev("onedev");
-mydev2 := MyDev("another_dev");
+mydev1 <- MyDev("onedev");          // original assignment notation
+// mydev2 := MyDev("another_dev");  // new assignment table notation
 
-///////////////////////////////////////////////////////////////
+
 function main(o)
 {
     println("MAIN ");
     return run_loop(program_loop,1000);
 }
 
-//////////////////////////////////////////////////////////////
 function program_loop(ctx, dev)
 {
     println("LOOP ");
-
-    
-    * https://github.com/comarius/scrite
     mydev1.read_device();
-    mydev2.read_device();
-
     print(ctx.get_json(null) + "\n\n\n");
     return true;
 }
