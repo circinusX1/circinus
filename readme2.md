@@ -134,7 +134,7 @@ function _heat_on()
             if(flame==false)
             {
                 gazvalve.set_value(0);
-                ctx().set_timer(turnoff_fan,30000,1);
+                ctx().set_timer(turnoff_fan,30000,1/*unique ID*/);
             }
         }
     }
@@ -143,6 +143,13 @@ function _heat_on()
     function turnoff_fan()
     {
         flamefan.set_value(0);
+        ctx().set_timer(turnoff_main_fan,10000,2/*unique ID*/);
+        return false; // destroy this timer
+    }
+    
+    function turnoff_main_fan()
+    {
+        mainfan.set_value(0);
         return false; // destroy this timer
     }
 
