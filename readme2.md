@@ -41,10 +41,10 @@ function main(ctx)
     thermo_fan.set_monitor(true);
     thermo_heat.set_monitor(true);
     thermo_cool.set_monitor(true);
-    return run(loop,1000);
+    return run(program,1000);
 }
 
-function loop(ctx,dev)
+function program(ctx,dev)
 {
     if(devs)
     {
