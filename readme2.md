@@ -1,8 +1,3 @@
-### HVAC CONTROLLER CONCEPT
-
-
-```java
-
 
 ::using(eGPIO|ePWM|eSRV|eI2C);
 
@@ -10,11 +5,11 @@ mainpower		:= PIO(20, DIR_OUT, LOW, "power");
 gazvalve		:= PIO(21, DIR_OUT, LOW, "gaz");
 flamefan		:= PIO(7,  DIR_OUT, LOW, "exhaust");
 spark			:= PIO(8,  DIR_OUT, LOW, "spark");
-thermostat		:= I2C(2,  0x55,	     "thermoflame");
-flamedet		:= I2C(2,  0x57,		 "flameir");
-tempin			:= I2C(2,  0x58,		 "temp_in");
-tempout		    := I2C(2,  0x59,		 "temp_out");
-mainfan			:= PWM("0.0", 0,		 "main_fan");
+thermostat		:= I2C(2,  0x55,     "thermoflame");
+flamedet		:= I2C(2,  0x57,	 "flameir");
+tempin			:= I2C(2,  0x58,	 "temp_in");
+tempout		    := I2C(2,  0x59,	 "temp_out");
+mainfan			:= PWM("0.0", 0,	 "main_fan");
 condair         := PIO(8,  DIR_OUT, LOW, "condair_unit");
 
 thermo_fan		:  PIO(22, DIR_IN, LOW, "t_fan"
@@ -145,5 +140,3 @@ function turnoff_fan()
     flamefan.set_value(0);
 	return false; // destroy this timer
 }
-
-```
