@@ -111,14 +111,15 @@ function _heat_on()
         flamefan.set_value(1);
         sleep(3000);
         spark.set_value(1);
+        sleep(100);
         gazvalve.set_value(1);
-        sleep(2000);
+        sleep(3000);
         var flame = flamedet.see_flame();
         if(flame==false)
         {
             spark.set_value(0);
             gazvalve.set_value(0);
-            ctx().set_timer(turnoff_fan,10000,1);
+            ctx().set_timer(turnoff_fan,30000,1);
             CUR_MODE = MODES.OFF;
         }
         else
@@ -132,9 +133,8 @@ function _heat_on()
             var flame = flamedet.see_flame();
             if(flame==false)
             {
-                spark.set_value(0);
                 gazvalve.set_value(0);
-                ctx().set_timer(turnoff_fan,10000,1);
+                ctx().set_timer(turnoff_fan,30000,1);
             }
         }
     }
