@@ -3,61 +3,74 @@
 ![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/embixico.png)
 
 ## GPIO, PWM, SPI, I2C SCRIPTING LANGUAGE FOR LINUX / FREEBSD 
-## NO DEPENDENCIES.
+##                    NO DEPENDENCIES. 
 ### REACTION TIME ~ 1ms (depending of your code)
-
-This is a self contained engine written in C++, I start it almost 13 years ago 
+##### Get automated systems up and running in a mater of few hours.
+   
+This is a self contained program written in C++. I start it almost 13 years ago using it 
 for a game engine automation (see Getic). Then from controlling a game engine I 
-took it and made a testing scripting adding UART telnet and ssh (see othe projects here). 
-Slowly I added SSH, TCP ...  then pins and bsx protocols.
+extended to do automation scripting adding UART telnet and ssh (see othe projects here). 
+Slowly I added SSH, TCP, I2C, ... GPIO's and so on.
 
- - Wiring PI (arduino) coding style.
- - Professional house keeping for heavy industrial projects.
- - If you have the sqlite installed it saves data into it.
- - Controlled by script or web queries
- - Can perform calls right into dynamic libraries.
-     - Very easy to add new modules as dynamic libraries.
-     - Code generator from any dynamic library to embix plugin
+    * Usage:
+```
+    rembix script_file.src
+    
+```
 
-* Raspberry PI
-* Beaglebone(s)
-* iMX6
-* Nano PI
-* Cherry PI
-* for C.H.I.P
+Where the script_file is a script like java/c++, but is not java neither c++. 
+
+The intrinsec language features can be browsed at: 
+   * http://squirrel-lang.org/   
+   * https://developer.electricimp.com/squirrel/squirrelcrib
+
+Rembix help manual (The SDK) and build system makefiles are distributed electronically over the email.
+If you dont need the manual you can browse the c and samples code to figure out the objects classes methods 
+and parameters for each type of peripherial. 
 
 
-#### Using PIO's and pwm  on R-PI sample
+    * It targets:
+        * Raspberry PI
+        * Beaglebone(s)
+        * iMX6
+        * Nano PI
+        * Cherry PI
+        * C.H.I.P
+
+### What you can do with it
+
+You can automate a system in matter of few hours depending of the complexity of the automation. 
+You get out of the box a JSON output so you can build a web UI in few moves. For example you
+can make a STOVE or a HVAC or some funcy device. Makes your Embeded LINUX borad able to 
+talk over USB, UART, SSH, HTTP, TCP, I2C, SPI, while it can control GPIO,PWM and ADC pins.
+
+### Sample code R-PI
 
 ```c++
-::using(eGPIO|ePWM); // load what we use only 
+::using(eGPIO|ePWM|eSRV);
 
-var l1 = PIO(26,  DIR_OUT, LOW, "led");   // if you add a name the device apears in Json report and database, otherwise not
+var l1 = PIO(26,  DIR_OUT, LOW, "led"); 
 var l2 = PIO(19,  DIR_OUT, HIGH, "led2");
 var l3 = PIO(13,  DIR_OUT, LOW, "led3");
 var l4 = PIO(6,   DIR_OUT, HIGH, "led4");
 var pb = PIO(21,  DIR_IN,  LOW, "button");
-var tone = PIO(17,  440, "buzer");        // this is a regular PIO PIO and will play a tone 'E'  (max 600..700 hz)
-var counter = PIO(4, -1000, "count");    // this PIO is connected to the buzzer to measure the frequency.
-                                          // can measure up to 500 hz. 
-                                         // the -1000 parameter indicates that it counts transitions for 1000 mseconds
+var tone = PIO(17,  440, "buzer");       // tone
+var counter = PIO(4, -1000, "count");    // frequence-meter
+                                        
 var pwm = PWM("0.0", 1000, 100, false, "pwm");  // this is a PWM, on chip 0 pwm 0, running a 1000Hz with default 100% pwm
 
-var json_interface = Json(8078);            // start a TCP Json server on port 8070
-var database_sqlite  = Database("/usr/share/embix/db1"); //  will save all devices values in database. (if sqlite is not present on the system, it does nothing then reporting warnings)
+var json_interface = SRV(8078);            // start a TCP Json server on port 8070
+var database_sqlite  = Database("/usr/share/embix/db1");
 
 var value = 1;
 var k = 0;
 
 function main(ctx)
 {
-    ctx.notify("appname");          // this is just a test
     pb.monitor(true);               // this PIO fires events into the loop when state changes. 
     l1.set_value(0);                // set this led to 0
     db.save_interval(15000);        // will save sensors/PIO's every 15 seconds
     return run_loop(loop,1000);     // run loop() calling it at 1000 ms interval, though when pb state changes
-                                    // the function is called right away. If there are many monitors, the loop
-                                                        // will loop for each of them
 }
 
 function loop(ctx, dev)                // dev is not null when the monitored device has a change in state.
@@ -70,7 +83,7 @@ function loop(ctx, dev)                // dev is not null when the monitored dev
     value=!value;
     if(dev)   
     {
-          println("dev = " + dev.get_value()); // dev is set ony when the monitorred pin is triggered
+          println("dev = " + dev.get_value()); // dev is not null only when the monitorred pin is triggered
          return false; // end the program  
     }
     println("counter = " + counter.get_freq());  // this will print roughy 440
@@ -78,7 +91,7 @@ function loop(ctx, dev)                // dev is not null when the monitored dev
 }
 ```
 
-#### a code for beaglebone
+#### Sample for Beaglebone 
 
 ```c++
 /*
@@ -86,17 +99,13 @@ see GPIOs:
     root@hpp:/sys/class/gpio# cat /sys/kernel/debug/gpio
     gpiochip1: GPIOs 352-359, parent: hid/0003:10C4:EA90.0007, cp2112_gpio, can sleep
 */
-
 setdbg(0xf);
-
-
 reconfig_sys(eGPIO, ["/sys/class/gpio","gpio%d","gpiochip%d"]); //configure sys paths
 
 var l1 = PIO(26,  DIR_OUT, LOW,  "led");
 var l2 = PIO(19,  DIR_OUT, HIGH, "led2");
 var l3 = PIO(13,  DIR_OUT, LOW,  "led3");
 var l4 = PIO(6,   DIR_OUT, HIGH, "led4");
-
 
 function main(ctx)
 {
@@ -111,12 +120,9 @@ function loop(ctx, devs)
 {
     return true;
 }
-
-
 ```
 
-#### code for reading a sensor
-
+#### Sample to read some I2c Sensor. 
 
 ```c++
 /*
@@ -124,7 +130,7 @@ function loop(ctx, devs)
    Embix 2017
 */
 
-class BMP180 extends I2C /*this is an exposed class form the engine*/
+class BMP180 extends I2C /* I2C PWM PIO UART SPI SSH TCP SOCK are intrinsec rembix classes*/
 {
     BMPx8x_I2CADDR  = 0x77;
     BMPx8x_CtrlMeas  = 0xF4;
@@ -206,7 +212,7 @@ function loop(ctx,userdata)
 }
 ```
 
-#### Controlling an OLED I2C display
+#### Sample to control OLED96 display
 
 ```c++
 
@@ -243,8 +249,8 @@ function main(a)
 }
 ```
 
-
-### using a C++ embix module
+### Extend rembix with custom modules. Let's use wiringpi.so library, 
+### so wiringPi/arduino style coding can be used
  
 ```cpp
 ::using(eSOLIB); // load what we use only 
@@ -271,15 +277,12 @@ function main(x)
 ```
 
 # Wow!
-### calls functions right into a dynamic library
+### Or call directin to wiringpi.so library using arduino style.
 
 ```cpp
 ::using(eSOLIB); // load what we use only 
 
-
-
 lib := LIB("libwiringPi.so");
-// grab functions
 lib.load("wiringPiSetupGpio",true,0);   // function name from the so ,function type has return value takes 0 params
 lib.load("digitalWrite",false,2);       // function name from the so ,function type no return 2 parameters
 lib.load("delay",0,1);                  // function name from the so ,function type no return takes one param
@@ -302,7 +305,7 @@ function main(x)
 
 ```
 
-### new types for byte operations when signed or unsigned values are important. 
+### I introduced into script new declarative tokens as 0o 0c 0s 0w 0i 0u for signed/usigned bit & strong typed operations
 
 ```cpp
 
@@ -316,7 +319,6 @@ function main(x)
 
 // prints
 
-
 hex size_t          1145361620
 octet 8             212
 char 8              -44
@@ -328,7 +330,7 @@ unsigned integer 32 -582691628  // print allways prints int,
 ```
 
 
-# Making an embix module
+# Sample for making an embix module wrapper around an existent library.
 
    * use this tool from https://github.com/comarius/elf_resolver  
         * and extract all functions & signatures and some helper code
@@ -533,7 +535,7 @@ inline const FUNCS_* load(void **ppdll)
 
 ```
 
-swiring.h
+swiring.h, This code you write.
 
 ```cpp
 #if !defined(_SIMPLEMODULE_H_)
@@ -640,11 +642,10 @@ int test(const char* s,int k)
 
 ```
 
-### a possible script for a custom device proxying data to a uart device
+### An extension module in a form of a script. Consult bin folder for latest versions
 
 ```java
 ::using(eUART|eJSON|eBASE); // load in VM only what we usee. New as Nov 29 !
-
 
 class MyDev  extends BASE
 {
@@ -698,77 +699,50 @@ class MyDev  extends BASE
 };
 
 // 2 devices
-mydev1 <- MyDev("onedev");
-mydev2 := MyDev("another_dev");
+mydev1 <- MyDev("onedev");          // original assignment notation
+// mydev2 := MyDev("another_dev");  // new assignment table notation
 
-///////////////////////////////////////////////////////////////
+
 function main(o)
 {
     println("MAIN ");
     return run_loop(program_loop,1000);
 }
 
-//////////////////////////////////////////////////////////////
 function program_loop(ctx, dev)
 {
     println("LOOP ");
-
     mydev1.read_device();
-    mydev2.read_device();
-
     print(ctx.get_json(null) + "\n\n\n");
     return true;
 }
 
-
 ```
 
-### thr result peresented to JSON socket
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L9RVWU5NUZ4YG)   [goes to meeiot]
 
-```
-    "another_dev":{
-        "etc":"xxxx",
-        "values":{
-            "sensor":4.5,
-            "flag":1,
-            "data":[
-                33,
-                61,
-                220,
-                135,
-                0
-            ]
-        },
-        "notes":"whatever"
-    },
-    "onedev":{
-        "etc":"xxxx",
-        "values":{
-            "sensor":4.5,
-            "flag":1,
-            "data":[
-                14,
-                130,
-                116,
-                65,
-                0
-            ]
-        },
-        "notes":"whatever"
-    },
-    "rs232":{
-        "ukey":"rs232",
-        "dpoints":[
-        ]
-    }
+Donations are owsom' appreciated 
 
-}
-```
-
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L9RVWU5NUZ4YG)
-
-When donate some cash I you will send you the SDK documentation on the PayPal email as PDF. 
-
+    *SDK manual.......................25$
+    *A build for a specific target...200$
+    *The makefile+intructions........100$
+        *Additional help.............0$
+        *Bug fixes...................0$
+    *Custom application & scripts....contact me here: https://www.meeiot.org/?p=contact.php    
+    
 
 ![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/emb3.png)
+
+
+Credits:
+
+    *https://github.com/albertodemichelis/squirrel
+    *https://github.com/hakase-labs/sqrat
+    *https://github.com/comarius/Easy-ssh_automation
+    *https://github.com/comarius/xomata
+    *https://github.com/comarius/scrite
+    *https://github.com/comarius/The-Ultra-C-Monex-
+    
+    
+
+
