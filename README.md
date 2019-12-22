@@ -1,6 +1,6 @@
 
 
-![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/embixico.png)
+![cod](https://raw.githubusercontent.com/comarius/rembix/master/docs/rem.png)
 
 ## GPIO, PWM, SPI, I2C SCRIPTING LANGUAGE FOR LINUX / FREEBSD 
 ##                    NO DEPENDENCIES. 
@@ -744,5 +744,7 @@ Credits:
     *https://github.com/comarius/The-Ultra-C-Monex-
     
     
+
+![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/embixico.png)
 
 
