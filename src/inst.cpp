@@ -44,6 +44,7 @@ Inst::Inst(SqEnvi& sq, char* p[]):Sqrat::Class<Inst>(sq.theVM(),"App")
     if(p[1]){ _param = p[1]; }
     this->Functor(_SC("notify"), &Inst::notify);
     this->Functor(_SC("get_dev"), &Inst::get_sqo);
+    this->Functor(_SC("set_timer"), &Inst::set_timer);
     Sqrat::RootTable().Bind(_SC("App"), *this);
 }
 
