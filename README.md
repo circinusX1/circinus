@@ -2,6 +2,8 @@
 
 ![cod](https://raw.githubusercontent.com/comarius/rembix/master/docs/rem.png)
 
+https://gist.github.com/comarius/f51fd6a08f1b373aa6de114d15f8667e
+
 ## GPIO, PWM, SPI, I2C SCRIPTING LANGUAGE FOR LINUX / FREEBSD 
 ##                    NO DEPENDENCIES. 
 ### REACTION TIME ~ 1ms (depending of your code)
