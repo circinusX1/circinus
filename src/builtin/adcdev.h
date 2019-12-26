@@ -37,9 +37,6 @@ public:
         Sqrat::Class<AdcDev> cls(e.theVM(), _SC("AIN"));
         cls.Ctor<EADC_PIN, const char*>();
         cls.Ctor<SqObj&, EADC_PIN, const char*>();
-        cls.Ctor<EADC_PIN>();
-        cls.Ctor<SqObj&, EADC_PIN>();
-
 
         cls.Functor(_SC("ctx_it"), &AdcDev::ctx_it);
         cls.Functor(_SC("get_value"), &AdcDev::get_value);

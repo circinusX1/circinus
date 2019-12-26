@@ -91,7 +91,7 @@ SQString *SQVM::PrintObjVal(const SQObjectPtr &o)
 void SQVM::Raise_IdxError(const SQObjectPtr &o)
 {
     SQObjectPtr oval = PrintObjVal(o);
-    Raise_Error(_SC("the variable '%.50s' does not exist"), _stringval(oval));
+    Raise_Error(_SC("the entity '%.50s' does not exist"), _stringval(oval));
 }
 
 void SQVM::Raise_CompareError(const SQObject &o1, const SQObject &o2)

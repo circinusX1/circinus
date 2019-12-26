@@ -42,8 +42,6 @@ public:
         Sqrat::Class<SpiDev> cls(e.theVM(), _SC("SPI"));
         cls.Ctor<ESPIBUS, uint8_t, uint8_t, uint8_t, uint32_t, const char*>();
         cls.Ctor<SqObj&,ESPIBUS, uint8_t, uint8_t , uint8_t, uint32_t, const char*>();
-        cls.Ctor<ESPIBUS, uint8_t, uint8_t, uint8_t, uint32_t>();
-        cls.Ctor<SqObj&,ESPIBUS, uint8_t,uint8_t, uint8_t, uint32_t>();
 
         cls.Functor(_SC("ctx_it"), &SpiDev::ctx_it);
         cls.Functor(_SC("set_monitor"), &SpiDev::set_monitor);

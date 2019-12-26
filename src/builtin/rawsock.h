@@ -46,8 +46,6 @@ public:
         Sqrat::Class<RawSock> cls(e.theVM(), _SC("SOCKET"));
         cls.Ctor<E_TYPE ,const char*, int ,const char*>();
         cls.Ctor<SqObj&, E_TYPE, const char*, int,const char*>();
-        cls.Ctor<E_TYPE ,const char*, int>();
-        cls.Ctor<SqObj&, E_TYPE, const char*, int>();
 
         cls.Functor(_SC("ctx_it"), &RawSock::ctx_it);
         cls.Functor(_SC("set_monitor"), &RawSock::set_monitor);

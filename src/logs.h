@@ -70,9 +70,9 @@ do{\
     std::cout <<  Tc::Md(Tc::FG_YELLOW) << "W: " << x << Tc::Md(Tc::FG_DEFAULT) <<"\r\n";\
 }while(0);
 
-#define SGLOGW(x) if(Loggran & 0x2)\
+#define SLOG(x) \
 do{\
-    std::cout <<  Tc::Md(Tc::FG_YELLOW) << "WS " << x << Tc::Md(Tc::FG_DEFAULT) <<"\r\n";\
+    std::cout <<  Tc::Md(Tc::FG_BLUE) << "S " << x << Tc::Md(Tc::FG_DEFAULT);\
 }while(0);
 
 //-----------------------------------------------------------------------------
@@ -136,6 +136,11 @@ do{\
 do{\
     std::stringstream ss; ss << "WS "<< str_time()<<" " << x << "\r\n";\
     f2l(ss); \
+}while(0);
+
+#define SLOG(x) \
+do{\
+    std::cout <<  Tc::Md(Tc::FG_BLUE) << "S " << x << Tc::Md(Tc::FG_DEFAULT);\
 }while(0);
 
 

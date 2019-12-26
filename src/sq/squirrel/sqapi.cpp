@@ -1092,7 +1092,7 @@ SQRESULT sq_rawget(HSKVM v,int idx)
         return sq_throwerror(v,_SC("rawget works only on array/table/instance and class"));
     }
     v->Pop();
-    return sq_throwerror(v,_SC("the variable doesn't exist"));
+    return sq_throwerror(v,_SC("the entity doesn't exist"));
 }
 
 SQRESULT sq_getstackobj(HSKVM v,int idx,HSQOBJECT *po)

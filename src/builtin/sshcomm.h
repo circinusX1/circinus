@@ -44,8 +44,6 @@ public:
         Sqrat::Class<SshComm> cls(e.theVM(), _SC("SSH"));
         cls.Ctor<const char*, const char* >();
         cls.Ctor<SqObj&, const char*, const char* >();
-        cls.Ctor<const char*>();
-        cls.Ctor<SqObj&, const char*>();
 
         cls.Functor(_SC("ctx_it"), &SshComm::ctx_it);
         cls.Functor(_SC("open"), &SshComm::iopen);

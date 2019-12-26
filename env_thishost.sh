@@ -1,4 +1,6 @@
 #!/bin/bash
+# called from src/make-file
+
 export BOARD_SETUP=thishost
 export GCC_PREFIX=""
 export GPP_PREFIX=""

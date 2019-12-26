@@ -39,8 +39,6 @@ public:
         Sqrat::Class<PwmDev> cls(e.theVM(), _SC("PWM"));
         cls.Ctor<EPWM_PIN, int, int, bool,const char*>();
         cls.Ctor<SqObj&, EPWM_PIN, int, int, bool,const char*>();
-        cls.Ctor<EPWM_PIN, int, int, bool>();
-        cls.Ctor<SqObj&, EPWM_PIN, int, int, bool>();
 
         cls.Functor(_SC("ctx_it"), &PwmDev::ctx_it);
         cls.Functor(_SC("set_value"), &PwmDev::set_value);

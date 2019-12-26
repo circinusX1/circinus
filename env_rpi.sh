@@ -2,6 +2,7 @@
 
 #
 # this file might need tweaks
+# called form src/make-file
 #
 CWD=$(pwd)
 export PATH=${CWD}/TOOLS/toolchain/bin:$PATH

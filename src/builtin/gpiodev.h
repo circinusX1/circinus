@@ -46,10 +46,6 @@ public:
         cls.Ctor<EGPIO_PIN, int, const char*>();        // counter or tone
         cls.Ctor<SqObj&, EGPIO_PIN, EPIN_DIR, int, const char*>();
 
-        cls.Ctor<EGPIO_PIN, EPIN_DIR, int>();
-        cls.Ctor<EGPIO_PIN, int>();        // counter or tone
-        cls.Ctor<SqObj&, EGPIO_PIN, EPIN_DIR, int>();
-
         //cls.Ctor<EGPIO_PIN, EPIN_DIR, int>();
         cls.Functor(_SC("ctx_it"), &GpioDev::ctx_it);
         cls.Functor(_SC("set_value"), &GpioDev::set_value);

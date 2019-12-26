@@ -43,8 +43,6 @@ public:
         Sqrat::Class<UsbDev> cls(e.theVM(), _SC("USB"));
         cls.Ctor<const char*, const char*>();
         cls.Ctor<SqObj&, const char*, const char*>();
-        cls.Ctor<const char*>();
-        cls.Ctor<SqObj&, const char*>();
 
         cls.Functor(_SC("ctx_it"), &UsbDev::ctx_it);
         cls.Functor(_SC("open"), &DvUsb::iopen);

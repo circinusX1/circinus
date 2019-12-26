@@ -2,6 +2,7 @@
 
 #
 # this file might need tweaks
+# called formsrc/make-file
 #
 CWD=$(pwd)
 export PATH=${CWD}/TOOLS/toolchain/bin:$PATH
@@ -17,3 +18,4 @@ export GPP_PREFIX=arm-linux-gnueabihf-
 export TCC=arm-linux-gnueabihf-
 export CROSS_COMPILE=${GCC_PREFIX}
 export ARCH=arm
+printenv | grep ${ARM_EMBEDDED_SYSROOT}

@@ -110,32 +110,14 @@ void SqEnvi::debug_hook(HSKVM /*v*/,
 
 void SqEnvi::print_func(HSKVM, const SQChar * s,...)
 {
-    //AutoLock a(&_m);
-    char szBuffer[4096];
+    char szBuffer[2048];
 
     va_list args;
     va_start(args, s);
     ::vsnprintf(szBuffer,sizeof(szBuffer)-1, s, args);
     va_end(args);
-
-    SqErrStr += szBuffer;
-    if(SqErrStr.find("ERROR")!=std::string::npos)
-    {
-        LOGE(SqErrStr.c_str());
-    }
-    else
-    {
-        if(_hook_print)
-        {
-            _hook_print(szBuffer);
-        }
-        else
-        {
-            std::cout << szBuffer;
-            std::cout.flush();
-        }
-    }
-    debunk_error(SqErrStr);
+    SLOG(szBuffer);
+    std::cout.flush();
 }
 
 int SqEnvi::error_handler(HSKVM v)

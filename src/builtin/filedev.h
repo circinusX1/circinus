@@ -39,9 +39,7 @@ public:
     OVERW(DvFile,Divais)
     static void squit(SqEnvi& e){
         Sqrat::Class<FileDev> cls(e.theVM(), _SC("FILE"));
-        cls.Ctor<E_TYPE, const char*>();
         cls.Ctor<E_TYPE,const char*, const char* >();
-        cls.Ctor<SqObj&, E_TYPE, const char*>();
         cls.Ctor<SqObj&, E_TYPE, const char*, const char* >();
 
 

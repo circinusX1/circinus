@@ -36,7 +36,6 @@ public:
     {
         Sqrat::Class<ScrBase> cls(sq.theVM(), _SC("BASE"));
         cls.Ctor<SqObj&, E_TYPE, const char*>();
-        cls.Ctor<SqObj&, E_TYPE>();
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
         Sqrat::RootTable().Bind(_SC("BASE"), cls);
     }
