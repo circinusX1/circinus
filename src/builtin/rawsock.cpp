@@ -22,7 +22,7 @@ RawSock::RawSock(E_TYPE e,
                  const char* ip,
                  int port,
                  const char* name):DvSocket(ip,port),
-                                    Divais (e, name),
+                                    Divais (e, eSOCKET, name),
                                     Reg<RawSock>(this),
                                     RtxBus<RawSock>(this),_bytes(nullptr)
 {
@@ -35,7 +35,7 @@ RawSock::RawSock(SqObj& o,
                  const char* ip,
                  int  port,
                  const char* name):DvSocket(ip,port),
-    Divais (e, name),
+    Divais (e, eSOCKET, name),
     Reg<RawSock>(this),
     RtxBus<RawSock>(this),_bytes(nullptr)
 {

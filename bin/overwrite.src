@@ -16,7 +16,7 @@ class MyDev  extends BASE
     _forjson="";
     _data=[];
     _k  = 0;
-    _uart = UART(eSTRING, "/dev/ttyUSB0",115200,"8N1","rs232");
+    _uart = UART(eSTRING, "/dev/ttyUSB0",115200,"8N1");
 
     constructor(whatever)
     {

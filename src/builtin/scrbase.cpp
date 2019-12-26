@@ -19,7 +19,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "inst.h"
 
 
-ScrBase::ScrBase(SqObj& o, E_TYPE e, const char* name):Divais(e, name),
+ScrBase::ScrBase(SqObj& o, E_TYPE e, const char* name):Divais(e, eSCRIPT, name),
                 Reg<ScrBase>(this)
 {
     ctx_it(o, name);

@@ -31,7 +31,7 @@ SshComm::SshComm(const char* cred,
 SshComm::SshComm(SqObj& o,
                  const char* cred,
                  const char* name):ComSsh(cred),
-                                    Divais(name),
+                                    Divais(eSSH, name),
                                     Reg<SshComm>(this),
                                     RtxBus<SshComm>(this),_bytes(nullptr),_nbytes(0)
 {

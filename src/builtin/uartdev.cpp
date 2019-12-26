@@ -26,7 +26,7 @@ UartDev::UartDev(E_TYPE  e,
                  const char* mode,
                  const char *name):
                      DvSerial(dev,bps,mode),
-                     Divais(e,name),
+                     Divais(e,eUART, name),
                      Reg<UartDev>(this),
                      RtxBus<UartDev>(this),_bytes(nullptr),_nbytes(0)
 {
@@ -41,7 +41,7 @@ UartDev::UartDev(SqObj& o,
                  const char* mode,
                  const char *name):
                      DvSerial(dev,bps,mode),
-                     Divais(e,name),
+                     Divais(e,eUART,name),
                      Reg<UartDev>(this),
                      RtxBus<UartDev>(this),_bytes(nullptr),_nbytes(0)
 {

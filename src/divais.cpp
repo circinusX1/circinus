@@ -54,6 +54,7 @@ const char* __scats[]={
     "eUSB",
     "eSOCKET",
     "eDEVMODULE",
+    "eSCRIPT",
     nullptr,
 };
 

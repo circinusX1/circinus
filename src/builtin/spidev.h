@@ -32,17 +32,19 @@ class SpiDev:   public DvSpi,
 {
 public:
 
-    SpiDev(ESPIBUS spi, uint8_t addr, const char* name=nullptr);
-    SpiDev(SqObj&, ESPIBUS spi, uint8_t addr, const char* name=nullptr);
+    SpiDev(ESPIBUS spi, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t freq, const char* name=nullptr);
+    SpiDev(SqObj&, ESPIBUS spi, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t freq, const char* name=nullptr);
     virtual ~SpiDev();
     void set_monitor(int bytes);
     SqArr  _readreg(int bytes);
     OVERW(DvSpi,Divais)
     static void squit(SqEnvi& e){
         Sqrat::Class<SpiDev> cls(e.theVM(), _SC("SPI"));
-        cls.Ctor<ESPIBUS, uint8_t>();
-        cls.Ctor<ESPIBUS, uint8_t, const char*>();
-        cls.Ctor<SqObj&,ESPIBUS, uint8_t, const char*>();
+        cls.Ctor<ESPIBUS, uint8_t, uint8_t, uint8_t, uint32_t, const char*>();
+        cls.Ctor<SqObj&,ESPIBUS, uint8_t, uint8_t , uint8_t, uint32_t, const char*>();
+        cls.Ctor<ESPIBUS, uint8_t, uint8_t, uint8_t, uint32_t>();
+        cls.Ctor<SqObj&,ESPIBUS, uint8_t,uint8_t, uint8_t, uint32_t>();
+
         cls.Functor(_SC("ctx_it"), &SpiDev::ctx_it);
         cls.Functor(_SC("set_monitor"), &SpiDev::set_monitor);
         cls.Overload<int (SpiDev::*)(SqArr&)>(_SC("write"), &RtxBus<SpiDev>::_fwrite);

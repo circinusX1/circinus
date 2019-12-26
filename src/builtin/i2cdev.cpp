@@ -22,7 +22,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 I2CDev::I2CDev(EI2CBUS i2c, uint8_t addr,
                const char* name):DvI2c(i2c,addr),
-                                 Divais (eBINARY, name),
+                                 Divais (eBINARY, eI2C, name),
                                  Reg<I2CDev>(this),
                                  RtxBus<I2CDev>(this),_regaddr(0),_bytes(nullptr)
 {
@@ -34,7 +34,7 @@ I2CDev::I2CDev(SqObj& o,
                EI2CBUS i2c,
                uint8_t addr,
                const char* name):DvI2c(i2c,addr),
-                                 Divais (eBINARY, name),
+                                 Divais (eBINARY, eI2C, name),
                                  Reg<I2CDev>(this),
                                  RtxBus<I2CDev>(this),_regaddr(0),_bytes(nullptr)
 {

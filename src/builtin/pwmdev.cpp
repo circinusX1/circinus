@@ -18,7 +18,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "inst.h"
 
 PwmDev::PwmDev(EPWM_PIN pin, int period, int val, bool inv, const char* name):
-                DvPwm(pin,period,val,inv),Divais(eINT, name),Reg<PwmDev>(this)
+                DvPwm(pin,period,val,inv),Divais(eINT, ePWMM, name),Reg<PwmDev>(this)
 
 {
     _o.BindCppObject(this);
@@ -31,7 +31,7 @@ PwmDev::PwmDev(SqObj& o,
                int val,
                bool inv,
                const char* name):DvPwm(pin,period,val,inv),
-                                 Divais(eINT, name),
+                                 Divais(eINT, ePWMM, name),
                                  Reg<PwmDev>(this)
 
 {

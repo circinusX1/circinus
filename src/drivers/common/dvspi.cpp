@@ -15,7 +15,11 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
 
 
-
+#include <cstdint>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <linux/spi/spidev.h>
 #include "main.h"
 #include "dvspi.h"
 #include "dlconfig.h"
@@ -24,8 +28,16 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 namespace GenericHw
 {
 
-DvSpi::DvSpi(ESPIBUS i2c, uint8_t addr):_ifile(0)
+DvSpi::DvSpi(ESPIBUS i2c, uint8_t addr,
+             uint8_t mode,
+             uint8_t wordlen,
+             uint32_t speed):_ifile(0),_mode(mode),_word(wordlen),_freq(speed)
 {
+    _config("spi",_sys);
+    _config("spi_fmt",_fmt);
+    char sy[256];
+    ::sprintf(sy, _fmt.c_str(), _sys.c_str(), i2c);
+    _dev_node = sy;
 }
 
 DvSpi::~DvSpi()
@@ -34,25 +46,70 @@ DvSpi::~DvSpi()
 
 bool    DvSpi::iopen(int)
 {
-    return false;
+    if(0==_ifile){
+        _ifile = ::open(_dev_node.c_str(), O_RDWR);
+        if(_ifile)
+        {
+            if(::ioctl(_ifile, SPI_IOC_WR_MODE, &_mode) == -1 )
+            {
+                iclose();
+                return false;
+            }
+            if(::ioctl(_ifile, SPI_IOC_WR_MAX_SPEED_HZ, &_freq) == -1 )
+            {
+                iclose();
+                return false;
+            }
+            if(::ioctl(_ifile, SPI_IOC_WR_BITS_PER_WORD, &_word) == -1 )
+            {
+                return false;
+            }
+        }
+    }
+    return _ifile>0;
 }
 
 void    DvSpi::iclose()
 {
-    ;
+    if(_ifile)
+        ::close(_ifile);
+    _ifile=0;
 }
 
-size_t     DvSpi::bread(uint8_t* buff, int len, int)
+size_t     DvSpi::bread(uint8_t* buff, int len, int waitus)
 {
-	on_event(eREAD, buff, len);
+    spi_ioc_transfer package;
+
+    package.tx_buf          = (unsigned long)0;
+    package.rx_buf          = (unsigned long)buff;
+    package.len             = len;
+    package.delay_usecs     = waitus;
+    package.speed_hz        = _freq;
+    package.bits_per_word   = _word;
+    if( ::ioctl(_ifile, SPI_IOC_MESSAGE(1), &package)< 0)
+    {
+        return -1;
+    }
+    on_event(eREAD, buff, len);
     return 0;
 }
 
-int     DvSpi::bwrite(const uint8_t* buff, int len, int)
+int     DvSpi::bwrite(const uint8_t* buff, int len, int waitus)
 {
-	on_event(eWRITE, buff, len);
+    spi_ioc_transfer package;
 
-    return 0;
+    package.tx_buf          = (unsigned long)buff;
+    package.rx_buf          = (unsigned long)nullptr;
+    package.len             = len;
+    package.delay_usecs     = waitus;
+    package.speed_hz        = _freq;
+    package.bits_per_word   = _word;
+    if( ::ioctl(_ifile, SPI_IOC_MESSAGE(1), &package)< 0)
+    {
+        return -1;
+    }
+    on_event(eWRITE, buff, len);
+    return len;
 }
 
 void    DvSpi::flush()
@@ -83,12 +140,12 @@ int     DvSpi::do_ioctl(int ctl, uint8_t* buf, int expect)
 
 int  DvSpi::fread(uint8_t* buff, int len)const
 {
-    return ::read(_ifile, buff, len);
+    return -1;
 }
 
 int  DvSpi::fwrite(const uint8_t* buff, int len)
 {
-    return ::write(_ifile, buff, len);
+    return -1;
 }
 
 

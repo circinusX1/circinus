@@ -27,7 +27,7 @@ using namespace GenericHw;
 class ScrBase: public Divais, private Reg<ScrBase>
 {
 public:
-    ScrBase(SqObj&, E_TYPE e, const char*);
+    ScrBase(SqObj&, E_TYPE e, const char* name=nullptr);
     virtual ~ScrBase();
     bool _touch_it(size_t t);
     bool  iopen(int rm=0);
@@ -36,6 +36,7 @@ public:
     {
         Sqrat::Class<ScrBase> cls(sq.theVM(), _SC("BASE"));
         cls.Ctor<SqObj&, E_TYPE, const char*>();
+        cls.Ctor<SqObj&, E_TYPE>();
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
         Sqrat::RootTable().Bind(_SC("BASE"), cls);
     }

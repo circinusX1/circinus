@@ -19,14 +19,14 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 AdcDev::AdcDev(EADC_PIN pn,
                  const char* name):DvAdc(pn),
-                 Divais(eINT, name),Reg<AdcDev>(this)
+                 Divais(eINT, eADC, name),Reg<AdcDev>(this)
 {
     _o.BindCppObject(this);
 }
 
 AdcDev::AdcDev(SqObj& o,
                  EADC_PIN pn, const char* name):DvAdc(pn),
-                 Divais(eINT, name),Reg<AdcDev>(this)
+                 Divais(eINT, eADC, name),Reg<AdcDev>(this)
 {
     ctx_it(o, name);
 }

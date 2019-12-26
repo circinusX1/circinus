@@ -41,7 +41,7 @@ class DvSpi : public DvCore, public IoOps
 protected:
     DvSpi(){}
 public:
-    DvSpi(ESPIBUS i2c, uint8_t addr);
+    DvSpi(ESPIBUS i2c, uint8_t addr, uint8_t mode, uint8_t wordlen, uint32_t speed);
      ~DvSpi();
      bool    iopen(int  mode=O_RDWR);
      void    iclose();
@@ -64,6 +64,9 @@ private:
     static std::string        _sys;
     static std::string        _fmt;
     int         _ifile=0;
+    uint8_t     _mode=0;
+    uint8_t     _word=0;
+    uint32_t    _freq=0;
 };
 }
 

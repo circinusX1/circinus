@@ -65,14 +65,14 @@ extern const char* __scats[];
 class Divais : public I_IDev
 {
 public:
-	Divais(E_TYPE etype):_mon_dirt(false),_monitor(false),_etype(etype)
+	Divais(E_TYPE etype, EPERIPH per):_mon_dirt(false),_monitor(false),_etype(etype)
 	{
 		char t[16];
-		::sprintf(t,"D_%d",++IDX);
+		::sprintf(t,"%s_%d",__scats[per],++IDX);
 		_name = t;
 		_ukey = t;
 	}
-	Divais(E_TYPE etype, const char* name):_name(name?name:""),
+	Divais(E_TYPE etype, EPERIPH per, const char* name):_name(name?name:""),
 		_mon_dirt(false),
 		_monitor(false),
 		_etype(etype)
@@ -80,7 +80,7 @@ public:
 		char t[32];
 		if(_name.empty())
 		{
-			::sprintf(t,"D_%d",++IDX);
+			::sprintf(t,"%s_%d",__scats[per],++IDX);
 			_name = t;
 			_ukey = t;
 		}

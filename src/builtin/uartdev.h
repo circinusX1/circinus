@@ -42,7 +42,9 @@ public:
     {
         Sqrat::Class<UartDev> cls(e.theVM(), _SC("UART"));
         cls.Ctor<E_TYPE, const char*,int, const char*,const char*>();
+        cls.Ctor<E_TYPE, const char*,int, const char*>();
         cls.Ctor<SqObj&, E_TYPE, const char*,int, const char*, const char*>();
+        cls.Ctor<SqObj&, E_TYPE, const char*,int, const char*>();
         cls.Functor(_SC("ctx_it"), &UartDev::ctx_it);
 
         cls.Functor(_SC("open"), &UartDev::iopen);

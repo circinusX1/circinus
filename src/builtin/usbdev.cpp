@@ -22,7 +22,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 UsbDev::UsbDev(E_TYPE  e,
                const char* dev,
                const char *name):DvUsb(dev),
-                                  Divais(e,name),
+                                  Divais(e,eUSB,name),
                                   Reg<UsbDev>(this),
                                   RtxBus<UsbDev>(this),_bytes(nullptr),_nbytes(0)
 {
@@ -34,7 +34,7 @@ UsbDev::UsbDev( SqObj& o,
                 E_TYPE  e,
                 const char* dev,
                 const char *name):DvUsb(dev),
-                                  Divais(e,name),
+                                  Divais(e,eUSB,name),
                                   Reg<UsbDev>(this),
                                   RtxBus<UsbDev>(this),_bytes(nullptr),_nbytes(0)
 {

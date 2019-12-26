@@ -49,7 +49,8 @@ typedef enum EPERIPH{
     eSOLIB,
     eUSB,
     eSOCKET,
-    eDEVMODULE
+    eDEVMODULE,
+    eSCRIPT,
 }EPERIPH;
 
 

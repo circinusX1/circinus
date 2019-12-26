@@ -41,7 +41,10 @@ public:
         Sqrat::Class<FileDev> cls(e.theVM(), _SC("FILE"));
         cls.Ctor<E_TYPE, const char*>();
         cls.Ctor<E_TYPE,const char*, const char* >();
+        cls.Ctor<SqObj&, E_TYPE, const char*>();
         cls.Ctor<SqObj&, E_TYPE, const char*, const char* >();
+
+
         cls.Functor(_SC("ctx_it"), &FileDev::ctx_it);
         cls.Functor(_SC("open"), &FileDev::iopen);
         cls.Functor(_SC("close"), &FileDev::iclose);

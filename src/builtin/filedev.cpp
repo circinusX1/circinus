@@ -20,7 +20,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 FileDev::FileDev(E_TYPE e,
                  const char* file,
                  const char* name):DvFile(file),
-                                   Divais(e, name),
+                                   Divais(e, eFILE, name),
                                    Reg<FileDev>(this),
                                    RtxBus<FileDev>(this)
 {
@@ -31,7 +31,7 @@ FileDev::FileDev(SqObj& o,
                  E_TYPE e,
                  const char* file,
                  const char* name):DvFile(file),
-                                   Divais(e, name),
+                                   Divais(e, eFILE, name),
                                    Reg<FileDev>(this),
                                    RtxBus<FileDev>(this)
 {

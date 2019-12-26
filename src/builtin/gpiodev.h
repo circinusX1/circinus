@@ -28,9 +28,8 @@ class GpioDev: public DvGpio, public Divais, private Reg<GpioDev>// , public Div
 {
 public:
     GpioDev(EGPIO_PIN pn, EPIN_DIR pd, int on, const char* name=nullptr);
-    GpioDev(EGPIO_PIN pn, const char* name=nullptr); // counter
-    GpioDev(EGPIO_PIN pn, int freq, const char* name=nullptr); // tone
-    GpioDev(SqObj&, EGPIO_PIN pn, EPIN_DIR pd, int on, const char* name);
+    GpioDev(EGPIO_PIN pn, int freq, const char* name=nullptr); // tone/ countet()<0
+    GpioDev(SqObj&, EGPIO_PIN pn, EPIN_DIR pd, int on, const char* name=nullptr);
     virtual ~GpioDev();
     int      set_value(int val);
     int      get_value();
@@ -44,8 +43,12 @@ public:
     static void squit(SqEnvi& e){
         Sqrat::Class<GpioDev> cls(e.theVM(), _SC("PIO"));
         cls.Ctor<EGPIO_PIN, EPIN_DIR, int, const char*>();
+        cls.Ctor<EGPIO_PIN, int, const char*>();        // counter or tone
         cls.Ctor<SqObj&, EGPIO_PIN, EPIN_DIR, int, const char*>();
-        cls.Ctor<EGPIO_PIN, int, const char*>(); // counter or tone
+
+        cls.Ctor<EGPIO_PIN, EPIN_DIR, int>();
+        cls.Ctor<EGPIO_PIN, int>();        // counter or tone
+        cls.Ctor<SqObj&, EGPIO_PIN, EPIN_DIR, int>();
 
         //cls.Ctor<EGPIO_PIN, EPIN_DIR, int>();
         cls.Functor(_SC("ctx_it"), &GpioDev::ctx_it);
