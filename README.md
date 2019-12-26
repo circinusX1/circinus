@@ -725,11 +725,6 @@ function program_loop(ctx, dev)
 
 Donations are owsom' appreciated 
 
-    *SDK manual.......................25$
-    *A build for a specific target...200$
-    *The makefile+intructions........100$
-        *Additional help.............0$
-        *Bug fixes...................0$
     *Custom application & scripts....contact me here: https://www.meeiot.org/?p=contact.php    
     
 
@@ -748,5 +743,10 @@ Credits:
     
 
 ![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/embixico.png)
+
+
+# LICENSE ADDON
+## For commercial products usage you would need a written consent form the author.
+
 
 
