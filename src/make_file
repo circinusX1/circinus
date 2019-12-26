@@ -26,7 +26,7 @@ SYSTEM    = $(BOARD)
 ###############################################################################
 ifeq ($(BOARD), beaglebone)
 ifeq (,$(wildcard $(ARM_EMBEDDED_SYSROOT)/usr/lib/arm-linux-gnueabihf/libsqlite3.so))
-$(error "libsqlite3.so is not installed on beaglebone rootfs system")
+$(error "libsqlite3.so is not installed on beaglebone rootfs system $(ARM_EMBEDDED_SYSROOT)")
 endif	
 
 #
