@@ -746,7 +746,6 @@ Credits:
 
 
 # LICENSE ADDON
-## For commercial products usage you would need a written consent form the author.
-
+#### For commercial products you need a written consent form the Author.
 
 
