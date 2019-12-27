@@ -20,23 +20,11 @@ server := SRV(8000,"xxx");
 
 function main(x)
 {
-    var data1 = accel.acceleration();
-    var data2 = accel.rotation();
-
-    do {
-        println("ACC " + data1.pop());
-    } while (data1.len() > 0);
-
-    do {
-        println("ACC " + data2.pop());
-    } while (data2.len() > 0);
-
     return run_loop(l, -1);
 }
 
 function l(c, d)
 {
-
     var data1 = accel.acceleration();
     var data2 = accel.rotation();
 

@@ -55,6 +55,8 @@ const char* __scats[]={
     "eSOCKET",
     "eDEVMODULE",
     "eSCRIPT",
+    "eCURL",
+    "eSUNRS",
     nullptr,
 };
 

@@ -22,8 +22,11 @@
 #include "adcdev.h"
 #include "solib.h"
 #include "divais.h"
+#include "sunset.h"
 #include "scrbase.h"
 #include "rawsock.h"
+#include "comcurl.h"
+#include "comssh.h"
 #include "inst.h"
 
 int         Secret;
@@ -610,23 +613,23 @@ void usingop(int32_t flags)
     if(flags & eTIMER)  __noop;
     if(flags & eUART)   UartDev::squit(*sq);
     if(flags & eHTTP)   RestSrv::squit(*sq);
-    if(flags & eSSH)    __noop;
-#ifdef WITH_SSH
-    SshComm::squit(sq);
-#endif //#ifdef WITH_USB
     if(flags & eBASE)   ScrBase::squit(*sq);
     if(flags & eSRV)   RestSrv::squit(*sq);
     if(flags & eDB)  Database::squit(*sq);
     if(flags & eFILE)   FileDev::squit(*sq);
     if(flags & eSOLIB)  SoLib::squit(*sq);
     if(flags & eSOCKET)   RawSock::squit(*sq);
-    if(flags & eUSB)    __noop;
     //if(flags & eDEVMODULE) ModuDev::squit(*sq);
-
-#ifdef WITH_USB
-    UsbDev::squit(sq);
+    if(flags & eSUNRS)   SunTimes::squit(*sq);
+#ifdef WITH_CURL
+    if(flags & eCURL)   ComCurl::squit(*sq);
 #endif //#ifdef WITH_USB
-    SunTimes::squit(*sq);
+#ifdef WITH_SSH
+    if(flags & eSSH)    SshComm::squit(sq);
+#endif //#ifdef WITH_USB
+#ifdef WITH_USB
+    if(flags & eUSB) UsbDev::squit(sq);
+#endif //#ifdef WITH_USB
 }
 
 void globals_expose(SqEnvi& sq)
@@ -660,6 +663,9 @@ void globals_expose(SqEnvi& sq)
 			.Const("eSOLIB",eUSB)
 			.Const("eSOCKET",eSOCKET)
 			.Const("eDEVMODULE",eDEVMODULE)
+			.Const("eCURL",eCURL)
+			.Const("eSUNRS",eSUNRS)
+
 			.Const("eVOID",eVOID)
 			.Const("eINT",eINT)
 			.Const("eINT64",eINT64)
@@ -668,6 +674,12 @@ void globals_expose(SqEnvi& sq)
 			.Const("eREAL",eREAL)
 			.Const("eSTRING",eSTRING)
 			.Const("eBINARY",eBINARY);
+
+	Sqrat::ConstTable(sq.theVM())
+			.Const("CURLAUTH_NONE", 0)
+			.Const("CURLAUTH_BASIC", 1)
+			.Const("CURLAUTH_DIGEST", 2)
+			.Const("CURLAUTH_NEGOTIATE", 4);
 
 	Sqrat::RootTable(sq.theVM()).Functor("execute",&execute);
 	Sqrat::RootTable(sq.theVM()).Functor("loadmod",&loadmod);

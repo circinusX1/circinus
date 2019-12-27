@@ -138,7 +138,7 @@ void   Inst::call_backs(time_t curtick)
         {
             t.remember = curtick;// - deltat; //reposition if deviates
             try{
-                e.second.f.Fcall<const char*>();
+                e.second.f.Fcall<bool>(this);
             }
             catch(Sqrat::Exception ex)
             {

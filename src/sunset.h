@@ -153,11 +153,11 @@ public:
   const char* rise(int addmin);
 
   static void squit(SqEnvi& e){
-      Sqrat::Class<SunTimes> cls(e.theVM(), _SC("SunTimes"));
+      Sqrat::Class<SunTimes> cls(e.theVM(), _SC("SUNRS"));
       cls.Ctor<double, double,int>();
       cls.Functor(_SC("rise"), &SunTimes::rise);
       cls.Functor(_SC("set"), &SunTimes::set);
-      Sqrat::RootTable().Bind(_SC("SunTimes"), cls);
+      Sqrat::RootTable().Bind(_SC("SUNRS"), cls);
   }
 private:
   std::string  _sset;

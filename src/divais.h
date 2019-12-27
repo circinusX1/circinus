@@ -111,11 +111,13 @@ public:
 	virtual Sqrat::Object object();
 protected:
 	virtual bool	_write_now(const any_t& a)=0;
+	virtual bool	_touch_it(size_t t)=0;
+
 	virtual size_t  _read_now(any_t& _curdata, const char* filter)=0;
 	virtual bool	_set_values(const char* key, const char* value);
 	virtual const char*	_get_values(const char* key);
 	Sqrat::Object&	_so(){return _o;}
-	virtual bool	_touch_it(size_t t)=0;
+
 	bool			_check_dirt();
 
 protected:

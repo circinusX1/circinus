@@ -22,6 +22,9 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <vector>
 #include <sqlite3.h>
 
+#ifndef SQLITE_API
+# define SQLITE_API
+#endif
 /**
  * @brief The Database class
  * database class.
@@ -65,10 +68,11 @@ public:
     int save(const char* name);
     int reset();
     int disk_sz();
-    int add(const char* name);
+    //int add_table(Sqrat::Function& f);
     void ex_fld(const char* fld);
     const char* filename()const{return _name.c_str();}
     const std::string& name()const{return _name;}
+
 
     static void squit(SqEnvi& e){
         Sqrat::Class<Database> cls(e.theVM(), _SC("DB"));

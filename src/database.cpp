@@ -61,8 +61,12 @@ Database::Database(int limit, int clean, const char* name):_name(name),_db(nullp
 
 Database::~Database()
 {
-    Pdb = 0; if(_db)fp_sqlite3_close(_db); _db = 0;
-    if(_sohandler)::dlclose(_sohandler);
+    Pdb = 0;
+    if(_db && fp_sqlite3_close)
+        fp_sqlite3_close(_db);
+    _db = 0;
+    if(_sohandler)
+        ::dlclose(_sohandler);
 }
 
 int Database::reset()

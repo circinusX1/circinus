@@ -44,7 +44,7 @@ public:
 
     static void squit(SqEnvi& e){
         Sqrat::Class<RawSock> cls(e.theVM(), _SC("SOCKET"));
-        cls.Ctor<E_TYPE ,const char*, int ,const char*>();
+        cls.Ctor<E_TYPE, const char*, int ,const char*>();
         cls.Ctor<SqObj&, E_TYPE, const char*, int,const char*>();
 
         cls.Functor(_SC("ctx_it"), &RawSock::ctx_it);

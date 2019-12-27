@@ -1,9 +1,19 @@
-::using(eUART|eSRV|eBASE); // load in VM only what we usee. New as Nov 29 !
 
+::using(eCURL|eSRV|eBASE); // load in VM only what we usee. New as Nov 29 !
 
-var _uart = UART(eSTRING, "/dev/ttyUSB0",115200,"8N1","name");
+var curl = CURL();
 
 function main(o)
 {
+    curl.set_url("192.168.1.223/LED=OFF",0,"");
+    curl.perform(reply);
+    sleep(5000);
+    curl.set_url("192.168.1.223/LED=ON",0,"");
+    curl.perform(reply);
     return false;
+}
+
+function reply(string)
+{
+    println(string);
 }

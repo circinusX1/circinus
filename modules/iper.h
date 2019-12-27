@@ -51,6 +51,8 @@ typedef enum EPERIPH{
     eSOCKET,
     eDEVMODULE,
     eSCRIPT,
+    eCURL,
+    eSUNRS,
 }EPERIPH;
 
 
