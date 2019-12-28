@@ -24,7 +24,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "dcore.h"
 
 using namespace GenericHw;
-class ComSsh: public DvCore
+class ComSsh: public DvCore, private Reg<ComCurl>
 {
 public:
     // "user/pass@host:port"

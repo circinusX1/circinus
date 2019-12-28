@@ -1,19 +1,47 @@
 
-::using(eCURL|eSRV|eBASE); // load in VM only what we usee. New as Nov 29 !
+::using(eCURL|eSRV|eBASE|eBASE);
 
-var curl = CURL();
+setdbg(0xFF);
+
+class XX extends BASE
+{
+    _value = "";
+    curl   = CURL(2000,"led");
+    constructor()
+    {
+        _value = "xx";
+        base.constructor(this, eSTRING, "wrapp");
+    }
+    function get_value(key)
+    {
+        curl.set_url("192.168.1.223",0,"");
+        var html = curl.perform(4000);
+
+        if(html.find("pin is now: Off")!=0)
+            return "LED,OFF";
+        return "LED,ON";
+    }
+
+    function set_value(k,v)
+    {
+        curl.set_url("192.168.1.223/LED="+v,0,"");
+        println("--------sending ---->" + "192.168.1.223/LED="+v )
+        var html = curl.perform(4000);
+        return true;
+    }
+};
+
+
+var xx = XX();
+var srv = SRV(8000,"ddd");
 
 function main(o)
 {
-    curl.set_url("192.168.1.223/LED=OFF",0,"");
-    curl.perform(reply);
-    sleep(5000);
-    curl.set_url("192.168.1.223/LED=ON",0,"");
-    curl.perform(reply);
-    return false;
+    return run_loop(loo,-1);
 }
 
-function reply(string)
+function loo(x,d)
 {
-    println(string);
+    return true;
 }
+

@@ -53,9 +53,6 @@ public:
     size_t      _dbage = 0;
 };
 
-
-
-
 class RestSrv : public Mpthrd
 {
 public:
@@ -92,11 +89,11 @@ protected:
     void _start_hdr(Tcli* cli);
     int  _defer_query(const std::string& path, const std::string& req);
     int  _defer_to_device(I_IDev* pdev,  const rapidjson::Document& jnod);
-    bool _build_forjson(const devsmap_t& refrdevs);
+    bool _build_forjson(const devsmap_t& refrdevs, bool);
     int  _process_forjson_post(const std::string& path, const std::string& req);
     int  _process_resful_request(const std::string& path, const std::string& req);
     bool _get_add_devices(const std::string&, devsmap_t& devs);
-    bool _get_from_query(const std::string&, devsmap_t& devs);
+    int _get_from_query(const std::string&, devsmap_t& devs);
     void _get_dev_forjson(I_IDev* pd, rapidjson::Document&  doc);
 private:
     bool _toast(Tcli*);
@@ -107,14 +104,12 @@ private:
     void _clear();
 
 private:
-    std::vector<Tcli*> _sons;
+    std::vector<Tcli*> _kons;
     socklen_t           al;
     int                 sfd;
     struct sockaddr_un  cpp_addr;
     std::string         _req;
     std::string         _outstr;
-    std::string         _tcpx;
-    std::string         _cacheData;
     std::string         _cached_reequest2;
     int                 _port=0;
     tcp_srv_sock        _s;

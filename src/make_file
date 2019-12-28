@@ -24,7 +24,7 @@ CC		  = $(TCC)$(CCL)
 CXX		  = $(TCC)$(CPL)
 RELFLAGS  = -O3 -s -DNDEBUG
 CFLAGS	  = -pipe -g -Wall -W -D_REENTRANT -fPIC -sysroot=$(ARM_EMBEDDED_SYSROOT)  $(REFLAGS)
-CXXFLAGS  = -pipe -std=c++14 -g -Wno-unused-parameter -Wall -W -D_REENTRANT -fPIC -DWITH_MAIN_MUTEX -D$(BOARD) $(REFLAGS)
+CXXFLAGS  = -pipe -std=c++14 -g -Wno-unused-parameter -Wall -W -D_REENTRANT -fPIC -DWITH_MAIN_MUTEX -DWITH_CURL -D$(BOARD) $(REFLAGS)
 INCPATH	  = -Isq/include -Isq/squirrel -Isq/sqrat/include -Isq/sqrat -Isq/sqrat/include/sqrat -Idrivers -Idrivers/common  -Ibuiltin -Icomm -Irapidjson/include/ -Idrivers/platform/$(OSYSTEM)/$(BOARD) -I$(ARM_EMBEDDED_SYSROOT)/usr/include/
 LINK	  = $(TCC)g++
 LIBS	  = -L./../lib -lsqstdlib -L./../lib -lsquirrel 
@@ -83,6 +83,7 @@ $(error "libsqlite3.so is not installed on thishost system")
 endif	
     LIBS	  += -lpthread
     LIBS	  += -ldl
+    LIBS	  += -lcurl
 endif
 #
 # on this host

@@ -116,6 +116,9 @@ const char* Divais::get_value(const char* key)
             _forjson += "name,";
             _forjson += _name;
 
+            _forjson += "id,";
+            _forjson += _ukey;
+
             _forjson += ",cat,";
             _forjson += __scats[pops->peer_of()];
 
@@ -192,10 +195,5 @@ EPERIPH Divais::Get_cat(const char* cat)
 
 Sqrat::Object Divais::object()
 {
-    if(_o.IsNull())
-    {
-        Sqrat::Object o;
-        return o;
-    }
     return _o;
 }

@@ -106,7 +106,7 @@ int Database::ctx_it(const char* nouse)
         {
             sql += std::to_string(i); sql += " TEXT NOT NULL,";
         }
-        sql += "TSTAMP DATETIME NOT NULL);";
+        sql += "DTIM DATETIME NOT NULL);";
         int rc = fp_sqlite3_exec(_db, sql.c_str(), 0, 0, &szerr);
         if( rc != SQLITE_OK )
         {
@@ -164,7 +164,7 @@ int Database::update()
                 sql+=","; svls+=",";
             }
         }
-        sql+=",TSTAMP) VALUES"; sql+=svls; sql+=",'"; sql+=buffer; sql+= "');";
+        sql+=",DTIM) VALUES"; sql+=svls; sql+=",'"; sql+=buffer; sql+= "');";
         err  = fp_sqlite3_exec(_db, sql.c_str(), 0, 0, &szerr);
         if( err != SQLITE_OK )
         {

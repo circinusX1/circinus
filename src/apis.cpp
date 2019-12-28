@@ -245,14 +245,15 @@ int setdbg(int32_t d)
 std::string kbhit()
 {
     std::string s;
-    std::cout << "press a key to continue\n";
+    std::cout << ">";
+    std::cout.flush();
     std::cin >> s;
     return s;
 }
 
 int sys_reboot()
 {
-    ::system("sys_reboot");
+    ::system("sudo reboot");
     return 0;
 }
 
@@ -376,7 +377,7 @@ void make_dir(const std::string& path)
         ::system(cmd.c_str());
         if(::access(path.c_str(),0)!=0)
         {
-            LOGEX("Cannot create path for file at: " << path);
+            LOGW("Cannot create path for file at: " << path);
         }
     }
 }
@@ -406,7 +407,7 @@ const char* i2xa(int k)
 const char* consolein()
 {
     char line[128]={0};
-    std::cout << std::endl <<"cin>> " << std::flush;
+    std::cout << std::endl <<"rembix> " << std::flush;
     std::cin.getline(line,sizeof(line)-1);
     OutStr = line;
     return OutStr.c_str();
@@ -437,7 +438,7 @@ int  wd_pull(unsigned long int ctl, int flags)
     {
         if(::access("/dev/watchdog",0)!=0)
         {
-            LOGE("dev missing /dev/watchdog");
+            LOGE("no device /dev/watchdog");
             Wdto=0;
             return rv;
         }
@@ -448,14 +449,14 @@ int  wd_pull(unsigned long int ctl, int flags)
             if(rv)
             {
                 LOGE(__FUNCTION__ << " " << strerror(rv));
-                LOGE("err watchdog. disabled" << strerror(errno));
+                LOGE("watchdog off" << strerror(errno));
                 Wdto = 0;
             }
             ::close(fd);
         }
         else
         {
-            LOGE("err open /dev/watchdog. Disabling this feature" << strerror(errno));
+            LOGE("open /dev/watchdog failed" << strerror(errno));
             Wdto = 0;
         }
     }
@@ -492,10 +493,12 @@ int run_loop(SqMemb& f, int pulseme)
             {
                 if(__bsqenv->snap_.load()==true)
                 {
+                    LOGD2("COMIT DEVS...........EVENT");
                     __bsqenv->snap_=false;
                     App->comit_devs();
                 }
                 else {
+                    LOGD2("COMIT DEVS...........TIME");
                     App->comit_devs();
                     now = then;
                     srv = f.Fcall<bool>(App, false);
@@ -538,8 +541,6 @@ void _exit_app()
 {
     ApStat=EXIT_APP;
 }
-
-
 
 static void reconfig_sys(EPERIPH e, SqArr& a)
 {

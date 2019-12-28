@@ -26,7 +26,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "divais.h"
 
 using namespace GenericHw;
-class ComCurl : public DvCore, public Divais
+class ComCurl : public DvCore, public Divais, private Reg<ComCurl>
 {
 public:
 
@@ -37,24 +37,30 @@ public:
     typedef CURLcode (*p_curl_multi_cleanup)(CURLM *multi_handle);
     typedef struct curl_slist* (*p_curl_slist_append)(struct curl_slist *, const char *);
     typedef void (*p_curl_slist_free_all)(struct curl_slist *);
+    typedef CURLcode (*p_curl_easy_pause)(CURL *handle, int bitmask);
 
-    ComCurl();
+    ComCurl(int maxbuf, const char*);
+    ComCurl(SqObj& o, int maxbuf, const char*);
     virtual ~ComCurl();
     void  set_url(const char* url, int auth, const char* cred);
     void  set_post(Sqrat::Array& keys, Sqrat::Array& vals);
     void  set_headers(Sqrat::Array& keys, Sqrat::Array& vals);
     void  set_put(const char* data);
-    int   perform(Sqrat::Function f);
+    void  perform_cb(Sqrat::Function f, int tout);
+    const char*   perform(int tout);
     bool iopen(int);
     void iclose();
 
     static void squit(SqEnvi& e){
         Sqrat::Class<ComCurl> cls(e.theVM(), _SC("CURL"));
+        cls.Ctor<int, const char* >();
+        cls.Ctor<SqObj&, int, const char* >();
         cls.Functor(_SC("close"), &ComCurl::iclose);
         cls.Functor(_SC("set_post"), &ComCurl::set_post);
         cls.Functor(_SC("set_headers"), &ComCurl::set_headers);
         cls.Functor(_SC("set_url"), &ComCurl::set_url);
         cls.Functor(_SC("set_put"), &ComCurl::set_put);
+        cls.Functor(_SC("perform_cb"), &ComCurl::perform_cb);
         cls.Functor(_SC("perform"), &ComCurl::perform);
 
         Sqrat::RootTable().Bind(_SC("CURL"), cls);
@@ -70,6 +76,7 @@ protected:
     size_t _receiving(char* buf, size_t nmemb);
 
 private:
+    size_t                  _maxbuff;
     void*                   _sohandler;
     p_curl_easy_setopt      _curl_easy_setopt = nullptr;
     p_curl_easy_init        _curl_easy_init = nullptr;
@@ -78,13 +85,16 @@ private:
     p_curl_multi_cleanup    _curl_multi_cleanup = nullptr;
     p_curl_slist_append     _curl_slist_append = nullptr;
     p_curl_slist_free_all   _curl_slist_free_all = nullptr;
+    p_curl_easy_pause       _curl_easy_pause = nullptr;
     std::string             _url;
     std::string             _cred;
     std::string             _data;
+    std::string             _reply;
     struct curl_slist*      _headers = nullptr;
     int                     _auth;
-    int                     _pp=0;
+    int                     _pp = 0;
     Sqrat::Function         _foo;
+    bool                    _cb = false;
     CURL*                   _pcurl = nullptr;
 };
 

@@ -23,7 +23,24 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 RestSrv* Prest;
 
-RestSrv::RestSrv(int port, const char* tcpp):_tcpx(tcpp),_port(port)
+
+static const char* _resterrs[]={
+    "{\"err\":0,\"desc\":\"no error\"}",
+    "{\"err\":1,\"desc\":\"invalid query\"}",
+    "{\"err\":2,\"desc\":\"invalid json\"}",
+    "{\"err\":3,\"desc\":\"no device\"}",
+    "{\"err\":4,\"desc\":\"partial error\"}",
+    "{\"err\":5,\"desc\":\"unknown error\"}",
+};
+
+#define ERR_NO          0
+#define INVALID_Q       1
+#define INVALID_J       2
+#define NO_DEVICE       3
+#define PARTIAL_ERR     4
+#define UNK_ERR         5
+
+RestSrv::RestSrv(int port, const char* tcpp):_port(port)
 {
     ioTid = pthread_self();
     this->start_thread();
@@ -32,13 +49,13 @@ RestSrv::RestSrv(int port, const char* tcpp):_tcpx(tcpp),_port(port)
 
 void RestSrv::thread_main()
 {
-    LOGI("IO THREAD " << MainThrId);
+    LOGI("REST " << MainThrId);
     ioTid = pthread_self();
 
     if(_listen()==false)
     {
-        LOGEX("cannot listen on tcp port " << _port);
-        LOGD1("Thread IO exits");
+        LOGEX("listen failed on " << _port);
+        LOGD1("thread exits");
         return;
     }
 
@@ -47,7 +64,7 @@ void RestSrv::thread_main()
         spinit();
         ::msleep(16);
     }
-    LOGD1("Thread IO exits");
+    LOGD1("thread exits");
 }
 
 int RestSrv::ctx_it(const char* dev_key)
@@ -126,7 +143,7 @@ void RestSrv::_hthdr(std::string& resp)
     resp  = "HTTP/1.1 200 OK\r\n";
     resp += "Cache-Control : no-cache, private\r\n";
     resp += "Content-Length :" + std::to_string(_outstr.length());
-    resp +=  "\r\n";
+    resp += "\r\n";
     resp += "Content-Type: application/json\r\n\r\n";
 }
 
@@ -155,23 +172,22 @@ bool RestSrv::_toast(Tcli* cli)
     {
         _req = cli->_req.substr(preq, endr-preq);
         LOGD3("->" << _req);
-        _cacheData = _req;
         //
-        // defer to main thread any treq that has a !  or a  ?
+        // defer to mainthread any treq that has a !  or a  ?
         //
         if(!_req.empty())
         {
+            _outstr = _resterrs[ERR_NO];
             _defer_query(path, _req); // iorequest from this thread
         }
         _req.clear();
-        if(_outstr.empty())
-            _outstr="{}";
+        if(_outstr.empty()) {_outstr="{}"; }
         // make the HTTP response header
         _hthdr(resp);
         resp += _outstr;
         _outstr.clear();
         cli->sendall(resp.c_str(), resp.length());
-        LOGD3("json:<- [" << resp << "]");
+        LOGD3("json:<- '" << resp << "'");
         cli->term();
         _mon_dirt = true;
 
@@ -184,10 +200,10 @@ bool RestSrv::_toast(Tcli* cli)
             cli->term();
             _mon_dirt = true;
         }
+        _outstr = _resterrs[ERR_NO];
         _req = cli->_req;
         _defer_query(path,_req);
-        if(_outstr.empty())
-            _outstr="{}";
+        if(_outstr.empty()){ _outstr="{}";}
         cli->sendall(_outstr.c_str(), _outstr.length());
     }
     _req.clear();
@@ -205,7 +221,7 @@ void RestSrv::_clear()
     if(_mon_dirt)
     {
 AGAIN:
-        for(std::vector<Tcli*>::iterator s=_sons.begin();s!=_sons.end();++s)
+        for(std::vector<Tcli*>::iterator s=_kons.begin();s!=_kons.end();++s)
         {
             if(_fatal){
                 (*s)->term();
@@ -214,7 +230,7 @@ AGAIN:
             {
                 //LOGD3("Client:" << (*s)->getsocketaddr_str(addr) << " closed connection");
                 delete (*s);
-                _sons.erase(s);
+                _kons.erase(s);
                 goto AGAIN;
             }
         }
@@ -249,12 +265,12 @@ void RestSrv::release_io(bool force)
 void RestSrv::sig_it()
 {
     _s.term();
-    for(auto& s : _sons){
+    for(auto& s : _kons){
         LOGW("client gone");
         s->term();
         delete s;
     }
-    _sons.clear();
+    _kons.clear();
     Mpthrd::sig_it();
 }
 
@@ -273,7 +289,7 @@ void RestSrv::_spin()
     _fatal = false;
     FD_ZERO(&rd);
     FD_SET(_s.socket(),  &rd);      // put the pistener
-    for(auto& s : _sons)            // put all connected clients
+    for(auto& s : _kons)            // put all connected clients
     {
         if(s->socket()>0)
         {
@@ -302,7 +318,7 @@ void RestSrv::_spin()
             Tcli* cs = new Tcli();
             if(_s.accept(*cs)>0)
             {
-                if(_sons.size()>32)
+                if(_kons.size()>32)
                 {
                     cs->term();
                     delete cs;
@@ -311,7 +327,7 @@ void RestSrv::_spin()
                 else{
                     cs->set_blocking(0);
                     cs->_dbage = Clk.tick();
-                    _sons.push_back(cs);
+                    _kons.push_back(cs);
                 }
             }
             else
@@ -320,7 +336,7 @@ void RestSrv::_spin()
                 delete cs;
             }
         }
-        for(auto& s : _sons)
+        for(auto& s : _kons)
         {
             if(s->socket()<=0)
                 continue;
@@ -370,8 +386,8 @@ void RestSrv::close()
         this->stop_it();
     }
     _s.term();
-    for(auto& s : _sons){ delete s; }
-    _sons.clear();
+    for(auto& s : _kons){ delete s; }
+    _kons.clear();
 
 }
 
@@ -409,6 +425,16 @@ int  RestSrv::_defer_to_device(I_IDev* pdev, const rapidjson::Document& value)
                     kvs.append(loco);
                     continue;
                 }
+                if(subnod->value.IsFloat()){
+                    ::sprintf(loco,"%f&",subnod->value.GetFloat());
+                    kvs.append(loco);
+                    continue;
+                }
+                if(subnod->value.IsDouble()){
+                    ::sprintf(loco,"%f&",subnod->value.GetDouble());
+                    kvs.append(loco);
+                    continue;
+                }
                 if(subnod->value.IsString()){
                     ::sprintf(loco,"%s&",subnod->value.GetString());
                     kvs.append(loco);
@@ -421,6 +447,17 @@ int  RestSrv::_defer_to_device(I_IDev* pdev, const rapidjson::Document& value)
                         if(subnod->value[i].IsInt()){
                             sprintf(loco,"%d,",subnod->value[i].GetInt());
                             kvs.append(loco);
+                            continue;
+                        }
+                        if(subnod->value[i].IsFloat()){
+                            ::sprintf(loco,"%f,",subnod->value[i].GetFloat());
+                            kvs.append(loco);
+                            continue;
+                        }
+                        if(subnod->value[i].IsDouble()){
+                            ::sprintf(loco,"%f,",subnod->value[i].GetDouble());
+                            kvs.append(loco);
+                            continue;
                         }
                         if(subnod->value[i].IsString()){
                             sprintf(loco,"%s,",subnod->value[i].GetString());
@@ -435,7 +472,8 @@ int  RestSrv::_defer_to_device(I_IDev* pdev, const rapidjson::Document& value)
         }
     }
     App->web_set_data(devs, apply);
-    return -1;
+
+    return 0;
 }
 
 int  RestSrv::_process_forjson_post(const std::string& path, const std::string& req)
@@ -451,13 +489,21 @@ int  RestSrv::_process_forjson_post(const std::string& path, const std::string& 
             {
                 this->_defer_to_device(pdev, doc);
             }
+            else {
+                _outstr = _resterrs[INVALID_J];
+            }
+        }else{
+            _outstr = _resterrs[NO_DEVICE];
         }
     }
-    else {
+    else
+    {
         rapidjson::Document doc;
         doc.Parse(req.c_str());
         if(!doc.HasParseError())
         {
+            bool found = false;
+            bool nfound = false;
             for (rapidjson::Value::ConstMemberIterator jnod =
                  doc.MemberBegin(); jnod != doc.MemberEnd();
                  ++jnod)
@@ -466,9 +512,25 @@ int  RestSrv::_process_forjson_post(const std::string& path, const std::string& 
                 I_IDev* pdev = App->get_per(devname);
                 if(pdev)
                 {
+                    found = true;
                     this->_defer_to_device(pdev, ( const rapidjson::Document&)jnod->value);
                 }
+                else
+                {
+                    nfound = true;
+                }
             }
+            if(nfound)
+            {
+                if(found){
+                    _outstr = _resterrs[PARTIAL_ERR];
+                }else{
+                    _outstr = _resterrs[NO_DEVICE];
+                }
+            }
+        }
+        else {
+            _outstr = _resterrs[INVALID_J];
         }
     }
     return 0;
@@ -501,19 +563,22 @@ bool RestSrv::_get_add_devices(const std::string& qry, devsmap_t& refrdevs)
     return refresh;
 }
 
-bool RestSrv::_get_from_query(const std::string& req, devsmap_t& refrdevs)
+int RestSrv::_get_from_query(const std::string& req, devsmap_t& refrdevs)
 {
-    bool refresh;
+    int              refresh;
     strarray_t       devs;
     CFL::explode(req.substr(1),'&',devs);       // /param=&param=
     for(auto& p : devs)
     {
         I_IDev* pdev;
-        if(p[0]=='?'){
+        if(p[0]=='?')
+        {
             p = p.substr(1);
-            refresh = true;
-        }else {
-            refresh=false;
+            refresh = 1;
+        }
+        else
+        {
+            refresh = 0;
         }
         size_t      eq = p.find('=');
         std::string spath;
@@ -522,6 +587,8 @@ bool RestSrv::_get_from_query(const std::string& req, devsmap_t& refrdevs)
         if(eq!=NOPOS){
             spath = p.substr(0,eq);
             svalue = p.substr(eq+1);
+            if(refresh==0)
+                refresh=-1; // letgo
         }else{
             spath = p;
         }
@@ -530,7 +597,10 @@ bool RestSrv::_get_from_query(const std::string& req, devsmap_t& refrdevs)
         size_t nparts = CFL::explode(spath,'/',parts);
 
         pdev = App->get_per(parts[0].c_str());
-        if(!pdev){ LOGW("No such device" << p); continue;}
+        if(!pdev){
+            LOGW("No such device" << p);
+            continue;
+        }
         if(refresh)
         {
             if(nparts==2)
@@ -559,7 +629,7 @@ bool RestSrv::_get_from_query(const std::string& req, devsmap_t& refrdevs)
 int  RestSrv::_process_resful_request(const std::string& path, const std::string& req)
 {
     devsmap_t refrdevs;
-    bool      updates=false;
+    int       updates = 0;
 
     if(req.at(0)=='r' || req.at(0)=='e')
     {
@@ -576,42 +646,44 @@ int  RestSrv::_process_resful_request(const std::string& path, const std::string
         updates=_get_from_query(req, refrdevs);
     }
 
-    if(updates){
-        App->web_set_data(refrdevs, updates>0);
+    if(updates)
+    {
+        App->web_set_data(refrdevs, updates);
     }
-    return _build_forjson( refrdevs);
+    return _build_forjson(refrdevs, updates<0);
 }
-
 
 int  RestSrv::_defer_query(const std::string& path, const std::string& req)
 {
     // dejsonize
-    if(req[0]=='{') // set
+    if(req[0]=='{') // HTTP_POST
     {
         return _process_forjson_post(path, req);
     }
-
-    else if(req[0]=='/') // allways get  (could be set if has =)
+    else if(req[0]=='/') // HTTP_GET
     {
         return _process_resful_request(path, req);
     }
+    _outstr = _resterrs[INVALID_Q];
     return false;
 }
 
-bool RestSrv::_build_forjson(const devsmap_t& devs)
+bool RestSrv::_build_forjson(const devsmap_t& devs, bool respin)
 {
     rapidjson::Document doc;
-    doc.SetObject();
 
+    doc.SetObject();
     for(const auto& a: devs)
     {
         _get_dev_forjson(a.first, doc);
     }
-
     rapidjson::StringBuffer strbuf;
     rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
     doc.Accept(writer);
     _outstr = strbuf.GetString();
+    if(respin){
+        __bsqenv->let_thread_go();
+    }
     return true;
 }
 
@@ -636,9 +708,4 @@ void RestSrv::_get_dev_forjson(I_IDev* pd, rapidjson::Document&  doc)
     }
     doc.AddMember(kname, kisland, allc);
 }
-
-
-
-
-
 

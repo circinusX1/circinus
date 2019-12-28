@@ -62,7 +62,6 @@ int main(int argc, char *argv[])
     signal(SIGPIPE, __sipPipe);
     signal(SIGBUS, __sipPipe);
     signal(SIGKILL, __sigInt);
-
 #endif //
 
     do {
@@ -155,7 +154,6 @@ int _inner(int argc, char *argv[])
             wd_pull(WDIOC_GETPRETIMEOUT, 0);
         }
     }
-    App = 0;
+    App = nullptr;
     return 0;
 }
-

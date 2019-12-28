@@ -63,7 +63,7 @@ public:
     Sqrat::Object get_sqo(const char* name);
     const   std::map<std::string, I_IDev*>& devs()const {return _devs;};
     int     set_timer(SqMemb f, int seconds, size_t id);
-    void    web_set_data(const devsmap_t& devs, bool apply);
+    void    web_set_data(const devsmap_t& devs, int apply);
 
     void    check_devs(std::vector<I_IDev*>& arr, size_t t);
     const   char* notify(const char* appname);

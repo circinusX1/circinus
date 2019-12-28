@@ -107,6 +107,7 @@ void    Inst::remove_obj(const char* name)
 
 void    Inst::comit_devs()
 {
+    LOGD2(__FUNCTION__);
     for(auto& u : _pending)
     {
         size_t eq = u.second.find('=');
@@ -241,12 +242,12 @@ int Inst::set_timer(SqMemb f, int milis, size_t uniq)
     return uniq;
 }
 
-void Inst::web_set_data(const devsmap_t& devs, bool apply)
+void Inst::web_set_data(const devsmap_t& devs, int apply)
 {
     std::unique_lock<std::mutex> lck(__bsqenv->mutex_);
     _pending = devs;
-
-    if(apply)
+    LOGD2(__FUNCTION__);
+    if(apply > 0)
     {
         __bsqenv->let_thread_go();
         __bsqenv->condvar_.wait(lck,[]{return __bsqenv->ready_.load();} );
