@@ -753,3 +753,5 @@ Credits:
     - For commercial products you need a written consent alosng with a signed license form the Author. This is not gratis. 
 
 
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L9RVWU5NUZ4YG)   [donations are taken care by meeiot]
