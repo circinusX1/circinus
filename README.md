@@ -1,7 +1,7 @@
 
 https://gist.github.com/comarius
 
-![cod](https://raw.githubusercontent.com/comarius/rembix/master/docs/rem.png)
+![cod](http://173.249.22.226/uploads/rrembdemo.gif)
 
 
 ## GPIO, PWM, SPI, I2C SCRIPTING LANGUAGE FOR LINUX / FREEBSD 
