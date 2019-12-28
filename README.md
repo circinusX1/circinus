@@ -749,6 +749,7 @@ Credits:
 
 
 # LICENSE ADDON
-#### For commercial products you need a written consent form the Author. This might cost some money..
+    - Free of ussage for non commercial or inhouse personal automations.
+    - For commercial products you need a written consent alosng with a signed license form the Author. This is not gratis. 
 
 
