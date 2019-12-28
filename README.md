@@ -1,3 +1,4 @@
+    - Published Dec 2017
 
 https://gist.github.com/comarius
 
@@ -5,12 +6,11 @@ https://gist.github.com/comarius
 [![video](http://173.249.22.226/uploads/rrembdemo.gif)](https://youtu.be/ZMlJj0PciWA)
 
 
-
-
-## GPIO, PWM, SPI, I2C SCRIPTING LANGUAGE FOR LINUX / FREEBSD 
-##                    NO DEPENDENCIES. 
-### REACTION TIME ~ 1ms (depending of your code)
+## RASPBERRY-PI GPIO, PWM, SPI, I2C, UART FRAMEWORK.  
+### All written in C++
+#### REACTION TIME ~ 1ms
 ##### Get automated systems up and running in a mater of few hours.
+###### Optional system dependecies (sqlite / CURL )
    
 This is a self contained program written in C++. I start it almost 13 years ago using it 
 for a game engine automation (see Getic). Then from controlling a game engine I 
