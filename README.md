@@ -1,12 +1,8 @@
 
 https://gist.github.com/comarius
 
-![cod]()
 
-
-<iframe width="718" height="348" src="https://www.youtube.com/embed/ZMlJj0PciWA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-[![Watch the video](http://173.249.22.226/uploads/rrembdemo.gif)](https://youtu.be/ZMlJj0PciWA)
+[![video](http://173.249.22.226/uploads/rrembdemo.gif)](https://youtu.be/ZMlJj0PciWA)
 
 
 
