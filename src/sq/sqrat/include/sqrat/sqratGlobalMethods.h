@@ -2056,12 +2056,14 @@ public:
     typedef any_tsize (*type_r2)(any_tsize,any_tsize);
     typedef any_tsize (*type_r3)(any_tsize,any_tsize,any_tsize);
     typedef any_tsize (*type_r4)(any_tsize,any_tsize,any_tsize,any_tsize);
+    typedef any_tsize (*type_r5)(any_tsize,any_tsize,any_tsize,any_tsize,any_tsize);
 
     typedef void (*type_v0)(void);
     typedef void (*type_v1)(any_tsize);
     typedef void (*type_v2)(any_tsize,any_tsize);
     typedef void (*type_v3)(any_tsize,any_tsize,any_tsize);
     typedef void (*type_v4)(any_tsize,any_tsize,any_tsize,any_tsize);
+    typedef void (*type_v5)(any_tsize,any_tsize,any_tsize,any_tsize,any_tsize);
 
     typedef int (*right_t)(const char* , int);
 
@@ -2074,7 +2076,8 @@ public:
             int         i;
             float       f;
             bool        b;
-            size_t       v;
+            size_t      v;
+            uint8_t*    p;
         } u [5];
         if(nargs < 0){rv=true; nargs = -nargs;}
 
@@ -2086,6 +2089,16 @@ public:
         {
             switch(param_types[i+1])
             {
+                case OT_NULL:
+                {
+                    u[i].p=nullptr;
+                }break;
+                case OT_USERDATA:
+                {
+                    Var<uint8_t*> a(vm, startIdx+i+1);
+                    u[i].p=a.value;
+                }break;
+
                 case OT_INTEGER:
                 {
                     Var<int> a(vm, startIdx+i+1);
@@ -2121,6 +2134,7 @@ public:
             case 2:{ r=((type_r2)(*method))(u[0].v,u[1].v);} break;
             case 3:{ r=((type_r3)(*method))(u[0].v,u[1].v,u[2].v);} break;
             case 4:{ r=((type_r4)(*method))(u[0].v,u[1].v,u[2].v,u[3].v);} break;
+            case 5:{ r=((type_r5)(*method))(u[0].v,u[1].v,u[2].v,u[3].v,u[4].v);} break;
             }
             PushVarR(vm, r);
         }
@@ -2133,9 +2147,10 @@ public:
             case 2:{ ((type_v2)(*method))(u[0].v,u[1].v);} break;
             case 3:{ ((type_v3)(*method))(u[0].v,u[1].v,u[2].v);} break;
             case 4:{ ((type_v4)(*method))(u[0].v,u[1].v,u[2].v,u[3].v);} break;
+            case 5:{ ((type_v5)(*method))(u[0].v,u[1].v,u[2].v,u[3].v,u[4].v);} break;
             }
         }
-        return 0;
+        return rv;
     }
 
 };

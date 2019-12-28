@@ -1,0 +1,39 @@
+::using(eSOLIB);
+
+lib := LIB("libglfw.so");
+lib2 := LIB("libGL.so.1.0.0");
+
+GL_COLOR_BUFFER_BIT := 0x00004000
+
+lib.load("glfwInit",true,0);
+lib.load("glfwCreateWindow",true,5);
+lib.load("glfwMakeContextCurrent",false,1);
+lib.load("glfwWindowShouldClose",true,1);
+lib.load("glfwSwapBuffers",false,1);
+lib.load("glfwPollEvents",false,0);
+lib.load("glfwTerminate",false,0);
+lib2.load("glClear",0,1);
+
+function main(x)
+{
+   var ii = glfwInit();
+
+   var window = glfwCreateWindow(640, 480, "Hello World", null, null);
+   if (window==null)
+   {
+       println("---------iit terminated ");
+       glfwTerminate();
+       return false;
+   }
+
+   glfwMakeContextCurrent(window);
+   while (!glfwWindowShouldClose(window))
+   {
+       glClear(GL_COLOR_BUFFER_BIT);
+       glfwSwapBuffers(window);
+       glfwPollEvents();
+   }
+
+   glfwTerminate();
+   return false;
+}
