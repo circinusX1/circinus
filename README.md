@@ -749,8 +749,8 @@ Credits:
 
 
 # LICENSE ADDON
-    - Free of ussage for non commercial or inhouse personal automations.
-    - For commercial products you need a written consent alosng with a signed license form the Author. This is not gratis. 
+    * Free of ussage for non commercial or inhouse personal automations.
+    * For commercial products you need a written consent and a signed license form the Author. This is not gratis. 
 
 
 
