@@ -1,9 +1,12 @@
     - Published Oct-Nov-Dec 2017
 
-https://gist.github.com/comarius
+
+#### SDK
+[!SDK](https://gist.github.com/comarius)
 
 
-[![video](http://173.249.22.226/uploads/rrembdemo.gif)](https://youtu.be/ZMlJj0PciWA)
+#### VIDEO
+[![video](https://raw.githubusercontent.com/comarius/rembix/master/docs/rem.png)](https://youtu.be/ZMlJj0PciWA)
 
 
 ## RASPBERRY-PI GPIO, PWM, SPI, I2C, UART FRAMEWORK.  
