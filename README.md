@@ -13,7 +13,7 @@
 ### All written in C++
 #### REACTION TIME ~ 1ms
 ##### Get automated systems up and running in a mater of few hours.
-###### Optional system dependecies (sqlite / CURL )
+###### Optional system dependecies (sqlite / CURL)
    
 This is a self contained program written in C++. I start it almost 13 years ago using it 
 for a game engine automation (see Getic). Then from controlling a game engine I 
