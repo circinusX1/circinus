@@ -14,7 +14,6 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 
 var l = LIB("./modules/libardulike.so");
 
-
 function main(x)
 {
     return false;
