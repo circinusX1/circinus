@@ -6,7 +6,7 @@
 
 
 #### VIDEO
-[![video](https://raw.githubusercontent.com/comarius/rembix/master/docs/rem.png)](https://youtu.be/ZMlJj0PciWA)
+[![video](https://raw.githubusercontent.com/comarius/rembix/master/docs/rrembdemo.gif)](https://youtu.be/ZMlJj0PciWA)
 
 
 ## RASPBERRY-PI GPIO, PWM, SPI, I2C, UART FRAMEWORK.  
