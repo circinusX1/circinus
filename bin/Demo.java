@@ -1,6 +1,4 @@
 
-
-
 REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX
 
 
@@ -15,7 +13,6 @@ REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX
 
 
                                                  By. Marius C.
-
 
 
 
@@ -52,7 +49,6 @@ function program(ctx,devs)
 
 
 
-
 /////////////  BMO 160 accelerometer and gyro //////////////////
 ::using(eI2C|eSRV);
 ::loadmod("./modules/libbmi160.so","ACCEL");
@@ -69,18 +65,18 @@ function l(c, d)
 {
     var data1 = accel.acceleration();
     var data2 = accel.rotation();
-
-    do {
-        println("ACC " + data1.pop());
-    } while (data1.len() > 0);
-
-    do {
-        println("ACC " + data2.pop());
-    } while (data2.len() > 0);
     return true;
 }
 
-/////////////  2 GPIO;s I2C REST server //////////////////
+
+
+
+
+
+
+
+/////////////  2 GPIO;s I2C and REST server //////////////////
+
 ::using(eI2C|eGPIO|eUART|eSRV);
 l1   := PIO(506,  DIR_OUT, LOW, "led");
 l2   := PIO(507,  DIR_OUT, HIGH, "led2");
@@ -106,8 +102,8 @@ function program(ctx, dev)
     return true;
 }
 
+///////////// QUITE an OPENGL WINDOW //////////////////
 
-/////////////  OPENGL WINDOW //////////////////
 ::using(eSOLIB);
 lib := LIB("libglfw.so");                       lib2 := LIB("libGL.so.1.0.0");
 GL_COLOR_BUFFER_BIT := 0x00004000
@@ -132,9 +128,7 @@ function main(x)
 }
 
 
-
-
-/////////////  WIRING PI LIBRARY //////////////////
+/////////////  WIRING PI LIBRARY DIRECT CALL //////////////////
 
 ::using(eSOLIB|eGPIO|ePWM);
 
@@ -160,8 +154,7 @@ function main(x)
 }
 
 
-
-/////////////  OLED 96 CLOCK  //////////////////
+/////////////  I2C OLED 96 CLOCK  //////////////////
 
 ::using(eI2C|eGPIO|ePWMM|eSRV|eDB);
 ::include("modules/_oled96.inc");
@@ -188,7 +181,7 @@ function kk(ctx,dev)
 
 
 
-/////////////  CURL CONTROL ESP ARDIONO WEB PAGE1 //////////////////
+/////////////  CURL CONTROL TO ESP826X WEB, PAGE1 //////////////////
 
 ::using(eCURL|eSRV|eBASE|eBASE);
 class XX extends BASE
@@ -215,6 +208,7 @@ class XX extends BASE
         return true;
     }
 };
+
 /////////////  CURL CONTROL ESP ARDIONO WEB PAGE2 //////////////////
 var xx = XX();  var srv = SRV(8000,"ddd");
 
@@ -227,12 +221,6 @@ function loo(x,d)
 {
     return true;
 }
-
-
-
-
-
-
 
 
 
@@ -270,8 +258,7 @@ function program(ctx, dev)
     return true;
 }
 
-
-/////////////  R-PI WIRING EXTENSION //////////////////
+/////////////  R-PI WIRING REMBIX MODULE-EXTENSION //////////////////
 
 ::import("./modules/libardulike.so");
 
@@ -297,14 +284,28 @@ function main(x)
 
 
 
+    Peripherials
+                * GPIO
+                    * PWM
+                        * I2C
+                            * ADC
+                                * SPI
+                                    * UART
+                                        * USB
+                                            * FILE
 
+    Protocols
+                * SSH
+                    * TCP
+                        * UDP
+                            * CURL
 
+    Addons:
+            * EXTENDABLE WITH MODULES (C++ & SCRIPTED)
+                * SQLITE (optional)
+                    * REST & JSON (optional)
 
-
-
-
-
-    THAK YOU.                       marrius9876@gmail.com
+                                                marrius9876@gmail.com
 
 
 
