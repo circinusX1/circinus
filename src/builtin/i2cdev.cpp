@@ -145,11 +145,11 @@ const char*	I2CDev::_get_values(const char* key)
         for(size_t t=0; t<_curdata.size();t++)
         {
             if(_curdata.length(t)==0)break;
-            sprintf(entry,"%d,",(int)t);
+            sprintf(entry,"%d=",(int)t);
             _forjson += t;
             _curdata.fmt_hex(h,t);
             _forjson += h;
-            _forjson += ",";
+            _forjson += "&";
         }
         return _forjson.c_str();
     }

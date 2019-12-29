@@ -114,9 +114,9 @@ const char*	PwmDev::_get_values(const char* key)
 {
     if(key[0]==ALLDATA)
     {
-        _forjson += "value,";
+        _forjson += "value=";
         _forjson += _curdata.to_string<int>();
-        _forjson += ",reverse,";
+        _forjson += "&reverse=7";
         _forjson += std::to_string(_reversed);
         return _forjson.c_str();
     }

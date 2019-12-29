@@ -110,34 +110,37 @@ const char* Divais::get_value(const char* key)
     _forjson.clear();
     if(key[0]==ALLDATA)
     {
+        _forjson += "name=";
+        _forjson += _name;
+
+   //     _forjson += "&id=";
+   //     _forjson += _ukey;
+
         IoOps* pops = dynamic_cast<IoOps*>(this);
         if(pops)
         {
-            _forjson += "name,";
-            _forjson += _name;
-
-            _forjson += "id,";
-            _forjson += _ukey;
-
-            _forjson += ",cat,";
+            _forjson += "&cat=";
             _forjson += __scats[pops->peer_of()];
 
-            _forjson += ",type,";
+            _forjson += "&type=";
             _forjson += __stypes[pops->data_of()];
 
-            _forjson += ",mon,";
+            _forjson += "&mon=";
             _forjson += std::to_string(_monitor);
 
             if(*pops->err_desc()){
-                _forjson += ",err,";
+                _forjson += "&err=";
                 _forjson += pops->err_desc();
             }
-            _forjson += ",";
         }
         if(!_oget_value.IsNull())
         {
-            _forjson += *(_oget_value.Fcall<const char*>(key).Get());
-            return _forjson.c_str();
+            Sqrat::Table t = *(_oget_value.Fcall<Sqrat::Table>(key).Get());
+            if(!t.IsNull())
+            {
+                _tbl2string(t,_forjson);
+                return _forjson.c_str();
+            }
         }
         return _get_values(key);
     }
@@ -149,14 +152,70 @@ const char* Divais::get_value(const char* key)
     if(key[0]=='m')
         return _monitor ? "1" : "0";
     if(key[0]=='t')      //type
-       return __stypes[_etype];
+        return __stypes[_etype];
     if(key[0]=='k')      //type
     {
         IoOps* pops = dynamic_cast<IoOps*>(this);
         if(pops)
             return __scats[pops->data_of()];
     }
+    if(!_oget_value.IsNull())
+    {
+        Sqrat::Table t = *(_oget_value.Fcall<Sqrat::Table>(key).Get());
+        if(!t.IsNull())
+        {
+            _tbl2string(t,_forjson);
+            return _forjson.c_str();
+        }
+    }
     return _get_values(key);
+}
+
+void Divais::_tbl2string(Sqrat::Table& t, std::string& s)
+{
+    Sqrat::Object::iterator it;
+    char                    out[32];
+
+    while(t.Next(it)==true)
+    {
+        const char* sn = it.getName();
+        HSQOBJECT   o = it.getValue();
+
+        s += "&";  s += sn;  s+="=";
+        switch(_RAW_TYPE(o._type))
+        {
+            case _RT_NULL:         ::sprintf(out,"%d",0); break;
+            case _RT_INTEGER:      ::sprintf(out, "%d", SQ_PTRS->objtointeger(&o)); break;
+            case _RT_FLOAT:        ::sprintf(out, "%d", SQ_PTRS->objtobool(&o));   break;
+            case _RT_BOOL:         ::sprintf(out, "%f", SQ_PTRS->objtofloat(&o)); break;
+            case _RT_STRING:       ::sprintf(out, "%s", SQ_PTRS->objtostring(&o));  break;
+            case _RT_TABLE:        assert(0); break;
+            case _RT_ARRAY:
+                {
+                    Sqrat::Array a(o);
+                    SQObjectType t =  a.GetType(0);
+
+                    for(int i=0; i< a.GetSize();++i)
+                    {
+                        if(t==OT_INTEGER)       ::sprintf(out,"%d",*a.GetValue<int>(i).Get());
+                        else if(t==OT_FLOAT)    ::sprintf(out,"%f",*a.GetValue<float>(i).Get());
+                        else if(t==OT_BOOL)     ::sprintf(out,"%d",*a.GetValue<int>(i).Get());
+                        else if(t==OT_STRING)   ::sprintf(out,"%s",*a.GetValue<const char*>(i).Get());
+                        else ::sprintf(out,"%p",a.GetValue<int>(i));
+                        s+=out;
+                        s+=",";
+                        out[0]=0;
+                    }
+                }
+                break;
+            case _RT_USERDATA:      ::sprintf(out, "%p", o._unVal.pUserData); break;
+            case _RT_USERPOINTER:   ::sprintf(out, "%p", o._unVal.pUserPointer); break;
+            default: ::sprintf(out, "%p", o._unVal.raw); break;
+        }
+        if(out[0])
+            s+= out;
+    }
+    LOGI(s);
 }
 
 bool	Divais::_set_values(const char* key, const char* value)
@@ -166,7 +225,7 @@ bool	Divais::_set_values(const char* key, const char* value)
 
 const char*	Divais::_get_values(const char* key)
 {
-    return "";
+    return _forjson.c_str();
 }
 
 const any_t& Divais::get_data()const

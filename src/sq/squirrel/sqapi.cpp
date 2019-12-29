@@ -794,6 +794,13 @@ SQRESULT sq_gettypetag(HSKVM v,int idx,PVOID *typetag)
     return SQ_OK;
 }
 
+// mco-mco
+SQObjectType sq_sgettype(HSKVM v,int idx)
+{
+    SQObjectPtr &o = stack_get(v,idx);
+    return o._type;
+}
+
 SQRESULT sq_getuserpointer(HSKVM v, int idx, PVOID *p)
 {
     SQObjectPtr *o = NULL;

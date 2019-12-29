@@ -126,6 +126,7 @@ bool sqrat_newapi(sq_api** sq)
     _sqapi.tostring = sq_tostring;
     _sqapi.tobool = sq_tobool;
     _sqapi.getstring = sq_getstring;
+    _sqapi.getfloat = sq_getfloat;
     _sqapi.getinteger = sq_getinteger;
     _sqapi.getthread = sq_getthread;
     _sqapi.getbool = sq_getbool;
@@ -133,6 +134,7 @@ bool sqrat_newapi(sq_api** sq)
     _sqapi.getuserdata = sq_getuserdata;
     _sqapi.settypetag = sq_settypetag;
     _sqapi.gettypetag = sq_gettypetag;
+    _sqapi.sgettype = sq_sgettype;
     _sqapi.setreleasehook = sq_setreleasehook;
     _sqapi.getscratchpad = sq_getscratchpad;
     _sqapi.getclosureinfo = sq_getclosureinfo;

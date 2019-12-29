@@ -109,6 +109,7 @@ public:
 	static EPERIPH Get_cat(const char* cat);
 	virtual void   sync(const char* filter);
 	virtual Sqrat::Object object();
+
 protected:
 	virtual bool	_write_now(const any_t& a)=0;
 	virtual bool	_touch_it(size_t t)=0;
@@ -117,8 +118,10 @@ protected:
 	virtual bool	_set_values(const char* key, const char* value);
 	virtual const char*	_get_values(const char* key);
 	Sqrat::Object&	_so(){return _o;}
-
 	bool			_check_dirt();
+
+private:
+	void _tbl2string(Sqrat::Table& t, std::string& s);
 
 protected:
     std::string     _name;

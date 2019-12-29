@@ -128,7 +128,7 @@ const char*	UartDev::_get_values(const char* key)
 {
     if(key[0]==ALLDATA)
     {
-        _forjson += "value,";
+        _forjson += "value=";
         _forjson += _curdata.c_chars();
         return _forjson.c_str();
     }

@@ -640,6 +640,7 @@ void globals_expose(SqEnvi& sq)
 	//usingop(0xFFFFFF);
 
 	Sqrat::ConstTable(sq.theVM())
+			.Const("NOKEY","*")
 			.Const("INPUT", 0)
 			.Const("OUTPUT", 1)
 			.Const("DIR_IN", 1)

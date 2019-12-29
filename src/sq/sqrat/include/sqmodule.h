@@ -139,6 +139,7 @@ extern "C" {
         SQRESULT        (*getuserdata)(HSKVM v,int idx,PVOID *p,PVOID *typetag);
         SQRESULT        (*settypetag)(HSKVM v,int idx,PVOID typetag);
         SQRESULT        (*gettypetag)(HSKVM v,int idx,PVOID *typetag);
+        SQObjectType    (*sgettype)(HSKVM v,int idx);
         void            (*setreleasehook)(HSKVM v,int idx,SQRELEASEHOOK hook);
         SQChar*         (*getscratchpad)(HSKVM v,int minsize);
         SQRESULT        (*getclosureinfo)(HSKVM v,int idx,size_t *nparams,size_t *nfreevars);

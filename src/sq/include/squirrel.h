@@ -285,6 +285,9 @@ SQUIRREL_API SQRESULT sq_getuserpointer(HSKVM v,int idx,PVOID *p);
 SQUIRREL_API SQRESULT sq_getuserdata(HSKVM v,int idx,PVOID *p,PVOID *typetag);
 SQUIRREL_API SQRESULT sq_settypetag(HSKVM v,int idx,PVOID typetag);
 SQUIRREL_API SQRESULT sq_gettypetag(HSKVM v,int idx,PVOID *typetag);
+// mco-mco
+SQUIRREL_API SQObjectType sq_sgettype(HSKVM v,int idx);
+
 SQUIRREL_API void sq_setreleasehook(HSKVM v,int idx,SQRELEASEHOOK hook);
 SQUIRREL_API SQRELEASEHOOK sq_getreleasehook(HSKVM v,int idx);
 SQUIRREL_API SQChar *sq_getscratchpad(HSKVM v,int minsize);

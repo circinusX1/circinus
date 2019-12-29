@@ -87,7 +87,7 @@ const char*	AdcDev::_get_values(const char* key)
 {
     if(key[0]==ALLDATA)
     {
-        _forjson += "value,";
+        _forjson += "value=";
         _forjson += _curdata.to_string<int>();
         return _forjson.c_str();
     }

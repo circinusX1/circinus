@@ -190,7 +190,7 @@ public:
         SQ_PTRS->get(vm, -2);
 #endif
         SQTRY()
-        Var<SharedPtr<T> > element(vm, -1);
+                Var<SharedPtr<T> > element(vm, -1);
         SQCATCH_NOEXCEPT(vm) {
             SQ_PTRS->pop(vm, 2);
             return SharedPtr<T>();
@@ -205,6 +205,40 @@ public:
             SQRETHROW(vm);
         }
         return SharedPtr<T>(); // avoid "not all control paths return a value" warning
+    }
+
+
+
+    SQObjectType GetType(int index)
+    {
+        SQ_PTRS->pushobject(vm, obj);
+        SQ_PTRS->pushinteger(vm, index);
+#if !defined (SCRAT_NO_ERROR_CHECKING)
+        if (SQ_FAILED(SQ_PTRS->get(vm, -2))) {
+            SQ_PTRS->pop(vm, 1);
+            SQTHROW(vm, _SC("illegal index"));
+            return OT_NULL;
+        }
+#else
+        SQ_PTRS->get(vm, -2);
+#endif
+        SQTRY()
+        SQObjectType pvt = SQ_PTRS->sgettype(vm, -1);
+
+        SQCATCH_NOEXCEPT(vm) {
+            SQ_PTRS->pop(vm, 2);
+            return OT_NULL;
+        }
+        SQ_PTRS->pop(vm, 2);
+        return pvt;
+        SQCATCH(vm) {
+#if defined (SCRAT_USE_EXCEPTIONS)
+            SQUNUSED(e); // avoid "unreferenced local variable" warning
+#endif
+            SQ_PTRS->pop(vm, 2);
+            SQRETHROW(vm);
+        }
+        return OT_NULL; // avoid "not all control paths return a value" warning
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -268,7 +302,7 @@ public:
             SQ_PTRS->getinteger(vm, -2, &i);
             if (i >= size) break;
             SQTRY()
-            Var<const T&> element(vm, -1);
+                    Var<const T&> element(vm, -1);
             SQCATCH_NOEXCEPT(vm) {
                 SQ_PTRS->pop(vm, 4);
                 return;

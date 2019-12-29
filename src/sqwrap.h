@@ -166,6 +166,9 @@ public:
     void reset();
     HSKVM theVM(){return *_vm;}
     int push_main(bool );
+
+
+
 private:
     static void debunk_error(const std::string& err);
     static void debug_hook(HSKVM /*v*/,
@@ -180,6 +183,8 @@ private:
     HSKVM*          _vm;
     std::string     _script;
 };
+
+
 
 extern HSKVM    __vm;
 #define VM()    __vm

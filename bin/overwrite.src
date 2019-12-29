@@ -12,14 +12,21 @@ class XX extends BASE
         _value = "xx";
         base.constructor(this, eSTRING, "wrapp");
     }
+
+    /**
+        return a map/table as shown
+    */
     function get_value(key)
     {
-        curl.set_url("192.168.1.223",0,"");
-        var html = curl.perform(4000);
-
-        if(html.find("pin is now: Off")!=0)
-            return "LED,OFF";
-        return "LED,ON";
+       // curl.set_url("192.168.1.223",0,"");
+       // var html = curl.perform(4000);
+        var table = {
+            LED = "OFF",
+            CMDS = ["ON","OFF"],
+            VALS = [0,1,2,3,4,5],
+            REALS = [3.4,5.6,0.7777]
+        };
+        return table;
     }
 
     function set_value(k,v)

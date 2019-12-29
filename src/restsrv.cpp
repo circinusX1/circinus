@@ -689,22 +689,80 @@ bool RestSrv::_build_forjson(const devsmap_t& devs, bool respin)
 
 void RestSrv::_get_dev_forjson(I_IDev* pd, rapidjson::Document&  doc)
 {
+    std::string k;
+    std::string kv;
+    std::string v;
     rapidjson::Document::AllocatorType& allc = doc.GetAllocator();
     rapidjson::Value device(rapidjson::kObjectType);
     rapidjson::Value kisland(rapidjson::kObjectType);
     kisland.SetObject();
     rapidjson::Value kname(pd->dev_key(), allc);
     std::string all = pd->get_value(SALLDATA);
-    strarray_t          parts;
-    CFL::explode(all,',',parts);
-    strarray_t::const_iterator a = parts.begin();
-    for(; a != parts.end(); a++)
+    if(all.back()!='&')
+        all.append("&");
+    size_t      end;
+    size_t      start = 0;
+    while((end = all.substr(start).find('&')) != std::string::npos)
     {
-        rapidjson::Value kkey((const char*)a->c_str(),allc);
-        a++;
-        if(a==parts.end())break;
-        rapidjson::Value kval((const char*)a->c_str(),allc);
-        kisland.AddMember(kkey, kval, allc);
+        kv = all.substr(start, end);
+        size_t eq = kv.find('=');
+        if(eq != std::string::npos){
+            k = kv.substr(0,eq);
+            v = kv.substr(eq+1);
+        }
+        else {
+            k = kv;
+            v = kv;
+        }
+        rapidjson::Value kkey((const char*)k.c_str(),allc);
+        if(v.back()==',')//is an array
+        {
+            size_t      end;
+            size_t      start = 0;
+            rapidjson::Value vvv(rapidjson::kArrayType);
+
+            if(::isdigit(v[0]))
+            {
+                bool        realn =kv.find('.')==std::string::npos;
+                while((end = v.substr(start).find(',')) != std::string::npos)
+                {
+                    kv = v.substr(start, end);
+
+                    realn ? vvv.PushBack(rapidjson::Value().SetInt(::atoi(kv.c_str())), allc):
+                            vvv.PushBack(rapidjson::Value().SetDouble(::atof(kv.c_str())), allc);
+                    start += (end+1);
+                }
+            }
+            else {
+                while((end = v.substr(start).find(',')) != std::string::npos)
+                {
+                    kv = v.substr(start, end);
+                    rapidjson::Value vx(rapidjson::kStringType);
+                    vx.SetString(kv.c_str(),allc);
+                    vvv.PushBack(vx, allc);
+                    start += (end+1);
+                }
+            }
+            kisland.AddMember(kkey, vvv, allc);
+        }
+        else if(::isdigit(v[0]))
+        {
+            rapidjson::Value vvv(rapidjson::kNumberType);
+            if(v.find('.')==std::string::npos)
+            {
+                vvv.SetDouble(::atof(v.c_str()));
+            }
+            else
+            {
+                vvv.SetInt(::atoi(v.c_str()));
+            }
+            kisland.AddMember(kkey, vvv, allc);
+        }
+        else {
+            rapidjson::Value kval((const char*)v.c_str(),allc);
+            kisland.AddMember(kkey, kval, allc);
+        }
+        start += (end+1);
     }
     doc.AddMember(kname, kisland, allc);
 }

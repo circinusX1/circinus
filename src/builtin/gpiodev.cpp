@@ -211,11 +211,11 @@ const char*	GpioDev::_get_values(const char* key)
 {
     if(key[0]==ALLDATA)
     {
-        _forjson += "value,";
+        _forjson += "value=";
         _forjson += _curdata.to_string<int>();
-        _forjson += ",freq,";
+        _forjson += "&freq=";
         _forjson += std::to_string(_freq);
-        _forjson += ",reverse,";
+        _forjson += "&reverse=";
         _forjson += std::to_string(_reversed);
         return _forjson.c_str();
     }

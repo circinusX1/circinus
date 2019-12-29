@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2014-2016 comarius.DPT All rights reserved.
 
 Redistribution and use in source and binary forms are permitted
@@ -28,6 +28,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 //static __thread HookPrint _hook_print;
 //static __thread HSKVM __vm;
 
+typedef const char  khar;
 static HookPrint _hook_print;
 HSKVM               __vm;
 extern std::string SqErrStr;
