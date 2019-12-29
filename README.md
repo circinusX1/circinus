@@ -13,7 +13,7 @@
 ### All written in C++
 #### REACTION TIME ~ 1ms
 ##### Get automated systems up and running in a mater of few hours.
-###### Optional system dependecies (sqlite / CURL )
+###### Optional system dependecies (sqlite / CURL)
    
 This is a self contained program written in C++. I start it almost 13 years ago using it 
 for a game engine automation (see Getic). Then from controlling a game engine I 
@@ -28,14 +28,9 @@ Slowly I added SSH, TCP, I2C, ... GPIO's and so on.
 
 Where the script_file is a script like java/c++, but is not java neither c++. 
 
-The intrinsec language features can be browsed at: 
+The Language features can be seen at: 
    * http://squirrel-lang.org/   
    * https://developer.electricimp.com/squirrel/squirrelcrib
-
-Rembix help manual (The SDK) and build system makefiles are distributed electronically over the email.
-If you dont need the manual you can browse the c and samples code to figure out the objects classes methods 
-and parameters for each type of peripherial. 
-
 
     * It targets:
         * Raspberry PI
@@ -48,12 +43,13 @@ and parameters for each type of peripherial.
 ### What you can do with it
 
 You can automate a system in matter of few hours depending of the complexity of the automation. 
-You get out of the box a JSON output so you can build a web UI in few moves. For example you
-can make a STOVE or a HVAC or some funcy device. Makes your Embeded LINUX borad able to 
-talk over USB, UART, SSH, HTTP, TCP, I2C, SPI, while it can control GPIO,PWM and ADC pins.
+You get out of the box a JSON output over a socket, you can build a web UI in few moves. 
+For example you can make a STOVE or a HVAC or any automation funcy device. It allows fine tunning
+from scripted API's to target almost any ARM device that the kernel exposes the peripherials to either 
+/sys or /dev filestem. 
+
 
 ### Sample code R-PI
-
 ```c++
 ::using(eGPIO|ePWM|eSRV);
 
@@ -247,3 +243,5 @@ Credits:
 
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L9RVWU5NUZ4YG)   [donations are taken care by meeiot]
+
+
