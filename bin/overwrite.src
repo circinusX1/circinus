@@ -16,15 +16,15 @@ class XX extends BASE
     // get sample    get JSON ->>>>>>>
     function get_value(key)
     {
-       // curl.set_url("192.168.1.223",0,"");
-       // var html = curl.perform(4000);
-       // if(html.find("Off"))
-            this.led="ON";
+       curl.set_url("192.168.1.223",0,"");
+       var html = curl.perform(4000);
+       if(html.find("Off"))
+            this._value="ON";
        else
-            this.led="OFF";
+            this._value="OFF";
 
         var table = {
-            LED = "OFF",
+            LED = this._value,
             CMDS = ["ON","OFF"],
             VALS = [0,1,2,3,4,5],
             REALS = [3.4,5.6,0.7777]
