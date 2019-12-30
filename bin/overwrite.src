@@ -13,13 +13,16 @@ class XX extends BASE
         base.constructor(this, eSTRING, "wrapp");
     }
 
-    /**
-        return a map/table as shown
-    */
+    // get sample    get JSON ->>>>>>>
     function get_value(key)
     {
        // curl.set_url("192.168.1.223",0,"");
        // var html = curl.perform(4000);
+       // if(html.find("Off"))
+            this.led="ON";
+       else
+            this.led="OFF";
+
         var table = {
             LED = "OFF",
             CMDS = ["ON","OFF"],
