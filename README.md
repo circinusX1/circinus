@@ -2,7 +2,7 @@
 
 
 #### SDK
-[!SDK](https://gist.github.com/comarius)
+[!SDK](https://github.com/comarius/rembix/wiki)
 
 
 #### VIDEO
