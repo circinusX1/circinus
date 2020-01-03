@@ -79,7 +79,7 @@ std::string execute(const char*);
 void make_dir(const std::string& path);
 int  wd_pull(unsigned long int ctl, int flags);
 int exitapp(const char* message);
-int reload_program();
+int reload_scr();
 
 #define ARR_MAX             4096
 #define MAIN_THR            (MainThrId==pthread_self())

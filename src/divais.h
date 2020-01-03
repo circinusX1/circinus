@@ -106,7 +106,7 @@ public:
 	virtual bool set_value(const char* key, const char* value);
 	virtual const char* get_value(const char* key);
 	virtual const any_t& get_data()const;
-	static EPERIPH Get_cat(const char* cat);
+	static EPERIPH get_category(const char* cat);
 	virtual void   sync(const char* filter);
 	virtual Sqrat::Object object();
 

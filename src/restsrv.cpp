@@ -258,10 +258,6 @@ int  RestSrv::start_thread()
     return Mpthrd::start_thread();
 }
 
-void RestSrv::release_io(bool force)
-{
-}
-
 void RestSrv::sig_it()
 {
     _s.term();
@@ -303,12 +299,9 @@ void RestSrv::_spin()
     int is = ::select(ndfs+1, &rd, 0, 0, &tv);
     if(is ==-1) {
         LOGEX("EXIT_APP error: select" << errno <<", " <<strerror(errno));
-        _s.term();
-        sig_it();
         ApStat=EXIT_APP;
-        _mon_dirt = true;
-        _fatal = true;
-        _clear();
+        _s.term();  sig_it(); _clear();
+        _mon_dirt =  _fatal = true;
         return;
     }
     if(is>0)
@@ -472,7 +465,6 @@ int  RestSrv::_defer_to_device(I_IDev* pdev, const rapidjson::Document& value)
         }
     }
     App->web_set_data(devs, apply);
-
     return 0;
 }
 
@@ -547,12 +539,12 @@ bool RestSrv::_get_add_devices(const std::string& qry, devsmap_t& refrdevs)
         }
         if(qry[1]=='e')    // get by category
         {
-            EPERIPH  et = Divais::Get_cat(qry.substr(1).c_str());
+            EPERIPH  et = Divais::get_category(qry.substr(1).c_str());
             App->get_alldevs(refrdevs, et, refresh);
         }
         else if(qry[2]=='e')    // get by category
         {
-            EPERIPH  et = Divais::Get_cat(qry.substr(2).c_str());
+            EPERIPH  et = Divais::get_category(qry.substr(2).c_str());
             App->get_alldevs(refrdevs, et, refresh);
         }
         else
@@ -620,11 +612,13 @@ int RestSrv::_get_from_query(const std::string& req, devsmap_t& refrdevs)
     return refresh;
 }
 
-//  ?device/prop&?device/prop
+//  ?device/prop&?device/prop       //
+//         ? - add devs -> [] & LOCK  let main thread get the data && wait for main to finish && get data & return JSON
+//         no ?     adddev[s]  gets data let man thread the refresh any puts, returns whatever was in devices as JSON
 //  /device                         // get all
 //  /device/property                // get one
 //  /device/property=sdfsdfsdfsd    // write one
-//  /devide/property=4,4,4,4        // write one
+//  /devide/property=4,4,4,4        // write one array
 //
 int  RestSrv::_process_resful_request(const std::string& path, const std::string& req)
 {
@@ -656,7 +650,7 @@ int  RestSrv::_process_resful_request(const std::string& path, const std::string
 int  RestSrv::_defer_query(const std::string& path, const std::string& req)
 {
     // dejsonize
-    if(req[0]=='{') // HTTP_POST
+    if(req[0]=='{')     // HTTP_POST
     {
         return _process_forjson_post(path, req);
     }
@@ -727,7 +721,6 @@ void RestSrv::_get_dev_forjson(I_IDev* pd, rapidjson::Document&  doc)
                 while((end = v.substr(start).find(',')) != std::string::npos)
                 {
                     kv = v.substr(start, end);
-
                     realn ? vvv.PushBack(rapidjson::Value().SetInt(::atoi(kv.c_str())), allc):
                             vvv.PushBack(rapidjson::Value().SetDouble(::atof(kv.c_str())), allc);
                     start += (end+1);
@@ -745,7 +738,7 @@ void RestSrv::_get_dev_forjson(I_IDev* pd, rapidjson::Document&  doc)
             }
             kisland.AddMember(kkey, vvv, allc);
         }
-        else if(::isdigit(v[0]))
+        else if(::isdigit(v[0])) //this worked 99.99%
         {
             rapidjson::Value vvv(rapidjson::kNumberType);
             if(v.find('.')==std::string::npos)

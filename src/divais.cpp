@@ -113,9 +113,6 @@ const char* Divais::get_value(const char* key)
         _forjson += "name=";
         _forjson += _name;
 
-   //     _forjson += "&id=";
-   //     _forjson += _ukey;
-
         IoOps* pops = dynamic_cast<IoOps*>(this);
         if(pops)
         {
@@ -239,7 +236,7 @@ void  Divais::sync(const char* filter)
     _read_now(loco, filter);
 }
 
-EPERIPH Divais::Get_cat(const char* cat)
+EPERIPH Divais::get_category(const char* cat)
 {
     const char** pc = __scats;
     int index = 0;

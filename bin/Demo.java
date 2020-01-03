@@ -323,19 +323,28 @@ function main(x)
 
 
 
+screen = {
+
+    push_button  = {
+                        rect={0,0,15,15},
+                        border={2},
+                        text="Push_Me",
+                        event = push1
+
+                    };
+
+    tex_box         = {
+                        rect = {5,6,9,20},
+                        border
+
+
+                        };
 
 
 
+};
 
-
-
-
-
-
-
-
-
-
+function push1;
 
 
 

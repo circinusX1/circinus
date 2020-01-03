@@ -208,7 +208,7 @@ int suspend(int d)
     return d;
 }
 
-int reload_program()
+int reload_scr()
 {
     ApStat = RELOAD_S;
     return 0;
@@ -463,6 +463,12 @@ int  wd_pull(unsigned long int ctl, int flags)
     return rv;
 }
 
+/**
+ * @brief run_loop
+ * @param f
+ * @param pulseme
+ * @return
+ */
 int run_loop(SqMemb& f, int pulseme)
 {
     size_t now = tick_count();
@@ -493,12 +499,10 @@ int run_loop(SqMemb& f, int pulseme)
             {
                 if(__bsqenv->snap_.load()==true)
                 {
-                    LOGD2("COMIT DEVS...........EVENT");
                     __bsqenv->snap_=false;
                     App->comit_devs();
                 }
                 else {
-                    LOGD2("COMIT DEVS...........TIME");
                     App->comit_devs();
                     now = then;
                     srv = f.Fcall<bool>(App, false);
@@ -514,7 +518,7 @@ int run_loop(SqMemb& f, int pulseme)
                 wd_pull(WDIOC_KEEPALIVE,Wdto);
             }
             App->call_backs(now);
-            ::usleep(256);
+            ::usleep(128);
         }
     }
     catch(Sqrat::Exception& ex)

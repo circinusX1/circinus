@@ -23,13 +23,12 @@ class XX extends BASE
        else
             this._value="OFF";
 
-        var table = {
+        return {
             LED = this._value,
             CMDS = ["ON","OFF"],
             VALS = [0,1,2,3,4,5],
             REALS = [3.4,5.6,0.7777]
         };
-        return table;
     }
 
     function set_value(k,v)

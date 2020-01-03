@@ -65,7 +65,6 @@ public:
     const char* treq();
     const char* getJson(const char* key, bool fetchnow=false);
     int spinit();
-    void release_io(bool force=false);
     int port()const{return _port;}
     int addField(const char* name, SqMemb f);
     static void squit(SqEnvi& e){
