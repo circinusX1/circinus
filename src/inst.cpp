@@ -19,6 +19,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <dlfcn.h>
 #include "inst.h"
 #include "apis.h"
+#include "logs.h"
 #include "filedev.h"
 #include "gpiodev.h"
 #include "i2cdev.h"
@@ -45,13 +46,12 @@ Inst::Inst(SqEnvi& sq, char* p[]):Sqrat::Class<Inst>(sq.theVM(),"App")
     this->Functor(_SC("notify"), &Inst::notify);
     this->Functor(_SC("get_dev"), &Inst::get_sqo);
     this->Functor(_SC("set_timer"), &Inst::set_timer);
+    this->Functor(_SC("_sync"), &Inst::sync_all);
     Sqrat::RootTable().Bind(_SC("App"), *this);
 }
 
 Inst::~Inst()
 {
-    for(auto& a : _dlls)
-        ::dlclose(a);
     App=nullptr;
 }
 
@@ -91,8 +91,9 @@ SqEnvi* Inst::scr_env()
     return __sq_env;
 }
 
-void Inst::add_obj(I_IDev* o, const char* name)
+void Inst::add_this(I_IDev* o, const char* name)
 {
+    LOGD1("adding class " << name);
     _devs[name] = o;
 }
 
@@ -105,9 +106,17 @@ void    Inst::remove_obj(const char* name)
     }
 }
 
+void    Inst::sync_all()
+{
+    for(auto& u : _devs)
+    {
+        u.second->sync();
+    }
+
+}
+
 void    Inst::comit_devs()
 {
-    LOGD2(__FUNCTION__);
     for(auto& u : _pending)
     {
         size_t eq = u.second.find('=');
@@ -127,6 +136,7 @@ void    Inst::comit_devs()
 void Inst::add(Divais* p)
 {
     const char* pk = p->dev_key();
+    LOGD1("adding class " << pk);
     _devs[pk]=p;
 }
 
@@ -159,7 +169,7 @@ void    Inst::thread_main()
     }
 }
 
-IoOps* Inst::get_proxy(const char* name)
+IoOps* Inst::get_devi(const char* name)
 {
     if(_devs.find(name)!=_devs.end())
     {
@@ -180,9 +190,17 @@ void   Inst::check_devs(std::vector<I_IDev*>& arr, size_t t)
 {
     for(auto& d : _devs)
     {
-        if(d.second->is_monitorred(t))
+        if(d.second->is_dirty(t))
         {
-            arr.push_back(d.second);
+            const Sqrat::Object& o = d.second->object();
+            if(o.IsNull())
+            {
+                LOGW("If the object is monitorred call: _o.BindCppObject(this); in c-tor")
+            }
+            else
+            {
+                arr.push_back(d.second);
+            }
         }
     }
 }

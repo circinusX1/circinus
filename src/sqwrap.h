@@ -29,6 +29,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <sqstdsystem.h>
 #include <sqstdstring.h>
 #include <sqrat.h>
+#include <vector>
 #include "sqratThread.h"
 #include "osthread.h"
 
@@ -166,10 +167,11 @@ public:
     void reset();
     HSKVM theVM(){return *_vm;}
     int push_main(bool );
-
+    void  add_dll(void* p){_dlls.push_back(p);}
 
 
 private:
+    void   _close_sos();
     static void debunk_error(const std::string& err);
     static void debug_hook(HSKVM /*v*/,
                     int tip/*type*/,
@@ -179,9 +181,11 @@ private:
     static void print_func(HSKVM, const SQChar * s,...);
     static int error_handler(HSKVM v);
     void  _init(size_t sz=16386);
+
 private:
-    HSKVM*          _vm;
-    std::string     _script;
+    HSKVM*              _vm;
+    std::string         _script;
+    std::vector<void*>  _dlls;
 };
 
 

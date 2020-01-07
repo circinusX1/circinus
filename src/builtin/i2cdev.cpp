@@ -51,7 +51,6 @@ bool  I2CDev::_write_now(const any_t& vl)
 {
     AutoOC  oc(this,  _auto);
     int     reg = 0;
-    size_t  dl = vl.length();
     if(vl.length(1))
         reg = vl.to_t<int>(1);
     return this->bwrite(vl.c_bytes(), vl.length(), reg);

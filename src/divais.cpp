@@ -198,16 +198,16 @@ void Divais::_tbl2string(Sqrat::Table& t, std::string& s)
                         else if(t==OT_FLOAT)    ::sprintf(out,"%f",*a.GetValue<float>(i).Get());
                         else if(t==OT_BOOL)     ::sprintf(out,"%d",*a.GetValue<int>(i).Get());
                         else if(t==OT_STRING)   ::sprintf(out,"%s",*a.GetValue<const char*>(i).Get());
-                        else ::sprintf(out,"%p",a.GetValue<int>(i));
+                        else ::sprintf(out,"%d",*a.GetValue<int>(i).Get());
                         s+=out;
                         s+=",";
                         out[0]=0;
                     }
                 }
                 break;
-            case _RT_USERDATA:      ::sprintf(out, "%p", o._unVal.pUserData); break;
-            case _RT_USERPOINTER:   ::sprintf(out, "%p", o._unVal.pUserPointer); break;
-            default: ::sprintf(out, "%p", o._unVal.raw); break;
+            case _RT_USERDATA:      ::sprintf(out, "%p", (void*)o._unVal.pUserData); break;
+            case _RT_USERPOINTER:   ::sprintf(out, "%p", (void*)o._unVal.pUserPointer); break;
+            default: ::sprintf(out, "%p", (void*)o._unVal.raw); break;
         }
         if(out[0])
             s+= out;
@@ -233,7 +233,7 @@ const any_t& Divais::get_data()const
 void  Divais::sync(const char* filter)
 {
     any_t loco;
-    _read_now(loco, filter);
+    _read_now(loco, filter == nullptr  ? "*" : filter);
 }
 
 EPERIPH Divais::get_category(const char* cat)
@@ -249,7 +249,7 @@ EPERIPH Divais::get_category(const char* cat)
     return eNOCAT;
 }
 
-Sqrat::Object Divais::object()
+Sqrat::Object Divais::object()const
 {
     return _o;
 }

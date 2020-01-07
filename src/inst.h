@@ -54,7 +54,7 @@ public:
     SQVM*   psqvm();
     SqEnvi* scr_env();
     void    add(Divais*);
-    void    add_obj(I_IDev* o, const char* name);
+    void    add_this(I_IDev* o, const char* name);
     void    remove_obj(const char* name);
     void    remove(const Divais*);
     void    call_backs(time_t t);
@@ -68,19 +68,19 @@ public:
     void    check_devs(std::vector<I_IDev*>& arr, size_t t);
     const   char* notify(const char* appname);
     const   char* param()const{return _param.c_str();}
-    void    add_dll(void* p){_dlls.push_back(p);}
+
     const   char* get_value(const char* per, const char* what);
     void    comit_devs();
-    IoOps*   get_proxy(const char*);
+    IoOps*   get_devi(const char*);
     I_IDev* get_module(const char*);
     void    get_alldevs(devsmap_t& refrdevs, EPERIPH et, bool update);
-
+    void    sync_all();
 private:
     std::map<std::string, I_IDev*>  _devs;
     std::map<std::string, SqMemb>   _userflds;
     devsmap_t                       _pending;
     std::map<size_t, TimCb>         _cbs;
-    std::vector<void*>              _dlls;
+
     std::string                     _webreq;
     std::string                     _webresp;
     std::string                     _param;

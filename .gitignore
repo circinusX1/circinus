@@ -13,6 +13,7 @@
 
 # Compiled Dynamic libraries
 *.so
+*.so.*
 *.dylib
 *.dll
 
@@ -46,5 +47,8 @@ make-file
 ./docs/design/*
 ./utils/*
 ./TOOLS/*
+./DEBUG/*
+./RELEASE/*
+
 
 

@@ -109,8 +109,8 @@ void  Bmi160::squit(const char* name)
 {
 	Sqrat::Class<Bmi160> cls(__vm, name);
 	cls.Ctor<const char*, const char*>();
-	cls.Func(_SC("acceleration"), &Bmi160::acceleration);
-	cls.Func(_SC("rotation"), &Bmi160::rotation);
+	cls.Functor(_SC("acceleration"), &Bmi160::acceleration);
+	cls.Functor(_SC("rotation"), &Bmi160::rotation);
 	Sqrat::RootTable(__vm).Bind(_SC(name), cls);
 }
 
@@ -136,7 +136,7 @@ const char* Bmi160::dev_key()const
  * @brief Bmi160::object
  * @return the script associated instance if is used
  */
-const Sqrat::Object& Bmi160::object()const
+Sqrat::Object Bmi160::object()const
 {
     return _o;
 }

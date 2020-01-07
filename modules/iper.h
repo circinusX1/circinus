@@ -56,7 +56,7 @@ typedef enum EPERIPH{
 }EPERIPH;
 
 
-#define MAX_SLOTS   2
+
 
 template <int SZ>class fastbuf_t
 {
@@ -73,6 +73,13 @@ public:
     uint8_t operator[](int index){return _ploco[index];}
 };
 
+/*  generic data / device ()
+    has slots basic_string<uint8_t> storing raw data in each slot.
+    each slot can have any length, for stirngs or buffers,
+    each slot can store one type like int's floats
+    [0,...] has associated type, data length, and data
+*/
+#define MAX_SLOTS   10
 class  any_t
 {
 public:
@@ -140,9 +147,9 @@ public:
         }
     }
     template <class X>
-    void pusht(const X& b, int sz= sizeof(X), int index=0){
+    void pusht(const X& b, int index=0, int sz= sizeof(X)){
         _stor[index].append((uint8_t*)&b,_dl[index]==0?sz:_dl[index]);
-        std::cout << "len = " << (int)_stor[index].length() << "\n";
+        //std::cout << "len = " << (int)_stor[index].length() << "\n";
     }
     void push( const char* b, int index=0){
         _stor[index].append((const uint8_t*)b,::strlen(b));
@@ -172,7 +179,8 @@ public:
     E_TYPE peer_of(int index=0)const{return _types[index];}
     void typeit(E_TYPE e, int index=0){
         _types[index]=e;
-        if(e== eBINARY)	_dl[index] = 1;
+        if(e== eBINARY)
+            _dl[index] = 1;
     }
     bool is_dirty()const{return _stor[0].length();}
     void fmt_hex(std::string& here, int index=0){
@@ -197,12 +205,12 @@ public:
 	virtual ~I_IDev(){}
 	virtual const char* name()const=0;
 	virtual const char* dev_key()const=0;
-	virtual bool  is_monitorred(size_t t)=0;
+	virtual bool  is_dirty(size_t t)=0;
 	virtual bool  set_value(const char* key, const char* value)=0;
 	virtual const char* get_value(const char* key)=0;
 	virtual const any_t& get_data()const=0;
-	virtual void  sync(const char* filter)=0;
-	virtual Sqrat::Object object()=0;
+    virtual void  sync(const char* filter=nullptr)=0;
+    virtual Sqrat::Object object()const=0;
 };
 
 // base class for GPIO's I2C devices
@@ -226,9 +234,8 @@ class IInstance
 {
 public:
 	virtual ~IInstance(){}
-	virtual IoOps*  get_proxy(const char*)=0;
-	virtual void    add_obj(I_IDev* o, const char* name)=0;
-	virtual void    remove_obj(const char* name)=0;
+    virtual IoOps*  get_devi(const char*)=0;
+    virtual void    add_this(I_IDev* o, const char* name)=0;
 };
 
 

@@ -17,6 +17,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <assert.h>
 #include <stdarg.h>
 #include <iostream>
+#include <dlfcn.h>
 #include <string>
 #include "sqwrap.h"
 #include "osthread.h"
@@ -33,7 +34,6 @@ static HookPrint _hook_print;
 HSKVM               __vm;
 extern std::string SqErrStr;
 
-class               __sq_env;
 class               SqEnvi;
 SqEnvi*             __sq_env;
 BaseSqEnvi*         __bsqenv;
@@ -46,8 +46,6 @@ void SqEnvi::set_print_foo(HookPrint  hp)
 
 SqEnvi::SqEnvi(size_t sz):_vm(0)
 {
-    //AutoLock a(&_m);
-
     _init(sz);
     acquire();
 }
@@ -61,6 +59,14 @@ SqEnvi::~SqEnvi()
         sq_close(*_vm);
         *_vm = 0;
     }
+    _close_sos();
+}
+
+void SqEnvi::_close_sos()
+{
+
+    for(auto& a : _dlls)
+        ::dlclose(a);
 }
 
 void SqEnvi::_init(size_t sz)
@@ -160,7 +166,7 @@ int SqEnvi::push_main(bool call)
 {
     if(call==false)
     {
-        SQChar* main_foo = _SC("main(context());");
+        const SQChar* main_foo = _SC(const_cast<const SQChar*>("context()._sync();main(context());"));
         if(SQ_FAILED(SQ_PTRS->compilebuffer(theVM(),
                                             main_foo,
                                             ::strlen(main_foo), _SC(""), true)))
@@ -193,7 +199,7 @@ EngScript SqEnvi::compile_script(const std::string& s,  const SQChar * debugInfo
     {
         LOGE("Cannot find: " << cwdf);
     }
-    sprintf(cwd,"cp %s /tmp/os.embix && echo 'main(context());' >> /tmp/os.embix ", cwdf);
+    sprintf(cwd,"cp %s /tmp/os.embix && echo 'context()._sync();main(context());' >> /tmp/os.embix ", cwdf);
     ::system(cwd);
     if(SQ_FAILED(sqstd_loadfile(*_vm, "/tmp/os.embix", true)))
     {

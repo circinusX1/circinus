@@ -76,6 +76,7 @@ int  DvI2c::fwrite(const uint8_t* buff, int len)
 #if defined (__linux__)
 int     DvI2c::bwrite(const uint8_t* pb, int length, int reg_addr)
 {
+    if(reg_addr==-1) return this->fwrite(pb,length);
 	int err = ::ioctl(_ifile, I2C_SLAVE, _addr);
     if(err)
     {
@@ -108,6 +109,7 @@ int     DvI2c::bwrite(const uint8_t* pb, int length, int reg_addr)
 
 size_t     DvI2c::bread(uint8_t* pb, int length, int reg_addr)
 {
+    if(reg_addr==-1) return this->fread(pb,length);
 	int err = ::ioctl(_ifile, I2C_SLAVE, _addr);
     if(err)
     {

@@ -295,7 +295,7 @@ static SQRESULT sqrat_importbin(HSKVM v, const SQChar* moduleName) {
     SQRESULT res = modLoad(v, &_sqapi);
     if(SQ_OK == res)
     {
-        App->add_dll(mod);
+        __sq_env->add_dll(mod);
     }
     else
     {

@@ -93,7 +93,7 @@ public:
 	const char* name()const{return _name.c_str();};
 	const char* dev_key()const{return _ukey.c_str();};
 	void  reset();
-	bool is_monitorred(size_t t){
+	bool is_dirty(size_t t){
 		if(_monitor){
 			bool dirt = _touch_it(t);
 			return _monitor && dirt;
@@ -107,8 +107,8 @@ public:
 	virtual const char* get_value(const char* key);
 	virtual const any_t& get_data()const;
 	static EPERIPH get_category(const char* cat);
-	virtual void   sync(const char* filter);
-	virtual Sqrat::Object object();
+	virtual void   sync(const char* filter=nullptr);
+	virtual Sqrat::Object object()const;
 
 protected:
 	virtual bool	_write_now(const any_t& a)=0;

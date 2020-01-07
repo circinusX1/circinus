@@ -10,6 +10,7 @@
 #include "sqratTable.h"
 #include "sqratObject.h"
 #include "sqratimport.h"
+#include "sqwrap.h"
 #include "sunset.h"
 #include "filedev.h"
 #include "i2cdev.h"
@@ -28,6 +29,7 @@
 #include "comcurl.h"
 #include "comssh.h"
 #include "inst.h"
+
 
 int         Secret;
 int         ThrLock;
@@ -490,7 +492,7 @@ int run_loop(SqMemb& f, int pulseme)
                 now = then;
                 for(const auto& a: dirty)
                 {
-                    srv = f.Fcall<bool>(App, a);
+                    srv = f.Fcall<bool>(App, a->object());
                     if(*srv.Get()==false)
                         break;
                 }
@@ -602,7 +604,7 @@ bool loadmod(const char* lib, const char* devname)
         module = nullptr;
         return false;
     }
-    App->add_dll(module);
+    __sq_env->add_dll(module);
     return startmod(__vm,  SQ_PTRS, App, devname);
 }
 
@@ -712,7 +714,7 @@ void globals_expose(SqEnvi& sq)
 	Sqrat::RootTable(sq.theVM()).Functor("i2xa", &i2xa);
 	Sqrat::RootTable(sq.theVM()).Functor("is_file", &is_file);
 	Sqrat::RootTable(sq.theVM()).Functor("bark", &wd_pull);
-	Sqrat::RootTable(sq.theVM()).Functor("run_loop", &run_loop);
+	Sqrat::RootTable(sq.theVM()).Functor("run", &run_loop);
 	Sqrat::RootTable(sq.theVM()).Functor("exitapp", &exitapp);
 	Sqrat::RootTable(sq.theVM()).Functor("println", &println);
 	Sqrat::RootTable(sq.theVM()).Functor("errorln", &errorln);

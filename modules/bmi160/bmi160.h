@@ -32,12 +32,14 @@ public:
 
 	 const char* name()const;
 	 const char* dev_key()const;
-	 const Sqrat::Object& object()const;
 	 bool  is_monitorred(size_t t);
 	 bool  set_value(const char* key, const char* value);
 	 const char* get_value(const char* key);
 	 const any_t& get_data()const;
 	 void  sync(const char* filter);
+	 Sqrat::Object object()const;
+
+
 
 private:
     IoOps*          _ird;
