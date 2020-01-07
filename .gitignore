@@ -49,6 +49,8 @@ make-file
 ./TOOLS/*
 ./DEBUG/*
 ./RELEASE/*
+./DEBUG/.*
+./RELEASE/.*
 
 
 
