@@ -1,0 +1,29 @@
+::using(eGPIO|ePWMM|eSRV);
+
+setdbg(0xFF);
+
+
+                    // dev      chip  pin
+
+
+reconfig_sys(ePWMM, ["/sys/class/pwm/","","pwm-%d:%d"]);     // use /sys/class/pwm/pwm-C:P
+var pwm = PWM("0.0", 30000, 30, false, "pwm");
+
+
+
+function main(ctx)
+{
+   reconfig_sys(ePWMM, ["/dev/pwm/","",""]);                    // use /dev/pwm/PWM_PIN
+   var pwm = PWM("ecap0", 30000, 50, false, "pwm");
+   return run(l,10);
+}
+
+var x=0;
+function l(c,d)
+{
+    pwm.set_value(x++);
+    if(x>99)
+        x=0;
+    return true;
+}
+

@@ -42,6 +42,16 @@ void SQLexer::Init(SQSharedState *ss, SQLEXREADFUNC rg, PVOID up,CompilerErrorMe
     ADD_KEYWORD(null, TK_NULL);
     ADD_KEYWORD(function, TK_FUNCTION);
     ADD_KEYWORD(local, TK_LOCAL);
+    ADD_KEYWORD(int8_t,TK_INT8);     // mco start
+    ADD_KEYWORD(uint8_t,TK_UINT8);
+    ADD_KEYWORD(int16_t, TK_INT16);
+    ADD_KEYWORD(uint16_t,TK_UINT16);
+    ADD_KEYWORD(int32_t, TK_INT32);
+    ADD_KEYWORD(uint16_t, TK_UINT32);
+    ADD_KEYWORD(int64_t, TK_INT64);
+    ADD_KEYWORD(uint64_t, TK_UINT64);
+    ADD_KEYWORD(float, TK_REAL);
+    ADD_KEYWORD(double, TK_DOUBLE); //  mco end
     ADD_KEYWORD(var, TK_LOCAL);// mco-mco
     ADD_KEYWORD(for, TK_FOR);
     ADD_KEYWORD(foreach, TK_FOREACH);
@@ -129,7 +139,7 @@ void SQLexer::LexLineComment()
     do { NEXT(); } while (CUR_CHAR != _SC('\n') && (!IS_EOB()));
 }
 // mco-mco lex
-int SQLexer::Lex()
+int SQLexer::Lex(int inst_tok)
 {
     _lasttokenline = _currentline;
     while(CUR_CHAR != SQUIRREL_EOB) {
@@ -278,7 +288,7 @@ int SQLexer::Lex()
             return 0;
         default:{
             if (scisdigit(CUR_CHAR)) {
-                int ret = ReadNumber(); //returns the type
+                int ret = ReadNumber(inst_tok); //returns the type
                 RETURN_TOKEN(ret);
             }
             else if (scisalpha(CUR_CHAR) || CUR_CHAR == _SC('_')) {
@@ -497,22 +507,22 @@ void LexOctal(const SQChar *s,size_t *res)
 
 int isexponent(int c) { return c == 'e' || c=='E'; }
 
-
 #define MAX_HEX_DIGITS (sizeof(int)*2)
-int SQLexer::ReadNumber()
-{
-#define TINT 1
-#define TFLOAT 2
-#define THEX 3
-#define TSCIENTIFIC 4
-#define TOCTAL  5
-#define TU8     6
-#define TI8     7
-#define TU16    8
-#define TI16    9
-#define TU32    10
-#define TI32    11
 
+int SQLexer::ReadNumber(int inst_tok)
+{
+#define TINT        1
+#define TFLOAT      334
+#define TDOUBLE     335
+#define THEX        3
+#define TSCIENTIFIC 4
+#define TOCTAL      5
+#define TU8         327//6
+#define TI8         326//7
+#define TU16        329//8
+#define TI16        328//9
+#define TU32        331//10
+#define TI32        330//11
 
 
     int type = TINT, firstchar = CUR_CHAR;
@@ -566,6 +576,14 @@ int SQLexer::ReadNumber()
     }
     else
     {
+
+        if(inst_tok && inst_tok != TK_LOCAL)
+        {
+            type = inst_tok;
+        }
+
+
+
         APPEND_CHAR((int)firstchar);
         while (CUR_CHAR == _SC('.') || scisdigit(CUR_CHAR) || isexponent(CUR_CHAR)) {
             if(CUR_CHAR == _SC('.') || isexponent(CUR_CHAR)) type = TFLOAT;

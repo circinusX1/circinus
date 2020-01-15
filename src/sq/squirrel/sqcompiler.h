@@ -28,7 +28,7 @@ struct SQVM;
 #define TK_FOREACH  279
 #define TK_IN   280
 #define TK_NEWSLOT  281
-#define TK_MODULO   282
+#define TK_MODULO   282TK_LOCAL
 #define TK_LOCAL    283
 #define TK_CLONE    284
 #define TK_FUNCTION 285
@@ -71,6 +71,17 @@ struct SQVM;
 #define TK_ENUM 323
 #define TK_CONST 324
 #define TK_RAWCALL 325
+// mco-mco new types
+#define TK_INT8     326
+#define TK_UINT8    327
+#define TK_INT16    328
+#define TK_UINT16   329
+#define TK_INT32    330
+#define TK_UINT32   331
+#define TK_INT64    332
+#define TK_UINT64   333
+#define TK_REAL    334
+#define TK_DOUBLE   335
 
 
 typedef void(*CompilerErrorMemb)(void *ud, const SQChar *s);

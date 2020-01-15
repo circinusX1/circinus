@@ -42,39 +42,48 @@ DvPwm::DvPwm(EPWM_PIN pin,
              EPWM_PERIOD period,
              EPWM_VAL val, bool inv):_prd(period)
 {
-	_config("pwm",_sys);
-	_config("chip_fmt",_fmt_chip);
-	_config("pwm_fmt",_fmt);
+    _config("pwm",_sys);
+    _config("pwm_fmt",_fmt);
+    _config("pwm_chip",_fmt_chip);
 
-	char sf[128];
-	char chip_pin[128];
+    if(::isalpha(pin[0]))
+    {
+        _dev_node = _sys;
+        _dev_node += pin;
+    }
+    else
+    {
+        char    loco[128];
+        char    devicefile[256];
+        ::strcpy(loco, pin);
+        char* pd = strchr(loco,'.');   // /chip-%d/pwm-%d
+        if(pd)
+        {
+            std::string   fmt =  _sys;
+            if(!_fmt_chip.empty())fmt+=_fmt_chip;
+            if(!_fmt.empty())fmt+=_fmt;
+            *pd = 0;
+            int   chipn = ::atoi(loco);
+            int   pwmn  = ::atoi(pd+1);
+            sprintf(devicefile, fmt.c_str(), chipn, pwmn);
+            _dev_node = devicefile;
+        }
+        else                          // if(fmt use fmt) if fmt_chip use fmt_chip
+        {
+            std::string   fmt =  _sys;
+            if(!_fmt_chip.empty())fmt+=_fmt_chip;
+            if(!_fmt.empty())fmt+=_fmt;
 
-	if(!::strchr(pin,'.'))
-	{
-		LOGE("pwm is expected in  'CHIP.RAIL' format: aka 0.12 \n");
-		return;
-	}
-	::strcpy(chip_pin,pin);
-	const char* chip = strtok(chip_pin, ".");
-	const char* pwmpin = strtok(nullptr, ".");
-	std::string fmt =  _sys + _fmt_chip;
-
-	::sprintf(sf, fmt.c_str(), ::atoi(chip) );
-	if(::access(sf,0) != 0)
-	{
-		LOGE("please enable pwm in /boot/config.txt, or check ownrship on " << sf);
-		return;
-	}
-	fmt = sf; fmt += "export";
-	_wrt(fmt, pwmpin);
-	fmt = sf + _fmt;
-	::sprintf(sf, fmt.c_str(), ::atoi(pwmpin) );
-	if(::access(sf, 0) != 0)
-	{
-		LOGE("cannot export pin " << pin);
-		return;
-	}
-	_dev_node = sf;
+            int   pwmn  = ::atoi(pin);
+            sprintf(devicefile, fmt.c_str(), pwmn);
+            _dev_node = devicefile;
+        }
+    }
+    if(::access(_dev_node.c_str(),0)!=0)
+    {
+        LOGE("device pwm" << _dev_node << " not found");
+        return;
+    }
 	_wrt(_dev_node+"/period", std::to_string(period).c_str());
 	::msleep(256);
     int d = SET_DUTY(period,val);
@@ -85,9 +94,10 @@ DvPwm::DvPwm(EPWM_PIN pin,
     }else {
 		_wrt(_dev_node+"/polarity", "0");
     }
-	::msleep(128);
+    ::msleep(256);
 	_wrt(_dev_node+"/enable", "1");
-	::sync();
+    _wrt(_dev_node+"/enable", "1");
+    ::sync();
 }
 
 DvPwm::~DvPwm()

@@ -27,9 +27,10 @@ namespace GenericHw
     // PIN NAMES: ecap0  ecap1  ecap2  ehrpwm0a  ehrpwm0b
     // ehrpwm1a  ehrpwm1b  ehrpwm2a  ehrpwm2b
     //
-    std::string DvPwm::_sys      = "/dev/pwm/"; // /sys/class/pwm/
-    std::string DvPwm::_fmt_chip = "%s%d/";
-    std::string DvPwm::_fmt      = "pwm%d";
+    // ","","pwm-%d:%d"
+    std::string DvPwm::_sys      = "/sys/class/pwm/";
+    std::string DvPwm::_fmt_chip = "";
+    std::string DvPwm::_fmt      = "pwm-%d:%d";    //ecap0/<>
 
 }
 

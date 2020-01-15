@@ -28,9 +28,9 @@ namespace GenericHw
 
 DvI2c::DvI2c(EI2CBUS i2c, uint8_t addr):_addr(addr)
 {
-	_config("i2c",_sys);
-	_config("i2c_fmt",_fmt);
-	char sy[256];
+    _config("i2c",_sys);
+    _config("i2c_fmt",_fmt);
+    char sy[256];
 	::sprintf(sy, _fmt.c_str(), _sys.c_str(), i2c);
 	_dev_node = sy;
 }

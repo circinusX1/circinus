@@ -72,6 +72,8 @@ struct SQScope {
 class SQCompiler
 {
 public:
+
+
     SQCompiler(SQVM *v, SQLEXREADFUNC rg, PVOID up, const SQChar* sourcename, bool raiseerror, bool lineinfo)
     {
         _vm=v;
@@ -94,10 +96,12 @@ public:
         va_end(vl);
         longjmp(_errorjmp,1);
     }
-    void Lex(){ _token = _lex.Lex();}
+    void Lex(int type=0){
+        _token = _lex.Lex(type);
+    }
+
     SQObject Expect(int tok)
     {
-
         if(_token != tok) {
             if(_token == TK_CONSTRUCTOR && tok == TK_IDENTIFIER) {
                 //do nothing
@@ -217,7 +221,19 @@ public:
         case TK_FOR:        ForStatement();         break;
         case TK_FOREACH:    ForEachStatement();     break;
         case TK_SWITCH: SwitchStatement();      break;
-        case TK_LOCAL:      LocalDeclStatement();   break;
+        case TK_INT8:
+        case TK_UINT8:  // work in progress
+        case TK_INT16:
+        case TK_UINT16:
+        case TK_INT32:
+        case TK_UINT32:
+        case TK_INT64:
+        case TK_UINT64:
+        case TK_REAL:
+        case TK_DOUBLE:
+        case TK_LOCAL:
+            LocalDeclStatement(_token);
+            break;
             // mco-mco added for bitwise opetations
         case TK_RETURN:
         case TK_YIELD: {
@@ -369,7 +385,7 @@ public:
     {
         for(Expression();_token == ',';_fs->PopTarget(), Lex(), CommaExpr());
     }
-    void Expression()
+    void Expression(int inst_tok=0)
     {
         SQExpState es = _es;
         _es.etype     = EXPR;
@@ -1030,12 +1046,12 @@ public:
             _fs->SetInstructionParam(tpos, 1, nkeys);
         Lex();
     }
-    void LocalDeclStatement()
+    void LocalDeclStatement(int inst_tok)
     {
         SQObject varname;
-        Lex();
+        Lex(inst_tok);
         if( _token == TK_FUNCTION) {
-            Lex();
+            Lex(inst_tok);
             varname = Expect(TK_IDENTIFIER);
             Expect(_SC('('));
             CreateFunction(varname,false);
@@ -1048,7 +1064,8 @@ public:
         do {
             varname = Expect(TK_IDENTIFIER);
             if(_token == _SC('=')) {
-                Lex(); Expression();
+                Lex(inst_tok);
+                Expression();
                 int src = _fs->PopTarget();
                 int dest = _fs->PushTarget();
                 if(dest != src) _fs->AddInstruction(_OP_MOVE, dest, src);
@@ -1197,7 +1214,8 @@ public:
         Lex();
         BEGIN_SCOPE();
         Expect(_SC('('));
-        if(_token == TK_LOCAL) LocalDeclStatement();
+        if(_token == TK_LOCAL)
+            LocalDeclStatement(_token);
         else if(_token != _SC(';')){
             CommaExpr();
             _fs->PopTarget();
@@ -1638,6 +1656,8 @@ private:
     SQChar _compilererror[MAX_COMPILER_ERROR_LEN];
     jmp_buf _errorjmp;
     SQVM *_vm;
+public:
+
 };
 
 bool Compile(SQVM *vm,SQLEXREADFUNC rg, PVOID up, const SQChar *sourcename, SQObjectPtr &out, bool raiseerror, bool lineinfo)

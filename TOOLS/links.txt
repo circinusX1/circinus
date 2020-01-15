@@ -1,0 +1,8 @@
+total 4
+lrwxrwxrwx 1 marius marius  34 Jan  2 14:08 beaglebone -> /home/marius/HOMEBOARDS/BBG/debfs/
+lrwxrwxrwx 1 marius marius  52 Jan  2 14:08 imx6 -> /sdaone/BOARDS/dart6ul/var_mx6ul_dart_debian/rootfs/
+-rw-rw-r-- 1 marius marius   0 Jan 15 12:03 links.txt
+lrwxrwxrwx 1 marius marius  58 Jan 15 12:03 qteverywhere -> /home/marius/APPS/RPIQT/qt-everywhere-opensource-src-5.8.0
+lrwxrwxrwx 1 marius marius  26 Jan  2 14:08 raspberrypi -> /sdaone/BOARDS/rpi/ROOTFS/
+-rw-rw-r-- 1 marius marius 122 Nov 27 09:15 readme.md
+lrwxrwxrwx 1 marius marius  15 Jan  2 14:08 toolchain -> /sdaone/armgcc/

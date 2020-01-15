@@ -19,10 +19,10 @@ SPARK_ON_TOUT	:=	3000;
 
 MODES	<- {
     OFF = 0,
-            COOL_ON = 0x1,
-            HEAT_ON = 0x2,
-            FAN_ON  = 0x8,
-}
+    COOL_ON = 0x1,
+    HEAT_ON = 0x2,
+    FAN_ON  = 0x8,
+    }
 
 CUR_MODE := MODES.OFF;
 

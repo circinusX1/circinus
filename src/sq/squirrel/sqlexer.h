@@ -14,12 +14,12 @@ struct SQLexer
     ~SQLexer();
     void Init(SQSharedState *ss,SQLEXREADFUNC rg,PVOID up,CompilerErrorMemb efunc,void *ed);
     void Error(const SQChar *err);
-    int Lex();
+    int Lex(int inst_tok=0);
     const SQChar *Tok2Str(int tok);
 private:
     int GetIDType(const SQChar *s,int len);
     int ReadString(int ndelim,bool verbatim);
-    int ReadNumber();
+    int ReadNumber(int tok=0);
     void LexBlockComment();
     void LexLineComment();
     int ReadID();

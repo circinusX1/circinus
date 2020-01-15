@@ -51,12 +51,14 @@ public:
     virtual E_TYPE  data_of()const{return eINT;}
     virtual const char* err_desc()const{return _err.c_str();}
     static void config(char* s, char* f=nullptr, char* c=nullptr){
-        if(s && *s)  DvPwm::_sys=s ;
-        if(f && *f)  DvPwm::_fmt=f ;
-        if(c)  DvPwm::_fmt_chip=f ;
+        if(s)  DvPwm::_sys=s ;
+        if(f)  DvPwm::_fmt=f ;
+        if(c)  DvPwm::_fmt_chip=c ;
     }
+
 protected:
     int  _period()const{return _prd;};
+
 private:
     int                       _prd;
     static std::string        _sys;

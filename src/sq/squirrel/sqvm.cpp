@@ -672,10 +672,10 @@ bool SQVM::IsFalse(SQObjectPtr &o)
 {
     if(((sq_type(o) & SQOBJECT_CANBEFALSE)
         && ( ((sq_type(o) == OT_FLOAT) && (_float(o) == SQFloat(0.0))) ))
-        #if !defined(SQUSEDOUBLE) || (defined(SQUSEDOUBLE) && defined(_SQ64))
+#if !defined(SQUSEDOUBLE) || (defined(SQUSEDOUBLE) && defined(_SQ64))
             || (_integer(o) == 0) )  //OT_NULL|OT_INTEGER|OT_BOOL
 #else
-            || (((type(o) != OT_FLOAT) && (_integer(o) == 0))) )  //OT_NULL|OT_INTEGER|OT_BOOL
+            || (((sq_type(o) != OT_FLOAT) && (_integer(o) == 0))) )  //OT_NULL|OT_INTEGER|OT_BOOL
 #endif
     {
         return true;

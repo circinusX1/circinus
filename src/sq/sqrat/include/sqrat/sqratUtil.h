@@ -923,7 +923,7 @@ public:
     T* Get() const
     {
         if(m_Ptr==0){
-            std::string x = "script: method/variable inexistent or no return value from function" ;
+            std::string x = "SCRIPT: variable/function; has wrong parameters or does not exist" ;
             throw Sqrat::Exception(x);
         }
         return m_Ptr;

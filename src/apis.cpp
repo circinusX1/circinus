@@ -334,6 +334,18 @@ int32_t u32(int32_t value)
     return int32_t(value);
 }
 
+float r32(size_t value)
+{
+    return float(value);
+}
+
+double r64(size_t value)
+{
+    return (double)(value);
+}
+
+
+
 uint64_t u64(int64_t value)
 {
     return int64_t(value);
@@ -635,7 +647,7 @@ void usingop(int32_t flags)
     if(flags & eSSH)    SshComm::squit(sq);
 #endif //#ifdef WITH_USB
 #ifdef WITH_USB
-    if(flags & eUSB) UsbDev::squit(sq);
+    if(flags & eUSB) UsbDev::sqprintlnuit(sq);
 #endif //#ifdef WITH_USB
 }
 
@@ -721,6 +733,8 @@ void globals_expose(SqEnvi& sq)
 	Sqrat::RootTable(sq.theVM()).Functor("reconfig_sys", &reconfig_sys);
 	Sqrat::RootTable(sq.theVM()).Functor("S8", &s8);
 	Sqrat::RootTable(sq.theVM()).Functor("S16", &s16);
+	Sqrat::RootTable(sq.theVM()).Functor("R32", &r32);
+	Sqrat::RootTable(sq.theVM()).Functor("R64", &r64);
 	Sqrat::RootTable(sq.theVM()).Functor("S32", &s32);
 	Sqrat::RootTable(sq.theVM()).Functor("S64", &s64);
 	Sqrat::RootTable(sq.theVM()).Functor("U8", &u8);

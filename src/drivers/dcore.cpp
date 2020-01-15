@@ -66,6 +66,7 @@ int DvCore::_readint(const std::string& file)
         ::fclose(pf);
     }
     _err = strerror(errno);
+    LOGE(_err << ", " << file);
     return ret;
 }
 
@@ -81,6 +82,7 @@ size_t DvCore::_red(const std::string& file, uint8_t* pb, size_t l)const
         ::fclose(pf);
     }
     ptr->_err = strerror(errno);
+    LOGE(ptr->_err << ", " << file);
     return ret;
 }
 
@@ -99,6 +101,7 @@ bool DvCore::_wrt(const std::string& file, const char* value, bool check)
         return ret==len;
     }
     _err = strerror(errno);
+    LOGE(__FUNCTION__ << ": " << _err << " @ " << file );
     return false;
 }
 
