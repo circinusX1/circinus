@@ -1,5 +1,6 @@
     - Published Oct-Nov-Dec 2017
 
+###### rembix renamed to amutrion
 
 #### SDK
 [!SDK](https://github.com/comarius/rembix/wiki)
