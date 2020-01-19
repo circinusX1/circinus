@@ -154,9 +154,10 @@ size_t  InputSys::_fecth(any_t& vl, const char* filter)
                         _current.x = 0;
                     else if (_current.x >= _fb.width)
                         _current.x = _fb.width - 1;
-
-                    if (_ie.code == REL_Y)
-                        _current.y += _ie.value;
+                }
+                if (_ie.code == REL_Y)
+                    _current.y += _ie.value;
+                {
 
                     if (_current.y < 0)
                         _current.y = 0;
