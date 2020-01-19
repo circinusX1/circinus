@@ -61,12 +61,12 @@ bool  AdcDev::_write_now(const any_t& vl)
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  AdcDev::_read_now(any_t& vl, const char* filter)
+size_t  AdcDev::_fecth(any_t& vl, const char* filter)
 {
     return get_value();
 }
 
-bool AdcDev::_touch_it(size_t t)
+bool AdcDev::_mon_pick(size_t t)
 {
     return false;
 }

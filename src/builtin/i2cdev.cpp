@@ -56,7 +56,7 @@ bool  I2CDev::_write_now(const any_t& vl)
     return this->bwrite(vl.c_bytes(), vl.length(), reg);
 }
 
-size_t  I2CDev::_read_now(any_t& vl, const char* filter)
+size_t  I2CDev::_fecth(any_t& vl, const char* filter)
 {
     return 0;
 }
@@ -67,7 +67,7 @@ int I2CDev::setreg(uint8_t cmd)
     return this->bwrite(nullptr, 0, cmd);
 }
 
-bool I2CDev::_touch_it(size_t t)
+bool I2CDev::_mon_pick(size_t t)
 {
     AutoOC oc(this,  _auto);
     _cach = this->bread(_bytes, _nbytes, _regaddr);

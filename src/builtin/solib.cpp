@@ -77,13 +77,13 @@ bool  SoLib::_write_now(const any_t& vl)
     return false;
 }
 
-size_t  SoLib::_read_now(any_t& vl, const char* filter)
+size_t  SoLib::_fecth(any_t& vl, const char* filter)
 {
     return 0;
 }
 
 
-bool SoLib::_touch_it(size_t t)
+bool SoLib::_mon_pick(size_t t)
 {
     return false;
 }

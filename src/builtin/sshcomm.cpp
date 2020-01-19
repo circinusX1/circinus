@@ -50,13 +50,13 @@ bool  SshComm::_write_now(const any_t& vl)
     return this->bwrite(vl[0].data(), vl[0].length());
 }
 
-size_t  SshComm::_read_now(any_t& vl, const char* filter)
+size_t  SshComm::_fecth(any_t& vl, const char* filter)
 {
     return this->bread(vl.c_bytes(), vl.length());
 }
 
 
-bool SshComm::_touch_it(size_t t)
+bool SshComm::_mon_pick(size_t t)
 {
     _cach = this->bread(_bytes, _nbytes);
     return _mon_dirt;

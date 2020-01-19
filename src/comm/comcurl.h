@@ -71,8 +71,8 @@ public:
 
 protected:
 	virtual bool	_write_now(const any_t& a);
-	virtual size_t  _read_now(any_t& _curdata, const char* filter);
-	virtual bool	_touch_it(size_t t);
+	virtual size_t  _fecth(any_t& _curdata, const char* filter);
+	virtual bool	_mon_pick(size_t t);
     size_t _receiving(char* buf, size_t nmemb);
 
 private:

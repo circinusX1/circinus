@@ -49,13 +49,13 @@ bool  FileDev::_write_now(const any_t& vl)
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  FileDev::_read_now(any_t& vl, const char* filter)
+size_t  FileDev::_fecth(any_t& vl, const char* filter)
 {
     return 0;
 }
 
 
-bool FileDev::_touch_it(size_t t)
+bool FileDev::_mon_pick(size_t t)
 {
     return _mon_dirt;
 }

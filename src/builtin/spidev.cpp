@@ -52,7 +52,7 @@ bool  SpiDev::_write_now(const any_t& vl)
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  SpiDev::_read_now(any_t& vl, const char* filter)
+size_t  SpiDev::_fecth(any_t& vl, const char* filter)
 {
     return 0;
 }
@@ -73,7 +73,7 @@ SqArr  SpiDev::_readreg(int bytes)
     return RtxBus<SpiDev>::_readreg(0,bytes);
 }
 
-bool SpiDev::_touch_it(size_t t)
+bool SpiDev::_mon_pick(size_t t)
 {
     _cach = this->bread(_bytes, _nbytes, _regaddr);
     return _mon_dirt;

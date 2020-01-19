@@ -53,13 +53,12 @@ bool  RawSock::_write_now(const any_t& vl)
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  RawSock::_read_now(any_t& vl, const char* filter)
+size_t  RawSock::_fecth(any_t& vl, const char* filter)
 {
     return 0;
 }
 
-
-bool RawSock::_touch_it(size_t t)
+bool RawSock::_mon_pick(size_t t)
 {
     _cach = this->bread(_bytes, _nbytes, 0);
     return _mon_dirt;
@@ -146,7 +145,6 @@ Sqrat::Array RawSock::read(int bytes, int to)
 void RawSock::on_event(E_VENT e, const uint8_t* buff, int len, int options)
 {
 }
-
 
 bool	RawSock::_set_values(const char* key, const char* value)
 {

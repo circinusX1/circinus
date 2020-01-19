@@ -28,6 +28,7 @@
 #include "rawsock.h"
 #include "comcurl.h"
 #include "comssh.h"
+#include "inputsys.h"
 #include "inst.h"
 
 
@@ -638,6 +639,7 @@ void usingop(int32_t flags)
     if(flags & eFILE)   FileDev::squit(*sq);
     if(flags & eSOLIB)  SoLib::squit(*sq);
     if(flags & eSOCKET)   RawSock::squit(*sq);
+    if(flags & eINPUT)   InputSys::squit(*sq);
     //if(flags & eDEVMODULE) ModuDev::squit(*sq);
     if(flags & eSUNRS)   SunTimes::squit(*sq);
 #ifdef WITH_CURL
@@ -658,6 +660,10 @@ void globals_expose(SqEnvi& sq)
 	//usingop(0xFFFFFF);
 
 	Sqrat::ConstTable(sq.theVM())
+			.Const("eKEYBOARD",eKEYBOARD)
+			.Const("eMOUSE",eMOUSE)
+			.Const("eTOUCH",eTOUCH)
+			.Const("eJOYSTIC",eJOYSTIC)
 			.Const("NOKEY","*")
 			.Const("INPUT", 0)
 			.Const("OUTPUT", 1)
@@ -670,6 +676,7 @@ void globals_expose(SqEnvi& sq)
 			.Const("ePWMM",ePWMM)
 			.Const("eI2C",eI2C)
 			.Const("eSPI",eSPI)
+			.Const("eSYSIN",eINPUT)
 			.Const("eADC",eADC)
 			.Const("eTIMER",eTIMER)
 			.Const("eUART",eUART)

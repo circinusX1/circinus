@@ -29,7 +29,7 @@ class ScrBase: public Divais, private Reg<ScrBase>
 public:
     ScrBase(SqObj&, E_TYPE e, const char* name=nullptr);
     virtual ~ScrBase();
-    bool _touch_it(size_t t);
+    bool _mon_pick(size_t t);
     bool  iopen(int rm=0);
     void  iclose();
     static void squit(SqEnvi& sq)
@@ -41,7 +41,7 @@ public:
     }
 protected:
     bool  _write_now(const any_t& vl);
-    size_t  _read_now(any_t& vl, const char* filter);
+    size_t  _fecth(any_t& vl, const char* filter);
 
 private:
     any_t   _dummy;

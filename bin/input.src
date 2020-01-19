@@ -1,0 +1,21 @@
+::using(eSYSIN|eSRV);
+
+json := SRV(8000,"rest");
+mouse := SYSIN(eMOUSE,"/dev/input/event2","mice");
+
+function main(x)
+{
+    mouse.set_monitor(true);
+    mouse.open(0);
+    return run(foo,1000);
+}
+
+function foo(c,d)
+{
+    if(d)
+    {
+        var xy = d.get_mouse();
+        println("x=" + xy[0] + " y=" + xy[1]);
+    }
+    return true;
+}

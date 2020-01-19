@@ -38,13 +38,13 @@ bool  ScrBase::_write_now(const any_t& vl)
     return false;
 }
 
-size_t  ScrBase::_read_now(any_t& vl, const char* filter)
+size_t  ScrBase::_fecth(any_t& vl, const char* filter)
 {
     return 0;
 }
 
 
-bool ScrBase::_touch_it(size_t t)
+bool ScrBase::_mon_pick(size_t t)
 {
     return false;
 }

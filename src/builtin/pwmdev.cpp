@@ -76,12 +76,12 @@ bool  PwmDev::_write_now(const any_t& vl)
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  PwmDev::_read_now(any_t& vl, const char* filter)
+size_t  PwmDev::_fecth(any_t& vl, const char* filter)
 {
     return get_value();
 }
 
-bool PwmDev::_touch_it(size_t t)
+bool PwmDev::_mon_pick(size_t t)
 {
     get_value();
     return _mon_dirt;

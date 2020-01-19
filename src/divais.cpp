@@ -233,7 +233,7 @@ const any_t& Divais::get_data()const
 void  Divais::sync(const char* filter)
 {
     any_t loco;
-    _read_now(loco, filter == nullptr  ? "*" : filter);
+    _fecth(loco, filter == nullptr  ? "*" : filter);
 }
 
 EPERIPH Divais::get_category(const char* cat)

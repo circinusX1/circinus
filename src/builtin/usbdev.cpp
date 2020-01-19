@@ -54,7 +54,7 @@ bool  UsbDev::_write_now(const any_t& vl)
     return this->bwrite(vl[0].data(), vl[0].length());
 }
 
-size_t  AdcDev::_read_now(any_t& vl, const char* filter)
+size_t  AdcDev::_fecth(any_t& vl, const char* filter)
 {
     return this->bread(vl.c_bytes(), vl.length());
 }
@@ -83,7 +83,7 @@ SqArr UsbDev::enumerate()
 }
 
 
-bool UsbDev::_touch_it(size_t t)
+bool UsbDev::_mon_pick(size_t t)
 {
     if(this->bread(_bytes, _nbytes))
     {

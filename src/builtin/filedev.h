@@ -60,7 +60,7 @@ protected:
     bool	_set_values(const char* key, const char* value);
 private:
     bool  _write_now(const any_t& vl);
-    size_t  _read_now(any_t& vl, const char* filter);
+    size_t  _fecth(any_t& vl, const char* filter);
 
 };
 

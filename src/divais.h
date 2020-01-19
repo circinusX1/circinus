@@ -95,7 +95,7 @@ public:
 	void  reset();
 	bool is_dirty(size_t t){
 		if(_monitor){
-			bool dirt = _touch_it(t);
+			bool dirt = _mon_pick(t);
 			return _monitor && dirt;
 		}
 		return false;
@@ -112,9 +112,9 @@ public:
 
 protected:
 	virtual bool	_write_now(const any_t& a)=0;
-	virtual bool	_touch_it(size_t t)=0;
+	virtual bool	_mon_pick(size_t t)=0;
 
-	virtual size_t  _read_now(any_t& _curdata, const char* filter)=0;
+	virtual size_t  _fecth(any_t& _curdata, const char* filter)=0;
 	virtual bool	_set_values(const char* key, const char* value);
 	virtual const char*	_get_values(const char* key);
 	Sqrat::Object&	_so(){return _o;}
@@ -143,7 +143,7 @@ private:
 	bool iopen(int em=O_RDWR){return B1::iopen(em);}							\
 	void iclose(){B1::iclose();}												\
 	void on_event(E_VENT e, const uint8_t* buff, int len, int options=0);			\
-	bool _touch_it(size_t t);
+	bool _mon_pick(size_t t);
 
 #define IS_SNULL(per) per==0 || (per[0]=='(' && per[1]=='n')
 

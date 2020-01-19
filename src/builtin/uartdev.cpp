@@ -60,13 +60,13 @@ bool  UartDev::_write_now(const any_t& vl)
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  UartDev::_read_now(any_t& vl, const char* filter)
+size_t  UartDev::_fecth(any_t& vl, const char* filter)
 {
     return 0;
 }
 
 
-bool UartDev::_touch_it(size_t t)
+bool UartDev::_mon_pick(size_t t)
 {
     this->bread(_bytes, _nbytes);
     return _mon_dirt;

@@ -291,12 +291,12 @@ bool	ComCurl::_write_now(const any_t& a)
     return false;
 }
 
-size_t  ComCurl::_read_now(any_t& _curdata, const char* filter)
+size_t  ComCurl::_fecth(any_t& _curdata, const char* filter)
 {
     return -1;
 }
 
-bool	ComCurl::_touch_it(size_t t)
+bool	ComCurl::_mon_pick(size_t t)
 {
     return false;
 }

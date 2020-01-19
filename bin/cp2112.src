@@ -1,0 +1,44 @@
+/**
+  COPYRIGHT M.comarius
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
+*/
+
+::using(eI2C|eGPIO|eUART|eSRV);
+
+l1 := PIO(506,  DIR_OUT, LOW, "led");
+l2 := PIO(507,  DIR_OUT, HIGH, "led2");
+i2c := I2C(11, 0x68, "i2c");
+json := SRV(8000,"rest");
+
+
+function main(ctx)
+{
+    i2c.autoopen(false);
+    if(i2c.open(2)){
+        var arr = i2c.ioread(0, 4);
+        i2c.close();
+        println("reg: " + 0 + " = " + arr2a(arr,','));
+    }
+    println("L1=" + l1.set_toggle());
+    println("L2=" + l2.set_toggle());
+    return run(loop,2000);
+}
+
+function loop(ctx, dev)
+{
+    println("L1=" + l1.set_toggle());
+    println("L2=" + l2.set_toggle());
+    if(i2c.open(2)){
+        var arr = i2c.ioread(0, 4);
+        i2c.close();
+        println("reg: " + 0 + " = " + arr2a(arr,','));
+    }
+    return true;
+}
+

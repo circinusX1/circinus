@@ -119,7 +119,7 @@ bool  GpioDev::_write_now(const any_t& vl)
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  GpioDev::_read_now(any_t& vl, const char* filter)
+size_t  GpioDev::_fecth(any_t& vl, const char* filter)
 {
     return get_value();
 }
@@ -140,7 +140,7 @@ int GpioDev::set_freq(int freq)
     return 0;
 }
 
-bool GpioDev::_touch_it(size_t t)
+bool GpioDev::_mon_pick(size_t t)
 {
     if(_dir & eIn)
     {

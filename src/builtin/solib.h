@@ -30,7 +30,7 @@ public:
     SoLib(const char* plugin);
     SoLib(SqObj&, const char* plugin);
     virtual ~SoLib();
-    bool _touch_it(size_t t);
+    bool _mon_pick(size_t t);
     bool iopen(int);
     void  iclose();
 
@@ -45,7 +45,7 @@ public:
     }
 protected:
     bool  _write_now(const any_t& vl);
-    size_t  _read_now(any_t& vl, const char* filter);
+    size_t  _fecth(any_t& vl, const char* filter);
 
 private:
     void*    _soh;

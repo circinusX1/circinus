@@ -20,6 +20,7 @@ typedef enum E_TYPE
     eREAL,  //double
     eSTRING,
     eBINARY,
+    eSTRUCT
 }E_TYPE;
 
 typedef enum E_VENT
@@ -53,6 +54,8 @@ typedef enum EPERIPH{
     eSCRIPT,
     eCURL,
     eSUNRS,
+    eINPUT,
+    eOUTPUT,
 }EPERIPH;
 
 

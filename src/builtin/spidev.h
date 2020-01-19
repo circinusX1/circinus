@@ -43,6 +43,9 @@ public:
         cls.Ctor<ESPIBUS, uint8_t, uint8_t, uint8_t, uint32_t, const char*>();
         cls.Ctor<SqObj&,ESPIBUS, uint8_t, uint8_t , uint8_t, uint32_t, const char*>();
 
+        cls.Functor(_SC("open"), &SpiDev::iopen);
+        cls.Functor(_SC("close"), &SpiDev::iclose);
+
         cls.Functor(_SC("ctx_it"), &SpiDev::ctx_it);
         cls.Functor(_SC("set_monitor"), &SpiDev::set_monitor);
         cls.Overload<int (SpiDev::*)(SqArr&)>(_SC("write"), &RtxBus<SpiDev>::_fwrite);
@@ -56,7 +59,7 @@ public:
 
 protected:
     bool  _write_now(const any_t& vl);
-    size_t  _read_now(any_t& vl, const char* filter);
+    size_t  _fecth(any_t& vl, const char* filter);
     bool                _set_values(const char* key, const char* value);
     const char*         _get_values(const char* key);
 
