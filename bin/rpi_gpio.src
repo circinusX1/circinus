@@ -1,14 +1,8 @@
 /**
-  COPYRIGHT M.comarius
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
+# @ /boot/config.txt
+dtoverlay=pwm,pin=18,func=2
+dtoverlay=pwm-2chan,pin=12,func=4,pin2=13,func2=4
 */
-
 ::using(eGPIO|ePWMM|eSRV);
 
 setdbg(0);
@@ -30,47 +24,8 @@ function main(ctx)
     //print(ctx +  typeof ctx + " the ctx");
     ctx.notify("appname");
     pb.set_monitor(true);
-    l1.set_value(0);::using(eGPIO|ePWMM|eSRV);
-
-setdbg(0);
-
-var l1 = PIO(26,  DIR_OUT, LOW, "led");
-var l2 = PIO(19,  DIR_OUT, HIGH, "led2");
-var l3 = PIO(13,  DIR_OUT, LOW, "led3");
-var l4 = PIO(6,   DIR_OUT, HIGH, "led4");
-var pb = PIO(21,  DIR_IN,  LOW, "buton");
-var tone = PIO(17,  50, "tone");
-var counter = PIO(4, -1000, "count");
-var pwm = PWM("0.0", 1000, 100, false, "pwm");
-var srv = SRV(8000,"srv");
-var value = 1;
-var k = 0;
-
-function main(ctx)
-{
-    //print(ctx +  typeof ctx + " the ctx");
-    ctx.notify("appname");
-    pb.set_monitor(true);
     l1.set_value(0);
-    return run_loop(loop,10000);
-}
-
-function loop(ctx, dev)
-{
-    l1.set_value(value);
-    l2.set_value(!value);
-    l3.set_value(value);
-    l4.set_value(!value);
-    pwm.set_value(k++);
-    value=!value;
-    if(dev)
-        println("dev = " + dev.get_value());
-    println("counter = " + counter.get_freq());
-    return true;
-}
-
-
-    return run_loop(loop,10000);
+    return run(loop,10000);
 }
 
 function loop(ctx, dev)

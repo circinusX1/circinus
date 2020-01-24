@@ -247,7 +247,7 @@ typedef bool (*devModPtr_t)(HSKVM vm, sq_api* ptrs, IInstance* pi, const char* n
 
 #define IMPLEMENT_START_MODULE(ClassName_)	EXPORT bool start_module(HSKVM vm, sq_api* ptrs,	\
 	                                        IInstance* pi, const char* name){					\
-	printf(" %s  %p %p  %s\n", __FUNCTION__, vm, ptrs, name);									\
+    printf(" %s  %p %p  %s\n", __FUNCTION__, (void*)vm, (void*)ptrs, name);									\
 	__vm = vm;																					\
 	SQ_PTRS = ptrs;																				\
 	__pi = pi;																					\

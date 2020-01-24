@@ -24,7 +24,8 @@ CC		  = $(TCC)$(CCL)
 CXX		  = $(TCC)$(CPL)
 RELFLAGS  = -O3 -s -DNDEBUG
 CFLAGS	  = -pipe -g -Wall -W -D_REENTRANT -fPIC -sysroot=$(ARM_EMBEDDED_SYSROOT)  $(REFLAGS)
-CXXFLAGS  = -pipe -std=c++14 -g -Wno-unused-parameter -Wall -W -D_REENTRANT -fPIC -DWITH_MAIN_MUTEX -DWITH_CURL -D$(BOARD) $(REFLAGS)
+CXXFLAGS  = -pipe -std=c++14 -g -Wno-unused-parameter -Wall -W -D_REENTRANT -fPIC -DWITH_MAIN_MUTEX -D$(BOARD) $(REFLAGS)
+#CXXFLAGS  = -pipe -std=c++14 -g -Wno-unused-parameter -Wall -W -D_REENTRANT -fPIC -DWITH_MAIN_MUTEX -DWITH_CURL -D$(BOARD) $(REFLAGS)
 INCPATH	  = -Isq/include -Isq/squirrel -Isq/sqrat/include -Isq/sqrat -Isq/sqrat/include/sqrat -Idrivers -Idrivers/common  -Ibuiltin -Icomm -Irapidjson/include/ -Idrivers/platform/$(OSYSTEM)/$(BOARD) -I$(ARM_EMBEDDED_SYSROOT)/usr/include/
 LINK	  = $(TCC)g++
 LIBS	  = -L./../lib -lsqstdlib -L./../lib -lsquirrel 
@@ -103,6 +104,7 @@ src	 = apis.cpp \
     builtin/filedev.cpp \
     builtin/gpiodev.cpp \
     builtin/i2cdev.cpp \
+    builtin/inputsys.cpp \
     database.cpp \
     divais.cpp \
     drivers/dcore.cpp \
@@ -143,6 +145,7 @@ obj = apis.o \
     builtin/filedev.o \
     builtin/gpiodev.o \
     builtin/i2cdev.o \
+    builtin/inputsys.o \
     database.o \
     divais.o \
     drivers/dcore.o \
@@ -175,15 +178,15 @@ obj = apis.o \
 #
 CXXFLAGS += -std=gnu++14 -Wall -W -D_REENTRANT -fPIC -Isq/include -Isq/squirrel \
              $(INCPATH) -I$(PARENT_FLD) $(LDFLAGS) --sysroot=$(ARM_EMBEDDED_SYSROOT)
-$(SYSTEM)-rembix: $(obj)
+$(SYSTEM)-amutrion: $(obj)
 	@echo BUILDING FOR ..................................................$(BOARD)
 	$(MAKE) -C ./sq/sqstdlib/
 	$(MAKE) -C ./sq/squirrel/
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
-	cp $(SYSTEM)-rembix ./../bin
+	cp $(SYSTEM)-amutrion ./../bin
 
 .PHONY: clean
 clean:
-	@rm -f $(obj) *-rembix
+	@rm -f $(obj) *-amutrion
 	find -name '*.o' | xargs rm
 	find -name 'build-*' | xargs rm -r 

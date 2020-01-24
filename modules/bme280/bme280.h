@@ -8,7 +8,6 @@
 
 class EXPORT Bme280 : public I_IDev
 {
-
 public:
     Bme280(const char* dev, const char* name);
     virtual ~Bme280();

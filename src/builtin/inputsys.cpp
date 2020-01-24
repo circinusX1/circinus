@@ -132,7 +132,6 @@ size_t  InputSys::_fecth(any_t& vl, const char* filter)
 {
     if(_fd>0)
     {
-        int      bytes = -1;
         timeval  tv    = {0, 1000};
         fd_set   rdSet;
 
@@ -164,11 +163,11 @@ size_t  InputSys::_fecth(any_t& vl, const char* filter)
                     else if (_current.y >= _fb.height)
                         _current.y = _fb.height - 1;
                 }
-                if(_ie.type= BTN_LEFT)
+                if(_ie.type == BTN_LEFT)
                     _current.l=_ie.value;
-                if(_ie.type= BTN_RIGHT)
+                if(_ie.type== BTN_RIGHT)
                     _current.r=_ie.value;
-                if(_ie.type= BTN_MIDDLE)
+                if(_ie.type== BTN_MIDDLE)
                     _current.m=_ie.value;
 
                 vl.typeit(eSTRUCT,0);
