@@ -1,3 +1,5 @@
+// SCRIPT  TESTED
+
 ::using(eI2C|eSRV);
 ::loadmod("./modules/libbme280.so","THP");
 

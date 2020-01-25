@@ -1,15 +1,10 @@
+// SCRIPT  NOT TESTED
 ::using(eGPIO|ePWMM|eSRV);
 
 setdbg(0xFF);
 
-
-                    // dev      chip  pin
-
-
 reconfig_sys(ePWMM, ["/sys/class/pwm/","","pwm-%d:%d"]);     // use /sys/class/pwm/pwm-C:P
 var pwm = PWM("0.0", 30000, 30, false, "pwm");
-
-
 
 function main(ctx)
 {

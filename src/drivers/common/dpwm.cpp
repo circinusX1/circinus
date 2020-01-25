@@ -29,7 +29,9 @@ namespace GenericHw
 //
 //std::string DvPwm::_sys = "/dev/pwm/"; // /sys/class/pwm/
 
-
+//
+//R-PI  https://librpip.frasersdev.net/peripheral-config/pwm0and1/
+//
 
 /**
  * @brief DvPwm::DvPwm
@@ -42,6 +44,11 @@ DvPwm::DvPwm(EPWM_PIN pin,
              EPWM_PERIOD period,
              EPWM_VAL val, bool inv):_prd(period)
 {
+    int   chipn=-1,pwmn=-1;
+    char    loco[128];
+    char    devicefile[256];
+    char    pathtoexp[256];
+
     _config("pwm",_sys);
     _config("pwm_fmt",_fmt);
     _config("pwm_chip",_fmt_chip);
@@ -53,36 +60,43 @@ DvPwm::DvPwm(EPWM_PIN pin,
     }
     else
     {
-        char    loco[128];
-        char    devicefile[256];
         ::strcpy(loco, pin);
         char* pd = strchr(loco,'.');   // /chip-%d/pwm-%d
         if(pd)
         {
             std::string   fmt =  _sys;
-            if(!_fmt_chip.empty())fmt+=_fmt_chip;
-            if(!_fmt.empty())fmt+=_fmt;
             *pd = 0;
-            int   chipn = ::atoi(loco);
-            int   pwmn  = ::atoi(pd+1);
+            chipn = ::atoi(loco);
+            pwmn  = ::atoi(pd+1);
+            if(!_fmt_chip.empty())      fmt+=_fmt_chip;
+            sprintf(pathtoexp, fmt.c_str(), chipn);
+            strcat(pathtoexp,"export");
+            if(!_fmt.empty())           fmt+=_fmt;
             sprintf(devicefile, fmt.c_str(), chipn, pwmn);
             _dev_node = devicefile;
         }
         else                          // if(fmt use fmt) if fmt_chip use fmt_chip
         {
             std::string   fmt =  _sys;
-            if(!_fmt_chip.empty())fmt+=_fmt_chip;
-            if(!_fmt.empty())fmt+=_fmt;
 
-            int   pwmn  = ::atoi(pin);
+            pwmn  = ::atoi(pin);
+            if(!_fmt_chip.empty())  fmt+=_fmt_chip;
+            strcpy(pathtoexp, fmt.c_str());
+            strcat(pathtoexp,"export");
+            if(!_fmt.empty())       fmt+=_fmt;
             sprintf(devicefile, fmt.c_str(), pwmn);
             _dev_node = devicefile;
         }
     }
     if(::access(_dev_node.c_str(),0)!=0)
     {
-        LOGE("device pwm" << _dev_node << " not found");
-        return;
+        _wrt(pathtoexp, std::to_string(pwmn).c_str());
+        ::msleep(128);
+        if(::access(_dev_node.c_str(),0)!=0)
+        {
+            LOGE("device pwm" << _dev_node << " not found");
+            return;
+        }
     }
 	_wrt(_dev_node+"/period", std::to_string(period).c_str());
 	::msleep(256);

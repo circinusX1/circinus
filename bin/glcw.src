@@ -1,3 +1,4 @@
+// SCRIPT  TESTED
 ::using(eSOLIB);
 
 lib := LIB("libglfw.so");

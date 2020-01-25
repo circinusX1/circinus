@@ -1,3 +1,4 @@
+// SCRIPT  TESTED ON CP2112
 
 ::using(eI2C|eGPIO|ePWMM|eSRV|eDB);
 ::include("modules/_oled96.inc");

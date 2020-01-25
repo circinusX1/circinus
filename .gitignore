@@ -38,10 +38,8 @@
 build-*
 
 Makefile
-make-file
 
 ./src/Makefile
-./src/make-file
 
 ./docs/classes/*
 ./docs/design/*
