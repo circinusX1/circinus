@@ -247,14 +247,13 @@ Credits:
 
 
 
-## HOW 2 BUILD, BRIEF
+#### Build from sources
+###### Prerequisites: root file systems for ARM boards, arm gcc cross compiler and a Linux machine
 
     * make sure in TOOLS folder you have links to filesystems fo ARM boards and to the arm-gnu-eaby toolcahin
     * cd  to src and make the make_file ENV=env_bbb.sh  or env_rpi.sh or on the host for the host  	env_thishost.sh
-        *  ignore the make message ../env_$$$.sh, dony pass the ../
-    * the build logs were tested and if your environment is set works just fine.
-    
-### make logs
+       
+### make logs for reference
 ```
 ##  BUILDING R-PI ###
 
