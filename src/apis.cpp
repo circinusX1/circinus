@@ -507,10 +507,13 @@ int run_loop(SqMemb& f, int pulseme)
                 {
                     srv = f.Fcall<bool>(App, a->object());
                     if(*srv.Get()==false)
+                    {
                         break;
+                    }
                 }
             }
-            if ((pulseme>0 && (then - now >= (size_t)pulseme)) || __bsqenv->snap_.load()==true)
+            if ((pulseme>0 && (then - now >= (size_t)pulseme)) ||
+                __bsqenv->snap_.load()==true)
             {
                 if(__bsqenv->snap_.load()==true)
                 {
@@ -533,7 +536,7 @@ int run_loop(SqMemb& f, int pulseme)
                 wd_pull(WDIOC_KEEPALIVE,Wdto);
             }
             App->call_backs(now);
-            ::usleep(128);
+
         }
     }
     catch(Sqrat::Exception& ex)
@@ -667,8 +670,8 @@ void globals_expose(SqEnvi& sq)
 			.Const("NOKEY","*")
 			.Const("INPUT", 0)
 			.Const("OUTPUT", 1)
-			.Const("DIR_IN", 1)
-			.Const("DIR_OUT", 2)
+			.Const("DIR_IN", eIn)
+			.Const("DIR_OUT", eOut)
 			.Const("HIGH", 1)
 			.Const("LOW", 0)
 			.Const("ON_0",1)

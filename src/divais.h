@@ -49,6 +49,12 @@ typedef enum EPIN_CHANGE
     eCHANGE
 }EPIN_CHANGE;
 
+typedef enum EPIN_EDGE
+{
+    eRISING=0x1,
+    eFALLING=0x2,
+}EPIN_EDGE;
+
 typedef enum EPIN_DIR
 {   eIn = 0x1,
     eOut = 0x2,

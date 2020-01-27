@@ -226,7 +226,9 @@ public:
 	virtual void	iclose()=0;
 	virtual size_t  bread(uint8_t* buff, int len, int options=0)=0;
 	virtual int     bwrite(const uint8_t* buff, int len, int options=0)=0;
-	virtual void    on_event(E_VENT e, const uint8_t* buff, int len, int options=0)=0;
+    virtual void    on_event(E_VENT e, const uint8_t* buff, int len, int options=0){
+        assert(0);
+    };
 	virtual const char* err_desc()const=0;
 	virtual EPERIPH peer_of()const=0;
 	virtual E_TYPE  data_of()const=0;

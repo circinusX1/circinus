@@ -24,18 +24,20 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 using namespace GenericHw;
 
-class GpioDev: public DvGpio, public Divais, private Reg<GpioDev>// , public Divais
+
+
+class GpioDev: public DvGpio, public Divais, private Reg<GpioDev>
 {
 public:
-    GpioDev(EGPIO_PIN pn, EPIN_DIR pd, int on, const char* name=nullptr);
-    GpioDev(EGPIO_PIN pn, int freq, const char* name=nullptr); // tone/ countet()<0
-    GpioDev(SqObj&, EGPIO_PIN pn, EPIN_DIR pd, int on, const char* name=nullptr);
+    GpioDev(EGPIO_PIN pn, EPIN_DIR pd, int on, const char* name);
+    GpioDev(EGPIO_PIN pn, int freq, const char* name); // tone/ countet()<0
+    GpioDev(SqObj&, EGPIO_PIN pn, EPIN_DIR pd, int on, const char* name);
     virtual ~GpioDev();
     int      set_value(int val);
     int      get_value();
     int      get_freq();
     int      set_freq(int);
-    bool     set_monitor(bool ch);
+    bool     set_monitor(bool ch, int risefall); /*-1/+1*/
     int      set_toggle();
     bool     set_invert(bool set_invert){return _reversed=set_invert;}
 
@@ -74,6 +76,7 @@ private:
     bool        _counting;
     size_t      _interval;
     bool        _reversed = false;
+    int         _edging = -1;
 };
 
 #endif // GPIODEV_H

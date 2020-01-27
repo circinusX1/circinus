@@ -14,6 +14,8 @@ IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
 
+#include <fcntl.h>
+#include <poll.h>
 #include "../main.h"
 #include "dcore.h"
 #include "dlconfig.h"
@@ -147,4 +149,5 @@ bool DvCore::_config(const char* key, std::string& val)
 	if(*s) {val  = s; return true;}
 	return false;
 }
+
 }

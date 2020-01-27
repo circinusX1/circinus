@@ -22,7 +22,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "sqratThread.h"
 
 RestSrv* Prest;
-
+bool     RestDisabled;
 
 static const char* _resterrs[]={
     "{\"err\":0,\"desc\":\"no error\"}",
@@ -42,6 +42,10 @@ static const char* _resterrs[]={
 
 RestSrv::RestSrv(int port, const char* tcpp):_port(port)
 {
+    if(RestDisabled){
+        LOGW("The Json/REST server is disable din child tasks");
+        return;
+    }
     ioTid = pthread_self();
     this->start_thread();
     Prest = this;

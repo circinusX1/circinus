@@ -4,8 +4,12 @@
 json := SRV(8000,"rest");
 mouse := SYSIN(eMOUSE,"/dev/input/event4","mice");
 
+ctx().set_priority(-20);
+ctx().set_priority(20);
+
 function main(x)
 {
+
     mouse.set_monitor(true);
     mouse.open(0);
     return run(foo,1000);

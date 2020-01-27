@@ -188,9 +188,7 @@ private:
     std::vector<void*>  _dlls;
 };
 
-
-
-extern HSKVM    __vm;
+extern __thread HSKVM    __vm;
 #define VM()    __vm
 
 

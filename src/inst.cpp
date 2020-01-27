@@ -17,6 +17,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <stdlib.h>
 #include <stdio.h>
 #include <dlfcn.h>
+#include <sys/wait.h>
 #include "inst.h"
 #include "apis.h"
 #include "logs.h"
@@ -42,17 +43,45 @@ Inst*               App;
 Inst::Inst(SqEnvi& sq, char* p[]):Sqrat::Class<Inst>(sq.theVM(),"App")
 {
     App = this;
+    _thisbin = p[0];
     if(p[1]){ _param = p[1]; }
     this->Functor(_SC("notify"), &Inst::notify);
     this->Functor(_SC("get_dev"), &Inst::get_sqo);
     this->Functor(_SC("set_timer"), &Inst::set_timer);
+    this->Functor(_SC("set_priority"), &Inst::set_timer);
+    this->Functor(_SC("start_task"), &Inst::start_task);
     this->Functor(_SC("_sync"), &Inst::sync_all);
     Sqrat::RootTable().Bind(_SC("App"), *this);
 }
 
 Inst::~Inst()
 {
+    if(_childrens.size())
+    {
+        int st;
+        LOGI("waiting for " << _childrens.size() << " children to end");
+        for(auto& pid : _childrens)
+        {
+             ::waitpid(pid, &st, 0);
+             if(st==0){
+                LOGI("child process" << pid << "exited normally ");
+             }
+             else {
+                LOGI("child process" << pid << "exited with error ");
+             }
+        }
+    }
     App=nullptr;
+}
+
+int    Inst::set_priority(int p)
+{
+    int zerotoforty = p + 20;
+    if(zerotoforty>=0 && zerotoforty<=40) // 40 lower 0 max, 20-normal
+    {
+        _sleep_loop = (p * 3);
+    }
+    return p;
 }
 
 void    Inst::get_alldevs(devsmap_t& refrdevs, EPERIPH et, bool update)
@@ -93,7 +122,7 @@ SqEnvi* Inst::scr_env()
 
 void Inst::add_this(I_IDev* o, const char* name)
 {
-    LOGD1("adding class " << name);
+    LOGD1("adding dev: " << name);
     _devs[name] = o;
 }
 
@@ -112,7 +141,6 @@ void    Inst::sync_all()
     {
         u.second->sync();
     }
-
 }
 
 void    Inst::comit_devs()
@@ -159,6 +187,8 @@ void   Inst::call_backs(time_t curtick)
             }
         }
     }
+
+    ::usleep(_sleep_loop);
 }
 
 void    Inst::thread_main()
@@ -186,6 +216,11 @@ I_IDev* Inst::get_module(const char* name)
     return nullptr;
 }
 
+void   Inst::_dequeue_events(std::vector<I_IDev*>& arr)
+{
+    ;
+}
+
 void   Inst::check_devs(std::vector<I_IDev*>& arr, size_t t)
 {
     for(auto& d : _devs)
@@ -203,6 +238,10 @@ void   Inst::check_devs(std::vector<I_IDev*>& arr, size_t t)
             }
         }
     }
+    //
+    //  check the rising falling hooks queue
+    //
+    _dequeue_events(arr);
 }
 
 I_IDev* Inst::get_per(const char* name)
@@ -273,4 +312,28 @@ void Inst::web_set_data(const devsmap_t& devs, int apply)
     }
 }
 
+/**
+ * @brief Inst::start_task
+ * @param script_file
+ * @return (check the instance singleton thing)
+ */
+int Inst::start_task(const char* script_file)
+{
+    const char* progname = _thisbin.c_str();
+    const char *argument1 = script_file;
+    const char * argument2 = "@bypass_singleton";
+
+    pid_t   pricid = ::fork();
+    if (pricid == 0)
+    {
+        /**
+          in child
+          */
+        RestDisabled = true;
+        LOGI("spawning: " << progname <<" " << argument1);
+        ::execl(progname, progname, argument1, argument2, (char *)NULL);
+    }
+    _childrens.push_back(pricid);
+    return pricid;
+}
 

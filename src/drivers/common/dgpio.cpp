@@ -38,12 +38,13 @@ DvGpio::DvGpio(EGPIO_PIN pin, EPIN_DIR dir, int on):_pin(pin),_dir(dir)
 	_dev_node  = sf;
     _exPin();
     _dirIt();
-	sprintf(sf,"%d",on);
-	this->bwrite((const uint8_t*)sf, strlen(sf));
+    _wrt(_dev_node+"/value",std::to_string(on).c_str());
 }
 
 DvGpio::~DvGpio()
 {
+    if(_pfile)
+        ::close(_pfile);
     iclose();
 }
 
@@ -89,6 +90,44 @@ int     DvGpio::bwrite(const uint8_t* buff, int len, int)
 	return rv;
 }
 
+bool    DvGpio::_watch_edge(int updpwn)
+{
+    if(updpwn==0)
+    {
+        if(_pfile>0)::close(_pfile);_pfile=0;
+        if(_wrt(_dev_node+"/edge", "none", 4))
+            return true;
+    }
+    else if(updpwn==1)
+    {
+        if(_pfile>0)::close(_pfile);_pfile=0;
+        if(_wrt(_dev_node+"/edge", "rising", 6))
+        {
+            _pfile = open(this->_dev_node.c_str(),O_RDONLY | O_NONBLOCK);
+            if(_pfile <=0)
+            {
+                LOGE("cannot open "<<this->_dev_node);
+                return false;
+            }
+            return true;
+        }
+    }
+    if(updpwn==-1)
+    {
+        if(_pfile>0)::close(_pfile);_pfile=0;
+        if(_wrt(_dev_node+"/edge", "falling", 6))
+        {
+            _pfile = open(this->_dev_node.c_str(),O_RDONLY | O_NONBLOCK);
+            if(_pfile <=0)
+            {
+                LOGE("cannot open "<<this->_dev_node);
+                return false;
+            }
+            return true;
+        }
+    }
+    return false;
+}
 
 }
 

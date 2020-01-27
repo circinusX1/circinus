@@ -4,6 +4,7 @@
 lib := LIB("libglfw.so");
 lib2 := LIB("libGL.so.1.0.0");
 
+var srv = SRV(8000,"srv");
 GL_COLOR_BUFFER_BIT := 0x00004000
 
 lib.load("glfwInit",true,0);
@@ -17,6 +18,8 @@ lib2.load("glClear",0,1);
 
 function main(x)
 {
+    println("program gl window");
+
    var ii = glfwInit();
 
    var window = glfwCreateWindow(640, 480, "Hello World", null, null);

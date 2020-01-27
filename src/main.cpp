@@ -45,14 +45,16 @@ void __sipPipe (int i)
 
 int main(int argc, char *argv[])
 {
-    OneProc p (1584);    //singleton, limit this instance to 1
+    OneProc p (1584);       // singleton, limit this instance to 1
 
-    if(!p())                // second instance
+    if(!p() && argc < 3)    // second instance
     {
-        std::cout << "a program is  running\n";
+        std::cout << "an instance of this is already running\n";
         LOGE("a program is running.");
         return 0;
     }
+    RestDisabled = (argc==3 && argv[2][0]=='@');
+
     LOGEX("");
 #ifndef DEBUG
     signal(SIGINT,  __sigInt);

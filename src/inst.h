@@ -64,7 +64,8 @@ public:
     const   std::map<std::string, I_IDev*>& devs()const {return _devs;};
     int     set_timer(SqMemb f, int seconds, size_t id);
     void    web_set_data(const devsmap_t& devs, int apply);
-
+    int     set_priority(int p);
+    int     start_task(const char* script_file);
     void    check_devs(std::vector<I_IDev*>& arr, size_t t);
     const   char* notify(const char* appname);
     const   char* param()const{return _param.c_str();}
@@ -76,16 +77,21 @@ public:
     void    get_alldevs(devsmap_t& refrdevs, EPERIPH et, bool update);
     void    sync_all();
 private:
+    void   _dequeue_events(std::vector<I_IDev*>& arr)    ;
+private:
     std::map<std::string, I_IDev*>  _devs;
     std::map<std::string, SqMemb>   _userflds;
     devsmap_t                       _pending;
     std::map<size_t, TimCb>         _cbs;
-
+    std::vector<pid_t>              _childrens;
     std::string                     _webreq;
     std::string                     _webresp;
     std::string                     _param;
+    std::string                     _thisbin;
     SqObj                           _o;
     bool                            _okey;
+    int                             _priority = 0;  /* -19 to 20 */
+    time_t                          _sleep_loop = 128;
 };
 
 typedef enum {eURGENTTASK=1}E_URGENTS;

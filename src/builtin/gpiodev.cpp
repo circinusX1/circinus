@@ -14,20 +14,28 @@ IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
 
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <poll.h>
 #include "gpiodev.h"
 #include "inst.h"
 
 GpioDev::GpioDev(EGPIO_PIN pn,
                  EPIN_DIR pd, int on,
                  const char* name):DvGpio(pn,pd,on),
-                 Divais(eINT, eGPIO, name),Reg<GpioDev>(this),
-                                        _sec(0),
-                                        _dir(pd),
-                                        _counter(0),
-                                        _curval(eLOW),
-                                        _counting(false)
+                    Divais(eINT, eGPIO, name),Reg<GpioDev>(this),
+                                                        _sec(0),
+                                                        _dir(pd),
+                                                        _counter(0),
+                                                        _curval(0),
+                                                        _counting(false)
 {
-   _o.BindCppObject(this);
+    _o.BindCppObject(this);
     LOGD3(__FUNCTION__ <<" "<< name);
 }
 
@@ -35,12 +43,12 @@ GpioDev::GpioDev(SqObj& o,
                  EGPIO_PIN pn,
                  EPIN_DIR pd, int on,
                  const char* name):DvGpio(pn,pd,on),
-                 Divais(eINT, eGPIO, name),Reg<GpioDev>(this),
-                                    _sec(0),
-                                    _dir(pd),
-                                    _counter(0),
-                                    _curval(eHIGH),
-                                    _counting(false)
+    Divais(eINT, eGPIO, name),Reg<GpioDev>(this),
+                                                _sec(0),
+                                                _dir(pd),
+                                                _counter(0),
+                                                _curval(1),
+                                                _counting(false)
 {
     ctx_it(o, name);
     LOGD3(__FUNCTION__ <<" "<< name);
@@ -50,13 +58,13 @@ GpioDev::GpioDev(SqObj& o,
 //tone up to 500 Hz
 GpioDev::GpioDev(EGPIO_PIN pn, int freq,
                  const char* name):DvGpio(pn,freq >0 ? eOut : eIn,0),
-                 Divais(eINT,eGPIO,name),Reg<GpioDev>(this),
-                                  _sec(0),
-                                  _dir(freq >0 ? eOut : eIn),
-                                  _freq(freq > 0 ? freq : 0 ),
-                                  _counter(0),
-                                  _curval(eHIGH),
-                                  _counting(freq < 0)
+    Divais(eINT,eGPIO,name),Reg<GpioDev>(this),
+    _sec(0),
+    _dir(freq >0 ? eOut : eIn),
+    _freq(freq > 0 ? freq : 0 ),
+    _counter(0),
+    _curval(1),
+    _counting(freq < 0)
 {
     _o.BindCppObject(this);
     _monitor = true;
@@ -111,7 +119,7 @@ int  GpioDev::get_value()
             _mon_dirt=_check_dirt();
         return _curdata.to_t<int>();
     }
-    return eLERR;
+    return -1;
 }
 
 bool  GpioDev::_write_now(const any_t& vl)
@@ -144,21 +152,51 @@ bool GpioDev::_mon_pick(size_t t)
 {
     if(_dir & eIn)
     {
-        int cv = get_value();
-        if(_counting)
+        if(_edging!=-1)
         {
-            if(t - _sec>_interval)
+            if(this->_pfile > 0)
             {
-                _freq = _counter;
-                _counter  = 0;
-                _sec = t;
+                struct pollfd fdset[1] = {0};
+                int nfds  = 1;
+                int  gpio_fd, timeout, rc;
+                char buf[64];
+
+                fdset[0].fd = this->_pfile;
+                fdset[0].events = POLLPRI;
+                rc = ::poll(fdset, nfds, 64);
+                if (rc < 0) {
+                    LOGE("pool failure");
+                    return false;
+                }
+                else if(rc>0)
+                {
+                    if (fdset[0].revents & POLLPRI)
+                    {
+                        lseek(fdset[0].fd, 0, SEEK_SET);
+                        int len = read(fdset[0].fd, buf, 64);
+                        _curval = ::atoi(buf);
+                    }
+                    return true;
+                }
             }
-            if(cv != _curval)
+        }
+        else {
+            int cv = get_value();
+            if(_counting)
             {
-                ++_counter;
-                _curval = cv;
+                if(t - _sec>_interval)
+                {
+                    _freq = _counter;
+                    _counter  = 0;
+                    _sec = t;
+                }
+                if(cv != _curval)
+                {
+                    ++_counter;
+                    _curval = cv;
+                }
+                return false;
             }
-            return false;
         }
         return _mon_dirt;
     }
@@ -176,13 +214,24 @@ bool GpioDev::_mon_pick(size_t t)
     return false;
 }
 
-bool GpioDev::set_monitor(bool mon)
+bool GpioDev::set_monitor(bool mon, int risefall)
 {
     if(_dir & eOut || _counting )
     {
-        LOGW("cannot moitor an out pin or a counter");
+        LOGW("cannot moitor out pin or a counter");
         return false;
     }
+    if(risefall != 0)
+    {
+        if(_watch_edge(risefall))
+        {
+            _monitor = risefall >= 0;
+            _edging = risefall;
+            return true;
+        }
+        return false;
+    }
+    _watch_edge(0);
     _monitor = mon;
     return true;
 }

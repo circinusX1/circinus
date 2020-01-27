@@ -27,12 +27,11 @@ namespace GenericHw
 
 typedef enum EGPIO{}EGPIO;
 typedef int EGPIO_PIN;
-typedef enum E_ONOFF{eLERR=-1, eLOW=0,eHIGH=1}E_ONOFF;
 
-class DvGpio : public DvCore, public IoOps
+class DvGpio : public IoOps,public DvCore
 {
 public:
-    DvGpio(EGPIO_PIN pn, EPIN_DIR pd, int on=eLOW);
+    DvGpio(EGPIO_PIN pn, EPIN_DIR pd, int on=0);
     virtual   ~DvGpio();
     virtual bool    iopen(int  mode=O_RDWR);
     virtual void    iclose();
@@ -47,6 +46,10 @@ public:
         if(s && *s)  DvGpio::_sys=s ;
         if(f && *f)  DvGpio::_fmt=f ;
     }
+
+protected:
+    bool    _watch_edge(int updpwn);
+    int     _pfile = 0;
 private:
     bool _exPin();
     bool _dirIt();
@@ -54,8 +57,8 @@ private:
 private:
     static std::string        _sys;
     static std::string        _fmt;
-    EGPIO_PIN                _pin;
-    EPIN_DIR                 _dir;
+    EGPIO_PIN                 _pin;
+    EPIN_DIR                  _dir;
 };
 
 inline const uint8_t* tos(int t)

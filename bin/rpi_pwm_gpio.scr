@@ -22,21 +22,34 @@ ls
 
 var srv = SRV(8000,"srv");
 
-var l1 = PIO(21,  DIR_OUT, HIGH, "led1");
-var l2 = PIO(20,  DIR_OUT, HIGH, "led2");
+//var l1 = PIO(21,  DIR_OUT, HIGH, "led1");
+//var l2 = PIO(20,  DIR_OUT, HIGH, "led2");
+
+
+var edge = PIO(14, DIR_IN, HIGH, "detect");
+
 var pwm0 = PWM("0.0", 1000, 100, false, "pwm1"); //GPIO 13
 var pwm1 = PWM("0.1", 1000, 100, false, "pwm2"); //GPIO 18
-
+//var pb = PIO(21,  DIR_IN,  LOW, "buton");
 
 function main(ctx)
 {
-    return run(loop,10);
+    edge.set_monitor(true, 1);
+    return run(loop,2000);
 }
 
 var K=0;
 var I=1;
 function loop(ctx, dev)
 {
+    if(dev)
+    {
+        println("edge falled " + dev.get_value());
+    }
+    else
+    {
+        println("edge val = "+edge.get_value());
+    }
     pwm0.set_value(K);
     pwm1.set_value(K*2);
     K+=I;

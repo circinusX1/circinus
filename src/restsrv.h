@@ -121,4 +121,5 @@ private:
 };
 
 extern RestSrv* Prest;
+extern bool     RestDisabled;
 #endif // REST_SRV

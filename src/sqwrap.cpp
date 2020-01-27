@@ -30,9 +30,9 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 //static __thread HSKVM __vm;
 
 typedef const char  khar;
-static HookPrint _hook_print;
-HSKVM               __vm;
-extern std::string SqErrStr;
+static __thread    HookPrint    _hook_print;
+HSKVM  __thread     __vm;
+extern std::string  SqErrStr;
 
 class               SqEnvi;
 SqEnvi*             __sq_env;
