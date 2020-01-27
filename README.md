@@ -246,3 +246,52 @@ Credits:
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L9RVWU5NUZ4YG)   [donations are taken care by meeiot]
 
 
+
+#### Build from sources
+###### Prerequisites: root file systems for ARM boards, arm gcc cross compiler and a Linux machine
+
+    * make sure in TOOLS folder you have links to filesystems fo ARM boards and to the arm-gnu-eaby toolcahin
+    * cd  to src and make the make_file ENV=env_bbb.sh  or env_rpi.sh or on the host for the host  	env_thishost.sh
+       
+### make logs for reference
+```
+##  BUILDING R-PI ###
+
+marius@hpp:/sdaone/CPP/amutrion/src$ make -f ./make_file ENV=env_rpi.sh
+arm-linux-gnueabihf-g++ -pipe -std=c++14 -g -Wno-unused-parameter -Wall -W -D_REENTRANT -fPIC -DWITH_MAIN_MUTEX -Draspberrypi  -std=gnu++14 -Wall -W -D_REENTRANT -fPIC -Isq/include -Isq/squirrel -Isq/include -Isq/squirrel -Isq/sqrat/include -Isq/sqrat -Isq/sqrat/include/sqrat -Idrivers -Idrivers/common  -Ibuiltin -Icomm -Irapidjson/include/ -Idrivers/platform/linux/raspberrypi -I/sdaone/CPP/amutrion/TOOLS/raspberrypi/usr/include/ -I./ -Xlinker -rpath-link=/sdaone/CPP/amutrion/TOOLS/raspberrypi/lib/arm-linux-gnueabihf -Xlinker -rpath-link=/sdaone/CPP/amutrion/TOOLS/raspberrypi/usr/lib/arm-linux-gnueabihf --sysroot=/sdaone/CPP/amutrion/TOOLS/raspberrypi   -c -o apis.o apis.cpp
+[...  deleted lines  ...]
+make[1]: Leaving directory '/sdaone/CPP/amutrion/src/sq/squirrel'
+arm-linux-gnueabihf-g++ -pipe -std=c++14 -g -Wno-unused-parameter -Wall -W -D_REENTRANT -fPIC -DWITH_MAIN_MUTEX -Draspberrypi  -std=gnu++14 -Wall -W -D_REENTRANT -fPIC -Isq/include -Isq/squirrel -Isq/include -Isq/squirrel -Isq/sqrat/include -Isq/sqrat -Isq/sqrat/include/sqrat -Idrivers -Idrivers/common  -Ibuiltin -Icomm -Irapidjson/include/ -Idrivers/platform/linux/raspberrypi -I/sdaone/CPP/amutrion/TOOLS/raspberrypi/usr/include/ -I./ -Xlinker -rpath-link=/sdaone/CPP/amutrion/TOOLS/raspberrypi/lib/arm-linux-gnueabihf -Xlinker -rpath-link=/sdaone/CPP/amutrion/TOOLS/raspberrypi/usr/lib/arm-linux-gnueabihf --sysroot=/sdaone/CPP/amutrion/TOOLS/raspberrypi -Xlinker -rpath-link=/sdaone/CPP/amutrion/TOOLS/raspberrypi/lib/arm-linux-gnueabihf -Xlinker -rpath-link=/sdaone/CPP/amutrion/TOOLS/raspberrypi/usr/lib/arm-linux-gnueabihf -o raspberrypi-amutrion apis.o builtin/adcdev.o builtin/rawsock.o builtin/scrbase.o builtin/solib.o builtin/sshcomm.o builtin/uartdev.o builtin/usbdev.o comm/comcurl.o comm/comssh.o builtin/filedev.o builtin/gpiodev.o builtin/i2cdev.o builtin/inputsys.o database.o divais.o drivers/dcore.o drivers/fastmath.o inst.o jsadaptor.o logs.o main.o builtin/pwmdev.o restsrv.o sock.o builtin/spidev.o drivers/common/dlconfig.o sqratimport.o sqwrap.o sunset.o swdog.o drivers/platform/linux/raspberrypi/dadc.o drivers/platform/linux/raspberrypi/dfile.o drivers/platform/linux/raspberrypi/dgpio.o drivers/platform/linux/raspberrypi/di2c.o drivers/platform/linux/raspberrypi/dpwm.o drivers/platform/linux/raspberrypi/dserial.o drivers/platform/linux/raspberrypi/dusb.o drivers/platform/linux/raspberrypi/dsocket.o drivers/platform/linux/raspberrypi/dvspi.o -L./../lib -lsqstdlib -L./../lib -lsquirrel  -L/sdaone/CPP/amutrion/TOOLS/raspberrypi/usr/lib/arm-linux-gnueabihf -lpthread -L/sdaone/CPP/amutrion/TOOLS/raspberrypi/lib/arm-linux-gnueabihf -ldl -L/sdaone/CPP/amutrion/TOOLS/raspberrypi/usr/lib/arm-linux-gnueabihf
+cp raspberrypi-amutrion ./../bin
+marius@hpp:/sdaone/CPP/amutrion/src$ 
+
+##  BUILDING BEAGLEBONE ###
+
+marius@hpp:/sdaone/CPP/amutrion/src$ make -f ./make_file ENV=env_bbb.sh 
+arm-linux-gnueabihf-g++ -pipe -std=c++14 -g -Wno-unused-parameter -Wall -W -D_REENTRANT -fPIC -DWITH_MAIN_MUTEX -Dbeaglebone  -std=gnu++14 -Wall -W -D_REENTRANT -fPIC -Isq/include -Isq/squirrel -Isq/include -Isq/squirrel -Isq/sqrat/include -Isq/sqrat -Isq/sqrat/include/sqrat -Idrivers -Idrivers/common  -Ibuiltin -Icomm -Irapidjson/include/ -Idrivers/platform/linux/beaglebone -I/sdaone/CPP/amutrion/TOOLS/beaglebone/usr/include/ -I./ -Xlinker -rpath-link=/sdaone/CPP/amutrion/TOOLS/beaglebone/lib/arm-linux-gnueabihf -Xlinker -rpath-link=/sdaone/CPP/amutrion/TOOLS/beaglebone/usr/lib/arm-linux-gnueabihf --sysroot=/sdaone/CPP/amutrion/TOOLS/beaglebone   -c -o apis.o apis.cpp
+[...  deleted lines  ...]
+make[1]: Leaving directory '/sdaone/CPP/amutrion/src/sq/squirrel'
+arm-linux-gnueabihf-g++ -pipe -std=c++14 -g -Wno-unused-parameter -Wall -W -D_REENTRANT -fPIC -DWITH_MAIN_MUTEX -Dbeaglebone  -std=gnu++14 -Wall -W -D_REENTRANT -fPIC -Isq/include -Isq/squirrel -Isq/include -Isq/squirrel -Isq/sqrat/include -Isq/sqrat -Isq/sqrat/include/sqrat -Idrivers -Idrivers/common  -Ibuiltin -Icomm -Irapidjson/include/ -Idrivers/platform/linux/beaglebone -I/sdaone/CPP/amutrion/TOOLS/beaglebone/usr/include/ -I./ -Xlinker -rpath-link=/sdaone/CPP/amutrion/TOOLS/beaglebone/lib/arm-linux-gnueabihf -Xlinker -rpath-link=/sdaone/CPP/amutrion/TOOLS/beaglebone/usr/lib/arm-linux-gnueabihf --sysroot=/sdaone/CPP/amutrion/TOOLS/beaglebone -Xlinker -rpath-link=/sdaone/CPP/amutrion/TOOLS/beaglebone/lib/arm-linux-gnueabihf -Xlinker -rpath-link=/sdaone/CPP/amutrion/TOOLS/beaglebone/usr/lib/arm-linux-gnueabihf -o beaglebone-amutrion apis.o builtin/adcdev.o builtin/rawsock.o builtin/scrbase.o builtin/solib.o builtin/sshcomm.o builtin/uartdev.o builtin/usbdev.o comm/comcurl.o comm/comssh.o builtin/filedev.o builtin/gpiodev.o builtin/i2cdev.o builtin/inputsys.o database.o divais.o drivers/dcore.o drivers/fastmath.o inst.o jsadaptor.o logs.o main.o builtin/pwmdev.o restsrv.o sock.o builtin/spidev.o drivers/common/dlconfig.o sqratimport.o sqwrap.o sunset.o swdog.o drivers/platform/linux/beaglebone/dadc.o drivers/platform/linux/beaglebone/dfile.o drivers/platform/linux/beaglebone/dgpio.o drivers/platform/linux/beaglebone/di2c.o drivers/platform/linux/beaglebone/dpwm.o drivers/platform/linux/beaglebone/dserial.o drivers/platform/linux/beaglebone/dusb.o drivers/platform/linux/beaglebone/dsocket.o drivers/platform/linux/beaglebone/dvspi.o -L./../lib -lsqstdlib -L./../lib -lsquirrel  -L/sdaone/CPP/amutrion/TOOLS/beaglebone/usr/lib/arm-linux-gnueabihf -lpthread -L/sdaone/CPP/amutrion/TOOLS/beaglebone/lib/arm-linux-gnueabihf -ldl -L/sdaone/CPP/amutrion/TOOLS/beaglebone/usr/lib/arm-linux-gnueabihf
+cp beaglebone-amutrion ./../bin
+marius@hpp:/sdaone/CPP/amutrion/src$ 
+
+##################  X86
+
+make -f ./make_file ENV=env_thishost.sh -j8
+g++ -pipe -std=c++14 -g -Wno-unused-parameter -Wall -W -D_REENTRANT -fPIC -DWITH_MAIN_MUTEX -Dthishost  -std=gnu++14 -Wall -W -D_REENTRANT -fPIC -Isq/include -Isq/squirrel -Isq/include -Isq/squirrel -Isq/sqrat/include -Isq/sqrat -Isq/sqrat/include/sqrat -Idrivers -Idrivers/common  -Ibuiltin -Icomm -Irapidjson/include/ -Idrivers/platform//thishost -I/usr/include/ -I./  --sysroot=   -c -o apis.o apis.cpp
+[...]
+rm *.o
+make[1]: Leaving directory '/sdaone/CPP/amutrion/src/sq/squirrel'
+g++ -pipe -std=c++14 -g -Wno-unused-parameter -Wall -W -D_REENTRANT -fPIC -DWITH_MAIN_MUTEX -Dthishost  -std=gnu++14 -Wall -W -D_REENTRANT -fPIC -Isq/include -Isq/squirrel -Isq/include -Isq/squirrel -Isq/sqrat/include -Isq/sqrat -Isq/sqrat/include/sqrat -Idrivers -Idrivers/common  -Ibuiltin -Icomm -Irapidjson/include/ -Idrivers/platform//thishost -I/usr/include/ -I./  --sysroot=  -o thishost-amutrion apis.o builtin/adcdev.o builtin/rawsock.o builtin/scrbase.o builtin/solib.o builtin/sshcomm.o builtin/uartdev.o builtin/usbdev.o comm/comcurl.o comm/comssh.o builtin/filedev.o builtin/gpiodev.o builtin/i2cdev.o builtin/inputsys.o database.o divais.o drivers/dcore.o drivers/fastmath.o inst.o jsadaptor.o logs.o main.o builtin/pwmdev.o restsrv.o sock.o builtin/spidev.o drivers/common/dlconfig.o sqratimport.o sqwrap.o sunset.o swdog.o drivers/platform/linux/thishost/dadc.o drivers/platform/linux/thishost/dfile.o drivers/platform/linux/thishost/dgpio.o drivers/platform/linux/thishost/di2c.o drivers/platform/linux/thishost/dpwm.o drivers/platform/linux/thishost/dserial.o drivers/platform/linux/thishost/dusb.o drivers/platform/linux/thishost/dsocket.o drivers/platform/linux/thishost/dvspi.o -L./../lib -lsqstdlib -L./../lib -lsquirrel  -lpthread -ldl -lcurl
+cp thishost-amutrion ./../bin
+
+
+ls ../bin/
+bbb_gpio.src         beagle_gpios.src  cp2112.src    glcw.src     input.src        modules         overwrite.src         rpi_gpio.src      thishost-amutrion  wiringpi_liv.src
+beaglebone-amutrion  bme280_mod.src    Demo.java     HVAC.java    ledtext_curl.sh  oled96.src      raspberrypi-amutrion  rpi_oled96.src    thishost-rembix
+beaglebone-rembix    bmi180_mod.src    ext_load.src  HVAC.src.cc  lib_funcs.src    overwrite2.src  raspberrypi-rembix    rpi_pwm_gpio.scr  types.src
+
+```
+    
+
+
