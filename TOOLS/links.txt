@@ -1,6 +1,0 @@
-total 4
-lrwxrwxrwx 1 marius marius  34 Jan  2 14:08 beaglebone -> /debfs/
-lrwxrwxrwx 1 marius marius  52 Jan  2 14:08 imx6 -> /imx6_debian/rootfs/
-lrwxrwxrwx 1 marius marius  58 Jan 15 12:03 qteverywhere -> /qt-everywhere-opensource-src-5.8.0
-lrwxrwxrwx 1 marius marius  26 Jan  2 14:08 raspberrypi -> /rpi/ROOTFS/
-lrwxrwxrwx 1 marius marius  15 Jan  2 14:08 toolchain -> /armgcc/
