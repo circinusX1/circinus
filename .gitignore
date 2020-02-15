@@ -1,6 +1,5 @@
 # Prerequisites
 *.d
-
 # Compiled Object files
 *.slo
 *.lo
@@ -36,18 +35,15 @@
 *.pro
 *.user
 build-*
-
 Makefile
-
 ./src/Makefile
-
 ./docs/classes/*
 ./docs/design/*
 ./utils/*
-./TOOLS
 ./DEBUG/*
 ./RELEASE/*
 ./DEBUG/.*
 ./RELEASE/.*
-./TOOLS/*
-TOOLS/.
+./TOOLS/.*
+./checkin.sh
+
