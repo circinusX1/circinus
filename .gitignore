@@ -44,7 +44,7 @@ Makefile
 ./docs/classes/*
 ./docs/design/*
 ./utils/*
-./TOOLS/*
+./TOOLS
 ./DEBUG/*
 ./RELEASE/*
 ./DEBUG/.*

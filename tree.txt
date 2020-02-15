@@ -1,0 +1,614 @@
+.
+├── bin
+│   ├── bbb_gpio.src
+│   ├── beaglebone-amutrion
+│   ├── beaglebone-rembix
+│   ├── beagle_gpios.src
+│   ├── bme280_mod.src
+│   ├── bmi180_mod.src
+│   ├── cp2112.src
+│   ├── Demo.java
+│   ├── ext_load.src
+│   ├── glcw.src
+│   ├── HVAC.java
+│   ├── HVAC.src.cc
+│   ├── input.src
+│   ├── ledtext_curl.sh
+│   ├── lib_funcs.src
+│   ├── modules
+│   │   ├── _bme280impl.o
+│   │   ├── bme280.o
+│   │   ├── compile_commands.json
+│   │   ├── libardulike.so
+│   │   ├── libardulike.so.1
+│   │   ├── libardulike.so.1.0
+│   │   ├── libardulike.so.1.0.0
+│   │   ├── libbme280.so -> libbme280.so.1.0.0
+│   │   ├── libbme280.so.1 -> libbme280.so.1.0.0
+│   │   ├── libbme280.so.1.0 -> libbme280.so.1.0.0
+│   │   ├── libbme280.so.1.0.0
+│   │   ├── libbmi160.so
+│   │   ├── libbmi160.so.1
+│   │   ├── libbmi160.so.1.0
+│   │   ├── libbmi160.so.1.0.0
+│   │   ├── Makefile
+│   │   ├── _oled96.inc
+│   │   ├── _oledfont.inc
+│   │   └── showtbl.inc
+│   ├── oled96.src
+│   ├── overwrite2.src
+│   ├── overwrite.src
+│   ├── raspberrypi-amutrion
+│   ├── raspberrypi-rembix
+│   ├── rpi_gpio.src
+│   ├── rpi_oled96.src
+│   ├── rpi_pwm_gpio.scr
+│   ├── tasks.src
+│   ├── thishost-amutrion
+│   ├── thishost-rembix
+│   ├── types.src
+│   └── wiringpi_liv.src
+├── build-amutrion-LINUX_DEFAULT-Debug
+│   ├── adcdev.o
+│   ├── amutrion
+│   ├── apis.o
+│   ├── comcurl.o
+│   ├── comssh.o
+│   ├── dadc.o
+│   ├── database.o
+│   ├── dcore.o
+│   ├── dfile.o
+│   ├── dgpio.o
+│   ├── di2c.o
+│   ├── divais.o
+│   ├── dpwm.o
+│   ├── dserial.o
+│   ├── dsocket.o
+│   ├── dusb.o
+│   ├── dvspi.o
+│   ├── fastmath.o
+│   ├── filedev.o
+│   ├── gpiodev.o
+│   ├── i2cdev.o
+│   ├── inputsys.o
+│   ├── inst.o
+│   ├── jsadaptor.o
+│   ├── logs.o
+│   ├── main.o
+│   ├── Makefile
+│   ├── pwmdev.o
+│   ├── rawsock.o
+│   ├── restsrv.o
+│   ├── scrbase.o
+│   ├── sock.o
+│   ├── solib.o
+│   ├── spidev.o
+│   ├── sqapi.o
+│   ├── sqbaselib.o
+│   ├── sqclass.o
+│   ├── sqcompiler.o
+│   ├── sqdebug.o
+│   ├── sqfuncstate.o
+│   ├── sqlexer.o
+│   ├── sqmem.o
+│   ├── sqobject.o
+│   ├── sqratimport.o
+│   ├── sqstate.o
+│   ├── sqstdaux.o
+│   ├── sqstdblob.o
+│   ├── sqstdio.o
+│   ├── sqstdmath.o
+│   ├── sqstdrex.o
+│   ├── sqstdstream.o
+│   ├── sqstdstring.o
+│   ├── sqstdsystem.o
+│   ├── sqtable.o
+│   ├── sqvm.o
+│   ├── sqwrap.o
+│   ├── sshcomm.o
+│   ├── sunset.o
+│   ├── swdog.o
+│   ├── uartdev.o
+│   └── usbdev.o
+├── build-amutrion-raspberrypi3-Debug
+│   ├── adcdev.o
+│   ├── amutrion
+│   ├── apis.o
+│   ├── comcurl.o
+│   ├── comssh.o
+│   ├── dadc.o
+│   ├── database.o
+│   ├── dcore.o
+│   ├── dfile.o
+│   ├── dgpio.o
+│   ├── di2c.o
+│   ├── divais.o
+│   ├── dpwm.o
+│   ├── dserial.o
+│   ├── dsocket.o
+│   ├── dusb.o
+│   ├── dvspi.o
+│   ├── fastmath.o
+│   ├── filedev.o
+│   ├── gpiodev.o
+│   ├── i2cdev.o
+│   ├── inputsys.o
+│   ├── inst.o
+│   ├── jsadaptor.o
+│   ├── logs.o
+│   ├── main.o
+│   ├── Makefile
+│   ├── pwmdev.o
+│   ├── rawsock.o
+│   ├── restsrv.o
+│   ├── scrbase.o
+│   ├── sock.o
+│   ├── solib.o
+│   ├── spidev.o
+│   ├── sqapi.o
+│   ├── sqbaselib.o
+│   ├── sqclass.o
+│   ├── sqcompiler.o
+│   ├── sqdebug.o
+│   ├── sqfuncstate.o
+│   ├── sqlexer.o
+│   ├── sqmem.o
+│   ├── sqobject.o
+│   ├── sqratimport.o
+│   ├── sqstate.o
+│   ├── sqstdaux.o
+│   ├── sqstdblob.o
+│   ├── sqstdio.o
+│   ├── sqstdmath.o
+│   ├── sqstdrex.o
+│   ├── sqstdstream.o
+│   ├── sqstdstring.o
+│   ├── sqstdsystem.o
+│   ├── sqtable.o
+│   ├── sqvm.o
+│   ├── sqwrap.o
+│   ├── sshcomm.o
+│   ├── sunset.o
+│   ├── swdog.o
+│   ├── uartdev.o
+│   └── usbdev.o
+├── _config.yml
+├── docs
+│   ├── classes
+│   │   ├── 128002
+│   │   ├── 128002.diagram
+│   │   ├── 2.session
+│   │   ├── classes.prj
+│   │   ├── cpp_includes
+│   │   ├── generation_settings
+│   │   ├── idl_includes
+│   │   ├── java_imports
+│   │   ├── python_imports
+│   │   ├── stereotypes
+│   │   └── tools
+│   ├── design
+│   │   ├── 128002
+│   │   ├── 128002.diagram
+│   │   ├── 2.session
+│   │   ├── cpp_includes
+│   │   ├── design.prj
+│   │   ├── generation_settings
+│   │   ├── idl_includes
+│   │   ├── java_imports
+│   │   ├── python_imports
+│   │   ├── stereotypes
+│   │   └── tools
+│   ├── emb3.png
+│   ├── embixico.png
+│   ├── remb2.png
+│   ├── remb3.png
+│   ├── remdia.png
+│   ├── rem.png
+│   └── rrembdemo.gif
+├── env_bbb.sh
+├── env_rpi.sh
+├── env_thishost.sh
+├── lib
+│   ├── libsqstdlib.a
+│   └── libsquirrel.a
+├── modules
+│   ├── bme280
+│   │   ├── bme280.cpp
+│   │   ├── bme280_global.h
+│   │   ├── bme280.h
+│   │   ├── _bme280impl.cpp
+│   │   ├── _bme280impl.h
+│   │   ├── _bme280impl.o
+│   │   ├── bme280.o
+│   │   ├── bme280.pro
+│   │   ├── bme280.pro.user
+│   │   ├── bme280.user
+│   │   ├── libbme280.so -> libbme280.so.1.0.0
+│   │   ├── libbme280.so.1 -> libbme280.so.1.0.0
+│   │   ├── libbme280.so.1.0 -> libbme280.so.1.0.0
+│   │   ├── libbme280.so.1.0.0
+│   │   └── Makefile
+│   ├── bmi160
+│   │   ├── _bmi160.cpp
+│   │   ├── bmi160.cpp
+│   │   ├── bmi160_defs.h
+│   │   ├── bmi160_global.h
+│   │   ├── _bmi160.h
+│   │   ├── bmi160.h
+│   │   ├── bmi160.pro
+│   │   ├── bmi160.pro.user
+│   │   └── bmi160.user
+│   ├── iper.h
+│   └── swiringpi
+│       ├── libwiring.h
+│       ├── swiringpi.cpp
+│       ├── swiringpi.h
+│       ├── swiringpi.pro
+│       └── swiringpi.pro.user
+├── readme2.md
+├── README.md
+├── src
+│   ├── amutrion.pro
+│   ├── amutrion.pro.user
+│   ├── apis.cpp
+│   ├── apis.h
+│   ├── apis.o
+│   ├── builtin
+│   │   ├── adcdev.cpp
+│   │   ├── adcdev.h
+│   │   ├── adcdev.o
+│   │   ├── filedev.cpp
+│   │   ├── filedev.h
+│   │   ├── filedev.o
+│   │   ├── gpiodev.cpp
+│   │   ├── gpiodev.h
+│   │   ├── gpiodev.o
+│   │   ├── i2cdev.cpp
+│   │   ├── i2cdev.h
+│   │   ├── i2cdev.o
+│   │   ├── inputsys.cpp
+│   │   ├── inputsys.h
+│   │   ├── inputsys.o
+│   │   ├── pwmdev.cpp
+│   │   ├── pwmdev.h
+│   │   ├── pwmdev.o
+│   │   ├── rawsock.cpp
+│   │   ├── rawsock.h
+│   │   ├── rawsock.o
+│   │   ├── rtxbus.h
+│   │   ├── scrbase.cpp
+│   │   ├── scrbase.h
+│   │   ├── scrbase.o
+│   │   ├── solib.cpp
+│   │   ├── solib.h
+│   │   ├── solib.o
+│   │   ├── spidev.cpp
+│   │   ├── spidev.h
+│   │   ├── spidev.o
+│   │   ├── sshcomm.cpp
+│   │   ├── sshcomm.h
+│   │   ├── sshcomm.o
+│   │   ├── uartdev.cpp
+│   │   ├── uartdev.h
+│   │   ├── uartdev.o
+│   │   ├── usbdev.cpp
+│   │   ├── usbdev.h
+│   │   └── usbdev.o
+│   ├── comm
+│   │   ├── comcurl.cpp
+│   │   ├── comcurl.h
+│   │   ├── comcurl.o
+│   │   ├── comssh.cpp
+│   │   ├── comssh.h
+│   │   └── comssh.o
+│   ├── database.cpp
+│   ├── database.h
+│   ├── database.o
+│   ├── divais.cpp
+│   ├── divais.h
+│   ├── divais.o
+│   ├── drivers
+│   │   ├── common
+│   │   │   ├── dadc.cpp
+│   │   │   ├── dadc.h
+│   │   │   ├── dfile.cpp
+│   │   │   ├── dfile.h
+│   │   │   ├── dgpio.cpp
+│   │   │   ├── dgpio.h
+│   │   │   ├── di2c.cpp
+│   │   │   ├── di2c.h
+│   │   │   ├── dlconfig.cpp
+│   │   │   ├── dlconfig.h
+│   │   │   ├── dlconfig.o
+│   │   │   ├── dpwm.cpp
+│   │   │   ├── dpwm.h
+│   │   │   ├── dserial.cpp
+│   │   │   ├── dserial.h
+│   │   │   ├── dsocket.cpp
+│   │   │   ├── dsocket.h
+│   │   │   ├── dusb.cpp
+│   │   │   ├── dusb.h
+│   │   │   ├── dvspi.cpp
+│   │   │   ├── dvspi.h
+│   │   │   └── wpi
+│   │   │       ├── wiringpi.cpp_deprecatred.cpp
+│   │   │       ├── wiringpi.h
+│   │   │       ├── wiringpi.h_old.h
+│   │   │       └── wiringpi.h-old.h
+│   │   ├── dcore.cpp
+│   │   ├── dcore.h
+│   │   ├── dcore.o
+│   │   ├── fastmath.cpp
+│   │   ├── fastmath.h
+│   │   ├── fastmath.o
+│   │   └── platform
+│   │       ├── freebsd
+│   │       │   ├── beaglebone
+│   │       │   ├── nanopineozero
+│   │       │   └── raspberrypi
+│   │       └── linux
+│   │           ├── beaglebone
+│   │           │   ├── am335.h
+│   │           │   ├── dadc.cpp
+│   │           │   ├── dfile.cpp
+│   │           │   ├── dgpio.cpp
+│   │           │   ├── di2c.cpp
+│   │           │   ├── dpwm.cpp
+│   │           │   ├── dserial.cpp
+│   │           │   ├── dsocket.cpp
+│   │           │   ├── dusb.cpp
+│   │           │   ├── dvspi.cpp
+│   │           │   ├── gpio_chip.cpp
+│   │           │   ├── gpio_chip.h
+│   │           │   └── per_check.cpp
+│   │           ├── imx6
+│   │           │   ├── dadc.cpp
+│   │           │   ├── dfile.cpp
+│   │           │   ├── dgpio.cpp
+│   │           │   ├── di2c.cpp
+│   │           │   ├── dlconfig.cpp
+│   │           │   ├── dpwm.cpp
+│   │           │   ├── dserial.cpp
+│   │           │   ├── dusb.cpp
+│   │           │   ├── dvspi.cpp
+│   │           │   ├── gpio_chip.h
+│   │           │   └── per_check.cpp
+│   │           ├── nanopineozero
+│   │           │   └── per_check.cpp
+│   │           ├── raspberrypi
+│   │           │   ├── dadc.cpp
+│   │           │   ├── dfile.cpp
+│   │           │   ├── dgpio.cpp
+│   │           │   ├── di2c.cpp
+│   │           │   ├── dlconfig.cpp
+│   │           │   ├── dpwm.cpp
+│   │           │   ├── dserial.cpp
+│   │           │   ├── dsocket.cpp
+│   │           │   ├── dusb.cpp
+│   │           │   ├── dvspi.cpp
+│   │           │   ├── gpio_chip.cpp
+│   │           │   ├── gpio_chip.h
+│   │           │   └── per_check.cpp
+│   │           └── thishost
+│   │               ├── dadc.cpp
+│   │               ├── dadc.o
+│   │               ├── dfile.cpp
+│   │               ├── dfile.o
+│   │               ├── dgpio.cpp
+│   │               ├── dgpio.o
+│   │               ├── di2c.cpp
+│   │               ├── di2c.o
+│   │               ├── dlconfig.cpp
+│   │               ├── dpwm.cpp
+│   │               ├── dpwm.o
+│   │               ├── dserial.cpp
+│   │               ├── dserial.o
+│   │               ├── dsocket.cpp
+│   │               ├── dsocket.o
+│   │               ├── dusb.cpp
+│   │               ├── dusb.o
+│   │               ├── dvspi.cpp
+│   │               └── dvspi.o
+│   ├── env_bbb.sh
+│   ├── env_rpi.sh
+│   ├── env_thishost.sh
+│   ├── env_x86.sh
+│   ├── evqueue.h
+│   ├── inst.cpp
+│   ├── inst.h
+│   ├── inst.o
+│   ├── jsadaptor.cpp
+│   ├── jsadaptor.h
+│   ├── jsadaptor.o
+│   ├── logs.cpp
+│   ├── logs.h
+│   ├── logs.o
+│   ├── main.cpp
+│   ├── main.h
+│   ├── main.o
+│   ├── makeenv
+│   ├── make_file
+│   ├── osthread.h
+│   ├── psingle.cpp
+│   ├── psingle.h
+│   ├── rapidjson
+│   │   └── include
+│   │       └── rapidjson
+│   │           ├── allocators.h
+│   │           ├── cursorstreamwrapper.h
+│   │           ├── document.h
+│   │           ├── encodedstream.h
+│   │           ├── encodings.h
+│   │           ├── error
+│   │           │   ├── en.h
+│   │           │   └── error.h
+│   │           ├── filereadstream.h
+│   │           ├── filewritestream.h
+│   │           ├── fwd.h
+│   │           ├── internal
+│   │           │   ├── biginteger.h
+│   │           │   ├── diyfp.h
+│   │           │   ├── dtoa.h
+│   │           │   ├── ieee754.h
+│   │           │   ├── itoa.h
+│   │           │   ├── meta.h
+│   │           │   ├── pow10.h
+│   │           │   ├── regex.h
+│   │           │   ├── stack.h
+│   │           │   ├── strfunc.h
+│   │           │   ├── strtod.h
+│   │           │   └── swap.h
+│   │           ├── istreamwrapper.h
+│   │           ├── memorybuffer.h
+│   │           ├── memorystream.h
+│   │           ├── msinttypes
+│   │           │   ├── inttypes.h
+│   │           │   └── stdint.h
+│   │           ├── ostreamwrapper.h
+│   │           ├── pointer.h
+│   │           ├── prettywriter.h
+│   │           ├── rapidjson.h
+│   │           ├── reader.h
+│   │           ├── schema.h
+│   │           ├── stream.h
+│   │           ├── stringbuffer.h
+│   │           └── writer.h
+│   ├── raspberrypi-rembix
+│   ├── rembix.pro.user
+│   ├── restsrv.cpp
+│   ├── restsrv.h
+│   ├── restsrv.o
+│   ├── sock.cpp
+│   ├── sock.h
+│   ├── sock.o
+│   ├── sq
+│   │   ├── include
+│   │   │   ├── sqconfig.h
+│   │   │   ├── sqstdaux.h
+│   │   │   ├── sqstdblob.h
+│   │   │   ├── sqstdio.h
+│   │   │   ├── sqstdmath.h
+│   │   │   ├── sqstdstring.h
+│   │   │   ├── sqstdsystem.h
+│   │   │   └── squirrel.h
+│   │   ├── sqrat
+│   │   │   ├── include
+│   │   │   │   ├── sqmodule.h
+│   │   │   │   ├── sqrat
+│   │   │   │   │   ├── sqratAllocator.h
+│   │   │   │   │   ├── sqratArray.h
+│   │   │   │   │   ├── sqratClass.h
+│   │   │   │   │   ├── sqratClassType.h
+│   │   │   │   │   ├── sqratConst.h
+│   │   │   │   │   ├── sqratFunction.h
+│   │   │   │   │   ├── sqratGlobalMethods.h
+│   │   │   │   │   ├── sqratMemberMethods.h
+│   │   │   │   │   ├── sqratObject.h
+│   │   │   │   │   ├── sqratOverloadMethods.h
+│   │   │   │   │   ├── sqratScript.h
+│   │   │   │   │   ├── sqratTable.h
+│   │   │   │   │   ├── sqratThread.h
+│   │   │   │   │   ├── sqratTypes.h
+│   │   │   │   │   ├── sqratUtil.h
+│   │   │   │   │   ├── sqratVM.h
+│   │   │   │   │   └── sqr_imp_exp.h
+│   │   │   │   ├── sqrat.h
+│   │   │   │   └── sqratimport.h
+│   │   │   ├── ratproj
+│   │   │   │   ├── ratproj.pro
+│   │   │   │   └── ratproj.pro.user
+│   │   │   ├── sqimport
+│   │   │   │   └── sqratimport.cpp
+│   │   │   └── sqratthread
+│   │   │       ├── sqratThread.cpp
+│   │   │       ├── sqratThread.h
+│   │   │       ├── sqratThread.h---
+│   │   │       └── sqratthread.vcproj
+│   │   ├── sqstdlib
+│   │   │   ├── Makefile
+│   │   │   ├── sqstdaux.cpp
+│   │   │   ├── sqstdblob.cpp
+│   │   │   ├── sqstdblobimpl.h
+│   │   │   ├── sqstdio.cpp
+│   │   │   ├── sqstdlib.dsp
+│   │   │   ├── sqstdmath.cpp
+│   │   │   ├── sqstdrex.cpp
+│   │   │   ├── sqstdstream.cpp
+│   │   │   ├── sqstdstream.h
+│   │   │   ├── sqstdstring.cpp
+│   │   │   └── sqstdsystem.cpp
+│   │   └── squirrel
+│   │       ├── Makefile
+│   │       ├── sqapi.cpp
+│   │       ├── sqarray.h
+│   │       ├── sqbaselib.cpp
+│   │       ├── sqclass.cpp
+│   │       ├── sqclass.h
+│   │       ├── sqclosure.h
+│   │       ├── sqcompiler.cpp
+│   │       ├── sqcompiler.h
+│   │       ├── sqdebug.cpp
+│   │       ├── sqfuncproto.h
+│   │       ├── sqfuncstate.cpp
+│   │       ├── sqfuncstate.h
+│   │       ├── sqlexer.cpp
+│   │       ├── sqlexer.h
+│   │       ├── sqmem.cpp
+│   │       ├── sqmem.h
+│   │       ├── sqobject.cpp
+│   │       ├── sqobject.h
+│   │       ├── sqopcodes.h
+│   │       ├── sqpcheader.h
+│   │       ├── sqstate.cpp
+│   │       ├── sqstate.h
+│   │       ├── sqstring.h
+│   │       ├── sqtable.cpp
+│   │       ├── sqtable.h
+│   │       ├── squirrel.dsp
+│   │       ├── squserdata.h
+│   │       ├── squtils.h
+│   │       ├── sqvm.cpp
+│   │       └── sqvm.h
+│   ├── sqbind.h
+│   ├── sqlite.cpp
+│   ├── sqlitedb-old.cpp
+│   ├── sqlite.h
+│   ├── sqmethods.inc
+│   ├── sqratext.h
+│   ├── sqratimport.cpp
+│   ├── sqratimport.h
+│   ├── sqratimport.o
+│   ├── sqwrap.cpp
+│   ├── sqwrap.h
+│   ├── sqwrap.o
+│   ├── sunset.cpp
+│   ├── sunset.h
+│   ├── sunset.o
+│   ├── swdog.cpp
+│   ├── swdog.h
+│   ├── swdog.o
+│   ├── thishost-amutrion
+│   └── thishost-rembix
+├── TOOLS
+│   ├── beaglebone -> /home/marius/HOMEBOARDS/BBG/debfs/
+│   ├── debfs -> /home/marius/HOMEBOARDS/BBG_S2W/debfs
+│   ├── imx6 -> /sdaone/BOARDS/dart6ul/var_mx6ul_dart_debian/rootfs/
+│   ├── links.txt
+│   ├── qteverywhere -> /home/marius/APPS/RPIQT/qt-everywhere-opensource-src-5.8.0
+│   ├── raspberrypi -> /sdaone/BOARDS/rpi/ROOTFS/
+│   ├── readme.md
+│   └── toolchain -> /sdaone/armgcc/
+├── tree.txt
+└── utils
+    ├── curl_re.h
+    ├── libglcw.h
+    ├── libgl.h
+    ├── libglu.h
+    ├── pbuilder.php
+    └── qt_specs
+        └── qt-embix-arm-specs
+            ├── qmake.conf
+            ├── qmake.conf-old
+            └── qplatformdefs.h
+
+55 directories, 556 files
