@@ -49,6 +49,5 @@ Makefile
 ./RELEASE/*
 ./DEBUG/.*
 ./RELEASE/.*
-
-
-
+./TOOLS/*
+TOOLS/.
