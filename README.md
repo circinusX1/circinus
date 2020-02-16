@@ -11,6 +11,7 @@
 
 
 ## RASPBERRY-PI GPIO, PWM, SPI, I2C, UART FRAMEWORK.  
+## GPIO PWM I2C SPI ADC UART USB FILE-IO & /dev/input/ TCP SSH CURL 
 ### All written in C++
 #### REACTION TIME ~ 1ms
 ##### Get automated systems up and running in a mater of few hours.
