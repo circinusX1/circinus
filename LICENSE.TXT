@@ -9,4 +9,17 @@ to use it on commercial products or products intended to be sold.
 
 For Non-commercial products, the license is WTFPL.
 
+
+For both Commercial/Non commercial
+ - squirrel engine     MIT
+ - sqrat               ZLIB
+ - fastJSON            APACHE
+ 
+If you link in the modules which are optional here are licenses
+  - curl license:   https://curl.haxx.se/docs/copyright.html
+  - sqlite license: https://www.sqlite.org/copyright.html 
+
+
+
+
 *******************************************************************************
