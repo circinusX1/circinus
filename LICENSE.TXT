@@ -1,6 +1,12 @@
+******************************* AMUTRON LICENSE ******************************
+
+         Copyright (c) 2017, Marius Chincisan, All rights reserved.
+
+To use the code for commercial products, you must contact the author directly 
+and ask permission. You would need a signed digital certificate from the Author
+to use it on commercial products or products intended to be sold.
 
 
+For Non-commercial products, the license is WTFPL.
 
-Without a license, the code is copyrighted by default. People can read the code, 
-but they have no legal right to use it. To use the code, you must contact the author
-directly and ask permission.
+*******************************************************************************
