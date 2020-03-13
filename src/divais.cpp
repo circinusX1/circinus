@@ -260,7 +260,7 @@ void  Divais::on_event()
     if(!_on_event.IsNull())
     {
         try{
-            bool rv =  *(_oset_value.Fcall<bool>(_o).Get());
+            bool rv =  *(_on_event.Fcall<bool>(_o).Get());
         }catch(Sqrat::Exception& ex)
         {
             LOGEX(ex.Message());
