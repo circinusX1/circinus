@@ -74,7 +74,7 @@ var k = 0;
 
 function main(ctx)
 {
-    pb.monitor(true);               // this PIO fires events into the loop when state changes. 
+    pb.monitor(callback);               // this PIO fires events into the loop when state changes. 
     l1.set_value(0);                // set this led to 0
     db.save_interval(15000);        // will save sensors/PIO's every 15 seconds
     return run_loop(loop,1000);     // run loop() calling it at 1000 ms interval, though when pb state changes
@@ -88,14 +88,18 @@ function loop(ctx, dev)                // dev is not null when the monitored dev
     l4.set_value(!value);
     pwm.set_duty(k++);
     value=!value;
-    if(dev)   
-    {
-          println("dev = " + dev.get_value()); // dev is not null only when the monitorred pin is triggered
-         return false; // end the program  
-    }
     println("counter = " + counter.get_freq());  // this will print roughy 440
     return true;
 }
+
+/* this has changed in all flavours*/
+function  callback(dev)
+{
+    println("dev = " + dev.get_value()); // dev is not null only when the monitorred pin is triggered
+    return false; // end the program  
+}
+
+
 ```
 
 #### Sample to control OLED96 display
