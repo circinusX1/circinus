@@ -32,9 +32,9 @@ HEATING_DATA <- {
 
 function main(ctx)
 {
-    thermo_fan.set_monitor(true);
-    thermo_heat.set_monitor(true);
-    thermo_cool.set_monitor(true);
+    thermo_fan.set_monitor(callback);
+    thermo_heat.set_monitor(callback);
+    thermo_cool.set_monitor(callback);
     return run(loop,1000);
 }
 

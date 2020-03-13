@@ -24,7 +24,7 @@ function main(ctx)
 {
     //print(ctx +  typeof ctx + " the ctx");
     ctx.notify("appname");
-    pb.set_monitor(true);
+    pb.set_monitor(callback);
     l1.set_value(0);
     return run(loop,10000);
 }
@@ -37,9 +37,14 @@ function loop(ctx, dev)
     l4.set_value(!value);
     pwm.set_value(k++);
     value=!value;
+    println("counter = " + counter.get_freq());
+    return true;
+}
+
+function callback(dev)
+{
     if(dev)
         println("dev = " + dev.get_value());
-    println("counter = " + counter.get_freq());
     return true;
 }
 

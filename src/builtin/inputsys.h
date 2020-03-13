@@ -42,7 +42,7 @@ public:
     InputSys(E_INPUT e, const char* device, const char* name=nullptr);
     InputSys(SqObj&, E_INPUT e, const char* device, const char* name=nullptr);
     virtual ~InputSys();
-    void set_monitor(int bytes);
+    bool set_monitor(SqMemb& mem, int bytes);
     bool   lopen(int);
     void   lclose();
     Sqrat::Array get();

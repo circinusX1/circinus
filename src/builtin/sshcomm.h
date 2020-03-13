@@ -37,7 +37,7 @@ public:
     SshComm(SqObj&, const char* credentials, const char* name=nullptr);
 
     virtual ~SshComm();
-    void set_monitor(size_t bytes);
+    void set_monitor(SqMemb& mem, size_t bytes);
     const char* _gets(int chars);
     OVERW(ComSsh,Divais);
     static void squit(SqEnvi& e){

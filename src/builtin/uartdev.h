@@ -34,7 +34,7 @@ public:
     UartDev(SqObj&, E_TYPE  e, const char* dev, int bps, const char* mode, const char* name=nullptr);
     virtual ~UartDev();
     OVERW(DvSerial,Divais)
-    void set_monitor(size_t bytes);
+    bool set_monitor(SqMemb& mem, size_t bytes);
     const char* _gets(int chars);
     SqArr _read(int chars);
 

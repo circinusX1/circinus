@@ -94,13 +94,17 @@ bool    DvGpio::_watch_edge(int updpwn)
 {
     if(updpwn==0)
     {
-        if(_pfile>0)::close(_pfile);_pfile=0;
+        if(_pfile>0)
+            ::close(_pfile);
+        _pfile=0;
         if(_wrt(_dev_node+"/edge", "none", 4))
             return true;
     }
     else if(updpwn==1)
     {
-        if(_pfile>0)::close(_pfile);_pfile=0;
+        if(_pfile>0)
+            ::close(_pfile);
+        _pfile=0;
         if(_wrt(_dev_node+"/edge", "rising", 6))
         {
             _pfile = open(this->_dev_node.c_str(),O_RDONLY | O_NONBLOCK);
@@ -114,7 +118,8 @@ bool    DvGpio::_watch_edge(int updpwn)
     }
     if(updpwn==-1)
     {
-        if(_pfile>0)::close(_pfile);_pfile=0;
+        if(_pfile>0)::close(_pfile);
+        _pfile=0;
         if(_wrt(_dev_node+"/edge", "falling", 6))
         {
             _pfile = open(this->_dev_node.c_str(),O_RDONLY | O_NONBLOCK);

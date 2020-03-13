@@ -112,6 +112,7 @@ public:
 	virtual bool set_value(const char* key, const char* value);
 	virtual const char* get_value(const char* key);
 	virtual const any_t& get_data()const;
+	virtual void  on_event();
 	static EPERIPH get_category(const char* cat);
 	virtual void   sync(const char* filter=nullptr);
 	virtual Sqrat::Object object()const;
@@ -130,15 +131,16 @@ private:
 	void _tbl2string(Sqrat::Table& t, std::string& s);
 
 protected:
-    std::string     _name;
-    std::string     _ukey;
-	any_t			_curdata;
-	any_t			_old_data;
-	std::string     _forjson;
-    bool            _mon_dirt;
-    bool            _monitor;
-    Sqrat::Object   _o;
-    E_TYPE          _etype;
+    std::string      _name;
+    std::string      _ukey;
+    any_t			 _curdata;
+    any_t			 _old_data;
+    std::string      _forjson;
+    bool             _mon_dirt;
+    bool             _monitor;
+    Sqrat::Object    _o;
+    E_TYPE           _etype;
+    Sqrat::Function  _on_event;
 private:
     Sqrat::Function  _oset_value;
     Sqrat::Function  _oget_value;

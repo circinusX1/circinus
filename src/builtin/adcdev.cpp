@@ -71,10 +71,17 @@ bool AdcDev::_mon_pick(size_t t)
     return false;
 }
 
-bool AdcDev::set_monitor(bool mon)
+bool AdcDev::set_monitor(SqMemb& m)
 {
-    _monitor = mon;
-    return true;
+    if(m.IsNull()){
+        _monitor = false;
+        if(!_on_event.IsNull())
+            _on_event.Release();
+    }else{
+        _on_event=m;
+        _monitor = true;
+    }
+    return _monitor;
 }
 
 void AdcDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)

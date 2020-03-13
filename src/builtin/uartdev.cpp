@@ -99,20 +99,26 @@ SqArr UartDev::_read(int chars)
     return RtxBus<UartDev>::_read(chars);
 }
 
-void UartDev::set_monitor(size_t bytes)
+bool UartDev::set_monitor(SqMemb& m, size_t bytes)
 {
-    if(bytes==0)
+    if(bytes==0 || m.IsNull())
     {
         delete[] _bytes;
         _bytes = nullptr;
         _monitor = false;
+        if(!_on_event.IsNull())
+            _on_event.Release();
+
     }
     else {
         _monitor = true;
         _bytes = new uint8_t[bytes];
         _nbytes = bytes;
+        _on_event=m;
     }
     _bcurdata = false;
+    return _monitor;
+
 }
 
 void UartDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)

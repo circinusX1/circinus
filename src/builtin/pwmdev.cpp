@@ -87,9 +87,17 @@ bool PwmDev::_mon_pick(size_t t)
     return _mon_dirt;
 }
 
-void PwmDev::set_monitor(bool change)
+bool PwmDev::set_monitor(SqMemb& m)
 {
-    _monitor = change;
+    if(m.IsNull()){
+        _monitor = false;
+        if(!_on_event.IsNull())
+            _on_event.Release();
+    }else{
+        _on_event=m;
+        _monitor = true;
+    }
+    return _monitor;
 }
 
 void PwmDev::on_event(E_VENT e, const uint8_t* val, int len, int options)

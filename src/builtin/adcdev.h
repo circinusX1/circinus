@@ -31,7 +31,7 @@ public:
     AdcDev(SqObj&, EADC_PIN pn, const char* name=nullptr);
     virtual ~AdcDev();
     int      get_value();
-    bool     set_monitor(bool ch);
+    bool     set_monitor(SqMemb& ch);
     OVERW(AdcDev,Divais)
     static void squit(SqEnvi& e){
         Sqrat::Class<AdcDev> cls(e.theVM(), _SC("AIN"));

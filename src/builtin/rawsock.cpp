@@ -64,19 +64,23 @@ bool RawSock::_mon_pick(size_t t)
     return _mon_dirt;
 }
 
-void RawSock::set_monitor(int bytes)
+void RawSock::set_monitor(SqMemb& m, int bytes)
 {
+
     _cach = false;
-    if(bytes==0)
+    if(bytes==0 || m.IsNull())
     {
         delete[] _bytes;
         _bytes = nullptr;
         _monitor = false;
+        if(!_on_event.IsNull())
+            _on_event.Release();
     }
     else {
         _monitor = true;
         _bytes = new uint8_t[bytes];
         _nbytes = bytes;
+        _on_event=m;
     }
 }
 

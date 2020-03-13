@@ -35,7 +35,7 @@ public:
     I2CDev(SqObj&, EI2CBUS i2c, uint8_t addr,const char* name=nullptr);
     virtual ~I2CDev();
     int     setreg(uint8_t cmd);
-    void    set_monitor(int regsddr, int bytes);
+    void    set_monitor(SqMemb& m, int regsddr, int bytes);
     SqArr  _readreg(uint8_t reg, int bytes);
     OVERW(DvI2c,Divais);
     static void squit(SqEnvi& e){

@@ -34,7 +34,7 @@ public:
     RawSock(E_TYPE e,const char* ip, int port ,const char* name=nullptr);
     RawSock(SqObj&, E_TYPE e, const char* ip, int port ,const char* name=nullptr);
     virtual ~RawSock();
-    void    set_monitor(int bytes);
+    void    set_monitor(SqMemb& mem, int bytes);
     int puts(const char* b, int sz);
     const char*  gets(int chars, int to);
     int write(Sqrat::Array& a);

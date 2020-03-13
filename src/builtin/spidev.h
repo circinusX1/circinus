@@ -35,7 +35,7 @@ public:
     SpiDev(ESPIBUS spi, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t freq, const char* name=nullptr);
     SpiDev(SqObj&, ESPIBUS spi, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t freq, const char* name=nullptr);
     virtual ~SpiDev();
-    void set_monitor(int bytes);
+    bool set_monitor(SqMemb& mem, int bytes);
     SqArr  _readreg(int bytes);
     OVERW(DvSpi,Divais)
     static void squit(SqEnvi& e){

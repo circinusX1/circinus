@@ -34,7 +34,7 @@ var pwm1 = PWM("0.1", 1000, 100, false, "pwm2"); //GPIO 18
 
 function main(ctx)
 {
-    edge.set_monitor(true, 1);
+    edge.set_monitor(callback, 1);
     return run(loop,2000);
 }
 
@@ -42,14 +42,6 @@ var K=0;
 var I=1;
 function loop(ctx, dev)
 {
-    if(dev)
-    {
-        println("edge falled " + dev.get_value());
-    }
-    else
-    {
-        println("edge val = "+edge.get_value());
-    }
     pwm0.set_value(K);
     pwm1.set_value(K*2);
     K+=I;
@@ -58,3 +50,7 @@ function loop(ctx, dev)
     return true;
 }
 
+function callback(dev)
+{
+    println("edge falled " + dev.get_value());
+}

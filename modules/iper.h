@@ -211,6 +211,7 @@ public:
 	virtual bool  is_dirty(size_t t)=0;
 	virtual bool  set_value(const char* key, const char* value)=0;
 	virtual const char* get_value(const char* key)=0;
+    virtual void  on_event()=0;
 	virtual const any_t& get_data()const=0;
     virtual void  sync(const char* filter=nullptr)=0;
     virtual Sqrat::Object object()const=0;

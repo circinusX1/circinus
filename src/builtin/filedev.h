@@ -35,7 +35,7 @@ public:
     FileDev(E_TYPE e, const char* , const char* name=nullptr);
     FileDev(SqObj&, E_TYPE e, const char* , const char* name=nullptr);
     virtual ~FileDev();
-    int set_monitor(bool mon);
+    int set_monitor(SqMemb& mon);
     OVERW(DvFile,Divais)
     static void squit(SqEnvi& e){
         Sqrat::Class<FileDev> cls(e.theVM(), _SC("FILE"));

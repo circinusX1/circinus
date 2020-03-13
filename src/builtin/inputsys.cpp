@@ -225,9 +225,16 @@ bool InputSys::_mon_pick(size_t t)
     return rv;
 }
 
-void InputSys::set_monitor(int bytes)
+bool InputSys::set_monitor(SqMemb& m, int bytes)
 {
+    if(m.IsNull()){
+        if(!_on_event.IsNull())
+            _on_event.Release();
+    }else{
+        _on_event=m;
+    }
     _monitor = bytes ? true : false;
+    return _monitor;
 }
 
 void InputSys::on_event(E_VENT e, const uint8_t* buff, int len, int options)

@@ -505,11 +505,7 @@ int run_loop(SqMemb& f, int pulseme)
                 now = then;
                 for(const auto& a: dirty)
                 {
-                    srv = f.Fcall<bool>(App, a->object());
-                    if(*srv.Get()==false)
-                    {
-                        break;
-                    }
+                    a->on_event   ();
                 }
             }
             if ((pulseme>0 && (then - now >= (size_t)pulseme)) ||

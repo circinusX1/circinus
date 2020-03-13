@@ -214,7 +214,7 @@ bool GpioDev::_mon_pick(size_t t)
     return false;
 }
 
-bool GpioDev::set_monitor(bool mon, int risefall)
+bool GpioDev::set_monitor(SqMemb& mon, int risefall)
 {
     if(_dir & eOut || _counting )
     {
@@ -227,12 +227,14 @@ bool GpioDev::set_monitor(bool mon, int risefall)
         {
             _monitor = risefall >= 0;
             _edging = risefall;
+            _on_event = mon;
             return true;
         }
-        return false;
     }
     _watch_edge(0);
-    _monitor = mon;
+    _monitor = false;
+    if(!_on_event.IsNull())
+        _on_event.Release();
     return true;
 }
 

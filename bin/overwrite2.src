@@ -92,9 +92,13 @@ function program_loop(ctx, dev)
 {
     ctx.notify("sdfsf");
     var d = ctx.get_dev("rs232");
-    d.set_monitor(true);
+    d.set_monitor(callback);
     d.gets(100);
     println("LOOPS");
     return false;
 }
 
+function callback(obj)
+{
+    return true;
+}

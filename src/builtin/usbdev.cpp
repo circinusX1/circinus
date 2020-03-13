@@ -120,20 +120,25 @@ SqArr UsbDev::_read(int chars)
     return RtxBus<UsbDev>::_read(chars);
 }
 
-void UsbDev::set_monitor(size_t bytes)
+bool UsbDev::set_monitor(SqMemb& mem, size_t bytes)
 {
-    if(bytes==0)
+    if(bytes==0 || m.IsNull())
     {
         delete[] _bytes;
         _bytes = nullptr;
         _monitor = false;
+        if(!_on_event.IsNull())
+            _on_event.Release();
+
     }
     else {
         _monitor = true;
         _bytes = new uint8_t[bytes];
         _nbytes = bytes;
+        _on_event=m;
     }
     _curdata = false;
+    return _monitor;
 }
 
 void UsbDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)

@@ -35,7 +35,7 @@ public:
     UsbDev(SqObj&, E_TYPE  e,const char* dev,const char* name=nullptr);
     virtual ~UsbDev();
     SqArr enumerate();
-    void  set_monitor(size_t bytes);
+    bool  set_monitor(SqMemb& mem, size_t bytes);
     const char* _gets(int chars);
     SqArr _read(int chars);
     OVERW(DvUsb,Divais);

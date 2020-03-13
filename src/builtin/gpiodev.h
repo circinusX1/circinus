@@ -37,7 +37,7 @@ public:
     int      get_value();
     int      get_freq();
     int      set_freq(int);
-    bool     set_monitor(bool ch, int risefall); /*-1/+1*/
+    bool     set_monitor(SqMemb& ch, int risefall); /*-1/+1*/
     int      set_toggle();
     bool     set_invert(bool set_invert){return _reversed=set_invert;}
 

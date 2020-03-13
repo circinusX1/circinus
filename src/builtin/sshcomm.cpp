@@ -74,20 +74,25 @@ const char* SshComm::_gets(int chars)
 }
 
 
-void SshComm::set_monitor(size_t bytes)
+void SshComm::set_monitor(SqMemb& mem, size_t bytes)
 {
-    if(bytes==0)
+    _cach=false;
+    if(bytes==0 || m.IsNull())
     {
         delete[] _bytes;
         _bytes = nullptr;
         _monitor = false;
+        if(!_on_event.IsNull())
+            _on_event.Release();
+
     }
     else {
         _monitor = true;
         _bytes = new uint8_t[bytes];
         _nbytes = bytes;
+        _on_event=m;
     }
-    _curdata=false;
+    return _monitor;
 }
 
 void SshComm::on_event(E_VENT e, const uint8_t* buff, int len, int options)

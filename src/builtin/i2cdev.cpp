@@ -91,11 +91,12 @@ SqArr  I2CDev::_readreg(uint8_t reg, int bytes)
     return RtxBus<I2CDev>::_readreg(reg, bytes);
 }
 
-void I2CDev::set_monitor(int regaddr, int bytes)
+void I2CDev::set_monitor(SqMemb& m, int regaddr, int bytes)
 {
     _cach = false;
-    if(bytes==0)
+    if(bytes==0 || m.IsNull())
     {
+        if(!_on_event.IsNull())_on_event.Release();
         delete[] _bytes;
         _bytes = nullptr;
         _monitor = false;
@@ -105,6 +106,7 @@ void I2CDev::set_monitor(int regaddr, int bytes)
         _regaddr = regaddr;
         _bytes = new uint8_t[bytes];
         _nbytes = bytes;
+        _on_event=m;
     }
 }
 

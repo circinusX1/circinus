@@ -1418,7 +1418,6 @@ int SQVM::FallBackSet(const SQObjectPtr &self,const SQObjectPtr &key,const SQObj
             if(Set(_table(self)->_delegate,key,val,DONT_FALL_BACK)) return FALLBACK_OK;
         }
         //keps on going
-
     case OT_INSTANCE:
     case OT_USERDATA:{
         SQObjectPtr closure;

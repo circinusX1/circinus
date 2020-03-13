@@ -32,9 +32,9 @@ public:
     virtual ~PwmDev();
     int         set_value(EPWM_VAL val);
     EPWM_VAL    get_value();
-    void        set_monitor(bool change);
+    bool        set_monitor(SqMemb& mem);
     bool        set_invert(bool set_invert){return _reversed=set_invert;}
-    OVERW(DvPwm,Divais);
+    OVERW(DvPwm,Divais)
     static void squit(SqEnvi& e){
         Sqrat::Class<PwmDev> cls(e.theVM(), _SC("PWM"));
         cls.Ctor<EPWM_PIN, int, int, bool,const char*>();

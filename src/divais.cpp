@@ -82,6 +82,7 @@ void Divais::ctx_it(SqObj& o, const char* dev_key)
     _o = o;
     SqMemb::getFoo(App->psqvm() , o, "set_value", _oset_value);
     SqMemb::getFoo(App->psqvm() , o, "get_value", _oget_value);
+    SqMemb::getFoo(App->psqvm() , o, "on_event", _on_event);
 }
 
 void   Divais::reset()
@@ -252,4 +253,18 @@ EPERIPH Divais::get_category(const char* cat)
 Sqrat::Object Divais::object()const
 {
     return _o;
+}
+
+void  Divais::on_event()
+{
+    if(!_on_event.IsNull())
+    {
+        try{
+            bool rv =  *(_oset_value.Fcall<bool>(_o).Get());
+        }catch(Sqrat::Exception& ex)
+        {
+            LOGEX(ex.Message());
+            LOGEX(SqErrStr);
+        }
+    }
 }
