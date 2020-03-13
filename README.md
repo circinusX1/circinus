@@ -11,6 +11,8 @@
 
 
 ## RASPBERRY-PI GPIO, PWM, SPI, I2C, UART FRAMEWORK.  
+### script them(GPIO PWM I2C SPI ADC UART USB FILE-IO & /dev/input/ TCP SSH CURL)
+### access them REST-FULLY {JSON IN & OUT}
 ### All written in C++
 #### REACTION TIME ~ 1ms
 ##### Get automated systems up and running in a mater of few hours.
@@ -241,9 +243,6 @@ Credits:
 ![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/embixico.png)
 
 
-# LICENSE ADDON
-    * For commercial products you need a written consent and a signed license form the Author.
-      
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L9RVWU5NUZ4YG)   [donations are taken care by meeiot]
 
@@ -310,3 +309,16 @@ Credits:
 
 55 directories, 556 files
 ```
+
+
+
+# LICENSE ADDON
+
+    * For commercial products you need a written consent and a digital certificate signed form the Author.
+
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L9RVWU5NUZ4YG)   [donations are taken care by meeiot domain]
+
+    
+
+      
