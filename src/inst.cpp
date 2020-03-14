@@ -48,7 +48,7 @@ Inst::Inst(SqEnvi& sq, char* p[]):Sqrat::Class<Inst>(sq.theVM(),"App")
     this->Functor(_SC("notify"), &Inst::notify);
     this->Functor(_SC("get_dev"), &Inst::get_sqo);
     this->Functor(_SC("set_timer"), &Inst::set_timer);
-    this->Functor(_SC("set_priority"), &Inst::set_timer);
+    this->Functor(_SC("set_priority"), &Inst::set_priority);
     this->Functor(_SC("start_task"), &Inst::start_task);
     this->Functor(_SC("_sync"), &Inst::sync_all);
     Sqrat::RootTable().Bind(_SC("App"), *this);

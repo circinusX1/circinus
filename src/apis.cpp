@@ -710,6 +710,7 @@ void globals_expose(SqEnvi& sq)
 	Sqrat::RootTable(sq.theVM()).Functor("execute",&execute);
 	Sqrat::RootTable(sq.theVM()).Functor("loadmod",&loadmod);
 	Sqrat::RootTable(sq.theVM()).Functor("context",&context);
+	Sqrat::RootTable(sq.theVM()).Functor("ctx",&context);
 	Sqrat::RootTable(sq.theVM()).Functor("i2a",&i2a);
 	Sqrat::RootTable(sq.theVM()).Functor("x2a",&x2a);
 	Sqrat::RootTable(sq.theVM()).Functor("uptime", &uptime);
