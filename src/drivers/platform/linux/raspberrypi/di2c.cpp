@@ -22,9 +22,7 @@ namespace GenericHw
     std::string      DvI2c::_fmt = "%s/i2c-%d";
     std::string      DvI2c::_sys = "/dev";
 }
-
 #include "../../../common/di2c.cpp"
-
 #endif //BEAGLEBONE
 
 

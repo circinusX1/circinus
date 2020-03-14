@@ -22,8 +22,6 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "apis.h"
 #include "comcurl.h"
 
-
-
 ComCurl::ComCurl(SqObj& o,
                  int maxbuf,
                  const char* id):Divais(eSTRING, eCURL, id),

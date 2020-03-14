@@ -25,9 +25,7 @@ namespace GenericHw
     std::string  DvGpio::_fmt = "%s/gpio%d";
 
 }
-
 #include "../../../common/dgpio.cpp"
-
 #endif //BEAGLEBONE
 
 

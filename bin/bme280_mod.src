@@ -9,26 +9,24 @@ server := SRV(8000,"X");
 
 function main(x)
 {
-    thp.monitor(true);
+    thp.monitor(showth);
     return run(mainloop,-1);
 }
 
-function mainloop(ctx, dev)
+function showth(dev)
 {
-    if(dev)  // a chnage in T H or P
-    {
-        var a = dev.thp();
-        println("THP = " + a[0] +
-                "  " + a[1] +
-                "  " +  a[2] );
-    }
-    else
-    {
-        // read one by one every 1000 ms
-        println("T=" + thp.temperature() + " m*C  H=" +
-                     thp.humidity()   + " x100 %  P=" +
-                     thp.pressure()   + " mm Hg ");
-    }
+    var a = dev.thp();
+    println("THP = " + a[0] +
+            "  " + a[1] +
+            "  " +  a[2] );
+}
+
+function mainloop(ctx, notused)
+{
+    // read one by one every 1000 ms
+    println("T=" + thp.temperature() + " m*C  H=" +
+                 thp.humidity()   + " x100 %  P=" +
+                 thp.pressure()   + " mm Hg ");
     return true;
 
 }

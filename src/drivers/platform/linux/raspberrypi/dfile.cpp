@@ -20,7 +20,6 @@ namespace GenericHw
 {
 
 }
-
 #include "../../../common/dfile.cpp"
 #endif //BEAGLEBONE
 

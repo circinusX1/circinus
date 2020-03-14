@@ -261,8 +261,8 @@ void  Divais::on_event()
     {
         try{
             bool rv =  *(_on_event.Fcall<bool>(_o).Get());
-        }catch(Sqrat::Exception& ex)
-        {
+        }
+        catch(Sqrat::Exception& ex){
             LOGEX(ex.Message());
             LOGEX(SqErrStr);
         }

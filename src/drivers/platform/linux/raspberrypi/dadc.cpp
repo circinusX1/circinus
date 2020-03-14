@@ -25,7 +25,6 @@ namespace GenericHw
 
 }
 #include "../../../common/dadc.cpp"
-
 #endif //raspberrypi
 
 

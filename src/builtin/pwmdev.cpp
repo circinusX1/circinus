@@ -38,8 +38,6 @@ PwmDev::PwmDev(SqObj& o,
     ctx_it(o, name);
 }
 
-
-
 PwmDev::~PwmDev()
 {
 }

@@ -6,7 +6,9 @@ mouse := SYSIN(eMOUSE,"/dev/input/event4","mice");
 
 ctx().set_priority(-20);
 ctx().set_priority(20);
-
+/**
+reads touch pad. WIP
+*/
 function main(x)
 {
 

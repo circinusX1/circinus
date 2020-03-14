@@ -25,7 +25,6 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 namespace GenericHw
 {
 
-
 DvCore::DvCore()
 {
 
@@ -54,8 +53,6 @@ std::string DvCore::sh_exec(std::string command)
     pclose(pipe);
     return result;
 }
-
-
 
 int DvCore::_readint(const std::string& file)
 {

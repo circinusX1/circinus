@@ -43,8 +43,7 @@ function loop(ctx, dev)
 
 function callback(dev)
 {
-    if(dev)
-        println("dev = " + dev.get_value());
+    println("dev = " + dev.get_value());
     return true;
 }
 

@@ -1,3 +1,6 @@
+/**
+proof of concept
+*/
 ::using(eGPIO|ePWM|eSRV|eI2C);
 
 mainpower		:= PIO(20, DIR_OUT, LOW, "power");

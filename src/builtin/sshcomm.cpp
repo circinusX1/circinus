@@ -73,7 +73,6 @@ const char* SshComm::_gets(int chars)
     return RtxBus<SshComm>::_gets(chars);
 }
 
-
 void SshComm::set_monitor(SqMemb& mem, size_t bytes)
 {
     _cach=false;
@@ -108,6 +107,5 @@ const char*	SshComm::_get_values(const char* key)
 {
     return "";
 }
-
 
 #endif //ifdef WITH_SSH

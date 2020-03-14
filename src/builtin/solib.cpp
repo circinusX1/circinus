@@ -24,14 +24,12 @@ SoLib::SoLib(const char* plugin):Divais(eVOID, eSOLIB, plugin),Reg<SoLib>(this)
     _soh = dlopen(plugin, RTLD_NOW | RTLD_LOCAL | RTLD_NOLOAD); //RTLD_NOLOAD flag is not specified in POSIX.1-2001..so not the best solution :(
     if (_soh == NULL) {
         _soh = dlopen(plugin, RTLD_NOW | RTLD_LOCAL);
-        if (_soh == NULL)
-        {
+        if (_soh == NULL){
             LOGE(__FUNCTION__ << dlerror());
             return;
         }
     }
     _o.BindCppObject(this);
-
 }
 
 SoLib::SoLib(SqObj& o,
@@ -41,8 +39,7 @@ SoLib::SoLib(SqObj& o,
     _soh = dlopen(plugin, RTLD_NOW | RTLD_LOCAL | RTLD_NOLOAD); //RTLD_NOLOAD flag is not specified in POSIX.1-2001..so not the best solution :(
     if (_soh == NULL) {
         _soh = dlopen(plugin, RTLD_NOW | RTLD_LOCAL);
-        if (_soh == NULL)
-        {
+        if (_soh == NULL){
             LOGE(__FUNCTION__ << dlerror());
             return;
         }

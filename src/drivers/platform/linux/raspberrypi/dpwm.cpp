@@ -35,7 +35,6 @@ namespace GenericHw
     std::string DvPwm::_fmt_chip = "pwmchip%d/";
     std::string DvPwm::_fmt      = "pwm%d";
 }
-
 #include "../../../common/dpwm.cpp"
 #endif //BEAGLEBONE
 

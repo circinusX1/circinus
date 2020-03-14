@@ -24,7 +24,7 @@ class XX extends BASE
        else
             this._value="OFF";
 
-        return {
+        return { /*dump test */
             LED = this._value,
             CMDS = ["ON","OFF"],
             VALS = [0,1,2,3,4,5],

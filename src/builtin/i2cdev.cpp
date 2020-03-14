@@ -27,7 +27,6 @@ I2CDev::I2CDev(EI2CBUS i2c, uint8_t addr,
                                  RtxBus<I2CDev>(this),_regaddr(0),_bytes(nullptr)
 {
     _o.BindCppObject(this);
-
 }
 
 I2CDev::I2CDev(SqObj& o,
@@ -60,7 +59,6 @@ size_t  I2CDev::_fecth(any_t& vl, const char* filter)
 {
     return 0;
 }
-
 
 int I2CDev::setreg(uint8_t cmd)
 {

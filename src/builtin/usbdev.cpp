@@ -42,7 +42,6 @@ UsbDev::UsbDev( SqObj& o,
 
 }
 
-
 UsbDev::~UsbDev()
 {
     delete[] _bytes;
@@ -58,8 +57,6 @@ size_t  AdcDev::_fecth(any_t& vl, const char* filter)
 {
     return this->bread(vl.c_bytes(), vl.length());
 }
-
-
 
 SqArr UsbDev::enumerate()
 {
@@ -82,7 +79,6 @@ SqArr UsbDev::enumerate()
     return rar;
 }
 
-
 bool UsbDev::_mon_pick(size_t t)
 {
     if(this->bread(_bytes, _nbytes))
@@ -91,7 +87,6 @@ bool UsbDev::_mon_pick(size_t t)
     }
     return false;
 }
-
 
 const char* UsbDev::_gets(int chars)
 {

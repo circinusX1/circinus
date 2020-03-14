@@ -43,12 +43,10 @@ size_t  ScrBase::_fecth(any_t& vl, const char* filter)
     return 0;
 }
 
-
 bool ScrBase::_mon_pick(size_t t)
 {
     return false;
 }
-
 
 bool ScrBase::iopen(int)
 {
