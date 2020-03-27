@@ -43,7 +43,7 @@ static const char* _resterrs[]={
 RestSrv::RestSrv(int port, const char* tcpp):_port(port)
 {
     if(RestDisabled){
-        LOGW("The Json/REST server is disable din child tasks");
+        LOGW("The Json/REST server is disable in child tasks");
         return;
     }
     ioTid = pthread_self();
@@ -75,7 +75,7 @@ int RestSrv::ctx_it(const char* dev_key)
 {
     std::ofstream expFile;
     try{
-        expFile.open( "/tmp/s2wsocket", std::ios::out);
+        expFile.open( "/tmp/amu_socket", std::ios::out);
         if(expFile.is_open())
         {
             expFile << _port;
