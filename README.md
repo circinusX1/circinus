@@ -2,6 +2,15 @@
 
 ###### rembix renamed to amutrion
 
+```C++
+// aka:
+var l1 = PIO(26,  DIR_OUT, LOW, "led");
+l1.set_value(0);
+var pwm = PWM("0.0", 1000, 100, false, "pwm");
+pwm.set_value(80);
+
+```
+
 #### SDK
 [!SDK](https://github.com/comarius/amutrion/wiki)
 
