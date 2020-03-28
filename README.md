@@ -273,7 +273,7 @@ Credits:
 .
 ├── TOOLS                                      <<<<<<<<<<<<<<<  DO THIS
 │   ├── beaglebone   -> sym link to debian_root_file_system_beaglebone
-│   ├── imx6         -> sym link to debian_imx_file_system_beaglebone
+│   ├── imx6         -> sym link to debian_imx_file_system
 │   ├── raspberrypi  -> sym link to debian_root_file_system_raspberrypi
 │   ├── qteverywhere -> sym link to qt-everywhere-opensource-src-5.8.0
 │   └── toolchain    -> sym link to tolchain_arm_gcc_compiler
