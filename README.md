@@ -277,6 +277,7 @@ Credits:
 │   ├── raspberrypi  -> sym link to debian_root_file_system_raspberrypi
 │   ├── qteverywhere -> sym link to qt-everywhere-opensource-src-5.8.0
 │   └── toolchain    -> sym link to tolchain_arm_gcc_compiler
+    - chroot to every system root fs and install sqlite/curl/libusb, otherwise disable them form the Makefile   
 ├── bin
 ├── env_thishost.sh
 ├── lib
