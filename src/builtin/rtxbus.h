@@ -23,15 +23,13 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "dserial.h"
 
 using namespace GenericHw;
-
+#define MAX_EXPECT 32768
 
 struct AutoOC{
     Divais* _p; bool _a=false;
     AutoOC(Divais* p,  bool a):_p(p), _a(a){ if(a) p->iopen(O_RDWR); }
     ~AutoOC(){ if(_a)_p->iclose();}
 };
-
-
 
 template<typename T> class RtxBus
 {
@@ -265,6 +263,51 @@ public:
         _tmpstr.clear();
     }
 
+    const char* _received(){
+        return (const char*)_tmpstr.c_str();
+    }
+
+    const char* _expect_strarr(SqArr& a, int to)
+    {
+        bool     rv=false;
+        uint8_t  loco[512]={0};
+        size_t   now = tick_count();
+        size_t   tot  = now + to;
+        size_t   sz = 0;
+
+        _tmpstr.clear();
+        _tmp2.clear();
+        AutoOC oc(_pd,  _auto);
+        while(tick_count() < tot && rv==false )
+        {
+            size_t bytes = _pd->bread(loco, sizeof(loco)-1);
+            if(bytes>0){
+                _tmpstr.append(loco,bytes);
+                int ns  = a.GetSize();
+
+                for(int i=0;i<ns;i++)
+                {
+                    const char* token = *(a.GetValue<const char*>(i).Get());
+                    sz+=::strlen(token)+1;
+                    if(_tmpstr.find((const uint8_t*)token)!=std::string::npos)
+                    {
+                        _tmp2.assign((const uint8_t*)token,::strlen(token));
+                        tot=::tick_count();
+                        break;
+                    }
+                }
+
+                if(_tmpstr.length() > MAX_EXPECT)
+                {
+                    _tmpstr.erase(0,MAX_EXPECT/2);
+                }
+            }
+
+        }
+        return (const char*)_tmp2.c_str();
+    }
+
+
     bool _expect_str(const char* ex, int to)
     {
         bool     rv=false;
@@ -289,7 +332,6 @@ public:
             size_t f = _tmpstr.find((const uint8_t*)ex, 0, ::strlen(ex));
             rv = (f!=std::string::npos);
         }
-
         return rv;
     }
 
@@ -343,9 +385,10 @@ public:
     }
 
 protected:
-    T*          _pd;
+    T*                           _pd;
     std::basic_string<uint8_t>   _cr;
     std::basic_string<uint8_t>   _tmpstr;
+    std::basic_string<uint8_t>   _tmp2;
     bool                         _auto;
 };
 
