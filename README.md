@@ -2,6 +2,15 @@
 
 ###### rembix renamed to amutrion
 
+```C++
+// aka:
+var l1 = PIO(26,  DIR_OUT, LOW, "led");
+l1.set_value(0);
+var pwm = PWM("0.0", 1000, 100, false, "pwm");
+pwm.set_value(80);
+
+```
+
 #### SDK
 [!SDK](https://github.com/comarius/amutrion/wiki)
 
@@ -264,10 +273,11 @@ Credits:
 .
 ├── TOOLS                                      <<<<<<<<<<<<<<<  DO THIS
 │   ├── beaglebone   -> sym link to debian_root_file_system_beaglebone
-│   ├── imx6         -> sym link to debian_imx_file_system_beaglebone
+│   ├── imx6         -> sym link to debian_imx_file_system
 │   ├── raspberrypi  -> sym link to debian_root_file_system_raspberrypi
 │   ├── qteverywhere -> sym link to qt-everywhere-opensource-src-5.8.0
 │   └── toolchain    -> sym link to tolchain_arm_gcc_compiler
+    - chroot to every system root fs and install sqlite/curl/libusb, otherwise disable them form the Makefile   
 ├── bin
 ├── env_thishost.sh
 ├── lib
