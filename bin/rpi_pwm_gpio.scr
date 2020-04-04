@@ -34,7 +34,7 @@ var pwm1 = PWM("0.1", 1000, 100, false, "pwm2"); //GPIO 18
 
 function main(ctx)
 {
-    edge.set_monitor(callback, 1);
+    edge.set_monitor(callback, RISE);
     return run(loop,2000);
 }
 

@@ -101,8 +101,7 @@ public:
 	void  reset();
 	bool is_dirty(size_t t){
 		if(_monitor){
-			bool dirt = _mon_pick(t);
-			return _monitor && dirt;
+			return _mon_pick(t);
 		}
 		return false;
 	}

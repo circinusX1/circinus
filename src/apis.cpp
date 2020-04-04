@@ -502,6 +502,7 @@ int run_loop(SqMemb& f, int pulseme)
     size_t now = tick_count();
     size_t then = now;
     size_t nowwd = now;
+    bool   evented = false;
     SqArr  b(App->psqvm(), 0);
     std::vector<I_IDev*> dirty;
 
@@ -509,6 +510,7 @@ int run_loop(SqMemb& f, int pulseme)
         Sqrat::SharedPtr<bool> srv;
         while(ApStat==RUNNING)
         {
+            evented = false;
             if(dirty.size()){  dirty.clear(); }
             then = tick_count();
             App->check_devs(dirty, then);
@@ -520,9 +522,11 @@ int run_loop(SqMemb& f, int pulseme)
                 {
                     a->on_event();
                 }
+                evented = true;
             }
-            if ((pulseme>0 && (then - now >= (size_t)pulseme)) ||
-                __bsqenv->snap_.load()==true)
+            if ( (pulseme > 0 &&
+                 (then - now >= (size_t)pulseme)) ||
+                  __bsqenv->snap_.load()==true || evented)
             {
                 if(__bsqenv->snap_.load()==true)
                 {
@@ -532,7 +536,7 @@ int run_loop(SqMemb& f, int pulseme)
                 else {
                     App->comit_devs();
                     now = then;
-                    srv = f.Fcall<bool>(App, false);
+                    srv = f.Fcall<bool>(App, evented);
                     __bsqenv->notify();
                     if(*srv.Get()==false)
                         break;
@@ -545,7 +549,6 @@ int run_loop(SqMemb& f, int pulseme)
                 wd_pull(WDIOC_KEEPALIVE,Wdto);
             }
             App->call_backs(now);
-
         }
     }
     catch(Sqrat::Exception& ex)
@@ -704,7 +707,9 @@ void globals_expose(SqEnvi& sq)
 			.Const("eDEVMODULE",eDEVMODULE)
 			.Const("eCURL",eCURL)
 			.Const("eSUNRS",eSUNRS)
-
+			.Const("RISE_FALL",2)
+			.Const("RISE",1)
+			.Const("FALL",-1)
 			.Const("eVOID",eVOID)
 			.Const("eINT",eINT)
 			.Const("eINT64",eINT64)

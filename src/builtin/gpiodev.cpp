@@ -152,18 +152,18 @@ bool GpioDev::_mon_pick(size_t t)
 {
     if(_dir & eIn)
     {
-        if(_edging!=-1)
+        if(_edging!=0)
         {
             if(this->_pfile > 0)
             {
-                struct pollfd fdset[1] = {0};
+                struct pollfd fdset[1] = {0,0,0};
                 int nfds  = 1;
-                int  gpio_fd, timeout, rc;
-                char buf[64];
+                int rc;
+                char buf[16];
 
                 fdset[0].fd = this->_pfile;
                 fdset[0].events = POLLPRI;
-                rc = ::poll(fdset, nfds, 64);
+                rc = ::poll(fdset, nfds, 16);
                 if (rc < 0) {
                     LOGE("pool failure");
                     return false;
@@ -172,8 +172,9 @@ bool GpioDev::_mon_pick(size_t t)
                 {
                     if (fdset[0].revents & POLLPRI)
                     {
+                        buf[0]=0;
                         lseek(fdset[0].fd, 0, SEEK_SET);
-                        int len = read(fdset[0].fd, buf, 64);
+                        read(fdset[0].fd, buf, 16);
                         _curval = ::atoi(buf);
                     }
                     return true;
@@ -221,14 +222,24 @@ bool GpioDev::set_monitor(SqMemb& mon, int risefall)
         LOGW("cannot moitor out pin or a counter");
         return false;
     }
-    if(risefall != 0)
+    if(risefall )
     {
-        if(_watch_edge(risefall))
+        if (risefall ==1 || risefall ==-1 )
         {
-            _monitor = risefall >= 0;
-            _edging = risefall;
+            if(_watch_edge(risefall))
+            {
+                _monitor = (risefall != 0);
+                _edging = risefall;
+                _on_event = mon;
+                return true;
+            }
+        }
+        else {
+            _monitor = true;
+            _edging = 0;
             _on_event = mon;
             return true;
+
         }
     }
     _watch_edge(0);

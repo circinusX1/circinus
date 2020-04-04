@@ -79,9 +79,11 @@ size_t DvCore::_red(const std::string& file, uint8_t* pb, size_t l)const
     {
         ret = ::fread(pb, sizeof(uint8_t), l, pf);
         ::fclose(pf);
+    }else
+    {
+        ptr->_err = strerror(errno);
+        LOGE(ptr->_err << ", " << file);
     }
-    ptr->_err = strerror(errno);
-    LOGE(ptr->_err << ", " << file);
     return ret;
 }
 

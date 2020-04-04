@@ -76,7 +76,7 @@ private:
     bool        _counting;
     size_t      _interval;
     bool        _reversed = false;
-    int         _edging = -1;
+    int         _edging = 0;
 };
 
 #endif // GPIODEV_H

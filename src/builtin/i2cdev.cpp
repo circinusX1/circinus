@@ -19,7 +19,6 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "dlconfig.h"
 
 // sudo i2cdetect -y -r I2CNO
-
 I2CDev::I2CDev(EI2CBUS i2c, uint8_t addr,
                const char* name):DvI2c(i2c,addr),
                                  Divais (eBINARY, eI2C, name),
