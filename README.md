@@ -1,6 +1,9 @@
 
 ### Amutrion, Industrial Strength Scripting Engine
-#### No dependencies, Writtenin C++, No JAVA and Python mumbojumbos mess!
+
+#### No dependencies, 
+#### Writtenin C++
+#### No JAVA & Python mumbos-jumbos hell!
 
 ##### Published: 1 Oct 2017
 
