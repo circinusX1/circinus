@@ -120,7 +120,7 @@ function  callback(dev)
 
 ```c++
 
-include("plugins/oled96.js");
+include("plugins/oled96.scr");
 /*
 sudo nano /lib/udev/rules.d/60-i2c-tools.rules
 KERNEL=="i2c-0"     , GROUP="i2c", MODE="0660"
