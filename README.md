@@ -1,6 +1,6 @@
     - Published Oct-Nov-Dec 2017
 
-###### rembix renamed to amutrion
+###### Amutrion, Industrial Strength Scripting Engine
 
 ```C++
 // aka:
