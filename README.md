@@ -3,7 +3,7 @@
 
 #### No dependencies, 
 #### Written in C++
-#### No JAVA & Python mumbos-jumbos !
+#### No Python or NodeJS mumbos-jumbos !
 
 ##### Published: 1 Oct 2017
 
