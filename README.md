@@ -1,7 +1,7 @@
 
 ### Amutrion, Industrial Strength Scripting Engine
 
-AD:  https://www.redypis.org/
+AD:  [PRELOADED SD CARDS FOR RASPERRY PI](https://www.redypis.org/) 
 
 #### No dependencies, 
 #### Written in C++
