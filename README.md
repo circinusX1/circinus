@@ -5,7 +5,8 @@ AD:  [PRELOADED SD CARDS FOR RASPERRY PI](https://www.redypis.org/)
 
 #### No dependencies, 
 #### Written in C++
-#### No Python or NodeJS mumbos-jumbos !
+#### No Python or NodeJS or language syntax mumbos-jumbos!
+#### Straight C++ like syntax
 
 ##### Published: 1 Oct 2017
 
