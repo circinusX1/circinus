@@ -345,9 +345,9 @@ Credits:
 
 ###  You can check my reverse ssh online service and online key value database at 
 
-[link to mylinuz!](http://www.mylinuz.com)
+[reverse ssh as a service](http://www.mylinuz.com)
 
-[link to meeiot!](https://www.meeiot.org)
+[key value database as a service](https://www.meeiot.org)
 
 
 
