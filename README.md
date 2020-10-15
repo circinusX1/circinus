@@ -5,8 +5,7 @@ AD:  [PRELOADED SD CARDS FOR RASPERRY PI](https://www.redypis.org/)
 
 #### No dependencies, 
 #### Written in C++
-#### No Python or NodeJS or language syntax mumbos-jumbos!
-#### Straight java/C++ like syntax
+#### Scripted: Java/C++ like syntax
 
 ##### Published: 1 Oct 2017
 
@@ -21,13 +20,13 @@ AD:  [PRELOADED SD CARDS FOR RASPERRY PI](https://www.redypis.org/)
 
 
 ```C++
-// aka:
-var l1 = PIO(26,  DIR_OUT, LOW, "led");
+var l1 = PIO(26,  DIR_OUT, LOW, "led");         // GPIO
 l1.set_value(0);
-var pwm = PWM("0.0", 1000, 100, false, "pwm");
+var pwm = PWM("0.0", 1000, 100, false, "pwm");  // PWM
 pwm.set_value(80);
-
+li.call_back(my_function, ON_RISE|ON_FALL);
 ```
+
 
 #### SDK
 [!SDK](https://github.com/circinusX1/amutrion/wiki)
