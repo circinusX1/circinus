@@ -243,7 +243,7 @@ var pwm = PWM("0.0", 1000, 100, false, "pwm");
 
 function main(ctx)
 {
-    pb.set_monitor(callback);
+    pb.call_back(callback);
     l1.set_value(0);
     return run_program(program,10000);
 }

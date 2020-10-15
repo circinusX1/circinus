@@ -47,7 +47,7 @@ var srv = SRV(8000,"ddd");
 
 function main(o)
 {
-    return run_loop(loo,-1);
+    return run(loo,-1);
 }
 
 function loo(x,d)

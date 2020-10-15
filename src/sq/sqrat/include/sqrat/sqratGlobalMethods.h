@@ -2057,6 +2057,8 @@ public:
     typedef any_tsize (*type_r3)(any_tsize,any_tsize,any_tsize);
     typedef any_tsize (*type_r4)(any_tsize,any_tsize,any_tsize,any_tsize);
     typedef any_tsize (*type_r5)(any_tsize,any_tsize,any_tsize,any_tsize,any_tsize);
+    typedef any_tsize (*type_r6)(any_tsize,any_tsize,any_tsize,any_tsize,any_tsize,any_tsize);
+    typedef any_tsize (*type_r7)(any_tsize,any_tsize,any_tsize,any_tsize,any_tsize,any_tsize,any_tsize);
 
     typedef void (*type_v0)(void);
     typedef void (*type_v1)(any_tsize);
@@ -2064,12 +2066,18 @@ public:
     typedef void (*type_v3)(any_tsize,any_tsize,any_tsize);
     typedef void (*type_v4)(any_tsize,any_tsize,any_tsize,any_tsize);
     typedef void (*type_v5)(any_tsize,any_tsize,any_tsize,any_tsize,any_tsize);
+    typedef void (*type_v6)(any_tsize,any_tsize,any_tsize,any_tsize,any_tsize,any_tsize);
+    typedef void (*type_v7)(any_tsize,any_tsize,any_tsize,any_tsize,any_tsize,any_tsize,any_tsize);
 
     typedef int (*right_t)(const char* , int);
 
     template <int startIdx, bool overloaded /*= false*/>
     static int MembX(HSKVM vm, int nargs)
     {
+        if(nargs>8)
+        {
+            return SQ_PTRS->throwerror(vm, "too many parameters");
+        }
         bool rv=false;
         union{
             const char* s;
@@ -2078,7 +2086,7 @@ public:
             bool        b;
             size_t      v;
             uint8_t*    p;
-        } u [5];
+        } u [8];
         if(nargs < 0){rv=true; nargs = -nargs;}
 
         typedef int (*M)();
@@ -2135,6 +2143,8 @@ public:
             case 3:{ r=((type_r3)(*method))(u[0].v,u[1].v,u[2].v);} break;
             case 4:{ r=((type_r4)(*method))(u[0].v,u[1].v,u[2].v,u[3].v);} break;
             case 5:{ r=((type_r5)(*method))(u[0].v,u[1].v,u[2].v,u[3].v,u[4].v);} break;
+            case 6:{ r=((type_r6)(*method))(u[0].v,u[1].v,u[2].v,u[3].v,u[4].v,u[5].v);} break;
+            case 7:{ r=((type_r7)(*method))(u[0].v,u[1].v,u[2].v,u[3].v,u[4].v,u[5].v,u[6].v);} break;
             }
             PushVarR(vm, r);
         }
@@ -2148,6 +2158,8 @@ public:
             case 3:{ ((type_v3)(*method))(u[0].v,u[1].v,u[2].v);} break;
             case 4:{ ((type_v4)(*method))(u[0].v,u[1].v,u[2].v,u[3].v);} break;
             case 5:{ ((type_v5)(*method))(u[0].v,u[1].v,u[2].v,u[3].v,u[4].v);} break;
+            case 6:{ ((type_v6)(*method))(u[0].v,u[1].v,u[2].v,u[3].v,u[4].v,u[5].v);} break;
+            case 7:{ ((type_v7)(*method))(u[0].v,u[1].v,u[2].v,u[3].v,u[4].v,u[5].v,u[6].v);} break;
             }
         }
         return rv;
@@ -2230,7 +2242,7 @@ SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5)) {
 }
 
 // Arg Count 6
-#ifdef RAT_MANY_ARGS
+
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6>
 SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6)) {
     return &SqGlobal<R>::template Memb6<A1, A2, A3, A4, A5, A6, 2, false>;
@@ -2265,7 +2277,7 @@ template <class R, class A1, class A2, class A3, class A4, class A5, class A6, c
 SQFUNCTION SqGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8)) {
     return &SqGlobal<R&>::template Memb8<A1, A2, A3, A4, A5, A6, A7, A8, 2, false>;
 }
-
+#ifdef RAT_MANY_ARGS
 // Arg Count 9
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
 SQFUNCTION SqGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9)) {
@@ -2403,7 +2415,7 @@ SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5)) {
     return &SqGlobal<R&>::template Memb5<A1, A2, A3, A4, A5, 1, false>;
 }
 
-#ifdef RAT_MANY_ARGS
+
 // Arg Count 6
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6>
 SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6)) {
@@ -2439,7 +2451,7 @@ template <class R, class A1, class A2, class A3, class A4, class A5, class A6, c
 SQFUNCTION SqMemberGlobalMemb(R& (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8)) {
     return &SqGlobal<R&>::template Memb8<A1, A2, A3, A4, A5, A6, A7, A8, 1, false>;
 }
-
+#ifdef RAT_MANY_ARGS
 // Arg Count 9
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
 SQFUNCTION SqMemberGlobalMemb(R (* /*method*/)(A1, A2, A3, A4, A5, A6, A7, A8, A9)) {

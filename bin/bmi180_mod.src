@@ -9,7 +9,7 @@ server := SRV(8000,"xxx");
 
 function main(x)
 {
-    return run_loop(l, -1);
+    return run(l, -1);
 }
 
 function l(c, d)

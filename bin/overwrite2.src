@@ -85,14 +85,14 @@ for(local l=0;l<12;l++)
 function main(o)
 {
     println("MAIN ");
-    return run_loop(program_loop,2000);
+    return run(program_loop,2000);
 }
 
 function program_loop(ctx, dev)
 {
     ctx.notify("sdfsf");
     var d = ctx.get_dev("rs232");
-    d.set_monitor(callback);
+    d.call_back(callback,256/*bytes*/);
     d.gets(100);
     println("LOOPS");
     return false;

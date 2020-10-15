@@ -1,13 +1,13 @@
 /*
-Copyright (c) 2014-2016 comarius.DPT All rights reserved.
+Copyright (c) 2014-2016 Marius C. All rights reserved.
 
 Redistribution and use in source and binary forms are permitted
 provided that the above copyright notice and this paragraph are
 duplicated in all such forms and that any documentation,
 advertising materials, and other materials related to such
 distribution and use acknowledge that the software was developed
-by the https://github.com/comarius. The name of the
-https://github.com/comarius may not be used to endorse or promote
+by the https://github.com/circinusX1. The name of the
+https://github.com/circinusX1/amutrion may not be used to endorse or promote
 products derived from this software without specific prior written permission.
 THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
@@ -34,7 +34,7 @@ public:
     UartDev(SqObj&, E_TYPE  e, const char* dev, int bps, const char* mode, const char* name=nullptr);
     virtual ~UartDev();
     OVERW(DvSerial,Divais)
-    bool set_monitor(SqMemb& mem, size_t bytes);
+    bool call_back(SqMemb& mem, size_t bytes);
     const char* _gets(int chars);
     SqArr _read(int chars);
 
@@ -47,7 +47,7 @@ public:
 
         cls.Functor(_SC("open"), &UartDev::iopen);
         cls.Functor(_SC("close"), &UartDev::iclose);
-        cls.Functor(_SC("set_monitor"), &UartDev::set_monitor);
+        cls.Functor(_SC("call_back"), &UartDev::call_back);
         cls.Overload<int (UartDev::*)(SqArr&)>(_SC("setcr"), &RtxBus<UartDev>::_setcr);
         cls.Overload<int (UartDev::*)(const char*)>(_SC("puts"), &RtxBus<UartDev>::_puts);
         cls.Overload<bool (UartDev::*)(const char*, SqMemb&)>(_SC("puts_cb"), &RtxBus<UartDev>::_puts_cb);

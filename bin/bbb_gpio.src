@@ -10,7 +10,6 @@ var pwm = PWM("0.0", 30000, 30, false, "pwm");
 
 function main(ctx)
 {
-
    var pwm = PWM("ecap0", 30000, 50, false, "pwm");
    return run(l,10);
 }

@@ -11,7 +11,7 @@ level:=1
 function main(ctx)
 {
     led.set_value(HIGH);
-    button.set_monitor(pushed,RISE_FALL);
+    button.call_back(pushed,RISE_FALL);
     return run(loop,-1);
 }
 

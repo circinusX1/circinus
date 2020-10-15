@@ -1,13 +1,13 @@
 /*
-Copyright (c) 2014-2016 comarius.DPT All rights reserved.
+Copyright (c) 2014-2016 Marius C. All rights reserved.
 
 Redistribution and use in source and binary forms are permitted
 provided that the above copyright notice and this paragraph are
 duplicated in all such forms and that any documentation,
 advertising materials, and other materials related to such
 distribution and use acknowledge that the software was developed
-by the https://github.com/comarius. The name of the
-https://github.com/comarius may not be used to endorse or promote
+by the https://github.com/circinusX1. The name of the
+https://github.com/circinusX1/amutrion may not be used to endorse or promote
 products derived from this software without specific prior written permission.
 THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
@@ -60,7 +60,7 @@ bool FileDev::_mon_pick(size_t t)
     return _mon_dirt;
 }
 
-int FileDev::set_monitor(SqMemb& m)
+int FileDev::call_back(SqMemb& m)
 {
     if(m.IsNull()){
         _monitor = false;

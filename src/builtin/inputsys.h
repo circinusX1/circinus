@@ -1,13 +1,13 @@
 /*
-Copyright (c) 2014-2016 comarius.DPT All rights reserved.
+Copyright (c) 2014-2016 Marius C. All rights reserved.
 
 Redistribution and use in source and binary forms are permitted
 provided that the above copyright notice and this paragraph are
 duplicated in all such forms and that any documentation,
 advertising materials, and other materials related to such
 distribution and use acknowledge that the software was developed
-by the https://github.com/comarius. The name of the
-https://github.com/comarius may not be used to endorse or promote
+by the https://github.com/circinusX1. The name of the
+https://github.com/circinusX1/amutrion may not be used to endorse or promote
 products derived from this software without specific prior written permission.
 THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
@@ -42,7 +42,7 @@ public:
     InputSys(E_INPUT e, const char* device, const char* name=nullptr);
     InputSys(SqObj&, E_INPUT e, const char* device, const char* name=nullptr);
     virtual ~InputSys();
-    bool set_monitor(SqMemb& mem);
+    bool call_back(SqMemb& mem);
     bool   lopen(int);
     void   lclose();
     Sqrat::Array get();
@@ -57,7 +57,7 @@ public:
         cls.Ctor<E_INPUT, const char* , const char*>();
         cls.Ctor<SqObj&, E_INPUT, const char* , const char*>();
 
-        cls.Functor(_SC("set_monitor"), &InputSys::set_monitor);
+        cls.Functor(_SC("call_back"), &InputSys::call_back);
         cls.Functor(_SC("open"), &InputSys::lopen);
         cls.Functor(_SC("close"), &InputSys::lclose);
         cls.Functor("get",&InputSys::get);

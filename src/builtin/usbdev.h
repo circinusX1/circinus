@@ -1,13 +1,13 @@
 /*
-Copyright (c) 2014-2016 comarius.DPT All rights reserved.
+Copyright (c) 2014-2016 Marius C. All rights reserved.
 
 Redistribution and use in source and binary forms are permitted
 provided that the above copyright notice and this paragraph are
 duplicated in all such forms and that any documentation,
 advertising materials, and other materials related to such
 distribution and use acknowledge that the software was developed
-by the https://github.com/comarius. The name of the
-https://github.com/comarius may not be used to endorse or promote
+by the https://github.com/circinusX1. The name of the
+https://github.com/circinusX1/amutrion may not be used to endorse or promote
 products derived from this software without specific prior written permission.
 THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
@@ -35,7 +35,7 @@ public:
     UsbDev(SqObj&, E_TYPE  e,const char* dev,const char* name=nullptr);
     virtual ~UsbDev();
     SqArr enumerate();
-    bool  set_monitor(SqMemb& mem, size_t bytes);
+    bool  call_back(SqMemb& mem, size_t bytes);
     const char* _gets(int chars);
     SqArr _read(int chars);
     OVERW(DvUsb,Divais);
@@ -48,7 +48,7 @@ public:
         cls.Functor(_SC("open"), &DvUsb::iopen);
         cls.Functor(_SC("close"), &DvUsb::iclose);
         cls.Functor(_SC("enumerate"), &UsbDev::enumerate);
-        cls.Functor(_SC("set_monitor"), &UsbDev::set_monitor);
+        cls.Functor(_SC("call_back"), &UsbDev::call_back);
         cls.Overload<int (UsbDev::*)(SqArr&)>(_SC("setcr"), &RtxBus<UsbDev>::_setcr);
         cls.Overload<int (UsbDev::*)(const char*)>(_SC("puts"), &RtxBus<UsbDev>::_puts);
         cls.Overload<bool (UsbDev::*)(const char*, SqMemb&)>(_SC("puts_cb"), &RtxBus<UsbDev>::_puts_cb);

@@ -14,12 +14,11 @@ IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-/
 
 #ifdef R_PI
 #include "dlconfig.h"
 #include "main.h"
 #include "logs.h"
-#endif //BEAGLEBONE
+#endif //R_PI
 
 

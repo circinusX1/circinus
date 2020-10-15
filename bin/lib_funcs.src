@@ -1,6 +1,6 @@
 // SCRIPT  TESTED
 
-::using(eSOLIB|eGPIO|ePWM);
+::using(eSOLIB|eGPIO|ePWMM);
 
 setdbg(0xff);
 

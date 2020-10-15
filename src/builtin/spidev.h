@@ -1,13 +1,13 @@
 /*
-Copyright (c) 2014-2016 comarius.DPT All rights reserved.
+Copyright (c) 2014-2016 Marius C. All rights reserved.
 
 Redistribution and use in source and binary forms are permitted
 provided that the above copyright notice and this paragraph are
 duplicated in all such forms and that any documentation,
 advertising materials, and other materials related to such
 distribution and use acknowledge that the software was developed
-by the https://github.com/comarius. The name of the
-https://github.com/comarius may not be used to endorse or promote
+by the https://github.com/circinusX1. The name of the
+https://github.com/circinusX1/amutrion may not be used to endorse or promote
 products derived from this software without specific prior written permission.
 THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
@@ -35,7 +35,7 @@ public:
     SpiDev(ESPIBUS spi, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t freq, const char* name=nullptr);
     SpiDev(SqObj&, ESPIBUS spi, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t freq, const char* name=nullptr);
     virtual ~SpiDev();
-    bool set_monitor(SqMemb& mem, int bytes);
+    bool call_back(SqMemb& mem, int bytes);
     SqArr  _readreg(int bytes);
     OVERW(DvSpi,Divais)
     static void squit(SqEnvi& e){
@@ -47,7 +47,7 @@ public:
         cls.Functor(_SC("close"), &SpiDev::iclose);
 
         cls.Functor(_SC("ctx_it"), &SpiDev::ctx_it);
-        cls.Functor(_SC("set_monitor"), &SpiDev::set_monitor);
+        cls.Functor(_SC("call_back"), &SpiDev::call_back);
         cls.Overload<int (SpiDev::*)(SqArr&)>(_SC("write"), &RtxBus<SpiDev>::_fwrite);
         cls.Overload<SqArr (SpiDev::*)(int)>(_SC("read"), &RtxBus<SpiDev>::_fread);
         cls.Overload<SqArr& (SpiDev::*)(int,SqArr& a,int)>(_SC("ioctl"), &RtxBus<SpiDev>::_ioctl);

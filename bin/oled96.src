@@ -31,7 +31,7 @@ function main(a)
     if(s.xopen("128x64",0,0))
     {
         s.clear_display(0);
-        k = run_loop(kk, 1000);
+        k = run(kk, 1000);
     }
     s.xclose();
     return k;
