@@ -10,6 +10,16 @@ AD:  [PRELOADED SD CARDS FOR RASPERRY PI](https://www.redypis.org/)
 
 ##### Published: 1 Oct 2017
 
+```
+   git pull https://github.com/circinusX1/amutrion
+   cd amution
+   ./make.sh
+   cd bin
+   # run may sample. most of them are working just fine
+```
+
+
+
 ```C++
 // aka:
 var l1 = PIO(26,  DIR_OUT, LOW, "led");
@@ -20,11 +30,11 @@ pwm.set_value(80);
 ```
 
 #### SDK
-[!SDK](https://github.com/comarius/amutrion/wiki)
+[!SDK](https://github.com/circinusX1/amutrion/wiki)
 
 
 #### VIDEO
-[![video](https://raw.githubusercontent.com/comarius/amutrion/master/docs/rrembdemo.gif)](https://youtu.be/ZMlJj0PciWA)
+[![video](https://raw.githubusercontent.com/circinusX1/amutrion/master/docs/rrembdemo.gif)](https://youtu.be/ZMlJj0PciWA)
 
 
 ## RASPBERRY-PI GPIO, PWM, SPI, I2C, UART FRAMEWORK.  
@@ -247,21 +257,21 @@ Donations are owsom' appreciated
     *Custom application & scripts....contact me here: https://www.meeiot.org/?p=contact.php    
     
 
-![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/emb3.png)
+![logo](https://raw.githubusercontent.com/circinusX1/rembix/master/docs/emb3.png)
 
 
 Credits:
 
     *https://github.com/albertodemichelis/squirrel
     *https://github.com/hakase-labs/sqrat
-    *https://github.com/comarius/Easy-ssh_automation
-    *https://github.com/comarius/xomata
-    *https://github.com/comarius/scrite
-    *https://github.com/comarius/The-Ultra-C-Monex-
+    *https://github.com/circinusX1/Easy-ssh_automation
+    *https://github.com/circinusX1/xomata
+    *https://github.com/circinusX1/scrite
+    *https://github.com/circinusX1/The-Ultra-C-Monex-
     
     
 
-![logo](https://raw.githubusercontent.com/comarius/rembix/master/docs/embixico.png)
+![logo](https://raw.githubusercontent.com/circinusX1/rembix/master/docs/embixico.png)
 
 
 
@@ -348,6 +358,28 @@ Credits:
 [reverse ssh as a service](http://www.mylinuz.com)
 
 [key value database as a service](https://www.meeiot.org)
+
+
+
+
+### P.S.
+   * I have on my git more products than a mid size company.
+   * I have 25y+ experience in IT industry and I can help with
+     * Evaluation on ongoing projects you have with third companies 
+         * (re-estimations for tasks given to you)
+     * Professional Embedded Linux support
+     * Embedded, StCube/RTOS on STM32, Atmel Arduino / Linux on Raspbery PI, Beaglebone iMX
+     * C /C ++ Coding.
+     * Amazon, Google, Azure server configuration (Linux, Web Servers, Databases).
+   * Also
+     * Backup sollution servers on site for small companies up to 30 computers (GTA Only).
+     * Antivirus installation (GTA Only)
+   * And
+      * Custom private Server for remote shell and/or or key value storage.
+   * Contact
+       * https://www.meeiot.org/?p=contact.php
+       * https://mylinuz.com/?p=_contact.php
+     
 
 
 
