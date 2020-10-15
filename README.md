@@ -10,6 +10,16 @@ AD:  [PRELOADED SD CARDS FOR RASPERRY PI](https://www.redypis.org/)
 
 ##### Published: 1 Oct 2017
 
+```
+   git pull https://github.com/circinusX1/amutrion
+   cd amution
+   ./make.sh
+   cd bin
+   # run may sample. most of them are working just fine
+```
+
+
+
 ```C++
 // aka:
 var l1 = PIO(26,  DIR_OUT, LOW, "led");
