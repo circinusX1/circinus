@@ -6,6 +6,16 @@ AD:  [PRELOADED SD CARDS FOR RASPERRY PI](https://www.redypis.org/)
 #### No dependencies, 
 #### Written in C++
 #### Scripted: Java/C++ like syntax
+#### Only S.O.L.I.D. architectural patterns used. 
+
+   * HAL LAYER FOR LINUX (see https://github.com/circinusX1/amutrion/tree/master/src/drivers  FOLDER)
+       * I2C
+       * SPI
+       * GPIO
+       * PWM
+       * ADC
+       * UART
+       
 
 ##### Published: 1 Oct 2017
 
