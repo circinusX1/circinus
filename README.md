@@ -5,8 +5,17 @@ AD:  [PRELOADED SD CARDS FOR RASPERRY PI](https://www.redypis.org/)
 
 #### No dependencies, 
 #### Written in C++
-#### No Python or NodeJS or language syntax mumbos-jumbos!
-#### Straight java/C++ like syntax
+#### Scripted: Java/C++ like syntax
+#### Only S.O.L.I.D. architectural patterns used. 
+
+   * HAL LAYER FOR LINUX (see https://github.com/circinusX1/amutrion/tree/master/src/drivers  FOLDER)
+       * I2C
+       * SPI
+       * GPIO
+       * PWM
+       * ADC
+       * UART
+       
 
 ##### Published: 1 Oct 2017
 
@@ -21,13 +30,13 @@ AD:  [PRELOADED SD CARDS FOR RASPERRY PI](https://www.redypis.org/)
 
 
 ```C++
-// aka:
-var l1 = PIO(26,  DIR_OUT, LOW, "led");
+var l1 = PIO(26,  DIR_OUT, LOW, "led");         // GPIO
 l1.set_value(0);
-var pwm = PWM("0.0", 1000, 100, false, "pwm");
+var pwm = PWM("0.0", 1000, 100, false, "pwm");  // PWM
 pwm.set_value(80);
-
+li.call_back(my_function, ON_RISE|ON_FALL);
 ```
+
 
 #### SDK
 [!SDK](https://github.com/circinusX1/amutrion/wiki)
@@ -358,28 +367,5 @@ Credits:
 [reverse ssh as a service](http://www.mylinuz.com)
 
 [key value database as a service](https://www.meeiot.org)
-
-
-
-
-### P.S.
-   * I have on my git more products than a mid size company.
-   * I have 25y+ experience in IT industry and I can help with
-     * Evaluation on ongoing projects you have with third companies 
-         * (re-estimations for tasks given to you)
-     * Professional Embedded Linux support
-     * Embedded, StCube/RTOS on STM32, Atmel Arduino / Linux on Raspbery PI, Beaglebone iMX
-     * C /C ++ Coding.
-     * Amazon, Google, Azure server configuration (Linux, Web Servers, Databases).
-   * Also
-     * Backup sollution servers on site for small companies up to 30 computers (GTA Only).
-     * Antivirus installation (GTA Only)
-   * And
-      * Custom private Server for remote shell and/or or key value storage.
-   * Contact
-       * https://www.meeiot.org/?p=contact.php
-       * https://mylinuz.com/?p=_contact.php
-     
-
 
 
