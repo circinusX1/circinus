@@ -288,68 +288,10 @@ Credits:
 
 
 #### Build from sources
-###### Prerequisites: root file systems for ARM boards, arm gcc cross compiler and a Linux machine
-
-    * make sure in TOOLS folder you have links to filesystems fo ARM boards and to the arm-gnu-eaby toolcahin
-    * cd  to src and make the make_file ENV=env_bbb.sh  or env_rpi.sh or on the host for the host env_thishost.sh
-       
-       
-       
 ```
-.
-├── TOOLS                                      <<<<<<<<<<<<<<<  DO THIS
-│   ├── beaglebone   -> sym link to debian_root_file_system_beaglebone
-│   ├── imx6         -> sym link to debian_imx_file_system
-│   ├── raspberrypi  -> sym link to debian_root_file_system_raspberrypi
-│   ├── qteverywhere -> sym link to qt-everywhere-opensource-src-5.8.0
-│   └── toolchain    -> sym link to tolchain_arm_gcc_compiler
-    - chroot to every system root fs and install sqlite/curl/libusb, otherwise disable them form the Makefile   
-├── bin
-├── env_thishost.sh
-├── lib
-│   ├── libsqstdlib.a
-│   └── libsquirrel.a
-├── modules
-│   ├── bme280
-│   ├── bmi160
-│   └── swiringpi
-├── src
-│   ├── amutrion.pro
-│   ├── apis.cpp
-│   ├── apis.h
-│   ├── apis.o
-│   ├── builtin
-│   ├── comm
-│   ├── drivers
-│   │   ├── common
-│   │   └── platform
-│   │       ├── freebsd
-│   │       │   ├── beaglebone
-│   │       │   ├── nanopineozero
-│   │       │   └── raspberrypi
-│   │       └── linux
-│   │           ├── beaglebone
-│   │           ├── imx6
-│   │           ├── nanopineozero
-│   │           ├── raspberrypi
-│   │           └── thishost
-│   ├── env_bbb.sh
-│   ├── env_rpi.sh
-│   ├── env_thishost.sh
-│   ├── env_x86.sh
-│   ├── make_file
-│   ├── rapidjson
-│   ├── sq
-│   │   ├── include
-│   │   ├── sqrat
-│   │   │   ├── include
-│   │   │   └── sqratthread
-│   │   ├── sqstdlib
-│   │   └── squirrel
+./make.sh   (on each HW target, otherwise setup a toolhain accordingly)
 
-55 directories, 556 files
 ```
-
 
 
 # LICENSE ADDON
