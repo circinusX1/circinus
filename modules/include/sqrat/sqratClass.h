@@ -1,0 +1,1 @@
+../../../src/sq/sqrat/include/sqrat/sqratClass.h
