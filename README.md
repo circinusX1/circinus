@@ -23,7 +23,7 @@
    cd amution
    ./make.sh
    cd bin
-   # run may sample. most of them are working just fine
+   Some samples runs only on R-PI or BBB
 ```
 
 
