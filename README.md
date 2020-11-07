@@ -1,12 +1,11 @@
 
 ### Amutrion (old rembix), Industrial Strength Scripting Engine
 
-AD:  [PRELOADED SD CARDS FOR RASPERRY PI](https://www.redypis.org/) 
-
-#### No dependencies, 
+#### No dependencies,
 #### Written in C++
 #### Scripted: Java/C++ like syntax
-#### Only S.O.L.I.D. architectural patterns used. 
+#### S O L I D / K I S S. architecture
+#### No obfuscated syntax. Straight up readable API's.
 
    * HAL LAYER FOR LINUX (see https://github.com/circinusX1/amutrion/tree/master/src/drivers  FOLDER)
        * I2C
