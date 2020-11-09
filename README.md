@@ -1,9 +1,9 @@
 
-### Amutrion (old rembix), Industrial Strength Scripting Engine
+### Amutrion, Industrial Strength HAL Library for Linux (Scripting Engine in C++)
 
 #### No dependencies,
 #### Written in C++
-#### Scripted: Java/C++ like syntax
+#### Scripted: Java/C++ like syntax (Uses superfast scripting engine used in collest game engines 'http://www.squirrel-lang.org/')
 #### S O L I D / K I S S. architecture
 #### No obfuscated syntax. Straight up readable API's.
 
@@ -14,6 +14,7 @@
        * PWM
        * ADC
        * UART
+          * OPTIONAL RESFULL SERVER (JSON)
        
 
 ##### Published: 1 Oct 2017
@@ -21,17 +22,17 @@
 ```
    git pull https://github.com/circinusX1/amutrion
    cd amution
-   ./make.sh
+   ./make.sh  # On the target or chroot of your platform. WIll generate the bynary as $OS_$ARCH_amutrion
    cd bin
    Some samples runs only on R-PI or BBB
 ```
 
-
+# Syntax, Like Java
 
 ```C++
 var l1 = PIO(26,  DIR_OUT, LOW, "led");         // GPIO
 l1.set_value(0);
-var pwm = PWM("0.0", 1000, 100, false, "pwm");  // PWM
+var pwm = PWM("0.0", 1000/*freq*/, 100/*initial load*/, false/*reverse*/, "pwm"/*JSON name*/);  // PWM
 pwm.set_value(80);
 li.call_back(my_function, ON_RISE|ON_FALL);
 ```
