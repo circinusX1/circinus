@@ -36,7 +36,7 @@ I2CDev::I2CDev(SqObj& o,
                                  Reg<I2CDev>(this),
                                  RtxBus<I2CDev>(this),_regaddr(0),_bytes(nullptr)
 {
-    ctx_it(o, name);
+    regiter_it(o, name);
 }
 
 I2CDev::~I2CDev()

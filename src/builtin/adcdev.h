@@ -38,7 +38,7 @@ public:
         cls.Ctor<EADC_PIN, const char*>();
         cls.Ctor<SqObj&, EADC_PIN, const char*>();
 
-        cls.Functor(_SC("ctx_it"), &AdcDev::ctx_it);
+        cls.Functor(_SC("regiter_it"), &AdcDev::regiter_it);
         cls.Functor(_SC("get_value"), &AdcDev::get_value);
         cls.Functor(_SC("call_back"), &AdcDev::call_back);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);

@@ -49,7 +49,7 @@ public:
         cls.Ctor<SqObj&, EGPIO_PIN, EPIN_DIR, int, const char*>();
 
         //cls.Ctor<EGPIO_PIN, EPIN_DIR, int>();
-        cls.Functor(_SC("ctx_it"), &GpioDev::ctx_it);
+        cls.Functor(_SC("regiter_it"), &GpioDev::regiter_it);
         cls.Functor(_SC("set_value"), &GpioDev::set_value);
         cls.Functor(_SC("get_value"), &GpioDev::get_value);
         cls.Functor(_SC("get_freq"), &GpioDev::get_freq);

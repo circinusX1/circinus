@@ -38,7 +38,7 @@ UsbDev::UsbDev( SqObj& o,
                                   Reg<UsbDev>(this),
                                   RtxBus<UsbDev>(this),_bytes(nullptr),_nbytes(0)
 {
-    ctx_it(o, name);
+    regiter_it(o, name);
 
 }
 

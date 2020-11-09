@@ -28,7 +28,7 @@ AdcDev::AdcDev(SqObj& o,
                  EADC_PIN pn, const char* name):DvAdc(pn),
                  Divais(eINT, eADC, name),Reg<AdcDev>(this)
 {
-    ctx_it(o, name);
+    regiter_it(o, name);
 }
 
 

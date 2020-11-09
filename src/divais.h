@@ -95,7 +95,7 @@ public:
 		}
 	}
 	virtual ~Divais();
-	void  ctx_it(Sqrat::Object& o, const char* dev_key);
+	void  regiter_it(Sqrat::Object& o, const char* dev_key);
 	const char* name()const{return _name.c_str();};
 	const char* dev_key()const{return _ukey.c_str();};
 	void  reset();
@@ -146,7 +146,7 @@ private:
 };
 
 #define OVERW(B1,B2)															\
-	void ctx_it(Sqrat::Object& o,const char* dev_key){B2::ctx_it(o, dev_key);}	\
+	void regiter_it(Sqrat::Object& o,const char* dev_key){B2::regiter_it(o, dev_key);}	\
 	bool iopen(int em=O_RDWR){return B1::iopen(em);}							\
 	void iclose(){B1::iclose();}												\
 	void on_event(E_VENT e, const uint8_t* buff, int len, int options=0);			\

@@ -40,7 +40,7 @@ public:
         cls.Ctor<EPWM_PIN, int, int, bool,const char*>();
         cls.Ctor<SqObj&, EPWM_PIN, int, int, bool,const char*>();
 
-        cls.Functor(_SC("ctx_it"), &PwmDev::ctx_it);
+        cls.Functor(_SC("regiter_it"), &PwmDev::regiter_it);
         cls.Functor(_SC("set_value"), &PwmDev::set_value);
         cls.Functor(_SC("get_value"), &PwmDev::get_value);
         cls.Functor(_SC("call_back"), &PwmDev::call_back);

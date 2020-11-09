@@ -35,7 +35,7 @@ PwmDev::PwmDev(SqObj& o,
                                  Reg<PwmDev>(this)
 
 {
-    ctx_it(o, name);
+    regiter_it(o, name);
 }
 
 PwmDev::~PwmDev()

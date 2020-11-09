@@ -56,7 +56,7 @@ ComCurl::ComCurl(SqObj& o,
     _curl_slist_free_all= (p_curl_slist_free_all)curl_slist_free_all;
     _curl_easy_pause    = (p_curl_easy_pause)curl_easy_pause;
 #endif
-    ctx_it(o,id);
+    regiter_it(o,id);
 }
 
 ComCurl::ComCurl(int maxbuf,

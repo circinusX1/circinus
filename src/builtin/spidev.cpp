@@ -36,7 +36,7 @@ SpiDev::SpiDev(SqObj& o,
                                  Reg<SpiDev>(this),
                                  RtxBus<SpiDev>(this)
 {
-    ctx_it(o, name);
+    regiter_it(o, name);
     
 }
 

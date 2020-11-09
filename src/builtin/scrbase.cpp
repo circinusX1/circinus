@@ -22,7 +22,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 ScrBase::ScrBase(SqObj& o, E_TYPE e, const char* name):Divais(e, eSCRIPT, name),
                 Reg<ScrBase>(this)
 {
-    ctx_it(o, name);
+    regiter_it(o, name);
     _o.BindCppObject(this);
 
     std::cout << __FUNCTION__ << "\n";

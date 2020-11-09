@@ -35,7 +35,7 @@ SshComm::SshComm(SqObj& o,
                                     Reg<SshComm>(this),
                                     RtxBus<SshComm>(this),_bytes(nullptr),_nbytes(0)
 {
-    ctx_it(o, name);
+    regiter_it(o, name);
 }
 
 

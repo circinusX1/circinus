@@ -537,10 +537,11 @@ int run(SqMemb& f, int pulseme)
                     App->comit_devs();
                     now = then;
                     srv = f.Fcall<bool>(App, evented);
-                    __bsqenv->notify();
+                    __bsqenv->notify();//before get
                     if(*srv.Get()==false)
                         break;
                 }
+                //all the time
                 __bsqenv->notify();
             }
             if(Wdto &&  (then - nowwd) > (size_t)(Wdto*1000))

@@ -42,7 +42,7 @@ public:
         Sqrat::Class<I2CDev> cls(e.theVM(), _SC("I2C"));
         cls.Ctor<EI2CBUS, uint8_t, const char*>();
         cls.Ctor<SqObj&, EI2CBUS, uint8_t, const char*>();
-        cls.Functor(_SC("ctx_it"), &I2CDev::ctx_it);
+        cls.Functor(_SC("regiter_it"), &I2CDev::regiter_it);
         cls.Functor(_SC("call_back"), &I2CDev::call_back);
         cls.Functor(_SC("open"), &I2CDev::iopen);
         cls.Functor(_SC("close"), &I2CDev::iclose);

@@ -64,7 +64,7 @@ public:
 
     int watch(const char* devname);
     int update();
-    int ctx_it(const char* na);
+    int regiter_it(const char* na);
     int save(const char* name);
     int reset();
     int disk_sz();
@@ -77,7 +77,7 @@ public:
     static void squit(SqEnvi& e){
         Sqrat::Class<Database> cls(e.theVM(), _SC("DB"));
         cls.Ctor<int, int, const char*>();
-        cls.Functor(_SC("ctx_it"), &Database::ctx_it);
+        cls.Functor(_SC("regiter_it"), &Database::regiter_it);
         cls.Functor(_SC("update"), &Database::update);
         cls.Functor(_SC("save"), &Database::save);
         cls.Functor(_SC("reset"), &Database::reset);

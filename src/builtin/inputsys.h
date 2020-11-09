@@ -65,7 +65,7 @@ public:
         cls.Functor("get_keys",&InputSys::get_keys);
         cls.Functor("get_touch",&InputSys::get_touch);
 
-        cls.Functor(_SC("ctx_it"), &InputSys::ctx_it);
+        cls.Functor(_SC("regiter_it"), &InputSys::regiter_it);
 
         Sqrat::RootTable().Bind(_SC("SYSIN"), cls);
     }

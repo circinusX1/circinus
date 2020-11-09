@@ -71,7 +71,7 @@ void RestSrv::thread_main()
     LOGD1("thread exits");
 }
 
-int RestSrv::ctx_it(const char* dev_key)
+int RestSrv::regiter_it(const char* dev_key)
 {
     std::ofstream expFile;
     try{

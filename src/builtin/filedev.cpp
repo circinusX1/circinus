@@ -35,7 +35,7 @@ FileDev::FileDev(SqObj& o,
                                    Reg<FileDev>(this),
                                    RtxBus<FileDev>(this)
 {
-    ctx_it(o, name);
+    regiter_it(o, name);
 }
 
 

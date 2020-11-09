@@ -74,7 +74,7 @@ int Database::reset()
     return 0;
 }
 
-int Database::ctx_it(const char* nouse)
+int Database::regiter_it(const char* nouse)
 {
     if(!_present){ LOGW("db is disabled ") return false; }
     for(const auto& d: App->_devs)

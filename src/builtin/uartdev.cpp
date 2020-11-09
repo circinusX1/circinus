@@ -45,7 +45,7 @@ UartDev::UartDev(SqObj& o,
                      Reg<UartDev>(this),
                      RtxBus<UartDev>(this),_bytes(nullptr),_nbytes(0)
 {
-    ctx_it(o,name);
+    regiter_it(o,name);
     _cr.assign(1, 0xD);
 }
 

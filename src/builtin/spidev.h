@@ -46,7 +46,7 @@ public:
         cls.Functor(_SC("open"), &SpiDev::iopen);
         cls.Functor(_SC("close"), &SpiDev::iclose);
 
-        cls.Functor(_SC("ctx_it"), &SpiDev::ctx_it);
+        cls.Functor(_SC("regiter_it"), &SpiDev::regiter_it);
         cls.Functor(_SC("call_back"), &SpiDev::call_back);
         cls.Overload<int (SpiDev::*)(SqArr&)>(_SC("write"), &RtxBus<SpiDev>::_fwrite);
         cls.Overload<SqArr (SpiDev::*)(int)>(_SC("read"), &RtxBus<SpiDev>::_fread);

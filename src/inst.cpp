@@ -187,7 +187,6 @@ void   Inst::call_backs(time_t curtick)
             }
         }
     }
-
     ::usleep(_sleep_loop);
 }
 
