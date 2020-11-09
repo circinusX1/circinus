@@ -1,12 +1,11 @@
 
-### Amutrion (old rembix), Industrial Strength Scripting Engine
+### Amutrion, Industrial Strength HAL Library for Linux (Scripting Engine in C++)
 
-AD:  [PRELOADED SD CARDS FOR RASPERRY PI](https://www.redypis.org/) 
-
-#### No dependencies, 
+#### No dependencies,
 #### Written in C++
-#### Scripted: Java/C++ like syntax
-#### Only S.O.L.I.D. architectural patterns used. 
+#### Scripted: Java/C++ like syntax (Uses superfast scripting engine used in collest game engines 'http://www.squirrel-lang.org/')
+#### S O L I D / K I S S. architecture
+#### No obfuscated syntax. Straight up readable API's.
 
    * HAL LAYER FOR LINUX (see https://github.com/circinusX1/amutrion/tree/master/src/drivers  FOLDER)
        * I2C
@@ -15,6 +14,7 @@ AD:  [PRELOADED SD CARDS FOR RASPERRY PI](https://www.redypis.org/)
        * PWM
        * ADC
        * UART
+          * OPTIONAL RESFULL SERVER (JSON)
        
 
 ##### Published: 1 Oct 2017
@@ -22,17 +22,17 @@ AD:  [PRELOADED SD CARDS FOR RASPERRY PI](https://www.redypis.org/)
 ```
    git pull https://github.com/circinusX1/amutrion
    cd amution
-   ./make.sh
+   ./make.sh  # On the target or chroot of your platform. WIll generate the bynary as $OS_$ARCH_amutrion
    cd bin
-   # run may sample. most of them are working just fine
+   Some samples runs only on R-PI or BBB
 ```
 
-
+# Syntax, Like Java
 
 ```C++
 var l1 = PIO(26,  DIR_OUT, LOW, "led");         // GPIO
 l1.set_value(0);
-var pwm = PWM("0.0", 1000, 100, false, "pwm");  // PWM
+var pwm = PWM("0.0", 1000/*freq*/, 100/*initial load*/, false/*reverse*/, "pwm"/*JSON name*/);  // PWM
 pwm.set_value(80);
 li.call_back(my_function, ON_RISE|ON_FALL);
 ```
@@ -110,13 +110,14 @@ var k = 0;
 
 function main(ctx)
 {
-    pb.monitor(callback);               // this PIO fires events into the loop when state changes. 
+    pb.monitor(callback);           // calls callback when the pb state is changes
     l1.set_value(0);                // set this led to 0
     db.save_interval(15000);        // will save sensors/PIO's every 15 seconds
-    return run_loop(loop,1000);     // run loop() calling it at 1000 ms interval, though when pb state changes
+    return run(loop,1000);     // run loop() calling it at 1000 ms interval, though when pb state changes
 }
 
-function loop(ctx, dev)                // dev is not null when the monitored device has a change in state.
+function loop(ctx, dev)             // each of the devices fires the loop with the dev=true when a state in the dev changes.
+                                    // to get the new value you shoule prepare the dev with the 'dev.monitor(callback);' hook. 
 {
     l1.set_value(value); 
     l2.set_value(!value);
@@ -125,6 +126,10 @@ function loop(ctx, dev)                // dev is not null when the monitored dev
     pwm.set_duty(k++);
     value=!value;
     println("counter = " + counter.get_freq());  // this will print roughy 440
+    if(dev){
+      // opps the dev dev
+    }
+    
     return true;
 }
 
@@ -289,68 +294,10 @@ Credits:
 
 
 #### Build from sources
-###### Prerequisites: root file systems for ARM boards, arm gcc cross compiler and a Linux machine
-
-    * make sure in TOOLS folder you have links to filesystems fo ARM boards and to the arm-gnu-eaby toolcahin
-    * cd  to src and make the make_file ENV=env_bbb.sh  or env_rpi.sh or on the host for the host env_thishost.sh
-       
-       
-       
 ```
-.
-├── TOOLS                                      <<<<<<<<<<<<<<<  DO THIS
-│   ├── beaglebone   -> sym link to debian_root_file_system_beaglebone
-│   ├── imx6         -> sym link to debian_imx_file_system
-│   ├── raspberrypi  -> sym link to debian_root_file_system_raspberrypi
-│   ├── qteverywhere -> sym link to qt-everywhere-opensource-src-5.8.0
-│   └── toolchain    -> sym link to tolchain_arm_gcc_compiler
-    - chroot to every system root fs and install sqlite/curl/libusb, otherwise disable them form the Makefile   
-├── bin
-├── env_thishost.sh
-├── lib
-│   ├── libsqstdlib.a
-│   └── libsquirrel.a
-├── modules
-│   ├── bme280
-│   ├── bmi160
-│   └── swiringpi
-├── src
-│   ├── amutrion.pro
-│   ├── apis.cpp
-│   ├── apis.h
-│   ├── apis.o
-│   ├── builtin
-│   ├── comm
-│   ├── drivers
-│   │   ├── common
-│   │   └── platform
-│   │       ├── freebsd
-│   │       │   ├── beaglebone
-│   │       │   ├── nanopineozero
-│   │       │   └── raspberrypi
-│   │       └── linux
-│   │           ├── beaglebone
-│   │           ├── imx6
-│   │           ├── nanopineozero
-│   │           ├── raspberrypi
-│   │           └── thishost
-│   ├── env_bbb.sh
-│   ├── env_rpi.sh
-│   ├── env_thishost.sh
-│   ├── env_x86.sh
-│   ├── make_file
-│   ├── rapidjson
-│   ├── sq
-│   │   ├── include
-│   │   ├── sqrat
-│   │   │   ├── include
-│   │   │   └── sqratthread
-│   │   ├── sqstdlib
-│   │   └── squirrel
+./make.sh   (on each HW target, otherwise setup a toolhain accordingly)
 
-55 directories, 556 files
 ```
-
 
 
 # LICENSE ADDON
