@@ -110,13 +110,14 @@ var k = 0;
 
 function main(ctx)
 {
-    pb.monitor(callback);               // this PIO fires events into the loop when state changes. 
+    pb.monitor(callback);           // calls callback when the pb state is changes
     l1.set_value(0);                // set this led to 0
     db.save_interval(15000);        // will save sensors/PIO's every 15 seconds
-    return run_loop(loop,1000);     // run loop() calling it at 1000 ms interval, though when pb state changes
+    return run(loop,1000);     // run loop() calling it at 1000 ms interval, though when pb state changes
 }
 
-function loop(ctx, dev)                // dev is not null when the monitored device has a change in state.
+function loop(ctx, dev)             // each of the devices fires the loop with the dev=true when a state in the dev changes.
+                                    // to get the new value you shoule prepare the dev with the 'dev.monitor(callback);' hook. 
 {
     l1.set_value(value); 
     l2.set_value(!value);
@@ -125,6 +126,10 @@ function loop(ctx, dev)                // dev is not null when the monitored dev
     pwm.set_duty(k++);
     value=!value;
     println("counter = " + counter.get_freq());  // this will print roughy 440
+    if(dev){
+      // opps the dev dev
+    }
+    
     return true;
 }
 
