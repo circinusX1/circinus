@@ -316,3 +316,331 @@ Credits:
 [key value database as a service](https://www.meeiot.org)
 
 
+###  Examples:
+
+
+
+```cpp
+
+// PWM EXAMPLE
+
+::using(eGPIO|ePWMM|eSRV);
+
+setdbg(0xFF);
+
+// reconfig_sys(ePWMM, ["/sys/class/pwm/","","pwm-%d:%d"]);     // use /sys/class/pwm/pwm-C:P
+reconfig_sys(ePWMM, ["/dev/pwm/","",""]);                    // use /dev/pwm/PWM_PIN
+
+var pwm = PWM("0.0", 30000, 30, false, "pwm");
+
+function main(ctx)
+{
+   var pwm = PWM("ecap0", 30000, 50, false, "pwm");
+   return run(l,10);
+}
+
+var x=0;
+function l(c,d)
+{
+    pwm.set_value(x++);
+    if(x>99)
+        x=0;
+    return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+
+// SCRIPT  TESTED   R-PI GPIO's
+
+::using(eGPIO|ePWM);
+
+system("config-pin P9.41 gpio");
+system("config-pin P9.42 gpio");
+system("config-pin P9.41 out");
+system("config-pin P9.42 in-");
+
+led    := PIO(20, DIR_OUT, LOW, "led");
+button := PIO(7, DIR_IN, LOW, "buton");
+
+
+function main(ctx)
+{
+    //int, int, int, const char*
+    led.set_value(LOW);
+    led.set_value(HIGH);
+    led.set_value(LOW);
+    return run(loop,10);
+}
+
+function loop(ctx,devs)
+{
+    led.set_value(HIGH);
+    suspend(200);
+    led.set_value(LOW);
+    suspend(200);
+    return true;
+}
+
+
+//////////////////////////////////////////////////////////////
+
+
+// SCRIPT  TESTED   BME280 SENSOR
+
+::using(eI2C|eSRV);
+::loadmod("./modules/libbme280.so","THP");
+
+i2c    := I2C(8, 0x77, "i2c");  // the i2c THP is using
+thp    := THP("i2c", "bmp280"); // pass the i2c name as first parameter
+server := SRV(8000,"X");
+
+function main(x)
+{
+    thp.monitor(showth);
+    return run(mainloop,-1);
+}
+
+function showth(dev)
+{
+    var a = dev.thp();
+    println("THP = " + a[0] +
+            "  " + a[1] +
+            "  " +  a[2] );
+}
+
+function mainloop(ctx, notused)
+{
+    // read one by one every 1000 ms
+    println("T=" + thp.temperature() + " m*C  H=" +
+                 thp.humidity()   + " x100 %  P=" +
+                 thp.pressure()   + " mm Hg ");
+    return true;
+
+}
+
+
+//////////////////////////////////////////////////////////
+// SCRIPT  TESTED. CP2112 MUX
+
+::using(eI2C|eGPIO|eUART|eSRV);
+
+l1 := PIO(506,  DIR_OUT, LOW, "led");
+l2 := PIO(507,  DIR_OUT, HIGH, "led2");
+i2c := I2C(11, 0x68, "i2c");
+json := SRV(8000,"rest");
+
+
+function main(ctx)
+{
+    i2c.autoopen(false);
+    if(i2c.open(2)){
+        var arr = i2c.ioread(0, 4);
+        i2c.close();
+        println("reg: " + 0 + " = " + arr2a(arr,','));
+    }
+    println("L1=" + l1.set_toggle());
+    println("L2=" + l2.set_toggle());
+    return run(loop,2000);
+}
+
+function loop(ctx, dev)
+{
+    println("L1=" + l1.set_toggle());
+    println("L2=" + l2.set_toggle());
+    if(i2c.open(2)){
+        var arr = i2c.ioread(0, 4);
+        i2c.close();
+        println("reg: " + 0 + " = " + arr2a(arr,','));
+    }
+    return true;
+}
+
+
+///////////////////////////////////////////////////////////////////
+
+
+// SCRIPT  TESTED   WEB ACCESS TO ESP96 LIGHT CONTROL
+
+::using(eCURL|eSRV|eBASE|eBASE);
+
+setdbg(0xFF);
+
+class XX extends BASE
+{
+    _value = "";
+    curl   = CURL(2000,"led");
+    constructor()
+    {
+        _value = "xx";
+        base.constructor(this, eSTRING, "wrapp");
+    }
+
+    // get sample    get JSON ->>>>>>>
+    function get_value(key)
+    {
+       curl.set_url("192.168.1.223",0,"");
+       var html = curl.perform(4000);
+       if(html.find("Off"))
+            this._value="ON";
+       else
+            this._value="OFF";
+
+        return { /*dump test */
+            LED = this._value,
+            CMDS = ["ON","OFF"],
+            VALS = [0,1,2,3,4,5],
+            REALS = [3.4,5.6,0.7777]
+        };
+    }
+
+    function set_value(k,v)
+    {
+        curl.set_url("192.168.1.223/LED="+v,0,"");
+        println("--------sending ---->" + "192.168.1.223/LED="+v )
+        var html = curl.perform(4000);
+        return true;
+    }
+};
+
+
+var xx = XX();
+var srv = SRV(8000,"ddd");
+
+function main(o)
+{
+    return run(loo,-1);
+}
+
+function loo(x,d)
+{
+    return true;
+}
+
+
+/////////////////////////////////////////////////////////////////////////
+
+
+
+/**
+SCRIPT  TESTED  PWM PLAY 
+# @ add this: to /boot/config.txt
+dtoverlay=pwm-2chan,pin=12,func=4,pin2=13,func2=4
+dtoverlay=pwm-2chan,pin=18,func=2,pin2=19,func2=2
+
+reference: R-PI  https://librpip.frasersdev.net/peripheral-config/pwm0and1/
+
+R-PI  PWM PINS  GPIO 12 13 18  19
+                PWM  0  1   0   1
+                FUNC 4  4   2   2
+then check $ lsmod | grep pwm
+              pwm_bcm2835 2631 2
+
+then cd /sys/class/pwm
+ls
+    use PWM class as
+                PWM("X.Y")   where X os pwnchipX and Y is pwm-Y
+*/
+
+::using(eGPIO|ePWMM|eSRV);
+
+var srv = SRV(8000,"srv");
+
+//var l1 = PIO(21,  DIR_OUT, HIGH, "led1");
+//var l2 = PIO(20,  DIR_OUT, HIGH, "led2");
+
+
+var edge = PIO(14, DIR_IN, HIGH, "detect");
+
+var pwm0 = PWM("0.0", 1000, 100, false, "pwm1"); //GPIO 13
+var pwm1 = PWM("0.1", 1000, 100, false, "pwm2"); //GPIO 18
+//var pb = PIO(21,  DIR_IN,  LOW, "buton");
+
+function main(ctx)
+{
+    edge.call_back(callback, RISE);
+    return run(loop,2000);
+}
+
+var K=0;
+var I=1;
+function loop(ctx, dev)
+{
+    pwm0.set_value(K);
+    pwm1.set_value(K*2);
+    K+=I;
+    if(K>99 || K<1)
+        I=-I;
+    return true;
+}
+
+function callback(dev)
+{
+    println("edge rised " + dev.get_value());
+}
+
+
+
+// SCRIPT  TESTED ON OLED DISPLAY TEST
+
+::using(eI2C|eGPIO|ePWMM|eSRV|eDB);
+::include("modules/_oled96.inc");
+
+/*
+sudo nano /lib/udev/rules.d/60-perip.rules
+KERNEL=="gpiochip*", GROUP="gpio"
+KERNEL=="pwmchip*", GROUP="gpio"
+KERNEL=="i2c-0"     , GROUP="i2c", MODE="0660"
+KERNEL=="i2c-[1-9]*", GROUP="i2c", MODE="0666"
+#
+sudo adduser $USER i2c
+sudo adduser $USER gpio
+sudo adduser $USER pwm
+sudo service udev restart
+*/
+
+dbs   := DB(10000, 1000, "./database");
+json := SRV(8000,"rest");
+local s = Oled96(11, 0x3c, "OLED96");
+
+l1 := PIO(506,  DIR_OUT, LOW, "led");
+l2 := PIO(507,  DIR_OUT, HIGH, "led2");
+
+//s.autoopen(false);
+function main(a)
+{
+    var k;
+    s.autoopen(false);
+    if(s.xopen("128x64",0,0))
+    {
+        s.clear_display(0);
+        k = run(kk, 1000);
+    }
+    s.xclose();
+    return k;
+}
+
+var K=10;
+function kk(ctx,dev)
+{
+    s.write_string(0,1, get_strtime() ,2);
+    K++;
+    println("L1=" + l1.set_toggle());
+    println("L2=" + l2.set_toggle());
+    sleep(1000);
+
+    ctx.get_dev("led2").set_toggle();
+    K--;
+    return K > 0 ? true : false;
+}
+
+```
+
+
+```
+
+
+
+
+
+
