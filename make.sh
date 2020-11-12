@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[[ -z $1 ]] && echo "$0 parameter as: beaglebone, imx6 or raspberrypi thishost" && exit 1
+[[ -z $1 ]] && echo "$0 parameter as: beaglebone (on ARM), imx6 (on ARM) or raspberrypi (on ARM) thishost (on x86)" && exit 1
 BOARD=$1
 arch=$(uname -m)
 oss=$(uname)
