@@ -25,8 +25,8 @@ function mainloop(ctx, notused)
 {
     // read one by one every 1000 ms
     println("T=" + thp.temperature() + " m*C  H=" +
-                 thp.humidity()   + " x100 %  P=" +
-                 thp.pressure()   + " mm Hg ");
+                   thp.humidity()   + " x100 %  P=" +
+                   thp.pressure()   + " mm Hg ");
     return true;
 
 }

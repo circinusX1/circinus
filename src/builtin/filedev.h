@@ -43,7 +43,7 @@ public:
         cls.Ctor<SqObj&, E_TYPE, const char*, const char* >();
 
 
-        cls.Functor(_SC("regiter_it"), &FileDev::regiter_it);
+        cls.Functor(_SC("plug_it"), &FileDev::plug_it);
         cls.Functor(_SC("open"), &FileDev::iopen);
         cls.Functor(_SC("close"), &FileDev::iclose);
         cls.Functor(_SC("call_back"), &FileDev::call_back);

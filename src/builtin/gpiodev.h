@@ -43,13 +43,13 @@ public:
 
     OVERW(DvGpio,Divais)
     static void squit(SqEnvi& e){
-        Sqrat::Class<GpioDev> cls(e.theVM(), _SC("PIO"));
+        Sqrat::Class<GpioDev> cls(e.theVM(), _SC("GPIO"));
         cls.Ctor<EGPIO_PIN, EPIN_DIR, int, const char*>();
         cls.Ctor<EGPIO_PIN, int, const char*>();        // counter or tone
         cls.Ctor<SqObj&, EGPIO_PIN, EPIN_DIR, int, const char*>();
 
         //cls.Ctor<EGPIO_PIN, EPIN_DIR, int>();
-        cls.Functor(_SC("regiter_it"), &GpioDev::regiter_it);
+        cls.Functor(_SC("plug_it"), &GpioDev::plug_it);
         cls.Functor(_SC("set_value"), &GpioDev::set_value);
         cls.Functor(_SC("get_value"), &GpioDev::get_value);
         cls.Functor(_SC("get_freq"), &GpioDev::get_freq);
@@ -58,7 +58,7 @@ public:
         cls.Functor(_SC("set_invert"), &GpioDev::set_invert);
         cls.Functor(_SC("set_toggle"), &GpioDev::set_toggle);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
-        Sqrat::RootTable().Bind(_SC("PIO"), cls);
+        Sqrat::RootTable().Bind(_SC("GPIO"), cls);
     }
 
 private:

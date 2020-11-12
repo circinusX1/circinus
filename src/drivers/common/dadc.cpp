@@ -33,6 +33,11 @@ namespace GenericHw
 		_dev_node = sys;
     }
 
+    DvAdc::DvAdc(const char* sysfile)
+    {
+        _dev_node = sysfile;
+    }
+
     DvAdc::~DvAdc()
     {
 		iclose();

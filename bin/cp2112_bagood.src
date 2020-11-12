@@ -4,8 +4,8 @@
 
 json := SRV(8000,"rest");
 
-led:=PIO(357, DIR_OUT, LOW, "led");
-button:=PIO(358, DIR_IN, HIGH, "but");
+led:=GPIO(357, DIR_OUT, LOW, "led");
+button:=GPIO(358, DIR_IN, HIGH, "but");
 level:=1
 
 function main(ctx)

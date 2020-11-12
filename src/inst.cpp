@@ -64,7 +64,7 @@ Inst::~Inst()
         {
              ::waitpid(pid, &st, 0);
              if(st==0){
-                LOGI("child process" << pid << "exited normally ");
+                LOGI("child proceeOutss" << pid << "exited normally ");
              }
              else {
                 LOGI("child process" << pid << "exited with error ");

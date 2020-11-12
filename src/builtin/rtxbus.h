@@ -242,7 +242,6 @@ public:
             for(int i=0;i<expect;++i)
                 a.SetValue(i,ptr[i]);
         }
-
         return a;
     }
 

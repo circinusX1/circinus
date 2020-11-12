@@ -72,6 +72,8 @@ inline long stoll(const std::string& str)
 #   endif
 #endif
 
+typedef float BY_SYS_FILE;
+
 namespace GenericHw
 {
 

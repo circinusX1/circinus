@@ -593,7 +593,7 @@ public:
 
 	}
 
-	static void regiter_it(HSKVM v,const SQChar * p_name,const SQChar *p_base_class_name, bool p_instantiable=true) {
+	static void plug_it(HSKVM v,const SQChar * p_name,const SQChar *p_base_class_name, bool p_instantiable=true) {
 
 		sq_pushroottable(v);
 		sq_pushstring(v,p_base_class_name,-1);
@@ -608,12 +608,12 @@ public:
 		HSQOBJECT base_class;
 		sq_resetobject(&base_class);
 		sq_getstackobj(v,-1,&base_class);
-		regiter_it(v,p_name,&base_class,p_instantiable);
+		plug_it(v,p_name,&base_class,p_instantiable);
 		sq_pop(v,2); // pop base class and root table
 
 	}
 
-	static void regiter_it(HSKVM v,const SQChar * p_name,HSQOBJECT *p_base_class=NULL, bool p_instantiable=true) {
+	static void plug_it(HSKVM v,const SQChar * p_name,HSQOBJECT *p_base_class=NULL, bool p_instantiable=true) {
 
  		// already bound
 		if (ctxregialized) {
@@ -662,7 +662,7 @@ public:
 
 };
 
-// regiter_it static variables.
+// plug_it static variables.
 
 template<class T,class A>
 HSQOBJECT SqBind<T,A>::class_id;

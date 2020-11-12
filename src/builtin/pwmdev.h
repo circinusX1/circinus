@@ -24,11 +24,12 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 using namespace GenericHw;
 
-class PwmDev: public DvPwm, public Divais, private Reg<PwmDev>// , public Divais
+class PwmDev: public DvPwm, public Divais, private Reg<PwmDev>
 {
 public:
     PwmDev(EPWM_PIN pin, int period, int val, bool inv, const char* name=nullptr);
     PwmDev(SqObj&, EPWM_PIN pin, int period, int val, bool inv, const char* name=nullptr);
+
     virtual ~PwmDev();
     int         set_value(EPWM_VAL val);
     EPWM_VAL    get_value();
@@ -40,7 +41,7 @@ public:
         cls.Ctor<EPWM_PIN, int, int, bool,const char*>();
         cls.Ctor<SqObj&, EPWM_PIN, int, int, bool,const char*>();
 
-        cls.Functor(_SC("regiter_it"), &PwmDev::regiter_it);
+        cls.Functor(_SC("plug_it"), &PwmDev::plug_it);
         cls.Functor(_SC("set_value"), &PwmDev::set_value);
         cls.Functor(_SC("get_value"), &PwmDev::get_value);
         cls.Functor(_SC("call_back"), &PwmDev::call_back);

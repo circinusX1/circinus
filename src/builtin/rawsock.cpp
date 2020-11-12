@@ -39,7 +39,7 @@ RawSock::RawSock(SqObj& o,
     Reg<RawSock>(this),
     RtxBus<RawSock>(this),_bytes(nullptr)
 {
-    regiter_it(o, name);
+    plug_it(o, name);
 }
 
 RawSock::~RawSock()

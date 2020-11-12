@@ -3,14 +3,12 @@
 
 setdbg(0xFF);
 
-// reconfig_sys(ePWMM, ["/sys/class/pwm/","","pwm-%d:%d"]);     // use /sys/class/pwm/pwm-C:P
-reconfig_sys(ePWMM, ["/dev/pwm/","",""]);                    // use /dev/pwm/PWM_PIN
+sys_config(ePWMM, ["/dev/pwm/","/*path fmt*/","/*chip fmt*/"]);                    // use /dev/pwm/PWM_PIN
 
-var pwm = PWM("0.0", 30000, 30, false, "pwm");
+var pwm2 = PWM("ecap0", 30000, 50, false, "pwm");
 
 function main(ctx)
 {
-   var pwm = PWM("ecap0", 30000, 50, false, "pwm");
    return run(l,10);
 }
 

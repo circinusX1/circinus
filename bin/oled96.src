@@ -20,8 +20,8 @@ dbs   := DB(10000, 1000, "./database");
 json := SRV(8000,"rest");
 local s = Oled96(11, 0x3c, "OLED96");
 
-l1 := PIO(506,  DIR_OUT, LOW, "led");
-l2 := PIO(507,  DIR_OUT, HIGH, "led2");
+l1 := GPIO(506,  DIR_OUT, LOW, "led");
+l2 := GPIO(507,  DIR_OUT, HIGH, "led2");
 
 //s.autoopen(false);
 function main(a)

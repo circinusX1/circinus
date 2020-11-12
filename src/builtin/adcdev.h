@@ -27,22 +27,22 @@ using namespace GenericHw;
 class AdcDev: public DvAdc, public Divais, private Reg<AdcDev>// , public Divais
 {
 public:
-    AdcDev(EADC_PIN pn,  const char* name=nullptr); // tone
-    AdcDev(SqObj&, EADC_PIN pn, const char* name=nullptr);
+    explicit AdcDev(const char* pn,  const char* name=nullptr); // tone
+    explicit AdcDev(SqObj&, const char* fname, const char* name=nullptr);
     virtual ~AdcDev();
     int      get_value();
     bool     call_back(SqMemb& ch);
     OVERW(AdcDev,Divais)
     static void squit(SqEnvi& e){
-        Sqrat::Class<AdcDev> cls(e.theVM(), _SC("AIN"));
-        cls.Ctor<EADC_PIN, const char*>();
-        cls.Ctor<SqObj&, EADC_PIN, const char*>();
+        Sqrat::Class<AdcDev> cls(e.theVM(), _SC("ADC"));
+        cls.Ctor<const char*, const char*>();
+        cls.Ctor<SqObj&, const char*, const char*>();
 
-        cls.Functor(_SC("regiter_it"), &AdcDev::regiter_it);
+        cls.Functor(_SC("plug_it"), &AdcDev::plug_it);
         cls.Functor(_SC("get_value"), &AdcDev::get_value);
         cls.Functor(_SC("call_back"), &AdcDev::call_back);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
-        Sqrat::RootTable().Bind(_SC("AIN"), cls);
+        Sqrat::RootTable().Bind(_SC("ADC"), cls);
     }
 private:
     bool        _write_now(const any_t& vl);

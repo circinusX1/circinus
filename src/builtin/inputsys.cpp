@@ -50,7 +50,7 @@ InputSys::InputSys(SqObj& o,
                    const char* name):
     Divais (eBINARY, eSPI, name),Reg<InputSys>(this),_sysfile(device),_edev(e)
 {
-    regiter_it(o, name);
+    plug_it(o, name);
 }
 
 

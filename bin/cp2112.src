@@ -2,8 +2,8 @@
 
 ::using(eI2C|eGPIO|eUART|eSRV);
 
-l1 := PIO(506,  DIR_OUT, LOW, "led");
-l2 := PIO(507,  DIR_OUT, HIGH, "led2");
+l1 := GPIO(506,  DIR_OUT, LOW, "led");
+l2 := GPIO(507,  DIR_OUT, HIGH, "led2");
 i2c := I2C(11, 0x68, "i2c");
 json := SRV(8000,"rest");
 

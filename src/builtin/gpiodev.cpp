@@ -50,7 +50,7 @@ GpioDev::GpioDev(SqObj& o,
                                                 _curval(1),
                                                 _counting(false)
 {
-    regiter_it(o, name);
+    plug_it(o, name);
     LOGD3(__FUNCTION__ <<" "<< name);
 }
 

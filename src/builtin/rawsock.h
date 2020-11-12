@@ -47,7 +47,7 @@ public:
         cls.Ctor<E_TYPE, const char*, int ,const char*>();
         cls.Ctor<SqObj&, E_TYPE, const char*, int,const char*>();
 
-        cls.Functor(_SC("regiter_it"), &RawSock::regiter_it);
+        cls.Functor(_SC("plug_it"), &RawSock::plug_it);
         cls.Functor(_SC("call_back"), &RawSock::call_back);
         cls.Functor(_SC("open"), &RawSock::iopen);
         cls.Functor(_SC("close"), &RawSock::iclose);

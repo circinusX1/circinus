@@ -43,7 +43,7 @@ public:
         Sqrat::Class<UartDev> cls(e.theVM(), _SC("UART"));
         cls.Ctor<E_TYPE, const char*,int, const char*,const char*>();
         cls.Ctor<SqObj&, E_TYPE, const char*,int, const char*, const char*>();
-        cls.Functor(_SC("regiter_it"), &UartDev::regiter_it);
+        cls.Functor(_SC("plug_it"), &UartDev::plug_it);
 
         cls.Functor(_SC("open"), &UartDev::iopen);
         cls.Functor(_SC("close"), &UartDev::iclose);

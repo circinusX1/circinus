@@ -8,13 +8,13 @@ dtoverlay=pwm-2chan,pin=12,func=4,pin2=13,func2=4
 
 setdbg(0);
 
-var l1 = PIO(26,  DIR_OUT, LOW, "led");
-var l2 = PIO(19,  DIR_OUT, HIGH, "led2");
-var l3 = PIO(13,  DIR_OUT, LOW, "led3");
-var l4 = PIO(6,   DIR_OUT, HIGH, "led4");
-var pb = PIO(21,  DIR_IN,  LOW, "buton");
-var tone = PIO(17,  50, "tone");
-var counter = PIO(4, -1000, "count");
+var l1 = GPIO(26,  DIR_OUT, LOW, "led");
+var l2 = GPIO(19,  DIR_OUT, HIGH, "led2");
+var l3 = GPIO(13,  DIR_OUT, LOW, "led3");
+var l4 = GPIO(6,   DIR_OUT, HIGH, "led4");
+var pb = GPIO(21,  DIR_IN,  LOW, "buton");
+var tone = GPIO(17,  50, "tone");
+var counter = GPIO(4, -1000, "count");
 var pwm = PWM("0.0", 1000, 100, false, "pwm");
 var srv = SRV(8000,"srv");
 var value = 1;

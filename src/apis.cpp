@@ -577,9 +577,9 @@ void _exit_app()
     ApStat=EXIT_APP;
 }
 
-static void reconfig_sys(EPERIPH e, SqArr& a)
+static void sys_config(EPERIPH e, SqArr& a)
 {
-    char c[3][128] = {"","",""};
+    char c[3][128] = {"",""};
 
     for(int i=0;i<a.GetSize();i++)
     {
@@ -610,6 +610,12 @@ static void reconfig_sys(EPERIPH e, SqArr& a)
 static Inst* context()
 {
     return App;
+}
+
+bool dynamic(const char* lib, const char* devname)
+{
+
+    return false;
 }
 
 bool loadmod(const char* lib, const char* devname)
@@ -682,6 +688,7 @@ void globals_expose(SqEnvi& sq)
 			.Const("eJOYSTIC",eJOYSTIC)
 			.Const("NOKEY","*")
 			.Const("INPUT", 0)
+			.Const("BY_SYS", 1.0f)
 			.Const("OUTPUT", 1)
 			.Const("DIR_IN", eIn)
 			.Const("DIR_OUT", eOut)
@@ -728,6 +735,7 @@ void globals_expose(SqEnvi& sq)
 
 	Sqrat::RootTable(sq.theVM()).Functor("execute",&execute);
 	Sqrat::RootTable(sq.theVM()).Functor("loadmod",&loadmod);
+	Sqrat::RootTable(sq.theVM()).Functor("dynamic",&dynamic);
 	Sqrat::RootTable(sq.theVM()).Functor("context",&context);
 	Sqrat::RootTable(sq.theVM()).Functor("ctx",&context);
 	Sqrat::RootTable(sq.theVM()).Functor("i2a",&i2a);
@@ -756,7 +764,7 @@ void globals_expose(SqEnvi& sq)
 	Sqrat::RootTable(sq.theVM()).Functor("exitapp", &exitapp);
 	Sqrat::RootTable(sq.theVM()).Functor("println", &println);
 	Sqrat::RootTable(sq.theVM()).Functor("errorln", &errorln);
-	Sqrat::RootTable(sq.theVM()).Functor("reconfig_sys", &reconfig_sys);
+	Sqrat::RootTable(sq.theVM()).Functor("sys_config", &sys_config);
 	Sqrat::RootTable(sq.theVM()).Functor("S8", &s8);
 	Sqrat::RootTable(sq.theVM()).Functor("S16", &s16);
 	Sqrat::RootTable(sq.theVM()).Functor("R32", &r32);

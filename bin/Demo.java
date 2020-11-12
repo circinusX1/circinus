@@ -27,7 +27,7 @@ REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX
 //              SIMPLE LED BLINK //////////////
 
 ::using(eGPIO|ePWM);
-led  := PIO(20, DIR_OUT, LOW, "led");
+led  := GPIO(20, DIR_OUT, LOW, "led");
 function main(ctx)
 {
     return run(program,10);
@@ -78,8 +78,8 @@ function l(c, d)
 /////////////  2 GPIO;s I2C and REST server //////////////////
 
 ::using(eI2C|eGPIO|eUART|eSRV);
-l1   := PIO(506,  DIR_OUT, LOW, "led");
-l2   := PIO(507,  DIR_OUT, HIGH, "led2");
+l1   := GPIO(506,  DIR_OUT, LOW, "led");
+l2   := GPIO(507,  DIR_OUT, HIGH, "led2");
 i2c  := I2C(11, 0x68, "i2c");
 json := SRV(8000,"rest");
 
@@ -235,10 +235,10 @@ function loo(x,d)
 
 ::using(eGPIO|ePWMM|eSRV);
 
-var l3 = PIO(13,  DIR_OUT, LOW, "led3");
-var pb = PIO(21,  DIR_IN,  LOW, "buton");
-var tone = PIO(17,  50, "tone");
-var counter = PIO(4, -1000, "count");
+var l3 = GPIO(13,  DIR_OUT, LOW, "led3");
+var pb = GPIO(21,  DIR_IN,  LOW, "buton");
+var tone = GPIO(17,  50, "tone");
+var counter = GPIO(4, -1000, "count");
 var pwm = PWM("0.0", 1000, 100, false, "pwm");
 
 function main(ctx)

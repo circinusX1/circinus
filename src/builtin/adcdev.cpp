@@ -17,20 +17,19 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "adcdev.h"
 #include "inst.h"
 
-AdcDev::AdcDev(EADC_PIN pn,
-                 const char* name):DvAdc(pn),
+AdcDev::AdcDev(const char* fname,
+                 const char* name):DvAdc(fname),
                  Divais(eINT, eADC, name),Reg<AdcDev>(this)
 {
     _o.BindCppObject(this);
 }
 
 AdcDev::AdcDev(SqObj& o,
-                 EADC_PIN pn, const char* name):DvAdc(pn),
+                 const char* fname, const char* name):DvAdc(fname),
                  Divais(eINT, eADC, name),Reg<AdcDev>(this)
 {
-    regiter_it(o, name);
+    plug_it(o, name);
 }
-
 
 AdcDev::~AdcDev()
 {
@@ -49,8 +48,7 @@ int  AdcDev::get_value()
     size_t  by;
     if((by=this->bread((uint8_t*)val, sizeof(val)))) //comes as string
     {
-        if(_monitor)
-            _mon_dirt=_check_dirt();
+        _mon_dirt=_check_dirt();
         return _curdata.atoi();
     }
     return -INT_MAX;
@@ -68,7 +66,8 @@ size_t  AdcDev::_fecth(any_t& vl, const char* filter)
 
 bool AdcDev::_mon_pick(size_t t)
 {
-    return false;
+    get_value();
+    return _mon_dirt;
 }
 
 bool AdcDev::call_back(SqMemb& m)
@@ -80,6 +79,7 @@ bool AdcDev::call_back(SqMemb& m)
     }else{
         _on_event=m;
         _monitor = true;
+        get_value(); // clear ditry
     }
     return _monitor;
 }

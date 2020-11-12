@@ -1,0 +1,16 @@
+// SCRIPT  TESTED
+
+::using(eADC|eI2C|eSRV);
+
+var a = ADC(1,"xxx");
+
+function main(cx)
+{
+
+    return run(program,1000);
+}
+
+function program(c,d)
+{
+    return true;
+}

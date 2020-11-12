@@ -35,7 +35,7 @@ PwmDev::PwmDev(SqObj& o,
                                  Reg<PwmDev>(this)
 
 {
-    regiter_it(o, name);
+    plug_it(o, name);
 }
 
 PwmDev::~PwmDev()

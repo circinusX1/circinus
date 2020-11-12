@@ -26,6 +26,7 @@ namespace GenericHw
 {
 
 typedef enum EADC{}EADC;
+
 enum EADC_PIN {
     AIN0 = 0,
     AIN1 = 1,
@@ -42,6 +43,7 @@ class DvAdc : public DvCore, public IoOps
 {
 public:
     DvAdc(EADC_PIN adc);
+    DvAdc(const char* adc);
     virtual ~DvAdc();
     virtual bool    iopen(int  mode=O_RDWR);
     virtual void    iclose();

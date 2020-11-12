@@ -35,7 +35,7 @@ DvGpio::DvGpio(EGPIO_PIN pin, EPIN_DIR dir, int on):_pin(pin),_dir(dir)
     _config("gpio",_sys);
     _config("gpio_fmt",_fmt);
     ::sprintf(sf, _fmt.c_str(), _sys.c_str(), pin);
-	_dev_node  = sf;
+    _dev_node  = sf;
     _exPin();
     _dirIt();
     _wrt(_dev_node+"/value",std::to_string(on).c_str());

@@ -1,6 +1,6 @@
 // SCRIPT  TESTED
 
-::using(eCURL|eSRV|eBASE|eBASE);
+::using(eCURL|eSRV|eBASE);
 
 setdbg(0xFF);
 

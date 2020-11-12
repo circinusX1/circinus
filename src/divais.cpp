@@ -76,7 +76,7 @@ bool Divais::_check_dirt()
     return false;
 }
 
-void Divais::regiter_it(SqObj& o, const char* dev_key)
+void Divais::plug_it(SqObj& o, const char* dev_key)
 {
     _ukey = dev_key;
     _o = o;

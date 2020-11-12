@@ -59,7 +59,7 @@ public:
     RestSrv(int port, const char* name);
     ~RestSrv();
     int   reply(const char* str);
-    int   regiter_it(const char* dev_key);
+    int   plug_it(const char* dev_key);
     void  close();
     int bus()const;
     const char* treq();
@@ -72,7 +72,7 @@ public:
         cls.Ctor<int, const char*>();
         cls.Functor(_SC("treq"), &RestSrv::treq);
         cls.Functor(_SC("reply"), &RestSrv::reply);
-        cls.Functor(_SC("regiter_it"), &RestSrv::regiter_it);
+        cls.Functor(_SC("plug_it"), &RestSrv::plug_it);
         Sqrat::RootTable().Bind(_SC("SRV"), cls);
     }
 

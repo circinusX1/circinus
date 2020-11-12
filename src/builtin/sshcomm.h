@@ -45,7 +45,7 @@ public:
         cls.Ctor<const char*, const char* >();
         cls.Ctor<SqObj&, const char*, const char* >();
 
-        cls.Functor(_SC("regiter_it"), &SshComm::regiter_it);
+        cls.Functor(_SC("plug_it"), &SshComm::plug_it);
         cls.Functor(_SC("open"), &SshComm::iopen);
         cls.Functor(_SC("close"), &SshComm::iclose);
         cls.Functor(_SC("call_back"), &SshComm::call_back);
