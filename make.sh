@@ -6,7 +6,7 @@ arch=$(uname -m)
 oss=$(uname)
 
 pushd src/sq/squirrel
-rm -rf *.o
+# rm -rf *.o
 rm -rf *.a
 g++ -I../include -c -fPIC  *.cpp 
 ar rcs libsquirrel-${arch}-${oss}.a *.o
