@@ -1,7 +1,9 @@
-// SCRIPT  TESTED ON CP2112
+// SCRIPT  TESTED ON BBB  I2C-2. started as sudo due the i2c dev
 
 ::using(eI2C|eGPIO|ePWMM|eSRV|eDB);
 ::include("modules/_oled96.inc");
+
+
 
 /*
 sudo nano /lib/udev/rules.d/60-perip.rules
@@ -16,12 +18,13 @@ sudo adduser $USER pwm
 sudo service udev restart
 */
 
+print( "If error is: bad file descriptor run as sudo \n");
 dbs   := DB(10000, 1000, "./database");
 json := SRV(8000,"rest");
-local s = Oled96(11, 0x3c, "OLED96");
+local s = Oled96(2, 0x3c, "OLED96");
 
-l1 := GPIO(506,  DIR_OUT, LOW, "led");
-l2 := GPIO(507,  DIR_OUT, HIGH, "led2");
+//l1 := GPIO(506,  DIR_OUT, LOW, "led");
+//l2 := GPIO(507,  DIR_OUT, HIGH, "led2");
 
 //s.autoopen(false);
 function main(a)
@@ -38,15 +41,17 @@ function main(a)
 }
 
 var K=10;
+
 function kk(ctx,dev)
 {
     s.write_string(0,1, get_strtime() ,2);
-    K++;
-    println("L1=" + l1.set_toggle());
-    println("L2=" + l2.set_toggle());
-    sleep(1000);
+//    K++;
+//    println("L1=" + l1.set_toggle());
+//    println("L2=" + l2.set_toggle());
+//    sleep(1000);
 
-    ctx.get_dev("led2").set_toggle();
+//   ctx.get_dev("led2").set_toggle();
+    print(K + "\n");
     K--;
     return K > 0 ? true : false;
 }
