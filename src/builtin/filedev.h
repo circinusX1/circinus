@@ -53,6 +53,7 @@ public:
         cls.Overload<int (FileDev::*)(SqArr&)>(_SC("write"), &RtxBus<FileDev>::_write);
         cls.Overload<void (FileDev::*)()>(_SC("flush"), &RtxBus<FileDev>::_devflush);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
+        cls.Functor(_SC("get_name"), &FileDev::get_label_name);
         Sqrat::RootTable().Bind(_SC("FILE"), cls);
     }
 protected:

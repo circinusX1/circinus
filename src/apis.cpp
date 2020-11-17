@@ -79,7 +79,7 @@ int m_server(const char* dom)
     return -1;
 }
 
-std::string arr2a(SqArr& a, char sep)
+std::string intarr2a(SqArr& a, const char* sep)
 {
     std::string out;
     int     sz = a.GetSize();
@@ -96,15 +96,10 @@ std::string arr2a(SqArr& a, char sep)
     a.GetArray(ptr, sz);
     for(int i=0;i<sz;i++)
     {
-        if(sep==' ')
-            ::sprintf(duplet,"%02X",int(ptr[i]));
+        if(i<sz-1)
+            ::sprintf(duplet,"%02X%s",int(ptr[i]),sep);
         else
-        {
-            if(i<sz-1)
-                ::sprintf(duplet,"%02X%c",int(ptr[i]),sep);
-            else
-                ::sprintf(duplet,"%02X",int(ptr[i]));
-        }
+            ::sprintf(duplet,"%02X",int(ptr[i]));
         out.append(duplet);
     }
     return out;
@@ -591,9 +586,6 @@ static void sys_config(EPERIPH e, SqArr& a)
     case eGPIO:
         DvGpio::config((char*)c[0],(char*)c[1]);
         break;
-    case ePWMM:
-        DvPwm::config((char*)c[0],(char*)c[1],(char*)c[2]);
-        break;
     case eI2C:
         DvI2c::config((char*)c[0],(char*)c[1]);
         break;
@@ -748,7 +740,7 @@ void globals_expose(SqEnvi& sq)
 	Sqrat::RootTable(sq.theVM()).Functor("get_strtime", &get_strtime);
 	Sqrat::RootTable(sq.theVM()).Functor("get_date", &get_date);
 	Sqrat::RootTable(sq.theVM()).Functor("arrarr", &arrarr);
-	Sqrat::RootTable(sq.theVM()).Functor("arr2a", &arr2a);
+	Sqrat::RootTable(sq.theVM()).Functor("intarr2a", &intarr2a);
 	Sqrat::RootTable(sq.theVM()).Functor("arrcpyn", &arrcpyn);
 	Sqrat::RootTable(sq.theVM()).Functor("subarr", &subarr);
 	Sqrat::RootTable(sq.theVM()).Functor("bprint", &bprint);

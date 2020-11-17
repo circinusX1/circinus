@@ -28,16 +28,14 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 namespace GenericHw
 {
 
-DvSpi::DvSpi(ESPIBUS i2c, uint8_t addr,
+DvSpi::DvSpi(const char* spisyss,
+             uint8_t addr,
              uint8_t mode,
              uint8_t wordlen,
              uint32_t speed):_ifile(0),_mode(mode),_word(wordlen),_freq(speed)
 {
-    _config("spi",_sys);
-    _config("spi_fmt",_fmt);
-    char sy[256];
-    ::sprintf(sy, _fmt.c_str(), _sys.c_str(), i2c);
-    _dev_node = sy;
+
+    _dev_node = spisyss;
 }
 
 DvSpi::~DvSpi()

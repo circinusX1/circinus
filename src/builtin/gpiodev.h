@@ -58,6 +58,7 @@ public:
         cls.Functor(_SC("set_invert"), &GpioDev::set_invert);
         cls.Functor(_SC("set_toggle"), &GpioDev::set_toggle);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
+        cls.Functor(_SC("get_name"), &GpioDev::get_label_name);
         Sqrat::RootTable().Bind(_SC("GPIO"), cls);
     }
 

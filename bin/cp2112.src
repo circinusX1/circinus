@@ -14,7 +14,7 @@ function main(ctx)
     if(i2c.open(2)){
         var arr = i2c.ioread(0, 4);
         i2c.close();
-        println("reg: " + 0 + " = " + arr2a(arr,','));
+        println("reg: " + 0 + " = " + intarr2a(arr,","));
     }
     println("L1=" + l1.set_toggle());
     println("L2=" + l2.set_toggle());
@@ -28,7 +28,7 @@ function loop(ctx, dev)
     if(i2c.open(2)){
         var arr = i2c.ioread(0, 4);
         i2c.close();
-        println("reg: " + 0 + " = " + arr2a(arr,','));
+        println("reg: " + 0 + " = " + intarr2a(arr,","));
     }
     return true;
 }

@@ -44,6 +44,7 @@ class DvI2c : public DvCore, public IoOps
 
 public:
     DvI2c(EI2CBUS i2c, uint8_t addr);
+    DvI2c(const char* i2c, uint8_t addr);
     virtual ~DvI2c();
     virtual bool    iopen(int mode=O_RDWR);
     virtual void    iclose();

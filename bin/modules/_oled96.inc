@@ -16,7 +16,7 @@ class Oled96 extends I2C
     constructor(i2cbus, address, name)
     {
         // bind vars / instance (not per class)
-        base.constructor(this, i2cbus, address, name); // on BBB I2C1 P9.17 P9.18
+        base.constructor(this, true, i2cbus, address, name);
         _iScreenOffset = 0;
         _oled_flip = false;
         _oled_type = "";

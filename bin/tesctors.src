@@ -2,6 +2,26 @@
 
 ::using(eADC|eI2C|eSRV);
 
+// i2c ///////////////////////////////////////////
+
+
+class I2cEx extends I2C
+{
+    _value = 0;
+    constructor(sysfile, addr, name)
+    {
+        _value = 0;
+        base.constructor(true, this, sysfile, addr, name);
+    }
+};
+
+
+i2c1 := I2C(2, 0x23, "ctor by i2c number");
+i2c2 := I2C(true, "/dev/i2c-1", 0x23, "ctor by path number");
+i2c3 := I2cEx("/dev/i2c-1", 0x23, "ctor by path number");
+
+
+// adc ///////////////////////////////////////////
 
 class AdcEx extends ADC
 {
@@ -21,7 +41,6 @@ class AdcEx extends ADC
     }
 };
 
-// adc
 
 system ("echo 3333 > /tmp/adc0"); // fake sys files
 system ("echo 4003 > /tmp/adc1");

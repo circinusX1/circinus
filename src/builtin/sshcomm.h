@@ -53,6 +53,7 @@ public:
         cls.Overload<int (SshComm::*)(const char*)>(_SC("puts"), &RtxBus<SshComm>::_puts);
         cls.Overload<void (SshComm::*)()>(_SC("flush"), &RtxBus<SshComm>::_devflush);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
+        cls.Functor(_SC("get_name"), &SshComm::get_label_name);
         Sqrat::RootTable().Bind(_SC("SSH"), cls);
 
     }

@@ -27,8 +27,8 @@ using namespace GenericHw;
 class PwmDev: public DvPwm, public Divais, private Reg<PwmDev>
 {
 public:
-    PwmDev(EPWM_PIN pin, int period, int val, bool inv, const char* name=nullptr);
-    PwmDev(SqObj&, EPWM_PIN pin, int period, int val, bool inv, const char* name=nullptr);
+    explicit PwmDev(const char* pin, int period, int val, bool inv, const char* name=nullptr);
+    explicit PwmDev(SqObj&, const char* pin, int period, int val, bool inv, const char* name=nullptr);
 
     virtual ~PwmDev();
     int         set_value(EPWM_VAL val);
@@ -38,15 +38,17 @@ public:
     OVERW(DvPwm,Divais)
     static void squit(SqEnvi& e){
         Sqrat::Class<PwmDev> cls(e.theVM(), _SC("PWM"));
-        cls.Ctor<EPWM_PIN, int, int, bool,const char*>();
-        cls.Ctor<SqObj&, EPWM_PIN, int, int, bool,const char*>();
+        cls.Ctor<const char*, int, int, bool,const char*>();
+        cls.Ctor<SqObj&, const char*, int, int, bool,const char*>();
 
         cls.Functor(_SC("plug_it"), &PwmDev::plug_it);
         cls.Functor(_SC("set_value"), &PwmDev::set_value);
         cls.Functor(_SC("get_value"), &PwmDev::get_value);
         cls.Functor(_SC("call_back"), &PwmDev::call_back);
         cls.Functor(_SC("set_invert"), &PwmDev::set_invert);
+        cls.Functor(_SC("get_name"), &PwmDev::get_label_name);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
+
         Sqrat::RootTable().Bind(_SC("PWM"), cls);
     }
    

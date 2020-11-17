@@ -31,8 +31,12 @@ class I2CDev: public DvI2c,
               public RtxBus<I2CDev>// , public Divais
 {
 public:
-    I2CDev(EI2CBUS i2c, uint8_t addr,const char* name=nullptr);
-    I2CDev(SqObj&, EI2CBUS i2c, uint8_t addr,const char* name=nullptr);
+    explicit I2CDev(EI2CBUS i2c, uint8_t addr,const char* name=nullptr);
+    explicit I2CDev(SqObj&, EI2CBUS i2c, uint8_t addr,const char* name=nullptr);
+
+    explicit I2CDev(bool selector, const char* i2cfile, uint8_t addr,const char* name=nullptr);
+    explicit I2CDev(bool selector, SqObj&, const char* i2cfile, uint8_t addr,const char* name=nullptr);
+
     virtual ~I2CDev();
     int     setreg(uint8_t cmd);
     void    call_back(SqMemb& m, int regsddr, int bytes);
@@ -42,6 +46,11 @@ public:
         Sqrat::Class<I2CDev> cls(e.theVM(), _SC("I2C"));
         cls.Ctor<EI2CBUS, uint8_t, const char*>();
         cls.Ctor<SqObj&, EI2CBUS, uint8_t, const char*>();
+
+        cls.Ctor<bool, const char*, uint8_t, const char*>();
+        cls.Ctor<bool, SqObj&, const char*, uint8_t, const char*>();
+
+
         cls.Functor(_SC("plug_it"), &I2CDev::plug_it);
         cls.Functor(_SC("call_back"), &I2CDev::call_back);
         cls.Functor(_SC("open"), &I2CDev::iopen);
@@ -55,6 +64,7 @@ public:
         cls.Functor(_SC("ioread"), &I2CDev::_readreg);
         cls.Overload<int (I2CDev::*)(uint8_t, SqArr&)>(_SC("iowrite"), &RtxBus<I2CDev>::_writereg);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
+        cls.Functor(_SC("get_name"), &I2CDev::get_label_name);
         Sqrat::RootTable().Bind(_SC("I2C"), cls);
     }
 

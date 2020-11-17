@@ -17,26 +17,23 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "pwmdev.h"
 #include "inst.h"
 
-PwmDev::PwmDev(EPWM_PIN pin, int period, int val, bool inv, const char* name):
-                DvPwm(pin,period,val,inv),Divais(eINT, ePWMM, name),Reg<PwmDev>(this)
-
+PwmDev::PwmDev(const char* syspath, int period, int val, bool inv,
+                const char* name):
+                DvPwm(syspath,period,val,inv),Divais(eINT, ePWMM, name),Reg<PwmDev>(this)
 {
     _o.BindCppObject(this);
-
 }
 
-PwmDev::PwmDev(SqObj& o,
-               EPWM_PIN pin,
-               int period,
-               int val,
-               bool inv,
-               const char* name):DvPwm(pin,period,val,inv),
-                                 Divais(eINT, ePWMM, name),
-                                 Reg<PwmDev>(this)
 
+PwmDev::PwmDev(SqObj& o, const char* syspath, int period, int val, bool inv,
+               const char* name):DvPwm(syspath,period,val,inv),
+                    Divais(eINT, ePWMM, name),
+                    Reg<PwmDev>(this)
 {
     plug_it(o, name);
 }
+
+
 
 PwmDev::~PwmDev()
 {
@@ -46,7 +43,7 @@ int      PwmDev::set_value(EPWM_VAL val)
 {
     if(_reversed)
         val=100-val;
-    int ival = SET_DUTY(_period(),(val % 100));
+    int ival = SET_DUTY(_period(),val);
     std::string s = std::to_string(ival);
     return this->bwrite((const uint8_t*)s.c_str(), s.length());
 }

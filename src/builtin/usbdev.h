@@ -62,6 +62,7 @@ public:
         cls.Overload<SqArr (UsbDev::*)()>(_SC("pick_bin"), &RtxBus<UsbDev>::_pick_bin);
         cls.Overload<void (UsbDev::*)()>(_SC("flush"), &RtxBus<UsbDev>::_devflush);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
+        cls.Functor(_SC("get_name"), &UsbDev::get_label_name);
         Sqrat::RootTable().Bind(_SC("USB"), cls);
     }
 protected:

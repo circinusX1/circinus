@@ -28,10 +28,6 @@ namespace GenericHw
     // ehrpwm1a  ehrpwm1b  ehrpwm2a  ehrpwm2b
     //
     // ","","pwm-%d:%d"
-    std::string DvPwm::_sys      = "/sys/class/pwm/";
-    std::string DvPwm::_fmt_chip = "";
-    std::string DvPwm::_fmt      = "pwm-%d:%d";    //ecap0/<>
-
 }
 
 #include "../../../common/dpwm.cpp"

@@ -18,7 +18,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "inst.h"
 #include "dlconfig.h"
 
-SpiDev::SpiDev(ESPIBUS spi, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t freq,
+SpiDev::SpiDev(const char* spi, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t freq,
                const char* name):DvSpi(spi,addr,mode,wc,freq),
                                  Divais (eBINARY, eSPI, name),
                                  Reg<SpiDev>(this),
@@ -29,7 +29,7 @@ SpiDev::SpiDev(ESPIBUS spi, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t fre
 }
 
 SpiDev::SpiDev(SqObj& o,
-               ESPIBUS spi,
+               const char* spi,
                uint8_t addr, uint8_t mode, uint8_t wc,  uint32_t freq,
                const char* name):DvSpi(spi,addr,mode,wc,freq),
                                  Divais (eBINARY, eSPI, name),

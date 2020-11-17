@@ -65,6 +65,7 @@ public:
         cls.Overload<SqArr (UartDev::*)()>(_SC("pick_bin"), &RtxBus<UartDev>::_pick_bin);
         cls.Overload<void (UartDev::*)()>(_SC("flush"), &RtxBus<UartDev>::_devflush);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
+        cls.Functor(_SC("get_name"), &UartDev::get_label_name);
         Sqrat::RootTable().Bind(_SC("UART"), cls);
     }
    

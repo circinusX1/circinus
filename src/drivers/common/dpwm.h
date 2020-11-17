@@ -38,7 +38,7 @@ class DvPwm : public DvCore, public IoOps
 {
 public:
     DvPwm(){}
-    DvPwm(EPWM_PIN pin, EPWM_PERIOD period, EPWM_VAL val, bool inv=false);
+    DvPwm(const char* pin, EPWM_PERIOD period, EPWM_VAL val, bool inv=false);
     virtual ~DvPwm();
 
     bool    iopen(int  mode=O_RDWR);
@@ -50,11 +50,7 @@ public:
     virtual EPERIPH peer_of()const{return ePWMM;}
     virtual E_TYPE  data_of()const{return eINT;}
     virtual const char* err_desc()const{return _err.c_str();}
-    static void config(char* s, char* f=nullptr, char* c=nullptr){
-        if(s)  DvPwm::_sys=s ;
-        if(f)  DvPwm::_fmt=f ;
-        if(c)  DvPwm::_fmt_chip=c ;
-    }
+
 
 protected:
     int  _period()const{return _prd;};
@@ -62,8 +58,7 @@ protected:
 private:
     int                       _prd;
     static std::string        _sys;
-    static std::string        _fmt_chip;
-    static std::string        _fmt;
+
 };
 }
 

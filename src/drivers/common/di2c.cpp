@@ -26,6 +26,11 @@ namespace GenericHw
 //const char* DvI2c::_i2c_fmt;
 //std::string DvI2c::_sys_i2c;
 
+DvI2c::DvI2c(const char* sysfile, uint8_t addr):_addr(addr)
+{
+    _dev_node = sysfile;
+}
+
 DvI2c::DvI2c(EI2CBUS i2c, uint8_t addr):_addr(addr)
 {
     _config("i2c",_sys);

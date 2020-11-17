@@ -46,7 +46,6 @@ class Inst : public Mpthrd, public Sqrat::Class<Inst>, public IInstance
 public:
     friend class RestSrv;
     friend class Database;
-    friend class PinChip;
     Inst(SqEnvi& sq, char* p[]);
     virtual ~Inst();
 

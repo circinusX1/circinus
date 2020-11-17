@@ -56,6 +56,7 @@ public:
         cls.Functor(_SC("write"), &RawSock::write);
         cls.Functor(_SC("read"), &RawSock::read);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
+        cls.Functor(_SC("get_name"), &RawSock::get_label_name);
         Sqrat::RootTable().Bind(_SC("SOCKET"), cls);
     }
    

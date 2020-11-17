@@ -18,16 +18,14 @@ sudo service udev restart
 
 dbs   := DB(10000, 1000, "./database");
 json := SRV(8000,"rest");
-local s = Oled96(11, 0x3c, "OLED96");
+local s = Oled96("/dev/i2c-2", 0x3c, "OLED96");
 
-l1 := GPIO(506,  DIR_OUT, LOW, "led");
-l2 := GPIO(507,  DIR_OUT, HIGH, "led2");
 
 //s.autoopen(false);
 function main(a)
 {
     var k;
-    s.autoopen(false);
+    s.autoopen(false);          // write read-ops woud not open. xopen open i2c once
     if(s.xopen("128x64",0,0))
     {
         s.clear_display(0);
@@ -41,11 +39,6 @@ var K=10;
 function kk(ctx,dev)
 {
     s.write_string(0,1, get_strtime() ,2);
-    K++;
-    println("L1=" + l1.set_toggle());
-    println("L2=" + l2.set_toggle());
-    sleep(1000);
-
     ctx.get_dev("led2").set_toggle();
     K--;
     return K > 0 ? true : false;

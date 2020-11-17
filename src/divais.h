@@ -96,7 +96,9 @@ public:
 	}
 	virtual ~Divais();
 	void  plug_it(Sqrat::Object& o, const char* dev_key);
-	const char* name()const{return _name.c_str();};
+	const char* name()const{
+		return _name.c_str();
+	};
 	const char* dev_key()const{return _ukey.c_str();};
 	void  reset();
 	bool is_dirty(size_t t){
@@ -145,10 +147,11 @@ private:
     Sqrat::Function  _oget_value;
 };
 
-#define OVERW(B1,B2)															\
+#define OVERW(B1,B2)																\
+	const char* get_label_name()const{return B2::name();}							\
 	void plug_it(Sqrat::Object& o,const char* dev_key){B2::plug_it(o, dev_key);}	\
-	bool iopen(int em=O_RDWR){return B1::iopen(em);}							\
-	void iclose(){B1::iclose();}												\
+	bool iopen(int em=O_RDWR){return B1::iopen(em);}								\
+	void iclose(){B1::iclose();}													\
 	void on_event(E_VENT e, const uint8_t* buff, int len, int options=0);			\
 	bool _mon_pick(size_t t);
 

@@ -42,6 +42,7 @@ public:
         cls.Functor(_SC("get_value"), &AdcDev::get_value);
         cls.Functor(_SC("call_back"), &AdcDev::call_back);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
+        cls.Functor(_SC("get_name"), &AdcDev::get_label_name);
         Sqrat::RootTable().Bind(_SC("ADC"), cls);
     }
 private:
