@@ -29,12 +29,12 @@ includes="-I./sq/sqrat/include/sqrat -I./sq/include -I./sq/squirrel -I./sq/sqrat
 libs="-L../lib -lsquirrel-${arch}-${oss} -lsqstdlib-${arch}-${oss} -lpthread -ldl"
 defines="-DWITH_MAIN_MUTEX -D${BOARD}"
 files="*.cpp ./builtin/*.cpp ./drivers/*.cpp ./drivers/platform/linux/${BOARD}/*.cpp"
-g++ ${files} ${defines} ${includes} -std=c++14 ${libs} -o amutrion-${oss}-${arch}
+g++ ${files} ${defines} ${includes} -std=c++14 ${libs} -o circinus-${oss}-${arch}
 popd
 
-cp ./src/amutrion-${oss}-${arch} ./bin
+cp ./src/circinu-${oss}-${arch} ./bin
 
-echo "./src/amutrion-${oss}-${arch} generated in bin folder"
+echo "./src/circinus-${oss}-${arch} generated in bin folder"
 
 
 
