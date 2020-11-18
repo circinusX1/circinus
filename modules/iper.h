@@ -249,18 +249,19 @@ public:
 
 typedef bool (*devModPtr_t)(HSKVM vm, sq_api* ptrs, IInstance* pi, const char* name);
 
+                                                                        \
+
+#ifdef PLUGIN_LIB
 
 #define IMPLEMENT_START_MODULE(ClassName_)	EXPORT bool start_module(HSKVM vm, sq_api* ptrs,	\
-	                                        IInstance* pi, const char* name){					\
+                                            IInstance* pi, const char* name){					\
     printf(" %s  %p %p  %s\n", __FUNCTION__, (void*)vm, (void*)ptrs, name);									\
-	__vm = vm;																					\
-	SQ_PTRS = ptrs;																				\
-	__pi = pi;																					\
-	Sqrat::DefaultVM::Set(vm);																	\
-	ClassName_::squit(name);																	\
-	return true;}																				\
-
-#ifndef PLUGIN_LIB
+    __vm = vm;																					\
+    SQ_PTRS = ptrs;																				\
+    __pi = pi;																					\
+    Sqrat::DefaultVM::Set(vm);																	\
+    ClassName_::squit(name);																	\
+    return true;}
 
 #ifdef __cplusplus
 extern "C" {
