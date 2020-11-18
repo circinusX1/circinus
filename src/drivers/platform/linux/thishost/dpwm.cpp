@@ -33,9 +33,7 @@ namespace GenericHw
     // #dtoverlay=pwm,pin=18,func=2
     // dtoverlay=pwm-2chan,pin=12,func=4,pin2=13,func2=4
     //
-    std::string DvPwm::_sys      = "/sys/class/pwm/"; // /sys/class/pwm/
-    std::string DvPwm::_fmt_chip = "pwmchip%d/";
-    std::string DvPwm::_fmt      = "pwm%d";
+
 }
 
 #include "../../../common/dpwm.cpp"

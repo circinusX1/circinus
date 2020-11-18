@@ -32,7 +32,7 @@ int8_t linux_write(uint8_t devaddr, uint8_t regdevaddr, uint8_t *reg_data, uint1
 {
     if(__pobj->iopen())
     {
-          int ret = __pobj->bwrite(reg_data, (int)length, (int)regdevaddr);
+        __pobj->bwrite(reg_data, (int)length, (int)regdevaddr);
         __pobj->iclose();
         return 0;
     }
@@ -43,7 +43,7 @@ int8_t  linux_read(uint8_t devaddr, uint8_t regdevaddr, uint8_t *reg_data, uint1
 {
     if(__pobj->iopen())
     {
-        int ret = __pobj->bread(reg_data, (int)length, (int)regdevaddr);
+        __pobj->bread(reg_data, (int)length, (int)regdevaddr);
         __pobj->iclose();
         return 0;
     }
@@ -57,19 +57,12 @@ int8_t  linux_read(uint8_t devaddr, uint8_t regdevaddr, uint8_t *reg_data, uint1
  */
 Bmi160::Bmi160(const char* dev, const char* name):_name(name)
 {
-    _ird = __pi->get_proxy(dev);
-    __pobj = _ird;
-//    Sqrat::Object o(this);
-//    _o = o;
-    __pi->add_obj(this, name);
+    SHALL_CTOR();
 }
 
 Bmi160::~Bmi160()
 {
-    _ird->iclose();
-    __pi->remove_obj(_name.c_str());
-//    if(!_o.IsNull())
-//        _o.AddRef(); //sqrat bug ?!?
+    SHALL_DTOR();
 }
 
 /**
@@ -139,16 +132,6 @@ const char* Bmi160::dev_key()const
 Sqrat::Object Bmi160::object()const
 {
     return _o;
-}
-
-/**
- * @brief Bmi160::is_monitorred
- * @param t  further usage
- * @return if this device is monitorred periodically for value changes.
- */
-bool  Bmi160::is_monitorred(size_t t)
-{
-    return false;
 }
 
 /**

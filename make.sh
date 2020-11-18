@@ -5,6 +5,10 @@ BOARD=$1
 arch=$(uname -m)
 oss=$(uname)
 
+
+
+
+
 pushd src/sq/squirrel
 # rm -rf *.o
 rm -rf *.a
@@ -37,5 +41,32 @@ cp ./src/amutrion-${oss}-${arch} ./bin
 echo "./src/amutrion-${oss}-${arch} generated in bin folder"
 
 
+
+
+echo "MAKING MODULES AND SO LIBS"
+[[ ! -d ./bin/modules ]] && mkdir ./bin/modules
+[[ ! -d ./bin/solibs ]] && mkdir ./bin/solibs
+
+echo "MAKING MODULES"
+pushd modules
+    for mod in $(ls -d */);do
+        pushd $mod
+            echo "BUILDING $mod"
+            [[ -f ./make.sh ]] && ./make.sh
+            cp ./*.so ../../bin/modules/
+        popd
+    done
+popd
+
+echo "MAKING SOLIBS"
+pushd solibs
+    for mod in $(ls -d */);do
+        pushd $mod
+            echo "BUILDING $mod"
+            [[ -f ./make.sh ]] && ./make.sh
+            cp ./*.so ../../bin/solibs/
+        popd
+    done
+popd
 
 

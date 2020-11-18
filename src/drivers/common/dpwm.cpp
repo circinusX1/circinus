@@ -22,14 +22,17 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 namespace GenericHw
 {
-
-// kernel beaglebone 4.14.108-ti-r108
+//
+// kernel beaglebone 4.14.108-ti-r108  /dev/pwm
 // PIN NAMES: ecap0  ecap1  ecap2  ehrpwm0a  ehrpwm0b
 // ehrpwm1a  ehrpwm1b  ehrpwm2a  ehrpwm2b
 //
-std::string DvPwm::_sys = "/dev/pwm/"; // /sys/class/pwm/
-
+// Linux beaglebone 4.4.155-ti-r155
+// sys/class/pwm/pwmchip[0-6]/pwm[0-<2>]
 //
+std::string DvPwm::_sys      = "/sys/class/pwm/"; // /sys/class/pwm/
+std::string DvPwm::_fmt_chip = "pwmchip%d/";
+std::string DvPwm::_fmt      = "pwm%d";
 //R-PI  https://librpip.frasersdev.net/peripheral-config/pwm0and1/
 //
 
@@ -40,17 +43,18 @@ DvPwm::DvPwm(const char* syspath,
     _dev_node = syspath;
 
     _wrt(_dev_node+"/period", std::to_string(period).c_str());
-    ::msleep(256);
+    ::usleep(0xFFFF);
     int d = SET_DUTY(period,val);
-    ::msleep(256);
+    ::usleep(0xFFFF);
     _wrt(_dev_node+"/duty_cycle", std::to_string(d).c_str());
     if(inv){
         _wrt(_dev_node+"/polarity", "1");
     }else {
         _wrt(_dev_node+"/polarity", "0");
     }
-    ::msleep(256);
+    ::usleep(0xFFFF);
     _wrt(_dev_node+"/enable", "1");
+    ::usleep(0xFFFF);
     _wrt(_dev_node+"/enable", "1");
     ::sync();
 }

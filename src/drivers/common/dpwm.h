@@ -18,7 +18,6 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #define __PWM_H_
 
 #include "dcore.h"
-
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -58,6 +57,8 @@ protected:
 private:
     int                       _prd;
     static std::string        _sys;
+    static std::string        _fmt;
+    static std::string        _fmt_chip;
 
 };
 }

@@ -16,7 +16,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 #define MCP9600_H
 
 #include <string.h>
-#include "bmi160_global.h"
 #include "../iper.h"
 
 
@@ -30,15 +29,7 @@ public:
 	Sqrat::Array  acceleration();
 	Sqrat::Array  rotation();
 
-	 const char* name()const;
-	 const char* dev_key()const;
-	 bool  is_monitorred(size_t t);
-	 bool  set_value(const char* key, const char* value);
-	 const char* get_value(const char* key);
-	 const any_t& get_data()const;
-	 void  sync(const char* filter);
-	 Sqrat::Object object()const;
-
+    ALL_VIRTUALS();
 
 
 private:

@@ -1,5 +1,4 @@
 #include "_bme280impl.h"
-
 #include "../iper.h"
 
 bool read_values(IoOps* pi2c, int& t, int& h, int& pr)

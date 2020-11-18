@@ -76,6 +76,12 @@ bool Divais::_check_dirt()
     return false;
 }
 
+/**
+ * @brief Divais::plug_it
+ * @param o
+ * @param dev_key
+ * get funcitons form script
+ */
 void Divais::plug_it(SqObj& o, const char* dev_key)
 {
     _ukey = dev_key;

@@ -2,8 +2,9 @@
 #include <assert.h>
 #include <unistd.h>
 #include "sqratUtil.h"
-#include "bme280.h"
 #include "_bme280impl.h"
+#include "bme280.h"
+
 
 sq_api*             SQ_PTRS;
 static IoOps*       __pobj;
@@ -13,17 +14,12 @@ static HSKVM        __vm;
 
 Bme280::Bme280(const char* dev, const char* name):_name(name)
 {
-
-    _ird = __pi->get_devi(dev);
-    assert(_ird);
-    __pobj = _ird;
-    __pi->add_this(this, name); // no remove need to call
-    _o.BindCppObject(this);     // if is monitorred
+    SHALL_CTOR();
 }
 
 Bme280::~Bme280()
 {
-
+    SHALL_DTOR();
 }
 
 /**

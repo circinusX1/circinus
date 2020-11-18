@@ -1,6 +1,7 @@
 #ifndef PERIPHERIAL_INTERFACE
 #define PERIPHERIAL_INTERFACE
 
+
 #include <iostream>
 #include <squirrel.h>
 #include <sqrat.h>
@@ -242,6 +243,7 @@ public:
 	virtual ~IInstance(){}
     virtual IoOps*  get_devi(const char*)=0;
     virtual void    add_this(I_IDev* o, const char* name)=0;
+    virtual void    remove_obj(const char* name)=0;
 };
 
 
@@ -258,6 +260,42 @@ typedef bool (*devModPtr_t)(HSKVM vm, sq_api* ptrs, IInstance* pi, const char* n
 	ClassName_::squit(name);																	\
 	return true;}																				\
 
+#ifndef PLUGIN_LIB
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+EXPORT bool start_module(HSKVM vm, sq_api* ptrs,  IInstance* pi, const char* name);
+
+#ifdef __cplusplus
+}
+#endif
+
+#define ALL_VIRTUALS()								\
+	virtual const char* name()const;				\
+	virtual const char* dev_key()const;				\
+	virtual bool  is_dirty(size_t t);				\
+	virtual bool  set_value(const char* key, const char* value); \
+	virtual const char* get_value(const char* key); \
+	virtual void  on_event();						\
+	virtual const any_t& get_data()const;			\
+	virtual void  sync(const char* filter=nullptr); \
+	virtual Sqrat::Object object()const;			\
+
+#define SHALL_CTOR() \
+    _ird = __pi->get_devi(dev); \
+    assert(_ird);               \
+    __pobj = _ird;              \
+    __pi->add_this(this, name); \
+    _o.BindCppObject(this);
+
+#define SHALL_DTOR() \
+    _ird->iclose();  \
+    __pi->remove_obj(_name.c_str());
+
+
+#endif //PLUGIN_LIB
 
 #endif // PLUG_EMBIX_
 

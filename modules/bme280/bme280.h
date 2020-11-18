@@ -2,7 +2,6 @@
 #define BMP180_H
 
 #include <string.h>
-#include "bme280_global.h"
 #include "../iper.h"
 
 
@@ -20,16 +19,9 @@ public:
     int humidity();
     int pressure();
     void monitor(bool);
+    Sqrat::Array thp();
 
-	Sqrat::Array thp();
-	const char* name()const;
-	const char* dev_key()const;
-	bool  is_dirty(size_t t);
-	bool  set_value(const char* key, const char* value);
-	const char* get_value(const char* key);
-	const any_t& get_data()const;
-	void  sync(const char* filter=nullptr);
-	Sqrat::Object object()const;
+    ALL_VIRTUALS();
 
 
 private:
