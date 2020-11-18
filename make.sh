@@ -5,10 +5,6 @@ BOARD=$1
 arch=$(uname -m)
 oss=$(uname)
 
-
-
-
-
 pushd src/sq/squirrel
 # rm -rf *.o
 rm -rf *.a
@@ -53,7 +49,7 @@ pushd modules
         pushd $mod
             echo "BUILDING $mod"
             [[ -f ./make.sh ]] && ./make.sh
-            cp ./*.so ../../bin/modules/
+            cp -rf  ./*.so ../../bin/modules/
         popd
     done
 popd
@@ -64,7 +60,7 @@ pushd solibs
         pushd $mod
             echo "BUILDING $mod"
             [[ -f ./make.sh ]] && ./make.sh
-            cp ./*.so ../../bin/solibs/
+            cp -rf ./*.so ../../bin/solibs/
         popd
     done
 popd
