@@ -187,6 +187,11 @@ void  Bme280::sync(const char*)
 
 }
 
+void  Bme280::on_event()
+{
+}
+
+
 /**
 		The way of exporting the class to the script
 */

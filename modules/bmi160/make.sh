@@ -9,13 +9,18 @@ libname=$(pwd | awk -F"/" '{print $NF}')
 includes="../include"
 
 for k in $(ls *.cpp);do
-    g++ -c -Wall -Werror -fpic -I${includes} $k
+    g++ -c -Wall -Werror -fpic -I${includes} -DPLUGIN_LIB $k
 done
 
+files=""
 for k in $(ls *.cpp);do
     filename=$(basename -- "$k")
     filename="${filename%.*}"
-    echo "linking ${filename}"
-    gcc -shared -o lib${libname}-${oss}-${arch}.so ${filename}.o
+    files="${files} ${filename}.o"
 done
+
+echo "gcc -shared -o lib${libname}-${oss}-${arch}.so ${files}"
+gcc -shared -o lib${libname}-${oss}-${arch}.so ${files}
+
+
 

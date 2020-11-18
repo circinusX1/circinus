@@ -76,6 +76,7 @@ Sqrat::Array	Bmi160::acceleration()
 	a.SetValue(0 , _acc[0]);
 	a.SetValue(1 , _acc[1]);
 	a.SetValue(2 , _acc[2]);
+    _dirt=true;
 	return a;
 }
 
@@ -90,6 +91,7 @@ Sqrat::Array	Bmi160::rotation()
 	a.SetValue(0 , _rot[0]);
 	a.SetValue(1 , _rot[1]);
 	a.SetValue(2 , _rot[2]);
+    _dirt=true;
 	return a;
 
 }
@@ -114,6 +116,17 @@ void  Bmi160::squit(const char* name)
 const char* Bmi160::name()const
 {
     return _name.c_str();
+}
+
+void Bmi160::on_event()
+{
+
+}
+
+
+bool Bmi160::is_dirty(size_t t)
+{
+    return _dirt;
 }
 
 /**

@@ -1,10 +1,10 @@
-// SCRIPT  TESTED
+// SCRIPT  TESTED ON BBB
 
 ::using(eI2C|eSRV);
-::loadmod("./modules/libbmi160.so","ACCEL");
+::loadmod("./modules/libbmi160-Linux-x86_64.so","ACCEL");
 
-i2c    := I2C(11, 0x68, "i2c");
-accel  := ACCEL("i2c", "accel");
+i2c    := I2C(SYS_FILE,"/dev/i2c-2", 0x68, "i2c_bind_by_name");
+accel  := ACCEL("i2c_bind_by_name", "accel");
 server := SRV(8000,"xxx");
 
 function main(x)

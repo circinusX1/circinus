@@ -1,6 +1,6 @@
 // SCRIPT  TESTED
 
-::import("./modules/libardulike.so");
+::import("./solibs/libardulike-OS-ARCH.so");
 
 var LED=26;
 

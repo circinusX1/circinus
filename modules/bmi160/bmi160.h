@@ -39,6 +39,7 @@ private:
     double          _rot[3];
     any_t           _data;
     char            _retbuff[64];
+    bool            _dirt = false;
     Sqrat::Object   _o;
 };
 

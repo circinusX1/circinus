@@ -1,9 +1,9 @@
 // SCRIPT  TESTED
 
 ::using(eI2C|eSRV);
-::loadmod("./modules/libbme280.so","THP");
+::loadmod("./modules/libbme280-Linux-x86_64.so","THP");
 
-i2c    := I2C(8, 0x77, "i2c");  // the i2c THP is using
+i2c    := I2C(SYS_FILE, "/dev/i2c-2", 0x77, "i2c");  // the i2c THP is using
 thp    := THP("i2c", "bmp280"); // pass the i2c name as first parameter
 server := SRV(8000,"X");
 
