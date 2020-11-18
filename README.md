@@ -1,5 +1,5 @@
 
-### Circinus, Industrial Strength HAL Library for Linux (Scripting Engine in C++)
+### Circinus, Industrial Strength Scripting Engine for GPIO, PWM, I2C, SPI, UART, USB and more
 
 #### No dependencies,
 #### Written in C++
