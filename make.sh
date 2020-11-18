@@ -32,7 +32,7 @@ files="*.cpp ./builtin/*.cpp ./drivers/*.cpp ./drivers/platform/linux/${BOARD}/*
 g++ ${files} ${defines} ${includes} -std=c++14 ${libs} -o circinus-${oss}-${arch}
 popd
 
-cp ./src/circinu-${oss}-${arch} ./bin
+cp ./src/circinus-${oss}-${arch} ./bin
 
 echo "./src/circinus-${oss}-${arch} generated in bin folder"
 
