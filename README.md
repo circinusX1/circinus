@@ -1,5 +1,5 @@
 
-### Amutrion, Industrial Strength HAL Library for Linux (Scripting Engine in C++)
+### Circinus, Industrial Strength HAL Library for Linux (Scripting Engine in C++)
 
 #### No dependencies,
 #### Written in C++
@@ -7,7 +7,7 @@
 #### S O L I D / K I S S. architecture
 #### No obfuscated syntax. Straight up readable API's.
 
-   * HAL LAYER FOR LINUX (see https://github.com/circinusX1/amutrion/tree/master/src/drivers  FOLDER)
+   * HAL LAYER FOR LINUX (see https://github.com/circinusX1/circinus/tree/master/src/drivers  FOLDER)
        * I2C
        * SPI
        * GPIO
@@ -20,9 +20,9 @@
 ##### Published: 1 Oct 2017
 
 ```
-   git pull https://github.com/circinusX1/amutrion
+   git pull https://github.com/circinusX1/circinus
    cd amution
-   ./make.sh  # On the target or chroot of your platform. WIll generate the bynary as $OS_$ARCH_amutrion
+   ./make.sh  # On the target or chroot of your platform. WIll generate the bynary as $OS_$ARCH_circinus
    cd bin
    Some samples runs only on R-PI or BBB
 ```
@@ -39,11 +39,11 @@ li.call_back(my_function, ON_RISE|ON_FALL);
 
 
 #### SDK
-[!SDK](https://github.com/circinusX1/amutrion/wiki)
+[!SDK](https://github.com/circinusX1/circinus/wiki)
 
 
 #### VIDEO
-[![video](https://raw.githubusercontent.com/circinusX1/amutrion/master/docs/rrembdemo.gif)](https://youtu.be/ZMlJj0PciWA)
+[![video](https://raw.githubusercontent.com/circinusX1/circinus/master/docs/rrembdemo.gif)](https://youtu.be/ZMlJj0PciWA)
 
 
 ## RASPBERRY-PI GPIO, PWM, SPI, I2C, UART FRAMEWORK.  
@@ -61,7 +61,7 @@ Slowly I added SSH, TCP, I2C, ... GPIO's and so on.
 
     * Usage:
 ```
-    amutrion script_file.src
+    circinus script_file.src
     
 ```
 
@@ -180,7 +180,7 @@ function main(a)
 }
 ```
 
-### Extend amutrion with custom modules. 
+### Extend circinus with custom modules and solibs. 
 ### Let's use wiringpi.so module wrapped around wiringPI.so. 
 ### so wiringPi/arduino style coding can be used
  
