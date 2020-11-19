@@ -1,11 +1,11 @@
 
 ### Circinus, Industrial Strength Scripting Engine for GPIO, PWM, I2C, SPI, UART, USB and more
-
 #### No dependencies,
 #### Written in C++
 #### Scripted: Java/C++ like syntax (Uses superfast scripting engine used in collest game engines 'http://www.squirrel-lang.org/')
 #### S O L I D / K I S S. architecture
 #### No obfuscated syntax. Straight up readable API's.
+#### SDK https://comarius.blogspot.com/2020/11/circinus-best-gpio-framework-for.html 
 
    * HAL LAYER FOR LINUX (see https://github.com/circinusX1/circinus/tree/master/src/drivers  FOLDER)
        * I2C
