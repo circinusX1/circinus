@@ -23,3 +23,8 @@ gcc -shared -o lib${libname}-${oss}-${arch}.so ${files}
 
 
 
+echo "gcc -shared -o lib${libname}-${oss}-${arch}.so ${files}"
+gcc -shared -o lib${libname}-${oss}-${arch}.so ${files}
+
+
+

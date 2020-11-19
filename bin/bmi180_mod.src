@@ -1,4 +1,4 @@
-// SCRIPT  TESTED
+// SCRIPT  TESTED ON BBB
 
 ::using(eI2C|eSRV);
 ::loadmod("./modules/libbmi160-Linux-armv7l.so","ACCEL");

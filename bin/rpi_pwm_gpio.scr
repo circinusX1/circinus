@@ -28,8 +28,8 @@ var srv = SRV(8000,"srv");
 
 var edge = GPIO(14, DIR_IN, HIGH, "detect");
 
-var pwm0 = PWM("0.0", 1000, 100, false, "pwm1"); //GPIO 13
-var pwm1 = PWM("0.1", 1000, 100, false, "pwm2"); //GPIO 18
+var pwm0 = PWM("/sys/class/path_to_pwm0/folder", 1000, 100, false, "pwm1"); //GPIO 13
+var pwm1 = PWM("/sys/class/path_to_pwm1/folder", 1000, 100, false, "pwm2"); //GPIO 18
 //var pb = GPIO(21,  DIR_IN,  LOW, "buton");
 
 function main(ctx)

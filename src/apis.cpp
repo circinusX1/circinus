@@ -648,8 +648,8 @@ void usingop(int32_t flags)
     if(flags & eUART)   UartDev::squit(*sq);
     if(flags & eHTTP)   RestSrv::squit(*sq);
     if(flags & eBASE)   ScrBase::squit(*sq);
-    if(flags & eSRV)   RestSrv::squit(*sq);
-    if(flags & eDB)  Database::squit(*sq);
+    if(flags & eSRV)    RestSrv::squit(*sq);
+    if(flags & eDB)     Database::squit(*sq);
     if(flags & eFILE)   FileDev::squit(*sq);
     if(flags & eSOLIB)  SoLib::squit(*sq);
     if(flags & eSOCKET)   RawSock::squit(*sq);
@@ -686,6 +686,7 @@ void globals_expose(SqEnvi& sq)
 			.Const("DIR_OUT", eOut)
 			.Const("HIGH", 1)
 			.Const("LOW", 0)
+			.Const("SYS_FILE",true)
 			.Const("ON_0",1)
 			.Const("eGPIO",eGPIO)
 			.Const("ePWMM",ePWMM)
