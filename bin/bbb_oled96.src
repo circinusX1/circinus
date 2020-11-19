@@ -33,7 +33,7 @@ function main(a)
         k = run(kk, 1000);
     }
     s.xclose();
-    return run(kk,50);
+    return true;
 }
 
 var K=100;
