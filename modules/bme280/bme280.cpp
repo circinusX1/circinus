@@ -28,19 +28,22 @@ Bme280::~Bme280()
  */
 int	Bme280::temperature()
 {
-    if(!_montorit)   sync();
+    if(!_montorit)   
+	sync();
     return _tph[0];
 }
 
 int Bme280::humidity()
 {
-    if(!_montorit)   sync();
+    if(!_montorit)   
+	sync();
     return _tph[1];
 }
 
 int Bme280::pressure()
 {
-    if(!_montorit)   sync();
+    if(!_montorit)   
+	sync();
     return _tph[2];
 }
 
@@ -52,6 +55,10 @@ Sqrat::Array Bme280::thp()
     a.SetValue(1,_tph[1]);
     a.SetValue(2,_tph[2]);
     return a;
+}
+
+void  Bme280::on_event()
+{
 }
 
 /**
@@ -103,6 +110,7 @@ void Bme280::monitor(bool m)
 {
     _montorit = m;
 }
+
 /**
  * @brief Bme280::is_dirty
  * @param t  further usage
@@ -138,6 +146,7 @@ bool  Bme280::set_value(const char* , const char* )
  */
 const char* Bme280::get_value(const char* key)
 {
+	std::cout << "geting value " << key << "\n";
 	if(!strcmp(key,"temperature"))
 	{
 		::sprintf(_retbuff,"%d",_tph[0]);
@@ -173,7 +182,7 @@ const any_t& Bme280::get_data()const
  */
 void  Bme280::sync(const char*)
 {
-	int					tph[3];
+	int		tph[3];
 	read_values(__pobj, tph[0], tph[1], tph[2]);
 	_dirty = ::memcmp(tph, _tph, sizeof(tph));
 	::memcpy(_tph, tph, sizeof(tph));

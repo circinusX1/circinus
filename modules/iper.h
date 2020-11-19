@@ -186,7 +186,7 @@ public:
         if(e== eBINARY)
             _dl[index] = 1;
     }
-    bool is_dirty()const{return _stor[0].length();}
+    bool is_dirty(size_t t=0)const{return _stor[t].length();}
     void fmt_hex(std::string& here, int index=0){
         char hex[4];
         for(size_t b=0; b < _stor[index].length(); ++b)
@@ -196,7 +196,7 @@ public:
         }
     }
 private:
-    std::basic_string<uint8_t>  _stor[MAX_SLOTS];
+	std::basic_string<uint8_t>  _stor[MAX_SLOTS];
 	E_TYPE						_types[MAX_SLOTS];
 	size_t						_dl[MAX_SLOTS];
 };
@@ -212,10 +212,10 @@ public:
 	virtual bool  is_dirty(size_t t)=0;
 	virtual bool  set_value(const char* key, const char* value)=0;
 	virtual const char* get_value(const char* key)=0;
-    virtual void  on_event()=0;
+    	virtual void  on_event()=0;
 	virtual const any_t& get_data()const=0;
-    virtual void  sync(const char* filter=nullptr)=0;
-    virtual Sqrat::Object object()const=0;
+    	virtual void  sync(const char* filter=nullptr)=0;
+    	virtual Sqrat::Object object()const=0;
 };
 
 // base class for GPIO's I2C devices
@@ -228,7 +228,7 @@ public:
 	virtual void	iclose()=0;
 	virtual size_t  bread(uint8_t* buff, int len, int options=0)=0;
 	virtual int     bwrite(const uint8_t* buff, int len, int options=0)=0;
-    virtual void    on_event(E_VENT e, const uint8_t* buff, int len, int options=0){
+        virtual void    on_event(E_VENT e, const uint8_t* buff, int len, int options=0){
         assert(0);
     };
 	virtual const char* err_desc()const=0;

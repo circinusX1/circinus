@@ -4,13 +4,17 @@
 bool read_values(IoOps* pi2c, int& t, int& h, int& pr)
 {
 
-    if(pi2c->iopen(0x2) == false)return false;
+    if(pi2c->iopen(0x2) == false){
+	std::cout << "cannot open device \n";
+	return false;
+    }
 
     // Read 24 bytes of data from register(0x88)
     uint8_t b1[24] = {0};
 
     if(0==pi2c->bread(b1, 24, 0x88))
     {
+	std::cout << "read failes \n";
         pi2c->iclose();
         return false;
     }

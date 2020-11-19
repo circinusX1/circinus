@@ -107,6 +107,15 @@ void  Bmi160::squit(const char* name)
 	Sqrat::RootTable(__vm).Bind(_SC(name), cls);
 }
 
+bool Bmi160::is_dirty(size_t t)
+{
+	return false;
+}
+
+void Bmi160::on_event()
+{
+}
+
 /**
  * @brief Bmi160::name
  * @return  the name
