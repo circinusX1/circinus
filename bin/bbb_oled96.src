@@ -1,10 +1,3 @@
-// SCRIPT  TESTED ON BBB  I2C-2. started as sudo due the i2c dev
-
-::using(eI2C|eGPIO|ePWMM|eSRV|eDB);
-::include("modules/_oled96.inc");
-
-
-
 /*
 sudo nano /lib/udev/rules.d/60-perip.rules
 KERNEL=="gpiochip*", GROUP="gpio"
@@ -16,9 +9,15 @@ sudo adduser $USER i2c
 sudo adduser $USER gpio
 sudo adduser $USER pwm
 sudo service udev restart
+ SCRIPT  TESTED ON BBB  I2C-2. started as sudo due the i2c dev
 */
 
-print( "If error is: bad file descriptor run as sudo \n");
+
+::using(eI2C|eGPIO|ePWMM|eSRV|eDB);
+::include("modules/_oled96.inc");
+
+
+print( "If error is: Bad file descriptor. Run as sudo \n");
 dbs   := DB(10000, 1000, "./database");
 json := SRV(8000,"rest");
 local s = Oled96("/dev/i2c-2", 0x3c, "OLED96");
@@ -34,14 +33,14 @@ function main(a)
         k = run(kk, 1000);
     }
     s.xclose();
-    return k;
+    return run(kk,50);
 }
 
-var K=10;
+var K=100;
 
 function kk(ctx,dev)
 {
-    s.write_string(0,1, get_strtime() ,2);
+    s.write_string(0,0, get_strtime() + ":" + K ,2);
     K--;
     return K > 0 ? true : false;
 }
