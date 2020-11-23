@@ -19,7 +19,7 @@ sudo service udev restart
 
 print( "If error is: Bad file descriptor. Run as sudo \n");
 dbs   := DB(10000, 1000, "./database");
-json := SRV(8000,"rest");
+json := SRV(8008,"rest");
 local s = Oled96("/dev/i2c-2", 0x3c, "OLED96");
 
 
@@ -33,7 +33,7 @@ function main(a)
         k = run(kk, 1000);
     }
     s.xclose();
-    return run(kk,50);
+    return true;
 }
 
 var K=100;
