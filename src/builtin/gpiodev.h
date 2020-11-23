@@ -51,6 +51,7 @@ public:
         //cls.Ctor<EGPIO_PIN, EPIN_DIR, int>();
         cls.Functor(_SC("plug_it"), &GpioDev::plug_it);
         cls.Functor(_SC("set_value"), &GpioDev::set_value);
+
         cls.Functor(_SC("get_value"), &GpioDev::get_value);
         cls.Functor(_SC("get_freq"), &GpioDev::get_freq);
         cls.Functor(_SC("set_freq"), &GpioDev::set_freq);

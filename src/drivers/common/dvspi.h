@@ -56,7 +56,7 @@ public:
      virtual E_TYPE  data_of()const{return eBINARY;}
      const  std::string& sf()const{return _sys;}
      virtual const char* err_desc()const{return _err.c_str();}
-    static void config(char* s, char* f=nullptr){
+     static void config(char* s, char* f=nullptr){
         if(s && *s)  DvSpi::_sys=s ;
         if(f && *f)  DvSpi::_fmt=f ;
     }

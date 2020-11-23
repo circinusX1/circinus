@@ -43,8 +43,8 @@ devs_a.append(PWM("/sys/class/pwm/pwmchip6/pwm1",3000,3000,false,"c6p2"));
 function main(ctx)
 {
     foreach (pwm in devs_a) {
-        pwm.set_value(100);
-        print(pwm.get_name() + " = " + pwm.get_value() + "\n");
+        pwm.set_duty(100);
+        print(pwm.get_name() + " = " + pwm.get_duty() + "\n");
     }
     suspend(1000);
     print("main \n");
@@ -55,8 +55,8 @@ duty:=0;
 function loop(c,d)
 {
     foreach (pwm in devs_a) {
-        pwm.set_value(duty);
-        print(pwm.get_name() + " = " + pwm.get_value() + "\n");
+        pwm.set_duty(duty);
+        print(pwm.get_name() + " = " + pwm.get_duty() + "\n");
     }
     if(duty > 99)
         duty=0;

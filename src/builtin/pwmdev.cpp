@@ -39,7 +39,7 @@ PwmDev::~PwmDev()
 {
 }
 
-int      PwmDev::set_value(EPWM_VAL val)
+int      PwmDev::set_duty(EPWM_VAL val)
 {
     if(_reversed)
         val=100-val;
@@ -48,7 +48,17 @@ int      PwmDev::set_value(EPWM_VAL val)
     return this->bwrite((const uint8_t*)s.c_str(), s.length());
 }
 
-EPWM_VAL  PwmDev::get_value()
+int      PwmDev::set_abs_duty(EPWM_VAL val)
+{
+    if(_reversed)
+        val=_period()-val;
+    int ival = val;
+    std::string s = std::to_string(ival);
+    return this->bwrite((const uint8_t*)s.c_str(), s.length());
+}
+
+
+EPWM_VAL  PwmDev::get_duty()
 {
     if(_mon_dirt)
     {
@@ -73,12 +83,12 @@ bool  PwmDev::_write_now(const any_t& vl)
 
 size_t  PwmDev::_fecth(any_t& vl, const char* filter)
 {
-    return get_value();
+    return get_duty();
 }
 
 bool PwmDev::_mon_pick(size_t t)
 {
-    get_value();
+    get_duty();
     return _mon_dirt;
 }
 
@@ -108,7 +118,7 @@ void PwmDev::on_event(E_VENT e, const uint8_t* val, int len, int options)
 bool	PwmDev::_set_values(const char* key, const char* value)
 {
     if(key[0]=='d') // duty
-        return set_value(::atoi(value));
+        return set_duty(::atoi(value));
     if(key[0]=='i') { _reversed = value[0]==1 ? true : false; return true;}
     return false;
 }

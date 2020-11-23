@@ -31,8 +31,9 @@ public:
     explicit PwmDev(SqObj&, const char* pin, int period, int val, bool inv, const char* name=nullptr);
 
     virtual ~PwmDev();
-    int         set_value(EPWM_VAL val);
-    EPWM_VAL    get_value();
+    int         set_duty(EPWM_VAL val);
+    int         set_abs_duty(EPWM_VAL val);
+    EPWM_VAL    get_duty();
     bool        call_back(SqMemb& mem);
     bool        set_invert(bool set_invert){return _reversed=set_invert;}
     OVERW(DvPwm,Divais)
@@ -42,8 +43,10 @@ public:
         cls.Ctor<SqObj&, const char*, int, int, bool,const char*>();
 
         cls.Functor(_SC("plug_it"), &PwmDev::plug_it);
-        cls.Functor(_SC("set_value"), &PwmDev::set_value);
-        cls.Functor(_SC("get_value"), &PwmDev::get_value);
+        cls.Functor(_SC("set_duty"), &PwmDev::set_duty);
+        cls.Functor(_SC("set_abs_duty"), &PwmDev::set_abs_duty);
+        cls.Functor(_SC("get_duty"), &PwmDev::get_duty);
+        cls.Functor(_SC("set_abs_duty"), &PwmDev::set_abs_duty);
         cls.Functor(_SC("call_back"), &PwmDev::call_back);
         cls.Functor(_SC("set_invert"), &PwmDev::set_invert);
         cls.Functor(_SC("get_name"), &PwmDev::get_label_name);

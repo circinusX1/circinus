@@ -139,7 +139,7 @@ public:
     }
 
     void _autoopen(bool b){
-        _auto=true;
+        _auto=b;
     }
 
     int _fwrite(SqArr& a )

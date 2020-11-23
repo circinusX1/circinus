@@ -44,6 +44,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "comcurl.h"
 #include "comssh.h"
 #include "inputsys.h"
+#include "fastaccess.h"
 #include "inst.h"
 
 
@@ -129,7 +130,7 @@ bool arrarr(SqArr& a, SqArr& b)
     if(sza>=ARR_MAX ||szb>=ARR_MAX )
     {
         LOGW("array to large");
-        return "";
+        return false;
     }
 
     a.GetArray(ptra, sza);
@@ -255,7 +256,7 @@ int setdbg(int32_t d)
     return d;
 }
 
-std::string kbhit()
+std::string cho_in()
 {
     std::string s;
     std::cout << ">";
@@ -454,6 +455,11 @@ SqArr a2arr(const char* str)
     return ra;
 }
 
+int  wd_pulls()
+{
+    return wd_pull(WDIOC_KEEPALIVE,Wdto);
+}
+
 int  wd_pull(unsigned long int ctl, int flags)
 {
     int rv = -1;
@@ -494,6 +500,7 @@ int  wd_pull(unsigned long int ctl, int flags)
  */
 int run(SqMemb& f, int pulseme)
 {
+    int rv = 0;
     size_t now = tick_count();
     size_t then = now;
     size_t nowwd = now;
@@ -536,7 +543,7 @@ int run(SqMemb& f, int pulseme)
                     if(*srv.Get()==false)
                         break;
                 }
-                //all the time
+                //all the timeWDIOC_SETTIMEOUT
                 __bsqenv->notify();
             }
             if(Wdto &&  (then - nowwd) > (size_t)(Wdto*1000))
@@ -552,9 +559,10 @@ int run(SqMemb& f, int pulseme)
         ApStat=RESTART;
         LOGEX(ex.Message());
         LOGEX(SqErrStr);
+        rv = -1;
     }
     __bsqenv->notify();
-    return 0;
+    return rv;
 }
 
 void println(const char* text)
@@ -571,6 +579,10 @@ void _exit_app()
 {
     ApStat=EXIT_APP;
 }
+
+
+
+
 
 static void sys_config(EPERIPH e, SqArr& a)
 {
@@ -635,6 +647,7 @@ bool loadmod(const char* lib, const char* devname)
     return startmod(__vm,  SQ_PTRS, App, devname);
 }
 
+
 void usingop(int32_t flags)
 {
     SqEnvi* sq = App->scr_env();
@@ -646,7 +659,6 @@ void usingop(int32_t flags)
     if(flags & eADC)    AdcDev::squit(*sq);
     if(flags & eTIMER)  __noop;
     if(flags & eUART)   UartDev::squit(*sq);
-    if(flags & eHTTP)   RestSrv::squit(*sq);
     if(flags & eBASE)   ScrBase::squit(*sq);
     if(flags & eSRV)    RestSrv::squit(*sq);
     if(flags & eDB)     Database::squit(*sq);
@@ -752,7 +764,7 @@ void globals_expose(SqEnvi& sq)
 	Sqrat::RootTable(sq.theVM()).Functor("setdbg", &setdbg);
 	Sqrat::RootTable(sq.theVM()).Functor("i2xa", &i2xa);
 	Sqrat::RootTable(sq.theVM()).Functor("is_file", &is_file);
-	Sqrat::RootTable(sq.theVM()).Functor("bark", &wd_pull);
+	Sqrat::RootTable(sq.theVM()).Functor("bark", &wd_pulls);
 	Sqrat::RootTable(sq.theVM()).Functor("run", &run);
 	Sqrat::RootTable(sq.theVM()).Functor("exitapp", &exitapp);
 	Sqrat::RootTable(sq.theVM()).Functor("println", &println);
@@ -771,5 +783,7 @@ void globals_expose(SqEnvi& sq)
 	Sqrat::RootTable(sq.theVM()).Functor("I", &ii);
 	Sqrat::RootTable(sq.theVM()).Functor("U", &uu);
 	Sqrat::RootTable(sq.theVM()).Functor("using", &usingop);
+	Sqrat::RootTable(sq.theVM()).Functor("consolein", &cho_in);
+
 }
 

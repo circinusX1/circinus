@@ -29,3 +29,6 @@ function loop(ctx,devs)
     return true;
 }
 
+
+sudo raspi-config
+
