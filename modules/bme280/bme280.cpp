@@ -196,9 +196,6 @@ void  Bme280::sync(const char*)
 
 }
 
-void  Bme280::on_event()
-{
-}
 
 
 /**

@@ -109,11 +109,6 @@ void  Bmi160::squit(const char* name)
 	Sqrat::RootTable(__vm).Bind(_SC(name), cls);
 }
 
-bool Bmi160::is_dirty(size_t t)
-{
-	return false;
-}
-
 void Bmi160::on_event()
 {
 }
@@ -125,11 +120,6 @@ void Bmi160::on_event()
 const char* Bmi160::name()const
 {
     return _name.c_str();
-}
-
-void Bmi160::on_event()
-{
-
 }
 
 
