@@ -301,11 +301,17 @@ int Inst::set_timer(SqMemb f, int milis, size_t uniq)
 void Inst::web_set_data(const devsmap_t& devs, int apply)
 {
     std::unique_lock<std::mutex> lck(__bsqenv->mutex_);
-    _pending = devs;
-    LOGD2(__FUNCTION__);
-    if(apply > 0)
+    if(!_pending.empty())
     {
         __bsqenv->let_thread_go();
+        __bsqenv->condvar_.wait(lck,[]{return __bsqenv->ready_.load();} );
+    }
+    _pending = devs; // let main thread to write chnanges
+    LOGD2(__FUNCTION__);
+    if(apply > 0)   // wait for thread here
+    {
+        __bsqenv->let_thread_go();
+
         __bsqenv->condvar_.wait(lck,[]{return __bsqenv->ready_.load();} );
         assert(__bsqenv->ready_.load()==true);
     }

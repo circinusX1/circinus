@@ -117,9 +117,9 @@ void PwmDev::on_event(E_VENT e, const uint8_t* val, int len, int options)
 
 bool	PwmDev::_set_values(const char* key, const char* value)
 {
-    if(key[0]=='d') // duty
+    if(key[0]=='d' || key[0]=='v') // duty / value
         return set_duty(::atoi(value));
-    if(key[0]=='i') { _reversed = value[0]==1 ? true : false; return true;}
+    if(key[0]=='r') { _reversed = value[0]==1 ? true : false; return true;}
     return false;
 }
 
@@ -127,9 +127,9 @@ const char*	PwmDev::_get_values(const char* key)
 {
     if(key[0]==ALLDATA)
     {
-        _forjson += "value=";
+        _forjson += "&duty=";
         _forjson += _curdata.to_string<int>();
-        _forjson += "&reverse=7";
+        _forjson += "&reverse=";
         _forjson += std::to_string(_reversed);
         return _forjson.c_str();
     }

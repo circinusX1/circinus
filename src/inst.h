@@ -76,7 +76,8 @@ public:
     void    get_alldevs(devsmap_t& refrdevs, EPERIPH et, bool update);
     void    sync_all();
 private:
-    void   _dequeue_events(std::vector<I_IDev*>& arr)    ;
+    void   _dequeue_events(std::vector<I_IDev*>& arr);
+    void   _wait_more();
 private:
     std::map<std::string, I_IDev*>  _devs;
     std::map<std::string, SqMemb>   _userflds;
