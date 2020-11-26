@@ -76,8 +76,8 @@ int main(int argc, char *argv[])
             ApStat = c=="c" ? RUNNING : DO_EXIT;
         }
 #endif
-         ApStat = RUNNING;
-         sqrat_newapi(&SQ_PTRS);
+        ApStat = RUNNING;
+        sqrat_newapi(&SQ_PTRS);
 
 #ifdef WITH_USB
         int r = libusb_init(&_ctx);
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
     // ApStat==RUNNING || ApStat==RELOAD_S);
 #ifdef WITH_USB
     if(_ctx)
-          libusb_exit(_ctx);
+        libusb_exit(_ctx);
 #endif
     if(ExBoot)
     {

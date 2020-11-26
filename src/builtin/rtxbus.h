@@ -58,14 +58,19 @@ public:
     {
         _devflush();
         AutoOC oc(_pd, _auto);
-        int wr = _pd->bwrite((const uint8_t*)str, ::strlen(str));
+        std::string loco = str;
+        loco.append((const char*)_cr.data(),_cr.length());
+
+        int wr = _pd->bwrite((const uint8_t*)loco.c_str(), loco.length());
 
         return wr;
     }
 
     bool _puts_cb(const char* str, SqMemb& f)
     {
-        if(_puts(str))
+        std::string loco = str;
+        loco.append((const char*)_cr.data(),_cr.length());
+        if(_puts(loco.c_str()))
         {
             size_t  bytes;
             char loco[512];

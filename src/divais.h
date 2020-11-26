@@ -66,7 +66,7 @@ extern  int      IDX;
 
 extern const char* __stypes[];
 extern const char* __scats[];
-
+static std::string __empty;
 
 class Divais : public I_IDev
 {
@@ -117,7 +117,7 @@ public:
 	static EPERIPH get_category(const char* cat);
 	virtual void   sync(const char* filter=nullptr);
 	virtual Sqrat::Object object()const;
-
+	const std::string& eol(){return __empty;}
 protected:
 	virtual bool	_write_now(const any_t& a)=0;
 	virtual bool	_mon_pick(size_t t)=0;
