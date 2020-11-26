@@ -55,7 +55,7 @@ public:
         cls.Functor(_SC("read"), &UartDev::_read);
         cls.Overload<int (UartDev::*)(SqArr&)>(_SC("write"), &RtxBus<UartDev>::_write);
 
-        cls.Overload<const char* (UartDev::*)(SqArr&,int)>(_SC("expect_any"), &RtxBus<UartDev>::_expect_strarr);
+        cls.Overload<SqArr (UartDev::*)(SqArr&,int)>(_SC("expect_arr"), &RtxBus<UartDev>::_expect_arr);
         cls.Overload<const char* (UartDev::*)()>(_SC("received"), &RtxBus<UartDev>::_received);
 
         cls.Overload<bool (UartDev::*)(SqArr&, SqMemb&)>(_SC("write_cb"), &RtxBus<UartDev>::_write_cb);

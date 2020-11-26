@@ -265,13 +265,16 @@ public:
         _pd->flush();
         _pd->reset();
         _tmpstr.clear();
+        _tmp2.clear();
     }
 
     const char* _received(){
-        return (const char*)_tmpstr.c_str();
+        _tmp2 = _tmpstr;
+        _tmpstr.clear();
+        return (const char*)_tmp2.c_str();
     }
 
-    const char* _expect_strarr(SqArr& a, int to)
+    SqArr _expect_arr(SqArr& a, int to)
     {
         bool     rv=false;
         uint8_t  loco[512]={0};
@@ -286,13 +289,13 @@ public:
         {
             size_t bytes = _pd->bread(loco, sizeof(loco)-1);
             if(bytes>0){
-                _tmpstr.append(loco,bytes);
+                _tmpstr.append(loco, bytes);
                 int ns  = a.GetSize();
 
                 for(int i=0;i<ns;i++)
                 {
                     const char* token = *(a.GetValue<const char*>(i).Get());
-                    sz+=::strlen(token)+1;
+                    sz += ::strlen(token)+1;
                     if(_tmpstr.find((const uint8_t*)token)!=std::string::npos)
                     {
                         _tmp2.assign((const uint8_t*)token,::strlen(token));
@@ -306,9 +309,17 @@ public:
                     _tmpstr.erase(0,MAX_EXPECT/2);
                 }
             }
-
         }
-        return (const char*)_tmp2.c_str();
+        if(_tmp2.length())
+        {
+            SqArr ra(App->psqvm(), _tmp2.length());
+            for(size_t i=0; i< _tmpstr.length(); ++i )
+            {
+                ra.SetValue(i, _tmpstr.at(i));
+            }
+            return ra;
+        }
+        return _nula;
     }
 
 
@@ -328,7 +339,7 @@ public:
             size_t bytes = _pd->bread(loco, sizeof(loco)-1);
             if(bytes>0){
                 _tmpstr.append(loco,bytes);
-                if(_tmpstr.length()>sz*32)
+                if(_tmpstr.length()>sz*4)
                 {
                     _tmpstr.erase(0,sz);
                 }
@@ -360,7 +371,7 @@ public:
             {
                 std::cout << (const char*)loco << "\n";
                 _tmpstr.append(loco,bytes);
-                if(_tmpstr.length()>sz*32)
+                if(_tmpstr.length()>sz*4)
                 {
                     _tmpstr.erase(0,sz);
                 }
@@ -373,9 +384,9 @@ public:
 
     SqArr _pick_bin()
     {
-        int k = 0;
-        const any_t& raw =  _pd->get_data();
-        SqArr ra(App->psqvm(), raw.length());
+        int     k = 0;
+        const   any_t& raw =  _pd->get_data();
+        SqArr   ra(App->psqvm(), raw.length());
         for(size_t i=0; i< raw.length(); ++i )
         {
             ra.SetValue(k++, raw.c_bytes()[i]);
@@ -389,6 +400,7 @@ public:
     }
 
 protected:
+    SqArr                        _nula;
     T*                           _pd;
     std::basic_string<uint8_t>   _cr;
     std::basic_string<uint8_t>   _tmpstr;
