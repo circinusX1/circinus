@@ -28,9 +28,11 @@ UartDev::UartDev(E_TYPE  e,
                      DvSerial(dev,bps,mode),
                      Divais(e,eUART, name),
                      Reg<UartDev>(this),
-                     RtxBus<UartDev>(this),_bytes(nullptr),_nbytes(0)
+                     RtxBus<UartDev>(this, false),_bytes(nullptr),_nbytes(0)
 {
-    _cr.assign(1, 0xD);
+    _cr.append(1, 0xD);
+    _cr.append(1, 0xA);
+
     _o.BindCppObject(this);
 }
 
@@ -43,7 +45,7 @@ UartDev::UartDev(SqObj& o,
                      DvSerial(dev,bps,mode),
                      Divais(e,eUART,name),
                      Reg<UartDev>(this),
-                     RtxBus<UartDev>(this),_bytes(nullptr),_nbytes(0)
+                     RtxBus<UartDev>(this,false),_bytes(nullptr),_nbytes(0)
 {
     plug_it(o,name);
     _cr.assign(1, 0xD);

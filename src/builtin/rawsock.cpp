@@ -24,7 +24,7 @@ RawSock::RawSock(E_TYPE e,
                  const char* name):DvSocket(ip,port),
                                     Divais (e, eSOCKET, name),
                                     Reg<RawSock>(this),
-                                    RtxBus<RawSock>(this),_bytes(nullptr)
+                                    RtxBus<RawSock>(this,false),_bytes(nullptr)
 {
     _o.BindCppObject(this);
 
@@ -37,7 +37,7 @@ RawSock::RawSock(SqObj& o,
                  const char* name):DvSocket(ip,port),
     Divais (e, eSOCKET, name),
     Reg<RawSock>(this),
-    RtxBus<RawSock>(this),_bytes(nullptr)
+    RtxBus<RawSock>(this,false),_bytes(nullptr)
 {
     plug_it(o, name);
 }

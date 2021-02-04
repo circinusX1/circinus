@@ -34,7 +34,7 @@ struct AutoOC{
 template<typename T> class RtxBus
 {
 public:
-    RtxBus(T* d):_pd(d),_auto(true)
+    RtxBus(T* d, bool autoo):_pd(d),_auto(autoo)
     {
     }
 
@@ -346,6 +346,14 @@ public:
             }
             size_t f = _tmpstr.find((const uint8_t*)ex, 0, ::strlen(ex));
             rv = (f!=std::string::npos);
+        }
+        size_t bytes = _pd->bread(loco, sizeof(loco)-1);
+        if(bytes>0){
+            _tmpstr.append(loco,bytes);
+            if(_tmpstr.length()>sz*4)
+            {
+                _tmpstr.erase(0,sz);
+            }
         }
         return rv;
     }

@@ -22,7 +22,7 @@ SpiDev::SpiDev(const char* spi, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t
                const char* name):DvSpi(spi,addr,mode,wc,freq),
                                  Divais (eBINARY, eSPI, name),
                                  Reg<SpiDev>(this),
-                                 RtxBus<SpiDev>(this)
+                                 RtxBus<SpiDev>(this,false)
 {
     _o.BindCppObject(this);
 
@@ -34,7 +34,7 @@ SpiDev::SpiDev(SqObj& o,
                const char* name):DvSpi(spi,addr,mode,wc,freq),
                                  Divais (eBINARY, eSPI, name),
                                  Reg<SpiDev>(this),
-                                 RtxBus<SpiDev>(this)
+                                 RtxBus<SpiDev>(this,false)
 {
     plug_it(o, name);
     

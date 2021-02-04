@@ -22,7 +22,7 @@ FileDev::FileDev(E_TYPE e,
                  const char* name):DvFile(file),
                                    Divais(e, eFILE, name),
                                    Reg<FileDev>(this),
-                                   RtxBus<FileDev>(this)
+                                   RtxBus<FileDev>(this,false)
 {
     _o.BindCppObject(this);
 }
@@ -33,7 +33,7 @@ FileDev::FileDev(SqObj& o,
                  const char* name):DvFile(file),
                                    Divais(e, eFILE, name),
                                    Reg<FileDev>(this),
-                                   RtxBus<FileDev>(this)
+                                   RtxBus<FileDev>(this,false)
 {
     plug_it(o, name);
 }
