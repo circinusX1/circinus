@@ -225,7 +225,7 @@ bool InputSys::_mon_callback(time_t tnow)
         SqArr a;
         a.Resize(sizeof(_ie));
         const uint8_t* p = (const uint8_t*)&_ie;
-        for(int i=0;i<sizeof(_ie);i++)
+        for(size_t i=0;i<sizeof(_ie);i++)
         {
             a.SetValue(i, p[i]);
         }

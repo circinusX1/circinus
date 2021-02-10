@@ -339,7 +339,7 @@ public:
         _t1.clear();
         while(tick_count() < fut)
         {
-            const size_t bytes = _pd->bread(income.data(), loco.cap());
+            const size_t bytes = _pd->bread(income.data(), income.cap());
             if(bytes==0) continue;
             income.resize(bytes);
             _t1.append(income,bytes);

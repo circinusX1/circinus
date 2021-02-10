@@ -37,7 +37,7 @@ private:
     std::string     _name;
     double          _acc[3];
     double          _rot[3];
-    any_t           _data;
+    devdata_t           _data;
     char            _retbuff[64];
     bool            _dirt = false;
     Sqrat::Object   _o;

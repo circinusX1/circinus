@@ -209,9 +209,7 @@ public:
 	virtual void	iclose()=0;
 	virtual size_t  bread(uint8_t* buff, int len, int options=0)=0;
 	virtual int     bwrite(const uint8_t* buff, int len, int options=0)=0;
-    virtual void    on_event(E_VENT e, const uint8_t* buff, int len, int options=0){
-        assert(0);
-    };
+	virtual void    on_event(E_VENT e, const uint8_t* buff, int len, int options=0)=0;
 	virtual const char* err_desc()const=0;
 	virtual EPERIPH peer_of()const=0;
 	virtual E_TYPE  data_of()const=0;
@@ -263,6 +261,8 @@ EXPORT bool start_module(HSKVM vm, sq_api* ptrs,  IInstance* pi, const char* nam
 	virtual const devdata_t& get_data()const;		\
 	virtual void  sync(const char* filter=nullptr); \
 	virtual Sqrat::Object object()const;			\
+	virtual void  on_event(E_VENT e, const uint8_t* buff, int len, int options);
+
 
 #define SHALL_CTOR() \
     _ird = __pi->get_devi(dev); \

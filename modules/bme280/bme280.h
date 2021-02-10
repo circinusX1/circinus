@@ -27,7 +27,7 @@ public:
 private:
     IoOps*          _ird;
     std::string     _name;
-    any_t           _data;
+    devdata_t       _data;
     char            _retbuff[32];
     int             _tph[3];
     bool            _dirty = false;

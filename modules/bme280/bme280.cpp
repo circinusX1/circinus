@@ -57,7 +57,7 @@ Sqrat::Array Bme280::thp()
     return a;
 }
 
-void  Bme280::on_event()
+void  Bme280::on_event(E_VENT e, const uint8_t* buff, int len, int options=0)
 {
 }
 
@@ -116,7 +116,7 @@ void Bme280::monitor(bool m)
  * @param t  further usage
  * @return if this device is monitorred periodically for value changes.
  */
-bool  Bme280::is_dirty(size_t)
+bool  Bme280::is_dirty(time_t t)
 {
     if(_montorit)
     {
@@ -168,11 +168,10 @@ const char* Bme280::get_value(const char* key)
 
 /**
  * @brief Bme280::get_data
- * @return the abstract data any_t
+ * @return the abstract data devdata_t
  */
-const any_t& Bme280::get_data()const
+const devdata_t& Bme280::get_data()const
 {
-
     return _data;
 }
 

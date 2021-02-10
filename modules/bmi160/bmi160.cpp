@@ -109,7 +109,7 @@ void  Bmi160::squit(const char* name)
 	Sqrat::RootTable(__vm).Bind(_SC(name), cls);
 }
 
-void Bmi160::on_event()
+void Bmi160::on_event(E_VENT e, const uint8_t* buff, int len, int options=0)
 {
 }
 
@@ -123,7 +123,7 @@ const char* Bmi160::name()const
 }
 
 
-bool Bmi160::is_dirty(size_t t)
+bool Bmi160::is_dirty(time_t t)
 {
     return _dirt;
 }
@@ -181,9 +181,9 @@ const char* Bmi160::get_value(const char* key)
 
 /**
  * @brief Bmi160::get_data
- * @return the abstract data any_t
+ * @return the abstract data devdata_t
  */
-const any_t& Bmi160::get_data()const
+const devdata_t& Bmi160::get_data()const
 {
     return _data;
 }
