@@ -35,7 +35,7 @@ public:
     FileDev(E_TYPE e, const char* , const char* name=nullptr);
     FileDev(SqObj&, E_TYPE e, const char* , const char* name=nullptr);
     virtual ~FileDev();
-    int call_back(SqMemb& mon);
+    int on_event_(SqMemb& mon);
     OVERW(DvFile,Divais)
     static void squit(SqEnvi& e){
         Sqrat::Class<FileDev> cls(e.theVM(), _SC("FILE"));
@@ -46,10 +46,9 @@ public:
         cls.Functor(_SC("plug_it"), &FileDev::plug_it);
         cls.Functor(_SC("open"), &FileDev::iopen);
         cls.Functor(_SC("close"), &FileDev::iclose);
-        cls.Functor(_SC("call_back"), &FileDev::call_back);
-        cls.Overload<const char* (FileDev::*)(int)>(_SC("gets"), &RtxBus<FileDev>::_gets);
+        cls.Overload<const char* (FileDev::*)()>(_SC("gets"), &RtxBus<FileDev>::_gets);
         cls.Overload<int (FileDev::*)(const char*)>(_SC("puts"), &RtxBus<FileDev>::_puts);
-        cls.Overload<SqArr (FileDev::*)(int)>(_SC("read"), &RtxBus<FileDev>::_read);
+        cls.Overload<SqArr (FileDev::*)()>(_SC("read"), &RtxBus<FileDev>::_read);
         cls.Overload<int (FileDev::*)(SqArr&)>(_SC("write"), &RtxBus<FileDev>::_write);
         cls.Overload<void (FileDev::*)()>(_SC("flush"), &RtxBus<FileDev>::_devflush);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
@@ -60,8 +59,8 @@ protected:
     const char*	_get_values(const char* key);
     bool	_set_values(const char* key, const char* value);
 private:
-    bool  _write_now(const any_t& vl);
-    size_t  _fecth(any_t& vl, const char* filter);
+    bool  _write_now(const devdata_t& vl);
+    size_t  _fecth(devdata_t& vl, const char* filter);
 
 };
 

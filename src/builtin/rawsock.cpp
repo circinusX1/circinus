@@ -24,7 +24,7 @@ RawSock::RawSock(E_TYPE e,
                  const char* name):DvSocket(ip,port),
                                     Divais (e, eSOCKET, name),
                                     Reg<RawSock>(this),
-                                    RtxBus<RawSock>(this,false),_bytes(nullptr)
+                                    RtxBus<RawSock>(this,false,true)
 {
     _o.BindCppObject(this);
 
@@ -37,7 +37,7 @@ RawSock::RawSock(SqObj& o,
                  const char* name):DvSocket(ip,port),
     Divais (e, eSOCKET, name),
     Reg<RawSock>(this),
-    RtxBus<RawSock>(this,false),_bytes(nullptr)
+    RtxBus<RawSock>(this,false)
 {
     plug_it(o, name);
 }
@@ -45,41 +45,37 @@ RawSock::RawSock(SqObj& o,
 RawSock::~RawSock()
 {
     this->iclose();
-    delete[] _bytes;
 }
 
-bool  RawSock::_write_now(const any_t& vl)
+bool  RawSock::_write_now(const devdata_t& vl)
 {
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  RawSock::_fecth(any_t& vl, const char* filter)
+size_t  RawSock::_fecth(devdata_t& vl, const char* filter)
 {
     return 0;
 }
 
-bool RawSock::_mon_pick(size_t t)
+bool RawSock::_mon_pick(time_t tnow)
 {
-    _cach = this->bread(_bytes, _nbytes, 0);
-    return _mon_dirt;
+
+    return false;
 }
 
-void RawSock::call_back(SqMemb& m, int bytes)
+void RawSock::on_event_(SqMemb& m)
 {
-
     _cach = false;
-    if(bytes==0 || m.IsNull())
+    if(m.IsNull())
     {
-        delete[] _bytes;
-        _bytes = nullptr;
         _monitor = false;
         if(!_on_event.IsNull())
             _on_event.Release();
     }
     else {
+        if(!_on_event.IsNull())
+            _on_event.Release();
         _monitor = true;
-        _bytes = new uint8_t[bytes];
-        _nbytes = bytes;
         _on_event=m;
     }
 }
@@ -91,27 +87,16 @@ int RawSock::puts(const char* b, int sz)
 
 const char* RawSock::gets(int chars, int to)
 {
-    if(_bytes==nullptr)
-    {
-        _bytes = new uint8_t[chars+1];
-        _nbytes = chars + 1;
-    }
-    if(chars > (int)_nbytes)
-    {
-        delete[] _bytes;
-        _bytes = new uint8_t[chars+1];
-        _nbytes = chars + 1;
-    }
-    this->select_receive(_bytes, _nbytes, to);
-    return (const char*)_bytes;
+    this->select_receive(_iobuff->buf(), _iobuff->cap(), to);
+    return (const char*)_iobuff->buf();
 }
 
 int RawSock::write(Sqrat::Array& a)
 {
-    int             sz = a.GetSize();
+    int sz = a.GetSize();
     if(sz<512)
     {
-        fastbuf_t<512>  ptr(sz);
+        fastbuf_t  ptr(sz);
 
         a.GetArray((uint8_t*)ptr, sz);
         return this->sendall((const unsigned char*)ptr,sz);
@@ -121,24 +106,13 @@ int RawSock::write(Sqrat::Array& a)
 
 Sqrat::Array RawSock::read(int bytes, int to)
 {
-    if(_bytes==nullptr)
-    {
-        _bytes = new uint8_t[bytes+1];
-        _nbytes = bytes + 1;
-    }
-    if(bytes > (int)_nbytes)
-    {
-        delete[] _bytes;
-        _bytes = new uint8_t[bytes+1];
-        _nbytes = bytes + 1;
-    }
-    int by = this->select_receive(_bytes, _nbytes, to);
+    int by = this->select_receive(_iobuff->buf(), _iobuff->cap(), to);
     if(by>0)
     {
-        SqArr           rar(App->psqvm(),by );
+        SqArr  rar(App->psqvm(),by );
         for(int i = 0 ; i < bytes; i++)
         {
-            rar.SetValue(i, _bytes[i]);
+            rar.SetValue(i, _iobuff->at(i));
         }
         return rar;
     }

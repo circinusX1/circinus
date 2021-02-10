@@ -396,7 +396,7 @@ RestSrv::~RestSrv()
 
 int  RestSrv::_defer_to_device(I_IDev* pdev, const rapidjson::Document& value)
 {
-    any_t       data;
+    devdata_t       data;
     bool        apply = false;
     devsmap_t devs;
 

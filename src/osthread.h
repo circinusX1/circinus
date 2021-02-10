@@ -536,12 +536,12 @@ inline bool msleep(int t)
     return true;
 }
 
-inline size_t tick_count()
+inline time_t tick_count()
 {
     struct timeval tv;
     if(gettimeofday(&tv, NULL) != 0)
         return 0;
-    size_t retv = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+    time_t retv = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
     return retv;
 }
 

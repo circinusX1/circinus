@@ -63,7 +63,7 @@ function main(cx)
     var d2 = extended_adc.calculate();
 
     sys_adc.get_value();
-    var d3 = sys_adc.call_back(watch);
+    var d3 = sys_adc.on_event(watch);
 
     print("d1 = " + d1 + " and d2=" + d2 + " d3 = " + d3 + "\n");
 

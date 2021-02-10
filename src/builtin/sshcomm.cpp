@@ -22,7 +22,7 @@ SshComm::SshComm(const char* cred,
                  const char* name):ComSsh(cred),
     Divais(name),
     Reg<SshComm>(this),
-    RtxBus<SshComm>(this),_bytes(nullptr),_nbytes(0)
+    RtxBus<SshComm>(this)
 {
     _o.BindCppObject(this);
 
@@ -33,62 +33,56 @@ SshComm::SshComm(SqObj& o,
                  const char* name):ComSsh(cred),
                                     Divais(eSSH, name),
                                     Reg<SshComm>(this),
-                                    RtxBus<SshComm>(this),_bytes(nullptr),_nbytes(0)
+                                    RtxBus<SshComm>(this,false,true)
 {
     plug_it(o, name);
+    IoType_t::construct(&_uchars);
 }
 
 
 SshComm::~SshComm()
 {
-    delete[] _bytes;
+    IoType_t::destroy(&_uchars);
 }
 
-bool  SshComm::_write_now(const any_t& vl)
+bool  SshComm::_write_now(const devdata_t& vl)
 {
     _mon_dirt = true;
     return this->bwrite(vl[0].data(), vl[0].length());
 }
 
-size_t  SshComm::_fecth(any_t& vl, const char* filter)
+size_t  SshComm::_fecth(devdata_t& vl, const char* filter)
 {
     return this->bread(vl.c_bytes(), vl.length());
 }
 
 
-bool SshComm::_mon_pick(size_t t)
+bool SshComm::_mon_pick(time_t tnow)
 {
-    _cach = this->bread(_bytes, _nbytes);
+    _cach = this->bread(_uchars->buf(), _uchars->cap());
     return _mon_dirt;
 }
 
 const char* SshComm::_gets(int chars)
 {
     _mon_dirt = false;
-    if(_cach)
-    {
-        _cach=false;
-        return (const char*)_bytes;
-    }
     return RtxBus<SshComm>::_gets(chars);
 }
 
-void SshComm::call_back(SqMemb& mem, size_t bytes)
+void SshComm::on_event_(SqMemb& mem)
 {
     _cach=false;
     if(bytes==0 || m.IsNull())
     {
-        delete[] _bytes;
-        _bytes = nullptr;
         _monitor = false;
         if(!_on_event.IsNull())
             _on_event.Release();
 
     }
     else {
+        if(!_on_event.IsNull())
+            _on_event.Release();
         _monitor = true;
-        _bytes = new uint8_t[bytes];
-        _nbytes = bytes;
         _on_event=m;
     }
     return _monitor;

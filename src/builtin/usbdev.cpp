@@ -24,7 +24,7 @@ UsbDev::UsbDev(E_TYPE  e,
                const char *name):DvUsb(dev),
                                   Divais(e,eUSB,name),
                                   Reg<UsbDev>(this),
-                                  RtxBus<UsbDev>(this),_bytes(nullptr),_nbytes(0)
+                                  RtxBus<UsbDev>(this,false,true)
 {
     _o.BindCppObject(this);
 
@@ -36,7 +36,7 @@ UsbDev::UsbDev( SqObj& o,
                 const char *name):DvUsb(dev),
                                   Divais(e,eUSB,name),
                                   Reg<UsbDev>(this),
-                                  RtxBus<UsbDev>(this),_bytes(nullptr),_nbytes(0)
+                                  RtxBus<UsbDev>(this,false,true)
 {
     plug_it(o, name);
 
@@ -44,16 +44,16 @@ UsbDev::UsbDev( SqObj& o,
 
 UsbDev::~UsbDev()
 {
-    delete[] _bytes;
+    IoType_t::destroy(&_uchars);
 }
 
-bool  UsbDev::_write_now(const any_t& vl)
+bool  UsbDev::_write_now(const devdata_t& vl)
 {
     _mon_dirt = true;
     return this->bwrite(vl[0].data(), vl[0].length());
 }
 
-size_t  AdcDev::_fecth(any_t& vl, const char* filter)
+size_t  AdcDev::_fecth(devdata_t& vl, const char* filter)
 {
     return this->bread(vl.c_bytes(), vl.length());
 }
@@ -79,9 +79,9 @@ SqArr UsbDev::enumerate()
     return rar;
 }
 
-bool UsbDev::_mon_pick(size_t t)
+bool UsbDev::_mon_pick(time_t tnow)
 {
-    if(this->bread(_bytes, _nbytes))
+    if(this->bread(_uchars->buf(), _uchars->cap()))
     {
         return _mon_dirt=true;
     }
@@ -94,7 +94,7 @@ const char* UsbDev::_gets(int chars)
     if(_curdata)
     {
         _curdata=false;
-        return (const char*)_bytes;
+        return (const char*)_uchars->buf();
     }
     return RtxBus<UsbDev>::_gets(chars);
 }
@@ -105,31 +105,31 @@ SqArr UsbDev::_read(int chars)
     if(_curdata)
     {
         _curdata=false;
-        SqArr  rar(App->psqvm(), _nbytes);
-        for(size_t i = 0 ; i < _nbytes; i++)
+        SqArr  rar(App->psqvm(), _uchars->len());
+        for(size_t i = 0 ; i < _uchars->len(); i++)
         {
-            rar.SetValue(i, _bytes[i]);
+            rar.SetValue(i, _uchars->at(i));
         }
         return rar;
     }
     return RtxBus<UsbDev>::_read(chars);
 }
 
-bool UsbDev::call_back(SqMemb& mem, size_t bytes)
+bool UsbDev::on_event_(SqMemb& mem)
 {
     if(bytes==0 || m.IsNull())
     {
-        delete[] _bytes;
-        _bytes = nullptr;
+        IoType_t::destroy(&_uchars);
         _monitor = false;
         if(!_on_event.IsNull())
             _on_event.Release();
 
     }
     else {
+        if(!_on_event.IsNull())
+            _on_event.Release();
         _monitor = true;
-        _bytes = new uint8_t[bytes];
-        _nbytes = bytes;
+        IoType_t::construct(&_uchars);
         _on_event=m;
     }
     _curdata = false;

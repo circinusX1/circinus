@@ -74,18 +74,18 @@ SoLib::~SoLib()
 }
 
 
-bool  SoLib::_write_now(const any_t& vl)
+bool  SoLib::_write_now(const devdata_t& vl)
 {
     return false;
 }
 
-size_t  SoLib::_fecth(any_t& vl, const char* filter)
+size_t  SoLib::_fecth(devdata_t& vl, const char* filter)
 {
     return 0;
 }
 
 
-bool SoLib::_mon_pick(size_t t)
+bool SoLib::_mon_pick(time_t tnow)
 {
     return false;
 }

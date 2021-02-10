@@ -24,6 +24,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 using namespace GenericHw;
 
+
 class UartDev : public DvSerial,
                 public Divais,
                 private Reg<UartDev>,
@@ -34,9 +35,10 @@ public:
     UartDev(SqObj&, E_TYPE  e, const char* dev, int bps, const char* mode, const char* name=nullptr);
     virtual ~UartDev();
     OVERW(DvSerial,Divais)
-    bool call_back(SqMemb& mem, size_t bytes);
-    const char* _gets(int chars);
-    SqArr _read(int chars);
+    bool on_event_(SqMemb& mem);
+    const char* _gets();
+    const char* _getsln(char ceol);
+    SqArr _read();
 
     static void squit(SqEnvi& e)
     {
@@ -44,23 +46,26 @@ public:
         cls.Ctor<E_TYPE, const char*,int, const char*,const char*>();
         cls.Ctor<SqObj&, E_TYPE, const char*,int, const char*, const char*>();
         cls.Functor(_SC("plug_it"), &UartDev::plug_it);
-
         cls.Functor(_SC("open"), &UartDev::iopen);
         cls.Functor(_SC("close"), &UartDev::iclose);
-        cls.Functor(_SC("call_back"), &UartDev::call_back);
-        cls.Overload<int (UartDev::*)(SqArr&)>(_SC("setcr"), &RtxBus<UartDev>::_setcr);
+        cls.Functor(_SC("on_event"), &UartDev::on_event_);
+        cls.Overload<int (UartDev::*)(SqArr&)>(_SC("set_cr"), &RtxBus<UartDev>::_setcr);
+        cls.Overload<void (UartDev::*)(size_t)>(_SC("set_time"), &RtxBus<UartDev>::_set_touts);
+        cls.Overload<void (UartDev::*)(size_t,size_t)>(_SC("set_buffers"), &RtxBus<UartDev>::set_buffers);
         cls.Overload<int (UartDev::*)(const char*)>(_SC("puts"), &RtxBus<UartDev>::_puts);
+        cls.Overload<int (UartDev::*)(const char*)>(_SC("putsln"), &RtxBus<UartDev>::_putsln);
         cls.Overload<bool (UartDev::*)(const char*, SqMemb&)>(_SC("puts_cb"), &RtxBus<UartDev>::_puts_cb);
         cls.Functor(_SC("gets"), &UartDev::_gets);
+
+        //cls.Functor(_SC("getsln"), &UartDev::_getsln);
         cls.Functor(_SC("read"), &UartDev::_read);
         cls.Overload<int (UartDev::*)(SqArr&)>(_SC("write"), &RtxBus<UartDev>::_write);
 
-        cls.Overload<SqArr (UartDev::*)(SqArr&,int)>(_SC("expect_arr"), &RtxBus<UartDev>::_expect_arr);
-        cls.Overload<const char* (UartDev::*)()>(_SC("received"), &RtxBus<UartDev>::_received);
+        cls.Overload<SqArr (UartDev::*)(SqArr&)>(_SC("expect_arr"), &RtxBus<UartDev>::_expect_arr);
 
         cls.Overload<bool (UartDev::*)(SqArr&, SqMemb&)>(_SC("write_cb"), &RtxBus<UartDev>::_write_cb);
-        cls.Overload<bool (UartDev::*)(const char*, int)>(_SC("expect_str"), &RtxBus<UartDev>::_expect_str);
-        cls.Overload<bool (UartDev::*)(SqArr&, int)>(_SC("expect_bin"), &RtxBus<UartDev>::_expect_bin);
+        cls.Overload<bool (UartDev::*)(const char*)>(_SC("expect_str"), &RtxBus<UartDev>::_expect_str);
+        cls.Overload<bool (UartDev::*)(SqArr&)>(_SC("expect_bin"), &RtxBus<UartDev>::_expect_bin);
         cls.Overload<const char* (UartDev::*)()>(_SC("pick_str"), &RtxBus<UartDev>::_pick_str);
         cls.Overload<SqArr (UartDev::*)()>(_SC("pick_bin"), &RtxBus<UartDev>::_pick_bin);
         cls.Overload<void (UartDev::*)()>(_SC("flush"), &RtxBus<UartDev>::_devflush);
@@ -70,15 +75,12 @@ public:
     }
    
 protected:
-    bool  _write_now(const any_t& vl);
-    size_t  _fecth(any_t& vl, const char* filter);
+    bool  _write_now(const devdata_t& vl);
+    size_t  _fecth(devdata_t& vl, const char* filter);
     bool                _set_values(const char* key, const char* value);
     const char*         _get_values(const char* key);
 
 private:
-    uint8_t* _bytes;
-    size_t   _nbytes;
-    bool     _bcurdata;
 };
 
 #endif // UARUartDevDEV_H

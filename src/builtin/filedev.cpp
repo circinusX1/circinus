@@ -22,7 +22,7 @@ FileDev::FileDev(E_TYPE e,
                  const char* name):DvFile(file),
                                    Divais(e, eFILE, name),
                                    Reg<FileDev>(this),
-                                   RtxBus<FileDev>(this,false)
+                                   RtxBus<FileDev>(this,false,true)
 {
     _o.BindCppObject(this);
 }
@@ -44,29 +44,31 @@ FileDev::~FileDev()
 
 }
 
-bool  FileDev::_write_now(const any_t& vl)
+bool  FileDev::_write_now(const devdata_t& vl)
 {
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  FileDev::_fecth(any_t& vl, const char* filter)
+size_t  FileDev::_fecth(devdata_t& vl, const char* filter)
 {
     return 0;
 }
 
 
-bool FileDev::_mon_pick(size_t t)
+bool FileDev::_mon_pick(time_t tnow)
 {
     return _mon_dirt;
 }
 
-int FileDev::call_back(SqMemb& m)
+int FileDev::on_event_(SqMemb& m)
 {
     if(m.IsNull()){
         _monitor = false;
         if(!_on_event.IsNull())
             _on_event.Release();
     }else{
+        if(!_on_event.IsNull())
+            _on_event.Release();
         _on_event=m;
         _monitor = true;
     }

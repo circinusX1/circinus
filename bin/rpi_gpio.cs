@@ -24,7 +24,7 @@ function main(ctx)
 {
     //print(ctx +  typeof ctx + " the ctx");
     ctx.notify("appname");
-    pb.call_back(callback,RISE_FALL);
+    pb.on_event(callback);
     l1.set_value(0);
     return run(loop,10000);
 }

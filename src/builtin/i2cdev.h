@@ -25,6 +25,8 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 using namespace GenericHw;
 
+#define MAX_I2C_BYTES   4096
+
 class I2CDev: public DvI2c,
               public Divais,
               private Reg<I2CDev>,
@@ -36,10 +38,8 @@ public:
 
     explicit I2CDev(bool selector, const char* i2cfile, uint8_t addr,const char* name=nullptr);
     explicit I2CDev(bool selector, SqObj&, const char* i2cfile, uint8_t addr,const char* name=nullptr);
-
     virtual ~I2CDev();
     int     setreg(uint8_t cmd);
-    void    call_back(SqMemb& m, int regsddr, int bytes);
     SqArr  _readreg(uint8_t reg, int bytes);
     OVERW(DvI2c,Divais);
     static void squit(SqEnvi& e){
@@ -52,7 +52,6 @@ public:
 
 
         cls.Functor(_SC("plug_it"), &I2CDev::plug_it);
-        cls.Functor(_SC("call_back"), &I2CDev::call_back);
         cls.Functor(_SC("open"), &I2CDev::iopen);
         cls.Functor(_SC("close"), &I2CDev::iclose);
         cls.Overload<void (I2CDev::*)(bool)>(_SC("autoopen"), &RtxBus<I2CDev>::_autoopen);
@@ -69,15 +68,13 @@ public:
     }
 
 protected:
-    bool                _write_now(const any_t& vl);
-    size_t              _fecth(any_t& vl, const char* filter);
+    bool                _write_now(const devdata_t& vl);
+    size_t              _fecth(devdata_t& vl, const char* filter);
     bool                _set_values(const char* key, const char* value);
     const char*         _get_values(const char* key);
 
 private:
     int                 _regaddr;
-    uint8_t*            _bytes; /*max i2c bytes*/
-    size_t              _nbytes;
     bool                _cach;
 };
 

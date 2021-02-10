@@ -26,6 +26,8 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 using namespace GenericHw;
 
+#define SSH_MAX_BYTES   4096
+
 class SshComm:
         public ComSsh,
         public Divais,
@@ -37,7 +39,7 @@ public:
     SshComm(SqObj&, const char* credentials, const char* name=nullptr);
 
     virtual ~SshComm();
-    void call_back(SqMemb& mem, size_t bytes);
+    void on_event(SqMemb& mem, size_t bytes);
     const char* _gets(int chars);
     OVERW(ComSsh,Divais);
     static void squit(SqEnvi& e){
@@ -48,7 +50,7 @@ public:
         cls.Functor(_SC("plug_it"), &SshComm::plug_it);
         cls.Functor(_SC("open"), &SshComm::iopen);
         cls.Functor(_SC("close"), &SshComm::iclose);
-        cls.Functor(_SC("call_back"), &SshComm::call_back);
+        cls.Functor(_SC("on_event"), &SshComm::on_event_);
         cls.Functor(_SC("gets"), &SshComm::_gets);
         cls.Overload<int (SshComm::*)(const char*)>(_SC("puts"), &RtxBus<SshComm>::_puts);
         cls.Overload<void (SshComm::*)()>(_SC("flush"), &RtxBus<SshComm>::_devflush);
@@ -58,15 +60,13 @@ public:
 
     }
 protected:
-    bool  _write_now(const any_t& vl);
-    size_t  _fecth(any_t& vl, const char* filter);
+    bool  _write_now(const devdata_t& vl);
+    size_t  _fecth(devdata_t& vl, const char* filter);
     bool                _set_values(const char* key, const char* value);
     const char*         _get_values(const char* key);
 
 private:
 
-    uint8_t* _bytes;
-    size_t   _nbytes;
     bool     _curdata;
 };
 

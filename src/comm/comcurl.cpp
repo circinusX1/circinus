@@ -235,7 +235,7 @@ size_t ComCurl::_receiving(char* buf, size_t nmemb)
     if(_cb)
     {
         try{
-            fastbuf_t<512>  ptr(nmemb+1);
+            fastbuf_t  ptr(nmemb+1);
             ::strncpy(ptr, buf, nmemb);
             ((char*)ptr)[nmemb] = 0;
             LOGI(((char*)ptr));
@@ -284,17 +284,17 @@ size_t ComCurl::writeCallback(char* buf, size_t size, size_t nmemb, void* up)
     return 0;
 }
 
-bool	ComCurl::_write_now(const any_t& a)
+bool	ComCurl::_write_now(const devdata_t& a)
 {
     return false;
 }
 
-size_t  ComCurl::_fecth(any_t& _curdata, const char* filter)
+size_t  ComCurl::_fecth(devdata_t& _curdata, const char* filter)
 {
     return -1;
 }
 
-bool	ComCurl::_mon_pick(size_t t)
+bool	ComCurl::_mon_pick(time_t tnow)
 {
     return false;
 }

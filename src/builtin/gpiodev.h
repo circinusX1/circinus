@@ -37,7 +37,7 @@ public:
     int      get_value();
     int      get_freq();
     int      set_freq(int);
-    bool     call_back(SqMemb& ch, int risefall); /*-1/+1*/
+    bool     on_event_(SqMemb& ch); /*-1/+1*/
     int      set_toggle();
     bool     set_invert(bool set_invert){return _reversed=set_invert;}
 
@@ -55,7 +55,7 @@ public:
         cls.Functor(_SC("get_value"), &GpioDev::get_value);
         cls.Functor(_SC("get_freq"), &GpioDev::get_freq);
         cls.Functor(_SC("set_freq"), &GpioDev::set_freq);
-        cls.Functor(_SC("call_back"), &GpioDev::call_back);
+        cls.Functor(_SC("on_event"), &GpioDev::on_event_);
         cls.Functor(_SC("set_invert"), &GpioDev::set_invert);
         cls.Functor(_SC("set_toggle"), &GpioDev::set_toggle);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
@@ -64,8 +64,8 @@ public:
     }
 
 private:
-    bool        _write_now(const any_t& vl);
-    size_t      _fecth(any_t& vl, const char* filter);
+    bool        _write_now(const devdata_t& vl);
+    size_t      _fecth(devdata_t& vl, const char* filter);
     bool        _set_values(const char* key, const char* value);
     const char*	_get_values(const char* key);
 private:

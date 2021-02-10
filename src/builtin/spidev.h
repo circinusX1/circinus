@@ -25,6 +25,8 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 using namespace GenericHw;
 
+#define SPI_MAX_BYTES   4096
+
 class SpiDev:   public DvSpi,
                 public Divais,
                 private Reg<SpiDev>,
@@ -35,7 +37,6 @@ public:
     SpiDev(const char* spisys, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t freq, const char* name=nullptr);
     SpiDev(SqObj&, const char* spisys, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t freq, const char* name=nullptr);
     virtual ~SpiDev();
-    bool call_back(SqMemb& mem, int bytes);
     SqArr  _readreg(int bytes);
     OVERW(DvSpi,Divais)
     static void squit(SqEnvi& e){
@@ -47,7 +48,6 @@ public:
         cls.Functor(_SC("close"), &SpiDev::iclose);
 
         cls.Functor(_SC("plug_it"), &SpiDev::plug_it);
-        cls.Functor(_SC("call_back"), &SpiDev::call_back);
         cls.Overload<int (SpiDev::*)(SqArr&)>(_SC("write"), &RtxBus<SpiDev>::_fwrite);
         cls.Overload<SqArr (SpiDev::*)(int)>(_SC("read"), &RtxBus<SpiDev>::_fread);
         cls.Overload<SqArr& (SpiDev::*)(int,SqArr& a,int)>(_SC("ioctl"), &RtxBus<SpiDev>::_ioctl);
@@ -59,15 +59,15 @@ public:
     }
 
 protected:
-    bool  _write_now(const any_t& vl);
-    size_t  _fecth(any_t& vl, const char* filter);
+    bool  _write_now(const devdata_t& vl);
+    size_t  _fecth(devdata_t& vl, const char* filter);
     bool                _set_values(const char* key, const char* value);
     const char*         _get_values(const char* key);
 
 private:
     int                 _regaddr;
-    uint8_t*            _bytes; /*max i2c bytes*/
-    size_t              _nbytes;
+     /*max i2c bytes*/
+    
     bool                _cach;
 };
 

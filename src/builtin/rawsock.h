@@ -25,6 +25,8 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 using namespace GenericHw;
 
+#define RAW_SOC_MAX_BYTES   16384
+
 class RawSock: public  DvSocket,
                public  Divais,
                private Reg<RawSock>,
@@ -34,7 +36,7 @@ public:
     RawSock(E_TYPE e,const char* ip, int port ,const char* name=nullptr);
     RawSock(SqObj&, E_TYPE e, const char* ip, int port ,const char* name=nullptr);
     virtual ~RawSock();
-    void    call_back(SqMemb& mem, int bytes);
+    void    on_event_(SqMemb& mem);
     int puts(const char* b, int sz);
     const char*  gets(int chars, int to);
     int write(Sqrat::Array& a);
@@ -48,7 +50,7 @@ public:
         cls.Ctor<SqObj&, E_TYPE, const char*, int,const char*>();
 
         cls.Functor(_SC("plug_it"), &RawSock::plug_it);
-        cls.Functor(_SC("call_back"), &RawSock::call_back);
+        cls.Functor(_SC("on_event"), &RawSock::on_event_);
         cls.Functor(_SC("open"), &RawSock::iopen);
         cls.Functor(_SC("close"), &RawSock::iclose);
         cls.Functor(_SC("puts"), &RawSock::puts);
@@ -61,14 +63,14 @@ public:
     }
    
 protected:
-    bool                _write_now(const any_t& vl);
-    size_t              _fecth(any_t& vl, const char* filter);
+    bool                _write_now(const devdata_t& vl);
+    size_t              _fecth(devdata_t& vl, const char* filter);
     bool                _set_values(const char* key, const char* value);
     const char*         _get_values(const char* key);
 
 private:
-    uint8_t*            _bytes; /*max sock bytes*/
-    size_t              _nbytes;
+     /*max sock bytes*/
+
     bool                _cach;
 };
 

@@ -26,7 +26,6 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <sys/ioctl.h>
 #include <sys/file.h>
 
-#define DEF_TOUT 256000
 
 namespace GenericHw
 {
@@ -336,7 +335,7 @@ int DvSerial::bwrite(const uint8_t *buf, int size, int to)
     }
     if(size)
     {
-		size_t ct = ::tick_count() + to + 16;
+        time_t ct = ::tick_count() + to + 16;
         int left  = size;
 
         do{
@@ -363,7 +362,10 @@ int DvSerial::bwrite(const uint8_t *buf, int size, int to)
         }while(left>0 && ::tick_count() < ct);
     }
     LOGD3(__PRETTY_FUNCTION__ << "< " << (const char*)buf);
-	if(sent>0) on_event(eREAD, buf, sent);
+
+    if(sent>0){
+        on_event(eWRITE, buf, sent);
+    }
 	return sent;
 }
 

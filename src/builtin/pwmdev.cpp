@@ -76,33 +76,19 @@ EPWM_VAL  PwmDev::get_duty()
     return -1;
 }
 
-bool  PwmDev::_write_now(const any_t& vl)
+bool  PwmDev::_write_now(const devdata_t& vl)
 {
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  PwmDev::_fecth(any_t& vl, const char* filter)
+size_t  PwmDev::_fecth(devdata_t& vl, const char* filter)
 {
     return get_duty();
 }
 
-bool PwmDev::_mon_pick(size_t t)
+bool PwmDev::_mon_pick(time_t tnow)
 {
-    get_duty();
-    return _mon_dirt;
-}
-
-bool PwmDev::call_back(SqMemb& m)
-{
-    if(m.IsNull()){
-        _monitor = false;
-        if(!_on_event.IsNull())
-            _on_event.Release();
-    }else{
-        _on_event=m;
-        _monitor = true;
-    }
-    return _monitor;
+    return false;
 }
 
 void PwmDev::on_event(E_VENT e, const uint8_t* val, int len, int options)

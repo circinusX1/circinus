@@ -22,7 +22,7 @@ SpiDev::SpiDev(const char* spi, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t
                const char* name):DvSpi(spi,addr,mode,wc,freq),
                                  Divais (eBINARY, eSPI, name),
                                  Reg<SpiDev>(this),
-                                 RtxBus<SpiDev>(this,false)
+                                 RtxBus<SpiDev>(this,false,true)
 {
     _o.BindCppObject(this);
 
@@ -34,7 +34,7 @@ SpiDev::SpiDev(SqObj& o,
                const char* name):DvSpi(spi,addr,mode,wc,freq),
                                  Divais (eBINARY, eSPI, name),
                                  Reg<SpiDev>(this),
-                                 RtxBus<SpiDev>(this,false)
+                                 RtxBus<SpiDev>(this,false,true)
 {
     plug_it(o, name);
     
@@ -43,16 +43,16 @@ SpiDev::SpiDev(SqObj& o,
 
 SpiDev::~SpiDev()
 {
-    delete[] _bytes;
+
 }
 
-bool  SpiDev::_write_now(const any_t& vl)
+bool  SpiDev::_write_now(const devdata_t& vl)
 {
     _mon_dirt = true;
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  SpiDev::_fecth(any_t& vl, const char* filter)
+size_t  SpiDev::_fecth(devdata_t& vl, const char* filter)
 {
     return 0;
 }
@@ -62,10 +62,10 @@ SqArr  SpiDev::_readreg(int bytes)
     _mon_dirt = false;
     if(_cach)
     {
-        SqArr  rar(App->psqvm(), _nbytes);
-        for(size_t i = 0 ; i < _nbytes; i++)
+        SqArr  rar(App->psqvm(), _iobuff->len());
+        for(size_t i = 0 ; i < _iobuff->len(); i++)
         {
-            rar.SetValue(i, _bytes[i]);
+            rar.SetValue(i, _iobuff->at(i));
         }
         _cach = false;
         return rar;
@@ -73,31 +73,9 @@ SqArr  SpiDev::_readreg(int bytes)
     return RtxBus<SpiDev>::_readreg(0,bytes);
 }
 
-bool SpiDev::_mon_pick(size_t t)
+bool SpiDev::_mon_pick(time_t tnow)
 {
-    _cach = this->bread(_bytes, _nbytes, _regaddr);
-    return _mon_dirt;
-}
-
-bool SpiDev::call_back(SqMemb& m, int bytes)
-{
-    _cach=false;
-    if(bytes==0 || m.IsNull())
-    {
-        delete[] _bytes;
-        _bytes = nullptr;
-        _monitor = false;
-        if(!_on_event.IsNull())
-            _on_event.Release();
-
-    }
-    else {
-        _monitor = true;
-        _bytes = new uint8_t[bytes];
-        _nbytes = bytes;
-        _on_event=m;
-    }
-    return _monitor;
+    return false;
 }
 
 void SpiDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)
@@ -108,7 +86,7 @@ void SpiDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)
 // 3,0x55,0c55,0x56,0x55
 bool	SpiDev::_set_values(const char* key, const char* value)
 {
-    any_t      loco;
+    devdata_t      loco;
     strarray_t bytes;
 
     _curdata.clear();

@@ -60,7 +60,7 @@ protected:
      libusb_device           **_devs;
      libusb_device_handle    *_dev_handle;
      uint8_t*                _large;
-     int                     _bytes = 0;
+     int                     _uchars->buf() = 0;
      int                     _v = 0;
      int                     _p = 0;
 };

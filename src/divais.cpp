@@ -64,11 +64,12 @@ Divais::~Divais()
 {
     if(_o.IsNull()) return;
     _o.AddRef();
+
 }
 
 bool Divais::_check_dirt()
 {
-    if(_old_data == _curdata){;}else
+    if(!(_old_data == _curdata)) /*== op only*/
     {
         _old_data = _curdata;
         return true;
@@ -232,14 +233,14 @@ const char*	Divais::_get_values(const char* key)
     return _forjson.c_str();
 }
 
-const any_t& Divais::get_data()const
+const devdata_t& Divais::get_data()const
 {
     return _curdata;
 }
 
 void  Divais::sync(const char* filter)
 {
-    any_t loco;
+    devdata_t loco;
     _fecth(loco, filter == nullptr  ? "*" : filter);
 }
 
@@ -261,16 +262,19 @@ Sqrat::Object Divais::object()const
     return _o;
 }
 
-void  Divais::on_event()
+bool  Divais::on_event()
 {
+    bool rv=false;
     if(!_on_event.IsNull())
     {
         try{
-            bool rv =  *(_on_event.Fcall<bool>(_o).Get());
+            rv =  *(_on_event.Fcall<bool>(_o).Get());
         }
         catch(Sqrat::Exception& ex){
             LOGEX(ex.Message());
             LOGEX(SqErrStr);
+            rv =false;
         }
     }
+    return rv; /*false break main*/
 }

@@ -23,7 +23,7 @@ I2CDev::I2CDev(EI2CBUS i2c, uint8_t addr,
                const char* name):DvI2c(i2c,addr),
     Divais (eBINARY, eI2C, name),
     Reg<I2CDev>(this),
-    RtxBus<I2CDev>(this,true),_regaddr(0),_bytes(nullptr)
+    RtxBus<I2CDev>(this,true),_regaddr(0)
 {
     _o.BindCppObject(this);
 }
@@ -34,38 +34,37 @@ I2CDev::I2CDev(SqObj& o,
                const char* name):DvI2c(i2c,addr),
     Divais (eBINARY, eI2C, name),
     Reg<I2CDev>(this),
-    RtxBus<I2CDev>(this,true),_regaddr(0),_bytes(nullptr)
+    RtxBus<I2CDev>(this,true),_regaddr(0)
 {
     plug_it(o, name);
 }
 
-I2CDev::I2CDev(bool, const char* i2cfile, uint8_t addr,const char* name):DvI2c(i2cfile,addr),
+I2CDev::I2CDev(bool, const char* i2cfile, uint8_t addr,
+               const char* name):DvI2c(i2cfile,addr),
     Divais (eBINARY, eI2C, name),
     Reg<I2CDev>(this),
-    RtxBus<I2CDev>(this,true),_regaddr(0),_bytes(nullptr)
+    RtxBus<I2CDev>(this,true),_regaddr(0)
 {
     _o.BindCppObject(this);
 }
 
 
 
-I2CDev::I2CDev(bool, SqObj& o, const char* i2cfile, uint8_t addr,const char* name):DvI2c(i2cfile,addr),
+I2CDev::I2CDev(bool, SqObj& o, const char* i2cfile,
+               uint8_t addr,const char* name):DvI2c(i2cfile,addr),
     Divais (eBINARY, eI2C, name),
     Reg<I2CDev>(this),
-    RtxBus<I2CDev>(this,true),_regaddr(0),_bytes(nullptr)
+    RtxBus<I2CDev>(this,true),_regaddr(0)
 {
     plug_it(o, name);
 }
 
-
-
 I2CDev::~I2CDev()
 {
     this->iclose();
-    delete[] _bytes;
 }
 
-bool  I2CDev::_write_now(const any_t& vl)
+bool  I2CDev::_write_now(const devdata_t& vl)
 {
     AutoOC  oc(this,  _auto);
     int     reg = 0;
@@ -74,7 +73,7 @@ bool  I2CDev::_write_now(const any_t& vl)
     return this->bwrite(vl.c_bytes(), vl.length(), reg);
 }
 
-size_t  I2CDev::_fecth(any_t& vl, const char* filter)
+size_t  I2CDev::_fecth(devdata_t& vl, const char* filter)
 {
     return 0;
 }
@@ -84,48 +83,17 @@ int I2CDev::setreg(uint8_t cmd)
     return this->bwrite(nullptr, 0, cmd);
 }
 
-bool I2CDev::_mon_pick(size_t t)
+bool I2CDev::_mon_pick(time_t tnow)
 {
-    AutoOC oc(this,  _auto);
-    _cach = this->bread(_bytes, _nbytes, _regaddr);
-    return _mon_dirt;
+    return false;
 }
 
 SqArr  I2CDev::_readreg(uint8_t reg, int bytes)
 {
     _mon_dirt = false;
-
-    if(_cach)
-    {
-        SqArr  rar(App->psqvm(), _nbytes);
-        for(size_t i = 0 ; i < _nbytes; i++)
-        {
-            rar.SetValue(i, _bytes[i]);
-        }
-        _cach = false;
-        return rar;
-    }
     return RtxBus<I2CDev>::_readreg(reg, bytes);
 }
 
-void I2CDev::call_back(SqMemb& m, int regaddr, int bytes)
-{
-    _cach = false;
-    if(bytes==0 || m.IsNull())
-    {
-        if(!_on_event.IsNull())_on_event.Release();
-        delete[] _bytes;
-        _bytes = nullptr;
-        _monitor = false;
-    }
-    else {
-        _monitor = true;
-        _regaddr = regaddr;
-        _bytes = new uint8_t[bytes];
-        _nbytes = bytes;
-        _on_event=m;
-    }
-}
 
 void I2CDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)
 {
@@ -140,7 +108,7 @@ void I2CDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)
 bool	I2CDev::_set_values(const char* key, const char* value)
 {
     int regi = ::atoi(key);
-    any_t      loco;
+    devdata_t      loco;
     strarray_t bytes;
     _curdata.clear();
     CFL::explode(value,',',bytes);

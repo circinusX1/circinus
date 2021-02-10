@@ -527,14 +527,14 @@ public:
 
 		union {
 			MemberVarGetFunction _getfunc;
-			unsigned char _bytes[sizeof(MemberVarGetFunction)];
+			unsigned char _uchars->buf()[sizeof(MemberVarGetFunction)];
 
 		} _get_union;
 
 		_get_union._getfunc=sqbind_member_var_get<I>;
 
 		for (size_t i=0;i<sizeof(MemberVarGetFunction);i++)
-			_get_addr[i]=_get_union._bytes[i];
+			_get_addr[i]=_get_union._uchars->at(i);
 
 		sq_newslot(v,-3,false); // set the read function
 		sq_pop(v,1); // pop read table
@@ -548,14 +548,14 @@ public:
 
 		union {
 			MemberVarSetFunction _setfunc;
-			unsigned char _bytes[sizeof(MemberVarSetFunction)];
+			unsigned char _uchars->buf()[sizeof(MemberVarSetFunction)];
 
 		} _set_union;
 
 		_set_union._setfunc=sqbind_member_var_set<I>;
 
 		for (size_t i=0;i<sizeof(MemberVarSetFunction);i++)
-			_set_addr[i]=_set_union._bytes[i];
+			_set_addr[i]=_set_union._uchars->at(i);
 
 		sq_newslot(v,-3,false); // set the read function
 		sq_pop(v,1); // pop read table

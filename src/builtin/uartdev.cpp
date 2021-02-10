@@ -28,7 +28,7 @@ UartDev::UartDev(E_TYPE  e,
                      DvSerial(dev,bps,mode),
                      Divais(e,eUART, name),
                      Reg<UartDev>(this),
-                     RtxBus<UartDev>(this, false),_bytes(nullptr),_nbytes(0)
+                     RtxBus<UartDev>(this, false,true)
 {
     _cr.append(1, 0xD);
     _cr.append(1, 0xA);
@@ -45,7 +45,7 @@ UartDev::UartDev(SqObj& o,
                      DvSerial(dev,bps,mode),
                      Divais(e,eUART,name),
                      Reg<UartDev>(this),
-                     RtxBus<UartDev>(this,false),_bytes(nullptr),_nbytes(0)
+                     RtxBus<UartDev>(this,false,true)
 {
     plug_it(o,name);
     _cr.assign(1, 0xD);
@@ -53,77 +53,88 @@ UartDev::UartDev(SqObj& o,
 
 UartDev::~UartDev()
 {
-    delete[] _bytes;
 }
 
-bool  UartDev::_write_now(const any_t& vl)
+bool  UartDev::_write_now(const devdata_t& vl)
 {
     _mon_dirt = true;
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  UartDev::_fecth(any_t& vl, const char* filter)
+size_t  UartDev::_fecth(devdata_t& vl, const char* filter)
 {
     return 0;
 }
 
-
-bool UartDev::_mon_pick(size_t t)
+bool UartDev::_mon_pick(time_t tnow)
 {
-    this->bread(_bytes, _nbytes);
+    if(_etype==eSTRING)
+        RtxBus<UartDev>::_gets();
+    else
+        RtxBus<UartDev>::_read();
     return _mon_dirt;
 }
 
-const char* UartDev::_gets(int chars)
+const char* UartDev::_gets()
 {
     _mon_dirt = false;
-    if(_bcurdata)
-    {
-        _bcurdata=false;
-        return (const char*)_bytes;
-    }
-    return RtxBus<UartDev>::_gets(chars);
+    const char* rv =  RtxBus<UartDev>::_gets();
+    return rv;
 }
 
-SqArr UartDev::_read(int chars)
+const char* UartDev::_getsln(char ceol)
 {
     _mon_dirt = false;
-    if(_bcurdata)
+    time_t fut = tick_count()+_tout;
+    while(tick_count()<fut)
     {
-        _bcurdata = false;
-        SqArr  rar(App->psqvm(), _nbytes);
-        for(size_t i = 0 ; i < _nbytes; i++)
-        {
-            rar.SetValue(i, _bytes[i]);
+        const char* pb = RtxBus<UartDev>::_gets();
+        if(*pb){
+            _tmp2.append((const uint8_t*)pb, ::strlen(pb));
         }
-        return rar;
+        size_t xeol = _tmp2.find(ceol);
+        if(xeol != std::string::npos)
+        {
+            _tmpstr = _tmp2.substr(0,xeol);
+            _tmp2 = _tmp2.substr(xeol+1);
+            if(!_tmpstr.empty()){
+                _mon_dirt = false;
+                return (const char*)_tmpstr.c_str();
+            }
+        }
+        _truncate(_tmp2);
     }
-    return RtxBus<UartDev>::_read(chars);
+    return "";
 }
 
-bool UartDev::call_back(SqMemb& m, size_t bytes)
+SqArr UartDev::_read()
 {
-    if(bytes==0 || m.IsNull())
+    _mon_dirt = false;
+    return RtxBus<UartDev>::_read();
+}
+
+bool UartDev::on_event_(SqMemb& m)
+{
+    if(m.IsNull())
     {
-        delete[] _bytes;
-        _bytes = nullptr;
         _monitor = false;
         if(!_on_event.IsNull())
             _on_event.Release();
-
     }
-    else {
+    else
+    {
+        if(!_on_event.IsNull())
+            _on_event.Release();
         _monitor = true;
-        _bytes = new uint8_t[bytes];
-        _nbytes = bytes;
         _on_event=m;
     }
-    _bcurdata = false;
     return _monitor;
-
 }
 
-void UartDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)
+void UartDev::on_event(E_VENT e,
+                       const uint8_t* buff,
+                       int len,
+                       int options)
 {
 }
 

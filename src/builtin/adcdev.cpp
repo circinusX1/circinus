@@ -38,45 +38,42 @@ AdcDev::~AdcDev()
 
 int  AdcDev::get_value()
 {
-    if(_mon_dirt)
-    {
-        _mon_dirt = false;
-        return _curdata.to_t<int>();
-    }
+    char val[16] = {0};
+
     _curdata.clear();
-    char val[8] = {0};
-    size_t  by;
-    if((by=this->bread((uint8_t*)val, sizeof(val)))) //comes as string
+    _mon_dirt = false;
+    if(this->bread((uint8_t*)val, sizeof(val))>0) //comes as string
     {
-        _mon_dirt=_check_dirt();
         return _curdata.atoi();
     }
     return -INT_MAX;
 }
 
-bool  AdcDev::_write_now(const any_t& vl)
+bool  AdcDev::_write_now(const devdata_t& vl)
 {
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  AdcDev::_fecth(any_t& vl, const char* filter)
+size_t  AdcDev::_fecth(devdata_t& vl, const char* filter)
 {
     return get_value();
 }
 
-bool AdcDev::_mon_pick(size_t t)
+bool AdcDev::_mon_pick(time_t tnow)
 {
     get_value();
-    return _mon_dirt;
+    return _mon_dirt = _check_dirt();
 }
 
-bool AdcDev::call_back(SqMemb& m)
+bool AdcDev::on_event_(SqMemb& m)
 {
     if(m.IsNull()){
         _monitor = false;
         if(!_on_event.IsNull())
             _on_event.Release();
     }else{
+        if(!_on_event.IsNull())
+            _on_event.Release();
         _on_event=m;
         _monitor = true;
         get_value(); // clear ditry

@@ -59,16 +59,13 @@ typedef enum EPERIPH{
     eOUTPUT,
 }EPERIPH;
 
-
-
-
-template <int SZ>class fastbuf_t
+class fastbuf_t
 {
-    uint8_t     _loco[SZ] = {0};
+    uint8_t     _loco[512] = {0};
     uint8_t*    _ploco=nullptr;
 public:
-    fastbuf_t(size_t sz){ if(sz<SZ)_ploco=_loco; }
-    ~fastbuf_t(){if(_ploco != _loco) delete[] _ploco; }
+    fastbuf_t(size_t sz){sz<512 ? _ploco=_loco : _ploco=new uint8_t[sz+1];}
+    ~fastbuf_t(){if(_ploco != _loco) delete[] _ploco; _ploco=nullptr;}
     operator uint8_t*(){return _ploco;}
     operator char*(){return (char*)_ploco;}
     operator const uint8_t*(){return _ploco;}
@@ -84,26 +81,26 @@ public:
     [0,...] has associated type, data length, and data
 */
 #define MAX_SLOTS   10
-class  any_t
+class  devdata_t
 {
 public:
-	any_t(){
+    devdata_t(){
 		::memset(_dl,0,sizeof(_dl));
 	}
     template <size_t T>
-	any_t(fastbuf_t<T>& d, size_t bytes, int index=0){
+    devdata_t(fastbuf_t& d, size_t bytes, int index=0){
         assert(index<=MAX_SLOTS);
         _stor[index].assign((const uint8_t*)d,bytes);
     }
-	any_t(const char* d,  int bytes, int index=0){
+    devdata_t(const char* d,  int bytes, int index=0){
         assert(index<=MAX_SLOTS);
         _stor[index].assign((const uint8_t*)d,bytes);
     }
-	any_t(const uint8_t* d,  int bytes, int index=0){
+    devdata_t(const uint8_t* d,  int bytes, int index=0){
         assert(index<=MAX_SLOTS);
         _stor[index].assign(d,bytes);
     }
-    template <typename T>any_t(const T& t, int index=0){
+    template <typename T>devdata_t(const T& t, int index=0){
         assert(index<=MAX_SLOTS);
         _stor[index].assign((uint8_t*)(&t),_dl[index]==0?sizeof(T):_dl[index]);
     }
@@ -163,7 +160,7 @@ public:
         return _stor[index].length();
     }
     const uint8_t* c_bytes(int index=0)const {return (const uint8_t*)_stor[index].data();}
-	any_t& operator=(const any_t &t){
+    devdata_t& operator=(const devdata_t &t){
         clear();
         for(size_t i=0;i<MAX_SLOTS;++i){
             _stor[i]=t._stor[i];
@@ -172,7 +169,7 @@ public:
         }
         return *this;
     }
-	bool operator==(const any_t &t){
+    bool operator==(const devdata_t &t){
         if(t.length()!=length())return false;
         for(size_t i=0;i<MAX_SLOTS;++i){
             if(_stor[i]==t._stor[i])continue;
@@ -209,13 +206,13 @@ public:
 	virtual ~I_IDev(){}
 	virtual const char* name()const=0;
 	virtual const char* dev_key()const=0;
-	virtual bool  is_dirty(size_t t)=0;
+    virtual bool  is_dirty(time_t tnow)=0;
 	virtual bool  set_value(const char* key, const char* value)=0;
 	virtual const char* get_value(const char* key)=0;
-    	virtual void  on_event()=0;
-	virtual const any_t& get_data()const=0;
-    	virtual void  sync(const char* filter=nullptr)=0;
-    	virtual Sqrat::Object object()const=0;
+    virtual bool  on_event()=0;
+    virtual const devdata_t& get_data()const=0;
+	virtual void  sync(const char* filter=nullptr)=0;
+	virtual Sqrat::Object object()const=0;
 };
 
 // base class for GPIO's I2C devices
@@ -276,11 +273,11 @@ EXPORT bool start_module(HSKVM vm, sq_api* ptrs,  IInstance* pi, const char* nam
 #define ALL_VIRTUALS()								\
 	virtual const char* name()const;				\
 	virtual const char* dev_key()const;				\
-	virtual bool  is_dirty(size_t t);				\
+    virtual bool  is_dirty(time_t tnow);				\
 	virtual bool  set_value(const char* key, const char* value); \
 	virtual const char* get_value(const char* key); \
-	virtual void  on_event();						\
-	virtual const any_t& get_data()const;			\
+	virtual void  on_event_();						\
+    virtual const devdata_t& get_data()const;			\
 	virtual void  sync(const char* filter=nullptr); \
 	virtual Sqrat::Object object()const;			\
 

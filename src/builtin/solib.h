@@ -30,7 +30,7 @@ public:
     SoLib(const char* plugin);
     SoLib(SqObj&, const char* plugin);
     virtual ~SoLib();
-    bool _mon_pick(size_t t);
+    bool _mon_pick(time_t tnow);
     bool iopen(int);
     void  iclose();
 
@@ -44,8 +44,8 @@ public:
         Sqrat::RootTable().Bind(_SC("LIB"), cls);
     }
 protected:
-    bool  _write_now(const any_t& vl);
-    size_t  _fecth(any_t& vl, const char* filter);
+    bool  _write_now(const devdata_t& vl);
+    size_t  _fecth(devdata_t& vl, const char* filter);
 
 private:
     void*    _soh;

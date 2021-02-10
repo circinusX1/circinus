@@ -25,6 +25,8 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 using namespace GenericHw;
 
+#define USB_MAX_BYTES  4096
+
 class UsbDev :  public DvUsb,
                 public Divais,
                 private Reg<UsbDev>,
@@ -35,7 +37,7 @@ public:
     UsbDev(SqObj&, E_TYPE  e,const char* dev,const char* name=nullptr);
     virtual ~UsbDev();
     SqArr enumerate();
-    bool  call_back(SqMemb& mem, size_t bytes);
+    bool  on_event_(SqMemb& mem);
     const char* _gets(int chars);
     SqArr _read(int chars);
     OVERW(DvUsb,Divais);
@@ -48,7 +50,7 @@ public:
         cls.Functor(_SC("open"), &DvUsb::iopen);
         cls.Functor(_SC("close"), &DvUsb::iclose);
         cls.Functor(_SC("enumerate"), &UsbDev::enumerate);
-        cls.Functor(_SC("call_back"), &UsbDev::call_back);
+        cls.Functor(_SC("on_event"), &UsbDev::on_event_);
         cls.Overload<int (UsbDev::*)(SqArr&)>(_SC("setcr"), &RtxBus<UsbDev>::_setcr);
         cls.Overload<int (UsbDev::*)(const char*)>(_SC("puts"), &RtxBus<UsbDev>::_puts);
         cls.Overload<bool (UsbDev::*)(const char*, SqMemb&)>(_SC("puts_cb"), &RtxBus<UsbDev>::_puts_cb);
@@ -66,14 +68,12 @@ public:
         Sqrat::RootTable().Bind(_SC("USB"), cls);
     }
 protected:
-    bool  _write_now(const any_t& vl);
-    size_t  _fecth(any_t& vl, const char* filter);
+    bool  _write_now(const devdata_t& vl);
+    size_t  _fecth(devdata_t& vl, const char* filter);
     bool                _set_values(const char* key, const char* value);
     const char*         _get_values(const char* key);
 
 private:
-    uint8_t* _bytes;
-    size_t   _nbytes;
     bool     _curdata;
 };
 

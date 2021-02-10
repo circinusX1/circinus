@@ -33,17 +33,17 @@ ScrBase::~ScrBase()
     std::cout << __FUNCTION__ << "\n";
 }
 
-bool  ScrBase::_write_now(const any_t& vl)
+bool  ScrBase::_write_now(const devdata_t& vl)
 {
     return false;
 }
 
-size_t  ScrBase::_fecth(any_t& vl, const char* filter)
+size_t  ScrBase::_fecth(devdata_t& vl, const char* filter)
 {
     return 0;
 }
 
-bool ScrBase::_mon_pick(size_t t)
+bool ScrBase::_mon_pick(time_t tnow)
 {
     return false;
 }

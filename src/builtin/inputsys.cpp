@@ -110,7 +110,7 @@ void   InputSys::lclose()
 	_fd = 0;
 }
 
-bool  InputSys::_write_now(const any_t& vl)
+bool  InputSys::_write_now(const devdata_t& vl)
 {
     _mon_dirt = true;
     return false;
@@ -128,7 +128,7 @@ Sqrat::Array InputSys::get()
     return rar;
 }
 
-size_t  InputSys::_fecth(any_t& vl, const char* filter)
+size_t  InputSys::_fecth(devdata_t& vl, const char* filter)
 {
     if(_fd>0)
     {
@@ -218,20 +218,22 @@ Sqrat::Array InputSys::get_touch()
     return rar;
 }
 
-bool InputSys::_mon_pick(size_t t)
+bool InputSys::_mon_pick(time_t tnow)
 {
     _fecth(_curdata,nullptr);
     bool rv = _mon_dirt;
     return rv;
 }
 
-bool InputSys::call_back(SqMemb& m)
+bool InputSys::on_event_(SqMemb& m)
 {
     if(m.IsNull()){
         _monitor = false;
         if(!_on_event.IsNull())
             _on_event.Release();
     }else{
+        if(!_on_event.IsNull())
+            _on_event.Release();
         _on_event=m;
         _monitor = true;
     }

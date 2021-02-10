@@ -29,7 +29,7 @@ class ScrBase: public Divais, private Reg<ScrBase>
 public:
     ScrBase(SqObj&, E_TYPE e, const char* name=nullptr);
     virtual ~ScrBase();
-    bool _mon_pick(size_t t);
+    bool _mon_pick(time_t tnow);
     bool  iopen(int rm=0);
     void  iclose();
     static void squit(SqEnvi& sq)
@@ -40,11 +40,11 @@ public:
         Sqrat::RootTable().Bind(_SC("BASE"), cls);
     }
 protected:
-    bool  _write_now(const any_t& vl);
-    size_t  _fecth(any_t& vl, const char* filter);
+    bool  _write_now(const devdata_t& vl);
+    size_t  _fecth(devdata_t& vl, const char* filter);
 
 private:
-    any_t   _dummy;
+    devdata_t   _dummy;
 };
 
 #endif // SQDEV_H

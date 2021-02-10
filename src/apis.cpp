@@ -50,7 +50,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 int         Secret;
 int         ThrLock;
-int         Loggran = 0x1F;
+int         Loggran = 0x0;
 int         Wdto;
 size_t      OTime;
 size_t      Locks;
@@ -522,7 +522,11 @@ int run(SqMemb& f, int pulseme)
                 now = then;
                 for(const auto& a: dirty)
                 {
-                    a->on_event();
+                    if(false == a->on_event())
+                    {
+                        ApStat=DO_EXIT;
+                        break;
+                    }
                 }
                 evented = true;
             }

@@ -28,12 +28,11 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 GpioDev::GpioDev(EGPIO_PIN pn,
                  EPIN_DIR pd, int on,
                  const char* name):DvGpio(pn,pd,on),
-                    Divais(eINT, eGPIO, name),Reg<GpioDev>(this),
-                                                        _sec(0),
-                                                        _dir(pd),
-                                                        _counter(0),
-                                                        _curval(0),
-                                                        _counting(false)
+    Divais(eINT, eGPIO, name),Reg<GpioDev>(this),
+    _sec(0),
+    _dir(pd),
+    _counter(0),
+    _counting(false)
 {
     _o.BindCppObject(this);
     LOGD3(__FUNCTION__ <<" "<< name);
@@ -44,11 +43,10 @@ GpioDev::GpioDev(SqObj& o,
                  EPIN_DIR pd, int on,
                  const char* name):DvGpio(pn,pd,on),
     Divais(eINT, eGPIO, name),Reg<GpioDev>(this),
-                                                _sec(0),
-                                                _dir(pd),
-                                                _counter(0),
-                                                _curval(1),
-                                                _counting(false)
+    _sec(0),
+    _dir(pd),
+    _counter(0),
+    _counting(false)
 {
     plug_it(o, name);
     LOGD3(__FUNCTION__ <<" "<< name);
@@ -63,7 +61,6 @@ GpioDev::GpioDev(EGPIO_PIN pn, int freq,
     _dir(freq >0 ? eOut : eIn),
     _freq(freq > 0 ? freq : 0 ),
     _counter(0),
-    _curval(1),
     _counting(freq < 0)
 {
     _o.BindCppObject(this);
@@ -98,36 +95,28 @@ int    GpioDev::set_toggle()
 
 int  GpioDev::set_value(int val)
 {
-    _curval = _reversed ? !val : val;
     std::string s = std::to_string(val);
     return this->bwrite((const uint8_t*)s.c_str(), s.length());
 }
 
 int  GpioDev::get_value()
 {
-    if(_mon_dirt)
-    {
-        _mon_dirt = false;
-        int cv = _curdata.to_t<int>();
-        return _reversed ? !cv : cv;
-    }
     _curdata.clear();
     char val[8]={0};
     if(this->bread((uint8_t*)val,sizeof(val)))
     {
-        if(_monitor)
-            _mon_dirt=_check_dirt();
+        _mon_dirt=false;
         return _curdata.to_t<int>();
     }
     return -1;
 }
 
-bool  GpioDev::_write_now(const any_t& vl)
+bool  GpioDev::_write_now(const devdata_t& vl)
 {
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  GpioDev::_fecth(any_t& vl, const char* filter)
+size_t  GpioDev::_fecth(devdata_t& vl, const char* filter)
 {
     return get_value();
 }
@@ -148,104 +137,55 @@ int GpioDev::set_freq(int freq)
     return 0;
 }
 
-bool GpioDev::_mon_pick(size_t t)
+bool GpioDev::_mon_pick(time_t tnow)
 {
+
+
     if(_dir & eIn)
     {
-        if(_edging!=0)
+        int cv = get_value();
+        if(_counting)
         {
-            if(this->_pfile > 0)
+            if(tnow - _sec>_interval)
             {
-                struct pollfd fdset[1] = {0,0,0};
-                int nfds  = 1;
-                int rc;
-                char buf[16];
-
-                fdset[0].fd = this->_pfile;
-                fdset[0].events = POLLPRI;
-                rc = ::poll(fdset, nfds, 16);
-                if (rc < 0) {
-                    LOGE("pool failure");
-                    return false;
-                }
-                else if(rc>0)
-                {
-                    if (fdset[0].revents & POLLPRI)
-                    {
-                        buf[0]=0;
-                        lseek(fdset[0].fd, 0, SEEK_SET);
-                        read(fdset[0].fd, buf, 16);
-                        _curval = ::atoi(buf);
-                    }
-                    return true;
-                }
+                _freq = _counter;
+                _counter  = 0;
+                _sec = tnow;
             }
-        }
-        else {
-            int cv = get_value();
-            if(_counting)
+            if(cv != _curval)
             {
-                if(t - _sec>_interval)
-                {
-                    _freq = _counter;
-                    _counter  = 0;
-                    _sec = t;
-                }
-                if(cv != _curval)
-                {
-                    ++_counter;
-                    _curval = cv;
-                }
-                return false;
+                ++_counter;
+                _curval = cv;
             }
+            return false;
         }
+        _mon_dirt = _check_dirt();
         return _mon_dirt;
-    }
-    else
-    {
-        //as tone buzzer
-        size_t msecs = 1000 / _freq;
-        if(t - _sec >= msecs)
-        {
-            const uint8_t* ts = tos(_curval =! _curval);
-            this->bwrite(ts,::strlen((const char*)ts));
-            _sec = t;
-        }
     }
     return false;
 }
 
-bool GpioDev::call_back(SqMemb& mon, int risefall)
+bool GpioDev::on_event_(SqMemb& mon)
 {
     if(_dir & eOut || _counting )
     {
         LOGW("cannot moitor out pin or a counter");
         return false;
     }
-    if(risefall )
+    if(!mon.IsNull())
     {
-        if (risefall ==1 || risefall ==-1 )
-        {
-            if(_watch_edge(risefall))
-            {
-                _monitor = (risefall != 0);
-                _edging = risefall;
-                _on_event = mon;
-                return true;
-            }
-        }
-        else {
-            _monitor = true;
-            _edging = 0;
-            _on_event = mon;
-            return true;
-
-        }
+        _watch_edge(1);
+        _monitor = true;
+        _edging = 1;
+        if(!_on_event.IsNull())
+            _on_event.Release();
+        _on_event = mon;
+    }else{
+        _watch_edge(0);
+        _monitor = false;
+        if(!_on_event.IsNull())
+            _on_event.Release();
     }
-    _watch_edge(0);
-    _monitor = false;
-    if(!_on_event.IsNull())
-        _on_event.Release();
     return true;
 }
 

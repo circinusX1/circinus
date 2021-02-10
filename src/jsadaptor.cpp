@@ -20,7 +20,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #if 0
 bool  set_data_from_rest(const std::string& key, const std::string& value)
 {
-    any_t   a;
+    devdata_t   a;
     switch(1)
     {
     case eINT:
