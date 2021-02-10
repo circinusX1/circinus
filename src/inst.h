@@ -65,7 +65,7 @@ public:
     void    web_set_data(const devsmap_t& devs, int apply);
     int     set_priority(int p);
     int     start_task(const char* script_file);
-    void    check_devs(std::vector<I_IDev*>& arr, size_t t);
+    bool    check_devs(time_t t);
     const   char* notify(const char* appname);
     const   char* param()const{return _param.c_str();}
 
@@ -76,7 +76,6 @@ public:
     void    get_alldevs(devsmap_t& refrdevs, EPERIPH et, bool update);
     void    sync_all();
 private:
-    void   _dequeue_events(std::vector<I_IDev*>& arr);
     void   _wait_more();
 private:
     std::map<std::string, I_IDev*>  _devs;

@@ -59,21 +59,6 @@ typedef enum EPERIPH{
     eOUTPUT,
 }EPERIPH;
 
-class fastbuf_t
-{
-    uint8_t     _loco[512] = {0};
-    uint8_t*    _ploco=nullptr;
-public:
-    fastbuf_t(size_t sz){sz<512 ? _ploco=_loco : _ploco=new uint8_t[sz+1];}
-    ~fastbuf_t(){if(_ploco != _loco) delete[] _ploco; _ploco=nullptr;}
-    operator uint8_t*(){return _ploco;}
-    operator char*(){return (char*)_ploco;}
-    operator const uint8_t*(){return _ploco;}
-    operator const char*(){return (char*)_ploco;}
-    uint8_t operator[](size_t index){return _ploco[index];}
-    uint8_t operator[](int index){return _ploco[index];}
-};
-
 /*  generic data / device ()
     has slots basic_string<uint8_t> storing raw data in each slot.
     each slot can have any length, for stirngs or buffers,
@@ -88,9 +73,9 @@ public:
 		::memset(_dl,0,sizeof(_dl));
 	}
     template <size_t T>
-    devdata_t(fastbuf_t& d, size_t bytes, int index=0){
+    devdata_t(const uint8_t* d, size_t bytes, int index=0){
         assert(index<=MAX_SLOTS);
-        _stor[index].assign((const uint8_t*)d,bytes);
+        _stor[index].assign(d,bytes);
     }
     devdata_t(const char* d,  int bytes, int index=0){
         assert(index<=MAX_SLOTS);
@@ -209,8 +194,7 @@ public:
     virtual bool  is_dirty(time_t tnow)=0;
 	virtual bool  set_value(const char* key, const char* value)=0;
 	virtual const char* get_value(const char* key)=0;
-    virtual bool  on_event()=0;
-    virtual const devdata_t& get_data()const=0;
+	virtual const devdata_t& get_data()const=0;
 	virtual void  sync(const char* filter=nullptr)=0;
 	virtual Sqrat::Object object()const=0;
 };
@@ -225,7 +209,7 @@ public:
 	virtual void	iclose()=0;
 	virtual size_t  bread(uint8_t* buff, int len, int options=0)=0;
 	virtual int     bwrite(const uint8_t* buff, int len, int options=0)=0;
-        virtual void    on_event(E_VENT e, const uint8_t* buff, int len, int options=0){
+    virtual void    on_event(E_VENT e, const uint8_t* buff, int len, int options=0){
         assert(0);
     };
 	virtual const char* err_desc()const=0;
@@ -273,11 +257,10 @@ EXPORT bool start_module(HSKVM vm, sq_api* ptrs,  IInstance* pi, const char* nam
 #define ALL_VIRTUALS()								\
 	virtual const char* name()const;				\
 	virtual const char* dev_key()const;				\
-    virtual bool  is_dirty(time_t tnow);				\
+	virtual bool  is_dirty(time_t tnow);			\
 	virtual bool  set_value(const char* key, const char* value); \
 	virtual const char* get_value(const char* key); \
-	virtual void  on_event_();						\
-    virtual const devdata_t& get_data()const;			\
+	virtual const devdata_t& get_data()const;		\
 	virtual void  sync(const char* filter=nullptr); \
 	virtual Sqrat::Object object()const;			\
 

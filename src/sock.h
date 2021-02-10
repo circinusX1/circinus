@@ -339,7 +339,7 @@ protected:
     SADDR_46        _ipfixit;
     SADDR_46	    _local_sin;	        // source
 	SADDR_46	    _remote_sin;          // dest
-    static  unsigned long   _tout;
+	static  unsigned long   _toutso;
 
 };
 

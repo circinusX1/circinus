@@ -35,9 +35,8 @@ public:
     UartDev(SqObj&, E_TYPE  e, const char* dev, int bps, const char* mode, const char* name=nullptr);
     virtual ~UartDev();
     OVERW(DvSerial,Divais)
-    bool on_event_(SqMemb& mem);
+    bool set_cb(SqMemb& mem);
     const char* _gets();
-    const char* _getsln(char ceol);
     SqArr _read();
 
     static void squit(SqEnvi& e)
@@ -48,10 +47,10 @@ public:
         cls.Functor(_SC("plug_it"), &UartDev::plug_it);
         cls.Functor(_SC("open"), &UartDev::iopen);
         cls.Functor(_SC("close"), &UartDev::iclose);
-        cls.Functor(_SC("on_event"), &UartDev::on_event_);
+        cls.Functor(_SC("set_cb"), &UartDev::set_cb);
         cls.Overload<int (UartDev::*)(SqArr&)>(_SC("set_cr"), &RtxBus<UartDev>::_setcr);
-        cls.Overload<void (UartDev::*)(size_t)>(_SC("set_time"), &RtxBus<UartDev>::_set_touts);
-        cls.Overload<void (UartDev::*)(size_t,size_t)>(_SC("set_buffers"), &RtxBus<UartDev>::set_buffers);
+        cls.Overload<void (UartDev::*)(size_t)>(_SC("set_tout"), &RtxBus<UartDev>::_set_touts);
+        cls.Overload<void (UartDev::*)(size_t,size_t)>(_SC("set_buff_size"), &RtxBus<UartDev>::set_buff_size);
         cls.Overload<int (UartDev::*)(const char*)>(_SC("puts"), &RtxBus<UartDev>::_puts);
         cls.Overload<int (UartDev::*)(const char*)>(_SC("putsln"), &RtxBus<UartDev>::_putsln);
         cls.Overload<bool (UartDev::*)(const char*, SqMemb&)>(_SC("puts_cb"), &RtxBus<UartDev>::_puts_cb);
@@ -61,7 +60,7 @@ public:
         cls.Functor(_SC("read"), &UartDev::_read);
         cls.Overload<int (UartDev::*)(SqArr&)>(_SC("write"), &RtxBus<UartDev>::_write);
 
-        cls.Overload<SqArr (UartDev::*)(SqArr&)>(_SC("expect_arr"), &RtxBus<UartDev>::_expect_arr);
+        cls.Overload<const char*  (UartDev::*)(SqArr&)>(_SC("expect_any"), &RtxBus<UartDev>::_expect_any);
 
         cls.Overload<bool (UartDev::*)(SqArr&, SqMemb&)>(_SC("write_cb"), &RtxBus<UartDev>::_write_cb);
         cls.Overload<bool (UartDev::*)(const char*)>(_SC("expect_str"), &RtxBus<UartDev>::_expect_str);

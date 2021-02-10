@@ -37,7 +37,7 @@ public:
     UsbDev(SqObj&, E_TYPE  e,const char* dev,const char* name=nullptr);
     virtual ~UsbDev();
     SqArr enumerate();
-    bool  on_event_(SqMemb& mem);
+    bool  set_cb(SqMemb& mem);
     const char* _gets(int chars);
     SqArr _read(int chars);
     OVERW(DvUsb,Divais);
@@ -50,7 +50,7 @@ public:
         cls.Functor(_SC("open"), &DvUsb::iopen);
         cls.Functor(_SC("close"), &DvUsb::iclose);
         cls.Functor(_SC("enumerate"), &UsbDev::enumerate);
-        cls.Functor(_SC("on_event"), &UsbDev::on_event_);
+        cls.Functor(_SC("set_cb"), &UsbDev::set_cb);
         cls.Overload<int (UsbDev::*)(SqArr&)>(_SC("setcr"), &RtxBus<UsbDev>::_setcr);
         cls.Overload<int (UsbDev::*)(const char*)>(_SC("puts"), &RtxBus<UsbDev>::_puts);
         cls.Overload<bool (UsbDev::*)(const char*, SqMemb&)>(_SC("puts_cb"), &RtxBus<UsbDev>::_puts_cb);

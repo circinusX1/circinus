@@ -72,7 +72,7 @@ public:
 protected:
 	virtual bool	_write_now(const devdata_t& a);
 	virtual size_t  _fecth(devdata_t& _curdata, const char* filter);
-	virtual bool	_mon_pick(time_t tnow);
+	virtual bool	_mon_callback(time_t tnow);
     size_t _receiving(char* buf, size_t nmemb);
 
 private:

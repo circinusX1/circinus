@@ -31,7 +31,7 @@ public:
     explicit AdcDev(SqObj&, const char* fname, const char* name=nullptr);
     virtual ~AdcDev();
     int      get_value();
-    bool     on_event_(SqMemb& ch);
+    bool     set_cb(SqMemb& ch);
     OVERW(AdcDev,Divais)
     static void squit(SqEnvi& e){
         Sqrat::Class<AdcDev> cls(e.theVM(), _SC("ADC"));
@@ -40,7 +40,7 @@ public:
 
         cls.Functor(_SC("plug_it"), &AdcDev::plug_it);
         cls.Functor(_SC("get_value"), &AdcDev::get_value);
-        cls.Functor(_SC("on_event"), &AdcDev::on_event_);
+        cls.Functor(_SC("set_cb"), &AdcDev::set_cb);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
         cls.Functor(_SC("get_name"), &AdcDev::get_label_name);
         Sqrat::RootTable().Bind(_SC("ADC"), cls);

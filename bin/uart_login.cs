@@ -2,13 +2,13 @@
 ::using(eUART);
 
 port := UART(eSTRING,"/dev/ttyUSB0",115200,"8N1","webname");
-setdbg(0);
+setdbg(0xFF);
 function main(x)
 {
     //port.setcr([0x13,0x10]);
     if(port.open(3))
     {
-        port.on_event(monitor);
+        port.set_cb(monitor);
         port.putsln("");
     }
     return run(loop,100);
@@ -20,9 +20,8 @@ function loop(ctx, dev)
 }
 
 
-function monitor(d)
+function monitor(d, r)
 {
-    var r = d.gets();
     println("GOT + [" + r + "]");
 
     if(r.find("login")!=null)
@@ -33,19 +32,21 @@ function monitor(d)
     {
         d.putsln("temppwd");
     }
-    if(r.find("beaglebone")!=null)
+    if(r.find("~$")!=null)
     {
-        port.on_event(live);
+        port.set_cb(live);
         d.putsln("ls -lR");
-
     }
     return true;
 }
 
 
-function live(d)
+function live(d, r)
 {
-    var r = d.gets();
     println("LIVE + [" + r + "]");
+    d.putsln("exit");
+    d.putsln("");
+    var got = port.expect_any(["login","Password","beaglebone"]);
+    println ("got->" + got);
     return true;
 }

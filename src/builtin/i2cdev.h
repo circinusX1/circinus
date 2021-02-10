@@ -41,6 +41,7 @@ public:
     virtual ~I2CDev();
     int     setreg(uint8_t cmd);
     SqArr  _readreg(uint8_t reg, int bytes);
+    bool    set_cb(SqMemb& ch, uint8_t reg); /*-1/+1*/
     OVERW(DvI2c,Divais);
     static void squit(SqEnvi& e){
         Sqrat::Class<I2CDev> cls(e.theVM(), _SC("I2C"));
@@ -64,6 +65,8 @@ public:
         cls.Overload<int (I2CDev::*)(uint8_t, SqArr&)>(_SC("iowrite"), &RtxBus<I2CDev>::_writereg);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
         cls.Functor(_SC("get_name"), &I2CDev::get_label_name);
+        cls.Functor(_SC("set_cb"), &I2CDev::set_cb);
+
         Sqrat::RootTable().Bind(_SC("I2C"), cls);
     }
 
@@ -74,8 +77,7 @@ protected:
     const char*         _get_values(const char* key);
 
 private:
-    int                 _regaddr;
-    bool                _cach;
+    int                 _monreg_addr;
 };
 
 #endif // I2CDEV_H

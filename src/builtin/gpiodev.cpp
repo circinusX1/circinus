@@ -137,56 +137,19 @@ int GpioDev::set_freq(int freq)
     return 0;
 }
 
-bool GpioDev::_mon_pick(time_t tnow)
+bool GpioDev::_mon_callback(time_t tnow)
 {
-
-
-    if(_dir & eIn)
-    {
-        int cv = get_value();
-        if(_counting)
-        {
-            if(tnow - _sec>_interval)
-            {
-                _freq = _counter;
-                _counter  = 0;
-                _sec = tnow;
-            }
-            if(cv != _curval)
-            {
-                ++_counter;
-                _curval = cv;
-            }
-            return false;
-        }
-        _mon_dirt = _check_dirt();
-        return _mon_dirt;
-    }
-    return false;
+    return _call_cb(get_value());
 }
 
-bool GpioDev::on_event_(SqMemb& mon)
+bool GpioDev::set_cb(SqMemb& mon)
 {
     if(_dir & eOut || _counting )
     {
         LOGW("cannot moitor out pin or a counter");
         return false;
     }
-    if(!mon.IsNull())
-    {
-        _watch_edge(1);
-        _monitor = true;
-        _edging = 1;
-        if(!_on_event.IsNull())
-            _on_event.Release();
-        _on_event = mon;
-    }else{
-        _watch_edge(0);
-        _monitor = false;
-        if(!_on_event.IsNull())
-            _on_event.Release();
-    }
-    return true;
+    return this->Divais::set_cb(mon);
 }
 
 void GpioDev::on_event(E_VENT e, const uint8_t* val, int len, int options)

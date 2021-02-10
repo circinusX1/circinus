@@ -55,24 +55,14 @@ size_t  FileDev::_fecth(devdata_t& vl, const char* filter)
 }
 
 
-bool FileDev::_mon_pick(time_t tnow)
+bool FileDev::_mon_callback(time_t tnow)
 {
-    return _mon_dirt;
+    return false;
 }
 
-int FileDev::on_event_(SqMemb& m)
+bool FileDev::set_cb(SqMemb& m)
 {
-    if(m.IsNull()){
-        _monitor = false;
-        if(!_on_event.IsNull())
-            _on_event.Release();
-    }else{
-        if(!_on_event.IsNull())
-            _on_event.Release();
-        _on_event=m;
-        _monitor = true;
-    }
-    return _monitor;
+    return this->Divais::set_cb(m);
 }
 
 void FileDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)

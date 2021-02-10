@@ -35,13 +35,12 @@ public:
     FileDev(E_TYPE e, const char* , const char* name=nullptr);
     FileDev(SqObj&, E_TYPE e, const char* , const char* name=nullptr);
     virtual ~FileDev();
-    int on_event_(SqMemb& mon);
+    bool set_cb(SqMemb& mon);
     OVERW(DvFile,Divais)
     static void squit(SqEnvi& e){
         Sqrat::Class<FileDev> cls(e.theVM(), _SC("FILE"));
         cls.Ctor<E_TYPE,const char*, const char* >();
         cls.Ctor<SqObj&, E_TYPE, const char*, const char* >();
-
 
         cls.Functor(_SC("plug_it"), &FileDev::plug_it);
         cls.Functor(_SC("open"), &FileDev::iopen);

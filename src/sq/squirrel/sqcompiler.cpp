@@ -1022,6 +1022,9 @@ public:
                     Expect(_SC(':')); Expression();
                     break;
                 }
+#if __cplusplus > 201402L
+                [[fallthrough]];
+#endif
                 /*falls*/
             default :
                 _fs->AddInstruction(_OP_LOAD, _fs->PushTarget(), _fs->GetConstant(Expect(TK_IDENTIFIER)));

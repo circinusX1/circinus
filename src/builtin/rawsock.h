@@ -36,11 +36,13 @@ public:
     RawSock(E_TYPE e,const char* ip, int port ,const char* name=nullptr);
     RawSock(SqObj&, E_TYPE e, const char* ip, int port ,const char* name=nullptr);
     virtual ~RawSock();
-    void    on_event_(SqMemb& mem);
+    bool    set_cb(SqMemb& mem);
     int puts(const char* b, int sz);
-    const char*  gets(int chars, int to);
+    const char*  gets(int chars);
     int write(Sqrat::Array& a);
-    Sqrat::Array read(int bytes, int to);
+    Sqrat::Array read(int bytes);
+    void _set_touts(time_t tout);
+    void _set_buffers(size_t bytes);
 
     OVERW(RawSock,Divais)
 
@@ -50,7 +52,7 @@ public:
         cls.Ctor<SqObj&, E_TYPE, const char*, int,const char*>();
 
         cls.Functor(_SC("plug_it"), &RawSock::plug_it);
-        cls.Functor(_SC("on_event"), &RawSock::on_event_);
+        cls.Functor(_SC("set_cb"), &RawSock::set_cb);
         cls.Functor(_SC("open"), &RawSock::iopen);
         cls.Functor(_SC("close"), &RawSock::iclose);
         cls.Functor(_SC("puts"), &RawSock::puts);
@@ -59,6 +61,9 @@ public:
         cls.Functor(_SC("read"), &RawSock::read);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
         cls.Functor(_SC("get_name"), &RawSock::get_label_name);
+        cls.Functor(_SC("set_tout"), &RawSock::_set_touts);
+        cls.Functor(_SC("set_buff_size"), &RawSock::_set_buffers);
+
         Sqrat::RootTable().Bind(_SC("SOCKET"), cls);
     }
    
@@ -67,11 +72,6 @@ protected:
     size_t              _fecth(devdata_t& vl, const char* filter);
     bool                _set_values(const char* key, const char* value);
     const char*         _get_values(const char* key);
-
-private:
-     /*max sock bytes*/
-
-    bool                _cach;
 };
 
 #endif // RAWSOCK_H

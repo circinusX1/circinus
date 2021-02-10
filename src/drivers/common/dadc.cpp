@@ -55,8 +55,9 @@ namespace GenericHw
 	size_t     DvAdc::bread(uint8_t* buff, int len, int options)
     {
 		size_t rv = _red(_dev_node.c_str(), buff, len);
-		if(rv > 0) on_event(eREAD, buff,len,options);
-		return rv;
+        if(rv > 0)
+            on_event(eREAD, buff,len, options);
+        return rv;
     }
 
     int     DvAdc::bwrite(const uint8_t* buff, int len, int options)

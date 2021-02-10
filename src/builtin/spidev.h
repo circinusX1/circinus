@@ -38,6 +38,7 @@ public:
     SpiDev(SqObj&, const char* spisys, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t freq, const char* name=nullptr);
     virtual ~SpiDev();
     SqArr  _readreg(int bytes);
+    bool set_cb(SqMemb& ch, int bytes);
     OVERW(DvSpi,Divais)
     static void squit(SqEnvi& e){
         Sqrat::Class<SpiDev> cls(e.theVM(), _SC("SPI"));
@@ -66,9 +67,6 @@ protected:
 
 private:
     int                 _regaddr;
-     /*max i2c bytes*/
-    
-    bool                _cach;
 };
 
 #endif // SPIDEV_H

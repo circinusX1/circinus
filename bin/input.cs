@@ -12,7 +12,7 @@ reads touch pad. WIP
 function main(x)
 {
 
-    mouse.on_event(callback);
+    mouse.set_cb(callback);
     mouse.open(0);
     return run(foo,1000);
 }

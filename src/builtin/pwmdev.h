@@ -34,7 +34,6 @@ public:
     int         set_duty(EPWM_VAL val);
     int         set_abs_duty(EPWM_VAL val);
     EPWM_VAL    get_duty();
-    bool        on_event_(SqMemb& mem);
     bool        set_invert(bool set_invert){return _reversed=set_invert;}
     OVERW(DvPwm,Divais)
     static void squit(SqEnvi& e){
@@ -46,7 +45,6 @@ public:
         cls.Functor(_SC("set_duty"), &PwmDev::set_duty);
         cls.Functor(_SC("set_abs_duty"), &PwmDev::set_abs_duty);
         cls.Functor(_SC("get_duty"), &PwmDev::get_duty);
-        cls.Functor(_SC("set_abs_duty"), &PwmDev::set_abs_duty);
         cls.Functor(_SC("set_invert"), &PwmDev::set_invert);
         cls.Functor(_SC("get_name"), &PwmDev::get_label_name);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);

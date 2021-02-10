@@ -28,12 +28,14 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "squirrel.h"
 #include "sqrat.h"
 #include "jsadaptor.h"
+#include "sqwrap.h"
+#include "logs.h"
 #include "../modules/iper.h"
 
 class   Divais;
-#define MAX_BUFF_SZ (32768-1)
-#define DEF_BUFF_SZ	(512-1)
-#define ONE_SHOT_BUFF_SZ	(512-1)
+#define MAX_BUFF_SZ (32768)
+#define DEF_BUFF_SZ	(256)
+#define ONE_SHOT_BUFF_SZ	(256)
 #define DEF_TOUT    10000
 
 extern  SQVM*       ModVM;
@@ -67,55 +69,6 @@ extern  int      IDX;
 extern const char* __stypes[];
 extern const char* __scats[];
 static std::string __empty;
-
-class IoType_t
-{
-	size_t _cap;
-	bool _truncated=false;
-	IoType_t(size_t SZ=DEF_BUFF_SZ):_cap(SZ){_storage.reserve(_cap);}
-	std::basic_string<uint8_t> _storage;
-
-public:
-	void  set(const uint8_t* p, size_t sz){
-		_storage.assign(p,sz);
-	}
-	void set(const char* p){
-		_storage.clear();
-		_storage.assign((const uint8_t*)p,::strlen(p));
-	}
-	void store(const uint8_t* p, size_t sz){
-		if(_storage.length()+sz > _cap){
-			_storage.erase(0,_cap+1);
-			_truncated=true;
-		}else{
-			_truncated=false;
-		}
-		_storage.append(p,sz);
-	}
-	void store(const std::basic_string<uint8_t>& bff){
-		store(bff.data(), bff.length());
-	}
-	void clear(){_storage.clear();}
-	bool is_trunc()const{return _truncated;}
-	static void destroy(IoType_t** ppd){
-		delete *ppd;
-		*ppd=nullptr;
-	}
-	static void construct(IoType_t** ppd, size_t sz=DEF_BUFF_SZ){
-		assert(*ppd==nullptr);
-		*ppd=new IoType_t(sz+1);
-	}
-	const IoType_t& operator=(const char* s){
-		_storage.assign((const uint8_t*)s,::strlen(s));
-		return *this;}
-	size_t   len()const{return _storage.length();}
-	size_t   cap()const{return _cap;}
-	uint8_t* buf(){return _storage.data();}
-	const char* c_str()const{return (const char*)_storage.data();}
-	uint8_t& at(size_t i){return _storage.data()[i];}
-};
-
-
 
 class Divais : public I_IDev
 {
@@ -152,10 +105,7 @@ public:
 	void  reset();
 	bool is_dirty(time_t tnow){
 		if(_monitor){
-			_picking = true;
-			bool rv = _mon_pick( tnow);
-			_picking=false;
-			return rv;
+			return _mon_callback(tnow);
 		}
 		return false;
 	}
@@ -165,23 +115,36 @@ public:
 	virtual bool set_value(const char* key, const char* value);
 	virtual const char* get_value(const char* key);
 	virtual const devdata_t& get_data()const;
-	virtual bool  on_event();
 	static EPERIPH get_category(const char* cat);
 	virtual void   sync(const char* filter=nullptr);
 	virtual Sqrat::Object object()const;
 	const std::string& eol(){return __empty;}
-	bool is_picking()const{return _picking;};
 	void dirtyit(){_mon_dirt=true;}
+	virtual bool set_cb(SqMemb& m);
+	virtual bool _mon_callback(time_t tnow);
+	virtual void on_event(E_VENT e, const uint8_t* buff, int len, int options);
 protected:
 	virtual bool	_write_now(const devdata_t& a)=0;
-	virtual bool	_mon_pick(time_t tnow)=0;
-
 	virtual size_t  _fecth(devdata_t& _curdata, const char* filter)=0;
 	virtual bool	_set_values(const char* key, const char* value);
 	virtual const char*	_get_values(const char* key);
 	Sqrat::Object&	_so(){return _o;}
 	bool			_check_dirt();
-
+	template <class T> bool _call_cb(const T& d)
+	{
+		if(!_on_event.IsNull())
+		{
+			try{
+				_on_event.Fcall<bool>(_o, d);
+			}
+			catch(Sqrat::Exception& ex){
+				LOGEX(ex.Message());
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
 private:
 	void _tbl2string(Sqrat::Table& t, std::string& s);
 
@@ -196,12 +159,77 @@ protected:
     Sqrat::Object    _o;
     E_TYPE           _etype;
     Sqrat::Function  _on_event;
-    bool             _picking = false;
 private:
 
     Sqrat::Function  _oset_value;
     Sqrat::Function  _oget_value;
 };
+
+template <typename T>
+class fast_allocator
+{
+    T     _local[DEF_BUFF_SZ];
+public:
+    typedef size_t size_type;
+    typedef ptrdiff_t difference_type;
+    typedef T* pointer;
+    typedef const T* const_pointer;
+    typedef T& reference;
+    typedef const T& const_reference;
+    typedef T value_type;
+
+    fast_allocator(){}
+    ~fast_allocator(){}
+
+    template <class U> struct rebind { typedef fast_allocator<U> other; };
+    template <class U> fast_allocator(const fast_allocator<U>&){}
+
+    pointer address(reference x) const {return &x;}
+    const_pointer address(const_reference x) const {return &x;}
+    size_type max_size() const throw() {return size_t(-1) / sizeof(value_type);}
+    pointer allocate(size_type n, fast_allocator<T>::const_pointer hint = 0)
+    {
+        if(n<=DEF_BUFF_SZ){
+            return _local;
+        }
+        return static_cast<pointer>(::malloc(n*sizeof(T)));
+    }
+
+    void deallocate(pointer p, size_type n)
+    {
+        if(p!=_local)::free(p);
+    }
+
+    void construct(pointer p, const T& val)
+    {
+        new(static_cast<void*>(p)) T(val);
+    }
+
+    void construct(pointer p)
+    {
+        new(static_cast<void*>(p)) T();
+    }
+
+    void destroy(pointer p)
+    {
+        p->~T();
+    }
+};
+
+class bytes_t : public std::basic_string<uint8_t,
+                          std::char_traits<uint8_t>,
+                          fast_allocator<uint8_t> >
+{
+    size_t _cap;
+public:
+    bytes_t(size_t rez=DEF_BUFF_SZ){
+        this->reserve(rez-1);
+        this->resize(rez-1);
+        _cap = rez-1;
+    }
+    size_t cap()const{return _cap-1;}
+};
+
 
 #define OVERW(B1,B2)																\
 	const char* get_label_name()const{return B2::name();}							\
@@ -209,7 +237,7 @@ private:
 	bool iopen(int em=O_RDWR){return B1::iopen(em);}								\
 	void iclose(){B1::iclose();}													\
 	void on_event(E_VENT e, const uint8_t* buff, int len, int options=0);			\
-	bool _mon_pick(time_t tnow);
+	bool _mon_callback(time_t tnow);
 
 #define IS_SNULL(per) per==0 || (per[0]=='(' && per[1]=='n')
 

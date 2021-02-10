@@ -43,7 +43,7 @@ size_t  ScrBase::_fecth(devdata_t& vl, const char* filter)
     return 0;
 }
 
-bool ScrBase::_mon_pick(time_t tnow)
+bool ScrBase::_mon_callback(time_t tnow)
 {
     return false;
 }

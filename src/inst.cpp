@@ -215,32 +215,14 @@ I_IDev* Inst::get_module(const char* name)
     return nullptr;
 }
 
-void   Inst::_dequeue_events(std::vector<I_IDev*>& arr)
+bool   Inst::check_devs(time_t t)
 {
-    ;
-}
-
-void   Inst::check_devs(std::vector<I_IDev*>& arr, size_t t)
-{
+    bool evs = false;
     for(auto& d : _devs)
     {
-        if(d.second->is_dirty(t))
-        {
-            const Sqrat::Object& o = d.second->object();
-            if(o.IsNull())
-            {
-                LOGW("If the object is monitorred call: _o.BindCppObject(this); in c-tor")
-            }
-            else
-            {
-                arr.push_back(d.second);
-            }
-        }
+        evs |= d.second->is_dirty(t);
     }
-    //
-    //  check the rising falling hooks queue
-    //
-    _dequeue_events(arr);
+    return evs;
 }
 
 I_IDev* Inst::get_per(const char* name)

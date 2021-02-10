@@ -77,6 +77,11 @@ bool Divais::_check_dirt()
     return false;
 }
 
+bool Divais::_mon_callback(time_t tnow)
+{
+    return false;
+}
+
 /**
  * @brief Divais::plug_it
  * @param o
@@ -89,7 +94,7 @@ void Divais::plug_it(SqObj& o, const char* dev_key)
     _o = o;
     SqMemb::getFoo(App->psqvm() , o, "set_value", _oset_value);
     SqMemb::getFoo(App->psqvm() , o, "get_value", _oget_value);
-    SqMemb::getFoo(App->psqvm() , o, "on_event", _on_event);
+    SqMemb::getFoo(App->psqvm() , o, "set_cb", _on_event);
 }
 
 void   Divais::reset()
@@ -189,33 +194,33 @@ void Divais::_tbl2string(Sqrat::Table& t, std::string& s)
         s += "&";  s += sn;  s+="=";
         switch(_RAW_TYPE(o._type))
         {
-            case _RT_NULL:         ::sprintf(out,"%d",0); break;
-            case _RT_INTEGER:      ::sprintf(out, "%d", SQ_PTRS->objtointeger(&o)); break;
-            case _RT_FLOAT:        ::sprintf(out, "%d", SQ_PTRS->objtobool(&o));   break;
-            case _RT_BOOL:         ::sprintf(out, "%f", SQ_PTRS->objtofloat(&o)); break;
-            case _RT_STRING:       ::sprintf(out, "%s", SQ_PTRS->objtostring(&o));  break;
-            case _RT_TABLE:        assert(0); break;
-            case _RT_ARRAY:
-                {
-                    Sqrat::Array a(o);
-                    SQObjectType t =  a.GetType(0);
+        case _RT_NULL:         ::sprintf(out,"%d",0); break;
+        case _RT_INTEGER:      ::sprintf(out, "%d", SQ_PTRS->objtointeger(&o)); break;
+        case _RT_FLOAT:        ::sprintf(out, "%d", SQ_PTRS->objtobool(&o));   break;
+        case _RT_BOOL:         ::sprintf(out, "%f", SQ_PTRS->objtofloat(&o)); break;
+        case _RT_STRING:       ::sprintf(out, "%s", SQ_PTRS->objtostring(&o));  break;
+        case _RT_TABLE:        assert(0); break;
+        case _RT_ARRAY:
+        {
+            Sqrat::Array a(o);
+            SQObjectType t =  a.GetType(0);
 
-                    for(int i=0; i< a.GetSize();++i)
-                    {
-                        if(t==OT_INTEGER)       ::sprintf(out,"%d",*a.GetValue<int>(i).Get());
-                        else if(t==OT_FLOAT)    ::sprintf(out,"%f",*a.GetValue<float>(i).Get());
-                        else if(t==OT_BOOL)     ::sprintf(out,"%d",*a.GetValue<int>(i).Get());
-                        else if(t==OT_STRING)   ::sprintf(out,"%s",*a.GetValue<const char*>(i).Get());
-                        else ::sprintf(out,"%d",*a.GetValue<int>(i).Get());
-                        s+=out;
-                        s+=",";
-                        out[0]=0;
-                    }
-                }
-                break;
-            case _RT_USERDATA:      ::sprintf(out, "%p", (void*)o._unVal.pUserData); break;
-            case _RT_USERPOINTER:   ::sprintf(out, "%p", (void*)o._unVal.pUserPointer); break;
-            default: ::sprintf(out, "%p", (void*)o._unVal.raw); break;
+            for(int i=0; i< a.GetSize();++i)
+            {
+                if(t==OT_INTEGER)       ::sprintf(out,"%d",*a.GetValue<int>(i).Get());
+                else if(t==OT_FLOAT)    ::sprintf(out,"%f",*a.GetValue<float>(i).Get());
+                else if(t==OT_BOOL)     ::sprintf(out,"%d",*a.GetValue<int>(i).Get());
+                else if(t==OT_STRING)   ::sprintf(out,"%s",*a.GetValue<const char*>(i).Get());
+                else ::sprintf(out,"%d",*a.GetValue<int>(i).Get());
+                s+=out;
+                s+=",";
+                out[0]=0;
+            }
+        }
+            break;
+        case _RT_USERDATA:      ::sprintf(out, "%p", (void*)o._unVal.pUserData); break;
+        case _RT_USERPOINTER:   ::sprintf(out, "%p", (void*)o._unVal.pUserPointer); break;
+        default: ::sprintf(out, "%p", (void*)o._unVal.raw); break;
         }
         if(out[0])
             s+= out;
@@ -262,19 +267,18 @@ Sqrat::Object Divais::object()const
     return _o;
 }
 
-bool  Divais::on_event()
+bool Divais::set_cb(SqMemb& m)
 {
-    bool rv=false;
-    if(!_on_event.IsNull())
-    {
-        try{
-            rv =  *(_on_event.Fcall<bool>(_o).Get());
-        }
-        catch(Sqrat::Exception& ex){
-            LOGEX(ex.Message());
-            LOGEX(SqErrStr);
-            rv =false;
-        }
-    }
-    return rv; /*false break main*/
+	_monitor = false;
+	if(!_on_event.IsNull())
+		_on_event.Release();
+	if(!m.IsNull()){
+		_monitor = true;
+		_on_event=m;
+	}
+	return _monitor;
+}
+
+void Divais::on_event(E_VENT e, const uint8_t* buff, int len, int options)
+{
 }

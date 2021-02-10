@@ -506,30 +506,15 @@ int run(SqMemb& f, int pulseme)
     size_t nowwd = now;
     bool   evented = false;
     SqArr  b(App->psqvm(), 0);
-    std::vector<I_IDev*> dirty;
 
     try{
         Sqrat::SharedPtr<bool> srv;
         while(ApStat==RUNNING)
         {
             evented = false;
-            if(dirty.size()){  dirty.clear(); }
             then = tick_count();
-            App->check_devs(dirty, then);
+            evented = App->check_devs(then);
 
-            if(dirty.size())
-            {
-                now = then;
-                for(const auto& a: dirty)
-                {
-                    if(false == a->on_event())
-                    {
-                        ApStat=DO_EXIT;
-                        break;
-                    }
-                }
-                evented = true;
-            }
             if ( (pulseme > 0 &&
                  (then - now >= (size_t)pulseme)) ||
                   __bsqenv->snap_.load()==true || evented)

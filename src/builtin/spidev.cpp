@@ -60,22 +60,18 @@ size_t  SpiDev::_fecth(devdata_t& vl, const char* filter)
 SqArr  SpiDev::_readreg(int bytes)
 {
     _mon_dirt = false;
-    if(_cach)
-    {
-        SqArr  rar(App->psqvm(), _iobuff->len());
-        for(size_t i = 0 ; i < _iobuff->len(); i++)
-        {
-            rar.SetValue(i, _iobuff->at(i));
-        }
-        _cach = false;
-        return rar;
-    }
     return RtxBus<SpiDev>::_readreg(0,bytes);
 }
 
-bool SpiDev::_mon_pick(time_t tnow)
+bool SpiDev::set_cb(SqMemb& ch, int bytes)
 {
-    return false;
+    return this->Divais::set_cb(ch);
+}
+
+bool SpiDev::_mon_callback(time_t tnow)
+{
+    const SqArr& rv =  _readreg(_bufsz);
+    return this->_call_cb(rv);
 }
 
 void SpiDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)

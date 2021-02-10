@@ -30,7 +30,7 @@ public:
     SoLib(const char* plugin);
     SoLib(SqObj&, const char* plugin);
     virtual ~SoLib();
-    bool _mon_pick(time_t tnow);
+    bool _mon_callback(time_t tnow);
     bool iopen(int);
     void  iclose();
 

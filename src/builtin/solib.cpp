@@ -85,7 +85,7 @@ size_t  SoLib::_fecth(devdata_t& vl, const char* filter)
 }
 
 
-bool SoLib::_mon_pick(time_t tnow)
+bool SoLib::_mon_callback(time_t tnow)
 {
     return false;
 }

@@ -27,7 +27,6 @@ RawSock::RawSock(E_TYPE e,
                                     RtxBus<RawSock>(this,false,true)
 {
     _o.BindCppObject(this);
-
 }
 
 RawSock::RawSock(SqObj& o,
@@ -35,9 +34,9 @@ RawSock::RawSock(SqObj& o,
                  const char* ip,
                  int  port,
                  const char* name):DvSocket(ip,port),
-    Divais (e, eSOCKET, name),
-    Reg<RawSock>(this),
-    RtxBus<RawSock>(this,false)
+                        Divais (e, eSOCKET, name),
+                        Reg<RawSock>(this),
+                        RtxBus<RawSock>(this,false)
 {
     plug_it(o, name);
 }
@@ -57,27 +56,20 @@ size_t  RawSock::_fecth(devdata_t& vl, const char* filter)
     return 0;
 }
 
-bool RawSock::_mon_pick(time_t tnow)
+bool RawSock::_mon_callback(time_t tnow)
 {
+    if(_etype==eSTRING){
+        const char* rv = gets(_bufsz);
+        return this->Divais::_call_cb(rv);
+    }
 
-    return false;
+    const SqArr& rv = read(_bufsz);
+    return this->Divais::_call_cb(rv);
 }
 
-void RawSock::on_event_(SqMemb& m)
+bool RawSock::set_cb(SqMemb& m)
 {
-    _cach = false;
-    if(m.IsNull())
-    {
-        _monitor = false;
-        if(!_on_event.IsNull())
-            _on_event.Release();
-    }
-    else {
-        if(!_on_event.IsNull())
-            _on_event.Release();
-        _monitor = true;
-        _on_event=m;
-    }
+    return this->Divais::set_cb(m);
 }
 
 int RawSock::puts(const char* b, int sz)
@@ -85,39 +77,42 @@ int RawSock::puts(const char* b, int sz)
     return this->sendall((const unsigned char*)b,sz);
 }
 
-const char* RawSock::gets(int chars, int to)
+const char* RawSock::gets(int chars)
 {
-    this->select_receive(_iobuff->buf(), _iobuff->cap(), to);
-    return (const char*)_iobuff->buf();
+    bytes_t loco(chars);
+
+    _t1.clear();
+    const int bytes = this->select_receive(loco.data(), loco.cap(), _tout);
+    if(bytes){
+        loco.resize(bytes);
+        _t1.assign(loco.data(),loco.length());
+    }
+    return (const char*)_t1.data();
 }
 
 int RawSock::write(Sqrat::Array& a)
 {
-    int sz = a.GetSize();
-    if(sz<512)
-    {
-        fastbuf_t  ptr(sz);
-
-        a.GetArray((uint8_t*)ptr, sz);
-        return this->sendall((const unsigned char*)ptr,sz);
-    }
-    return 0;
+    const int sz = a.GetSize();
+    bytes_t loco(sz);
+    a.GetArray(loco.data(), sz);
+    return this->sendall(loco.data(),sz);
 }
 
-Sqrat::Array RawSock::read(int bytes, int to)
+Sqrat::Array RawSock::read(int maxb)
 {
-    int by = this->select_receive(_iobuff->buf(), _iobuff->cap(), to);
-    if(by>0)
+    bytes_t loco(maxb);
+    const int bytes = this->select_receive(loco.data(), loco.cap(), _tout);
+    if(bytes>0)
     {
-        SqArr  rar(App->psqvm(),by );
+        SqArr  rar(App->psqvm(), bytes);
+        loco.resize(bytes);
         for(int i = 0 ; i < bytes; i++)
         {
-            rar.SetValue(i, _iobuff->at(i));
+            rar.SetValue(i, loco[i]);
         }
         return rar;
     }
-    SqArr nulla;
-    return nulla;
+    return _emptyarr;
 }
 
 void RawSock::on_event(E_VENT e, const uint8_t* buff, int len, int options)
@@ -134,6 +129,15 @@ const char*	RawSock::_get_values(const char* key)
     return "";
 }
 
+void RawSock::_set_touts(time_t tout)
+{
+    this->_tout = tout;
+}
+
+void RawSock::_set_buffers(size_t bytes)
+{
+    this->_bufsz = bytes;
+}
 
 
 

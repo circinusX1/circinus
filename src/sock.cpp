@@ -28,7 +28,7 @@
 #include "main.h"
 #include "logs.h"
 //-----------------------------------------------------------------------------
-unsigned long       sock::_tout = 2000;
+unsigned long       sock::_toutso = 2000;
 
 
 //-----------------------------------------------------------------------------
@@ -85,7 +85,7 @@ void sock::Unctxreg()
 //-----------------------------------------------------------------------------
 bool sock::CTime(void* , unsigned long time)
 {
-    return time < sock::_tout;
+    return time < sock::_toutso;
 }
 
 SADDR_46 sock::dnsgetip(const char* sip, char* out, int port)
@@ -1117,7 +1117,7 @@ int tcp_clis::connect(const char* sip, int port, CancelCB cbCall, void* pUser)
 //-----------------------------------------------------------------------------
 bool sock::DefCBCall(void*, unsigned long dw)
 {
-    return dw < sock::_tout;
+    return dw < sock::_toutso;
 }
 
 

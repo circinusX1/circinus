@@ -59,26 +59,14 @@ size_t  AdcDev::_fecth(devdata_t& vl, const char* filter)
     return get_value();
 }
 
-bool AdcDev::_mon_pick(time_t tnow)
+bool AdcDev::_mon_callback(time_t tnow)
 {
-    get_value();
-    return _mon_dirt = _check_dirt();
+    return _call_cb(get_value());
 }
 
-bool AdcDev::on_event_(SqMemb& m)
+bool AdcDev::set_cb(SqMemb& m)
 {
-    if(m.IsNull()){
-        _monitor = false;
-        if(!_on_event.IsNull())
-            _on_event.Release();
-    }else{
-        if(!_on_event.IsNull())
-            _on_event.Release();
-        _on_event=m;
-        _monitor = true;
-        get_value(); // clear ditry
-    }
-    return _monitor;
+    return this->Divais::set_cb(m);
 }
 
 void AdcDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)

@@ -42,7 +42,7 @@ public:
     InputSys(E_INPUT e, const char* device, const char* name=nullptr);
     InputSys(SqObj&, E_INPUT e, const char* device, const char* name=nullptr);
     virtual ~InputSys();
-    bool   on_event_(SqMemb& mem);
+    bool   set_cb(SqMemb& mem);
     bool   lopen(int);
     void   lclose();
     Sqrat::Array get();
@@ -57,7 +57,7 @@ public:
         cls.Ctor<E_INPUT, const char* , const char*>();
         cls.Ctor<SqObj&, E_INPUT, const char* , const char*>();
 
-        cls.Functor(_SC("on_event"), &InputSys::on_event_);
+        cls.Functor(_SC("set_cb"), &InputSys::set_cb);
         cls.Functor(_SC("open"), &InputSys::lopen);
         cls.Functor(_SC("close"), &InputSys::lclose);
         cls.Functor("get",&InputSys::get);

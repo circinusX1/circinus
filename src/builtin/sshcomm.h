@@ -39,7 +39,7 @@ public:
     SshComm(SqObj&, const char* credentials, const char* name=nullptr);
 
     virtual ~SshComm();
-    void on_event(SqMemb& mem, size_t bytes);
+    void set_cb(SqMemb& mem, size_t bytes);
     const char* _gets(int chars);
     OVERW(ComSsh,Divais);
     static void squit(SqEnvi& e){
@@ -50,7 +50,7 @@ public:
         cls.Functor(_SC("plug_it"), &SshComm::plug_it);
         cls.Functor(_SC("open"), &SshComm::iopen);
         cls.Functor(_SC("close"), &SshComm::iclose);
-        cls.Functor(_SC("on_event"), &SshComm::on_event_);
+        cls.Functor(_SC("set_cb"), &SshComm::set_cb);
         cls.Functor(_SC("gets"), &SshComm::_gets);
         cls.Overload<int (SshComm::*)(const char*)>(_SC("puts"), &RtxBus<SshComm>::_puts);
         cls.Overload<void (SshComm::*)()>(_SC("flush"), &RtxBus<SshComm>::_devflush);

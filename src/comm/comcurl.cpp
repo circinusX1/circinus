@@ -294,7 +294,7 @@ size_t  ComCurl::_fecth(devdata_t& _curdata, const char* filter)
     return -1;
 }
 
-bool	ComCurl::_mon_pick(time_t tnow)
+bool	ComCurl::_mon_callback(time_t tnow)
 {
     return false;
 }

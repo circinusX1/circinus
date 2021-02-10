@@ -35,24 +35,20 @@ struct AutoOC{
 template<typename T> class RtxBus
 {
 public:
-    RtxBus(T* d, bool autoo, bool alloca=false):_pd(d),_auto(autoo),_iobuff(nullptr)
+    RtxBus(T* d, bool autoo, bool alloca=false):_pd(d),_auto(autoo)
     {
-        if(alloca)
-            IoType_t::construct(&_iobuff);
     }
 
     virtual ~RtxBus()
     {
-        IoType_t::destroy(&_iobuff);
     }
 
     int _putsln(const char* str)
     {
-        AutoOC oc(_pd, _auto);
+        AutoOC      oc(_pd, _auto);
         _devflush();
-        _iobuff->set(str);
-        _iobuff->store(_cr);
-        return _pd->bwrite(_iobuff->buf(), _iobuff->len());
+        _pd->bwrite((const uint8_t*)str,::strlen(str));
+        return _pd->bwrite(_cr.data(),_cr.length());
     }
 
     int _puts(const char* str)
@@ -64,30 +60,27 @@ public:
 
     bool _puts_cb(const char* str, SqMemb& f)
     {
-        _iobuff->set(str);
-        _iobuff->store(_cr);
-        if(_puts(_iobuff->c_str()))
+        if(_puts(str))
         {
-            size_t  bytes;
-            Sqrat::SharedPtr<bool> srv;
-            AutoOC oc(_pd, _auto);
-            time_t fut = tick_count() + _tout;
 
-            _iobuff->clear();
-            while(fut - tick_count() >0 ||
-                  (bytes = _pd->bread(_iobuff->buf(), _iobuff->cap()))>0)
+            AutoOC      oc(_pd, _auto);
+            time_t      fut = tick_count() + _tout;
+            Sqrat::SharedPtr<bool> srv;
+
+            while(fut < tick_count())
             {
-                if(bytes>0)
+                bytes_t       loco(_bufsz);
+                const size_t  bytes = _pd->bread(loco.data(), loco.cap());
+                if(bytes ==0 ) continue;
+                loco.resize(bytes);
+                srv = f.Fcall<bool>(loco.data());
+                fut = 0;
+                if(*srv.Get()==false)
                 {
-                    srv = f.Fcall<bool>(_iobuff->c_str());
-                    fut = 0;
-                    if(*srv.Get()==false)
-                    {
-                        break;
-                    }
+                    break;
                 }
             }
-            f.Fcall<bool>(_iobuff->c_str()); /* no more data */
+            f.Fcall<bool>(__empty.c_str());
             return true;
         }
         return false;
@@ -97,28 +90,27 @@ public:
     {
         if(_write(a))
         {
-            size_t  bytes;
             time_t fut = tick_count()+_tout;
             Sqrat::SharedPtr<bool> srv;
             AutoOC oc(_pd, _auto);
 
-            _iobuff->clear();
-            while(fut>tick_count() ||
-                  (bytes = _pd->bread(_iobuff->buf(), _iobuff->cap()))>0)
+            while(fut>tick_count())
             {
-                if(bytes)
+                bytes_t       loco(_bufsz);
+                const size_t  bytes = _pd->bread(loco.data(), loco.cap());
+                if(bytes ==0 ) continue;
+
+                loco.resize(bytes);
+                SqArr ra(App->psqvm(), bytes);
+                for(size_t i = 0 ; i < bytes; i++)
                 {
-                    SqArr ra(App->psqvm(), bytes);
-                    for(size_t i = 0 ; i < bytes; i++)
-                    {
-                        ra.SetValue(i, _iobuff->at(i));
-                    }
-                    srv = f.Fcall<bool>(ra);
-                    fut = 0;
-                    if(*srv.Get()==false)
-                    {
-                        break;
-                    }
+                    ra.SetValue(i, loco[i]);
+                }
+                srv = f.Fcall<bool>(ra);
+                fut = 0;
+                if(*srv.Get()==false)
+                {
+                    break;
                 }
             }
             f.Fcall<bool>(_emptyarr);
@@ -130,48 +122,32 @@ public:
     const char* _gets()
     {
         AutoOC      oc(_pd, _auto);
-        fastbuf_t   loco(_bufsz);
+        bytes_t     loco(_bufsz);
 
         _pd->reset();
-        int bytes = _pd->bread((uint8_t*)loco, _bufsz);
-        if(bytes)
-        {
-            if(_pd->is_picking())  _pd->dirtyit();
-            _iobuff->store(loco,bytes);
+        const size_t  bytes = _pd->bread(loco.data(), loco.cap());
+        if(bytes){
+            loco.resize(bytes);
+            _t1.assign(loco.data(), bytes);
+            return (const char*)_t1.data();
         }
-        if(_iobuff->len())
-            _tmpstr.assign(_iobuff->buf(), _iobuff->len());
-        else
-            _tmpstr.clear();
-        if(!_pd->is_picking()){
-            _iobuff->clear();
-        }
-        return (const char*)_tmpstr.c_str();
+        return __empty.c_str();
     }
 
     SqArr _read()
     {
         SqArr           rar(App->psqvm(), 0);
         AutoOC          oc(_pd,  _auto);
-        fastbuf_t       loco(_bufsz);
+        bytes_t         loco(_bufsz);
 
         _pd->reset();
-        int bytes = _pd->bread((uint8_t*)loco, _bufsz);
-        if(bytes)
-        {
-            if(_pd->is_picking())  _pd->dirtyit();
-            _iobuff->store(loco,bytes);
-        }
-        if(_iobuff->len())
-        {
-            rar.Resize(_iobuff->len());
-            for(size_t i = 0 ; i < _iobuff->len(); i++)
+        const size_t  bytes = _pd->bread(loco.data(), loco.cap());
+        if(bytes){
+            rar.Resize(bytes);
+            for(size_t i = 0 ; i < bytes; i++)
             {
-                rar.SetValue(i, _iobuff->at(i));
+                rar.SetValue(i, loco[i]);
             }
-        }
-        if(!_pd->is_picking()){
-            _iobuff->clear();
         }
         return rar;
     }
@@ -182,42 +158,41 @@ public:
 
     int _fwrite(SqArr& a )
     {
-        int        sz = a.GetSize();
-        fastbuf_t  ptr(sz);
+        AutoOC      oc(_pd,  _auto);
+        const int   sz = a.GetSize();
+        bytes_t     loco(sz);
 
-        a.GetArray((uint8_t*)ptr, sz);
-        AutoOC oc(_pd,  _auto);
-        int ret = _pd->fwrite(ptr, sz);
-        return ret;
+        a.GetArray(loco.data(), sz);
+        loco.resize(sz);
+        return _pd->fwrite(loco.data(), sz);
     }
 
     SqArr _fread(int bytes)
     {
-        fastbuf_t  ptr(bytes+1);
+        AutoOC oc(_pd,  _auto);
+        bytes_t    loco(bytes);
         SqArr      rar(App->psqvm(), 0);
 
-        AutoOC oc(_pd,  _auto);
-        int rv = _pd->fread(ptr, bytes);
+        const int rv = _pd->fread(loco.data(), bytes);
+        loco.resize(rv);
         if(rv>0)
         {
             rar.Resize(bytes);
             for(int i = 0 ; i < bytes; i++)
             {
-                rar.SetValue(i, ptr[i]);
+                rar.SetValue(i, loco[i]);
             }
         }
-
         return rar;
     }
 
     SqArr _readreg(uint8_t reg, size_t chars)
     {
-        SqArr       rar(App->psqvm(), 0);
-        fastbuf_t   loco(chars+1);
-        size_t      bytes = 0;
         AutoOC      oc(_pd,  _auto);
+        SqArr       rar(App->psqvm(), 0);
+        bytes_t     loco(chars);
 
-        bytes = _pd->bread(loco, chars, reg);
+        const size_t bytes = _pd->bread(loco.data(), chars, reg);
         if(bytes>0)
         {
             rar.Resize(bytes);
@@ -231,15 +206,15 @@ public:
 
     int _write(SqArr& a)
     {
-        int      sz = a.GetSize();
+        int  sz = a.GetSize();
         if(sz)
         {
-            fastbuf_t  ptr(sz);
+            AutoOC   oc(_pd, _auto);
+            bytes_t  loco(sz);
 
             _devflush();
-            a.GetArray((uint8_t*)ptr, sz);
-            AutoOC oc(_pd, _auto);
-            sz = _pd->bwrite(ptr,sz);
+            a.GetArray(loco.data(), sz);
+            sz = _pd->bwrite(loco.data(),sz);
         }
         return sz;
     }
@@ -249,31 +224,32 @@ public:
         int     sz = a.GetSize();
         if(sz)
         {
-            fastbuf_t  ptr(sz);
+            AutoOC  oc(_pd,  _auto);
+            bytes_t loco(sz);
 
             _devflush();
-            a.GetArray((uint8_t*)ptr, sz);
-            AutoOC oc(_pd,  _auto);
-            sz = _pd->bwrite(ptr,sz,reg);
+            a.GetArray(loco.data(), sz);
+            sz = _pd->bwrite(loco.data(), sz, reg);
         }
-        else {
-            sz = _pd->bwrite(nullptr,0,reg);
+        else
+        {
+            sz = _pd->bwrite(nullptr, 0, reg);
         }
         return sz;
     }
 
-    SqArr& _ioctl(int ctl, SqArr& a, int expect)
+    SqArr& _ioctl(int ctl, SqArr& a, int toread)
     {
-        size_t          sz = a.GetSize();
-        fastbuf_t  ptr(sz);
+        AutoOC      oc(_pd,  _auto);
+        size_t      sz = a.GetSize();
+        bytes_t     loco(std::max((size_t)toread,sz));
 
-        a.GetArray((uint8_t*)ptr, sz);
-        AutoOC oc(_pd,  _auto);
-        if(_pd->do_ioctl(ctl, ptr, expect)==0)
+        a.GetArray(loco.data(), sz);
+        if(_pd->do_ioctl(ctl, loco.data(), toread)==toread)
         {
-            a.Resize(expect);
-            for(int i=0;i<expect;++i)
-                a.SetValue(i,ptr[i]);
+            for(int i=0;i<toread;++i){
+                a.SetValue(i,loco[i]);
+            }
         }
         return a;
     }
@@ -281,8 +257,7 @@ public:
     int _setcr(SqArr& a)
     {
         size_t  sz = a.GetSize();
-        uint8_t ptr[32]={0};
-
+        uint8_t ptr[8]={0};
         a.GetArray((uint8_t*)ptr, sz);
         _cr.assign(ptr,sz);
         return 0;
@@ -292,119 +267,91 @@ public:
     {
         _pd->flush();
         _pd->reset();
-        _tmpstr.clear();
-        _tmp2.clear();
+        _t1.clear();
+        _t2.clear();
     }
 
-    SqArr _expect_arr(SqArr& a)
+    // any from array of strings, there is a expect bin
+    const char* _expect_any(SqArr& a)
     {
-        bool     rv=false;
-        uint8_t  loco[_bufsz]={0};
-        size_t   now = tick_count();
-        time_t   tot  = now + _tout;
-        size_t   sz = 0;
+        AutoOC   oc(_pd,  _auto);
+        bytes_t  loco(_bufsz);
+        time_t   fut  = tick_count() + _tout;
 
-        _tmpstr.clear();
-        _tmp2.clear();
-        AutoOC oc(_pd,  _auto);
-        while(tick_count() < tot && rv==false )
-        {
-            size_t bytes = _pd->bread(loco, sizeof(loco)-1);
-            if(bytes>0){
-                _tmpstr.append(loco, bytes);
-                int ns  = a.GetSize();
+        _t1.clear();
+        _t2.clear();
 
-                for(int i=0;i<ns;i++)
-                {
-                    const char* token = *(a.GetValue<const char*>(i).Get());
-                    sz += ::strlen(token)+1;
-                    if(_tmpstr.find((const uint8_t*)token)!=std::string::npos)
-                    {
-                        _tmp2.assign((const uint8_t*)token,::strlen(token));
-                        tot=::tick_count();
-                        break;
-                    }
-                }
-                _truncate(_tmpstr);
-            }
-        }
-        if(_tmp2.length())
+        while(tick_count() < fut)
         {
-            SqArr ra(App->psqvm(), _tmp2.length());
-            for(size_t i=0; i< _tmpstr.length(); ++i )
+            const size_t bytes = _pd->bread(loco.data(), loco.cap());
+            if(bytes == 0) continue;
+            loco.resize(bytes);
+            _t1.append(loco.data(), bytes);
+            const int ns  = a.GetSize();
+            for(int i=0;i<ns;i++)
             {
-                ra.SetValue(i, _tmpstr.at(i));
+                const char* token = *(a.GetValue<const char*>(i).Get());
+                if(_t1.find((const uint8_t*)token)!=std::string::npos)
+                {
+                    _t2.assign((const uint8_t*)token,::strlen(token));
+                    fut = 0;
+                    break;
+                }
             }
-            return ra;
+           _truncate(_t1);
         }
-        return _nula;
+        return (const char*)_t2.c_str();
     }
-
 
     bool _expect_str(const char* ex)
     {
-        bool     rv=false;
-        uint8_t  loco[_bufsz]={0};
-        size_t   now = tick_count();
-        time_t   tot  = now + _tout;
-        size_t   sz = ::strlen(ex);
+        AutoOC   oc(_pd, _auto);
+        bytes_t  loco(_bufsz);
+        time_t   fut = tick_count() + _tout;
+        const size_t   sz  = ::strlen(ex);
 
-        _tmpstr.clear();
-
-        AutoOC oc(_pd,  _auto);
-        while(tick_count() < tot && rv==false )
+        _t1.clear();
+        while(tick_count() < fut)
         {
-            size_t bytes = _pd->bread(loco, sizeof(loco)-1);
-            if(bytes>0){
-                _tmpstr.append(loco,bytes);
-                if(_tmpstr.length()>sz*4)
-                {
-                    _tmpstr.erase(0,sz);
-                }
+            const size_t bytes = _pd->bread(loco.data(), loco.cap());
+            if(bytes==0) continue;
+            _t1.append(loco,bytes);
+            const size_t f = _t1.find((const uint8_t*)ex, 0, sz);
+            if(f!=std::string::npos){
+                fut = 0;
+                break;
             }
-            size_t f = _tmpstr.find((const uint8_t*)ex, 0, ::strlen(ex));
-            rv = (f!=std::string::npos);
+            _truncate(_t1);
         }
-        size_t bytes = _pd->bread(loco, sizeof(loco)-1);
-        if(bytes>0){
-            _tmpstr.append(loco,bytes);
-            if(_tmpstr.length()>sz*4)
-            {
-                _tmpstr.erase(0,sz);
-            }
-        }
-        return rv;
+        return fut==0;
     }
 
     bool _expect_bin(SqArr& a)
     {
-        bool     rv=false;
-        uint8_t  loco[_bufsz]={0};
-        time_t   now = tick_count();
-        time_t   tot  = now + _tout;
-        size_t      sz = a.GetSize();
-        uint8_t     ptr[1024]={0};
+        AutoOC   oc(_pd,  _auto);
+        time_t   fut  = tick_count() + _tout;
+        const    size_t sz = a.GetSize();
+        bytes_t  loco(sz);
+        bytes_t  income(_bufsz);
+        int      from = 0;
 
-        a.GetArray((uint8_t*)ptr, sz);
-        _devflush();
-        _tmpstr.clear();
-
-        AutoOC oc(_pd,  _auto);
-        while(tick_count() < tot && rv==false)
+        a.GetArray(loco.data(), sz);
+        _t1.clear();
+        while(tick_count() < fut)
         {
-            size_t bytes = _pd->bread(loco, sizeof(loco)-1);
-            if(bytes>0)
+            const size_t bytes = _pd->bread(income.data(), loco.cap());
+            if(bytes==0) continue;
+            income.resize(bytes);
+            _t1.append(income,bytes);
+            if(_t1.find(loco,from) != std::string::npos)
             {
-                std::cout << (const char*)loco << "\n";
-                _tmpstr.append(loco,bytes);
-                if(_tmpstr.length()>sz*4)
-                {
-                    _tmpstr.erase(0,sz);
-                }
+                fut = 0;
             }
-            rv = _tmpstr.find(ptr,sz) != std::string::npos;
+            from += (bytes-sz);
+            if(from<0) {from=0;}
+            _truncate(_t1);
         }
-        return rv;
+        return fut==0;
     }
 
     SqArr _pick_bin()
@@ -425,19 +372,18 @@ public:
     }
 
     void _set_touts(size_t r){_tout=r;}
-    void set_buffers(size_t r, size_t maxb){
+    void set_buff_size(size_t r, size_t maxb){
         _bufsz = r;
         _maxbufsz = maxb;
-        IoType_t::destroy(&_iobuff);
-        IoType_t::construct(&_iobuff, _bufsz);
     }
 
 protected:
-    void _truncate(std::basic_string<uint8_t>& _tmpstr)
+    template<class TX>
+    void _truncate(TX& _t1)
     {
-        if(!_tmpstr.empty() && _tmpstr.length() > _maxbufsz)
+        if(!_t1.empty() && _t1.length() > _maxbufsz)
         {
-            _tmpstr.erase(0,(_bufsz<<4));
+            _t1.erase(0,(_bufsz>>2));
         }
     }
 
@@ -448,12 +394,10 @@ protected:
     time_t                       _tout=DEF_TOUT;
     size_t                       _bufsz=DEF_BUFF_SZ;
     size_t                       _maxbufsz=MAX_BUFF_SZ;
-    std::basic_string<uint8_t>   _tmpstr;
-    std::basic_string<uint8_t>   _tmp2;
+    bytes_t                      _t1;
+    bytes_t                      _t2;
     bool                         _auto;
-    const char                   _emptystr[1]="";
     SqArr                        _emptyarr;
-    IoType_t*                      _iobuff = nullptr;
 };
 
 #endif // RTXBUS_H

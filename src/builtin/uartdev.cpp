@@ -66,13 +66,19 @@ size_t  UartDev::_fecth(devdata_t& vl, const char* filter)
     return 0;
 }
 
-bool UartDev::_mon_pick(time_t tnow)
+bool UartDev::_mon_callback(time_t tnow)
 {
-    if(_etype==eSTRING)
-        RtxBus<UartDev>::_gets();
-    else
-        RtxBus<UartDev>::_read();
-    return _mon_dirt;
+    if(_etype==eSTRING){
+        const char* rv = RtxBus<UartDev>::_gets();
+        if(rv && *rv)
+            return this->Divais::_call_cb(rv);
+    }
+    else{
+        const SqArr& rv = RtxBus<UartDev>::_read();
+        if(rv.Length())
+            return this->Divais::_call_cb(rv);
+    }
+    return false;
 }
 
 const char* UartDev::_gets()
@@ -82,53 +88,15 @@ const char* UartDev::_gets()
     return rv;
 }
 
-const char* UartDev::_getsln(char ceol)
-{
-    _mon_dirt = false;
-    time_t fut = tick_count()+_tout;
-    while(tick_count()<fut)
-    {
-        const char* pb = RtxBus<UartDev>::_gets();
-        if(*pb){
-            _tmp2.append((const uint8_t*)pb, ::strlen(pb));
-        }
-        size_t xeol = _tmp2.find(ceol);
-        if(xeol != std::string::npos)
-        {
-            _tmpstr = _tmp2.substr(0,xeol);
-            _tmp2 = _tmp2.substr(xeol+1);
-            if(!_tmpstr.empty()){
-                _mon_dirt = false;
-                return (const char*)_tmpstr.c_str();
-            }
-        }
-        _truncate(_tmp2);
-    }
-    return "";
-}
-
 SqArr UartDev::_read()
 {
     _mon_dirt = false;
     return RtxBus<UartDev>::_read();
 }
 
-bool UartDev::on_event_(SqMemb& m)
+bool UartDev::set_cb(SqMemb& m)
 {
-    if(m.IsNull())
-    {
-        _monitor = false;
-        if(!_on_event.IsNull())
-            _on_event.Release();
-    }
-    else
-    {
-        if(!_on_event.IsNull())
-            _on_event.Release();
-        _monitor = true;
-        _on_event=m;
-    }
-    return _monitor;
+    return this->Divais::set_cb(m);
 }
 
 void UartDev::on_event(E_VENT e,

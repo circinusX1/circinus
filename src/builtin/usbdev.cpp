@@ -79,7 +79,7 @@ SqArr UsbDev::enumerate()
     return rar;
 }
 
-bool UsbDev::_mon_pick(time_t tnow)
+bool UsbDev::_mon_callback(time_t tnow)
 {
     if(this->bread(_uchars->buf(), _uchars->cap()))
     {
@@ -115,25 +115,9 @@ SqArr UsbDev::_read(int chars)
     return RtxBus<UsbDev>::_read(chars);
 }
 
-bool UsbDev::on_event_(SqMemb& mem)
+bool UsbDev::set_cb(SqMemb& mem)
 {
-    if(bytes==0 || m.IsNull())
-    {
-        IoType_t::destroy(&_uchars);
-        _monitor = false;
-        if(!_on_event.IsNull())
-            _on_event.Release();
-
-    }
-    else {
-        if(!_on_event.IsNull())
-            _on_event.Release();
-        _monitor = true;
-        IoType_t::construct(&_uchars);
-        _on_event=m;
-    }
-    _curdata = false;
-    return _monitor;
+    return this->Divais::set_cb(m);
 }
 
 void UsbDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)

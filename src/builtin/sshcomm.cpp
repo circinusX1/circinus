@@ -57,7 +57,7 @@ size_t  SshComm::_fecth(devdata_t& vl, const char* filter)
 }
 
 
-bool SshComm::_mon_pick(time_t tnow)
+bool SshComm::_mon_callback(time_t tnow)
 {
     _cach = this->bread(_uchars->buf(), _uchars->cap());
     return _mon_dirt;
@@ -69,23 +69,9 @@ const char* SshComm::_gets(int chars)
     return RtxBus<SshComm>::_gets(chars);
 }
 
-void SshComm::on_event_(SqMemb& mem)
+void SshComm::set_cb(SqMemb& mem)
 {
-    _cach=false;
-    if(bytes==0 || m.IsNull())
-    {
-        _monitor = false;
-        if(!_on_event.IsNull())
-            _on_event.Release();
-
-    }
-    else {
-        if(!_on_event.IsNull())
-            _on_event.Release();
-        _monitor = true;
-        _on_event=m;
-    }
-    return _monitor;
+    return this->Divais::set_cb(m);
 }
 
 void SshComm::on_event(E_VENT e, const uint8_t* buff, int len, int options)

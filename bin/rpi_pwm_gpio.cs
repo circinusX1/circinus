@@ -34,7 +34,7 @@ var pwm1 = PWM("/sys/class/path_to_pwm1/folder", 1000, 100, false, "pwm2"); //GP
 
 function main(ctx)
 {
-    edge.on_event(callback);
+    edge.set_cb(callback);
     return run(loop,2000);
 }
 

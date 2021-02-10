@@ -23,7 +23,7 @@ I2CDev::I2CDev(EI2CBUS i2c, uint8_t addr,
                const char* name):DvI2c(i2c,addr),
     Divais (eBINARY, eI2C, name),
     Reg<I2CDev>(this),
-    RtxBus<I2CDev>(this,true),_regaddr(0)
+    RtxBus<I2CDev>(this,true),_monreg_addr(0)
 {
     _o.BindCppObject(this);
 }
@@ -34,7 +34,7 @@ I2CDev::I2CDev(SqObj& o,
                const char* name):DvI2c(i2c,addr),
     Divais (eBINARY, eI2C, name),
     Reg<I2CDev>(this),
-    RtxBus<I2CDev>(this,true),_regaddr(0)
+    RtxBus<I2CDev>(this,true),_monreg_addr(0)
 {
     plug_it(o, name);
 }
@@ -43,18 +43,16 @@ I2CDev::I2CDev(bool, const char* i2cfile, uint8_t addr,
                const char* name):DvI2c(i2cfile,addr),
     Divais (eBINARY, eI2C, name),
     Reg<I2CDev>(this),
-    RtxBus<I2CDev>(this,true),_regaddr(0)
+    RtxBus<I2CDev>(this,true),_monreg_addr(0)
 {
     _o.BindCppObject(this);
 }
-
-
 
 I2CDev::I2CDev(bool, SqObj& o, const char* i2cfile,
                uint8_t addr,const char* name):DvI2c(i2cfile,addr),
     Divais (eBINARY, eI2C, name),
     Reg<I2CDev>(this),
-    RtxBus<I2CDev>(this,true),_regaddr(0)
+    RtxBus<I2CDev>(this,true),_monreg_addr(0)
 {
     plug_it(o, name);
 }
@@ -83,8 +81,17 @@ int I2CDev::setreg(uint8_t cmd)
     return this->bwrite(nullptr, 0, cmd);
 }
 
-bool I2CDev::_mon_pick(time_t tnow)
+bool I2CDev::set_cb(SqMemb& ch, uint8_t regaddr)
 {
+    _monreg_addr=regaddr;
+    return this->Divais::set_cb(ch);
+}
+
+bool I2CDev::_mon_callback(time_t tnow)
+{
+    const SqArr& rv =  I2CDev::_readreg(_monreg_addr,_bufsz);
+    if(rv.Length())
+        return this->_call_cb(rv);
     return false;
 }
 

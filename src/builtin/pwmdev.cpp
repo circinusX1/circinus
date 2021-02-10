@@ -86,7 +86,7 @@ size_t  PwmDev::_fecth(devdata_t& vl, const char* filter)
     return get_duty();
 }
 
-bool PwmDev::_mon_pick(time_t tnow)
+bool PwmDev::_mon_callback(time_t tnow)
 {
     return false;
 }

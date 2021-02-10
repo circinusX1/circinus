@@ -218,26 +218,25 @@ Sqrat::Array InputSys::get_touch()
     return rar;
 }
 
-bool InputSys::_mon_pick(time_t tnow)
+bool InputSys::_mon_callback(time_t tnow)
 {
-    _fecth(_curdata,nullptr);
-    bool rv = _mon_dirt;
-    return rv;
+    if(_fecth(_curdata,nullptr))
+    {
+        SqArr a;
+        a.Resize(sizeof(_ie));
+        const uint8_t* p = (const uint8_t*)&_ie;
+        for(int i=0;i<sizeof(_ie);i++)
+        {
+            a.SetValue(i, p[i]);
+        }
+        return this->_call_cb(a);
+    }
+    return false;
 }
 
-bool InputSys::on_event_(SqMemb& m)
+bool InputSys::set_cb(SqMemb& m)
 {
-    if(m.IsNull()){
-        _monitor = false;
-        if(!_on_event.IsNull())
-            _on_event.Release();
-    }else{
-        if(!_on_event.IsNull())
-            _on_event.Release();
-        _on_event=m;
-        _monitor = true;
-    }
-    return _monitor;
+    return this->Divais::set_cb(m);
 }
 
 void InputSys::on_event(E_VENT e, const uint8_t* buff, int len, int options)
