@@ -401,9 +401,9 @@ function main(x)
     return run(mainloop,-1);
 }
 
-function showth(dev)
+function showth(dev, data)
 {
-    var a = dev.thp();
+    var a = data;
     println("THP = " + a[0] +
             "  " + a[1] +
             "  " +  a[2] );
@@ -558,7 +558,7 @@ var pwm1 = PWM("0.1", 1000, 100, false, "pwm2"); //GPIO 18
 
 function main(ctx)
 {
-    edge.call_back(callback, RISE);
+    edge.call_back(callback);
     return run(loop,2000);
 }
 
@@ -574,9 +574,9 @@ function loop(ctx, dev)
     return true;
 }
 
-function callback(dev)
+function callback(dev, data)
 {
-    println("edge rised " + dev.get_value());
+    println("pin-val " + data);
 }
 
 
