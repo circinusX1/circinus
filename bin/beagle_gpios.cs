@@ -1,6 +1,6 @@
 // SCRIPT  TESTED  ON BBB
 
-::using(eGPIO|ePWM);
+::using(eGPIO|ePWMM);
 
 system("config-pin P9.41 gpio");
 system("config-pin P9.42 gpio");
@@ -30,5 +30,4 @@ function loop(ctx,devs)
 }
 
 
-sudo raspi-config
 
