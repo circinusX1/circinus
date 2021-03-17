@@ -22,11 +22,10 @@ sudo apt-get install i2c-tools
 ls /dev/i2c*
       /dev/i2c-1   1 is your i2c
 i2cdetect -y -r 1  # detect OLED i2c address. '3c'
-
 */
 
 json := SRV(8000,"rest");
-local s = Oled96("/dev/i2c-0", 0x3c, "OLED96");
+local s = Oled96("/dev/i2c-2", 0x3c, "OLED96");
 
 //s.autoopen(false);
 function main(a)
@@ -44,7 +43,6 @@ function main(a)
     return k;
 }
 
-var K=10;
 function kk(ctx,dev)
 {
     println("kk called");
@@ -57,3 +55,4 @@ function on_change(d,data)
     println("on_change:" + data);
     return true;
 }
+
