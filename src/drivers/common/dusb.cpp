@@ -16,10 +16,14 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 #ifdef WITH_USB
 
-#include "dusb.h"
-#include "ctx.h"
 
-namespace GenericHw
+#include "main.h"
+#include "dusb.h"
+#include "dlconfig.h"
+#include "logs.h"
+
+
+namespace GenericHw_bytes
 {
 libusb_context          *_ctx;
 
@@ -48,7 +52,7 @@ libusb_device** DvUsb::_enumerate(size_t& elems)
     return _devs;
 }
 
-bool DvUsb::iopen(EMode)
+bool DvUsb::iopen(int )
 {
     size_t t;
 
@@ -114,14 +118,15 @@ int DvUsb::bwrite(const uint8_t* t, int l, int tout)
 }
 
 // int dev, uint8_t* pb, size_t nlen, size_t ms
-int DvUsb::bread(uint8_t* pb, int room, int)const
+size_t DvUsb::bread(uint8_t* pb, int room, int)
 {
     int ret = const_cast<DvUsb*>( this )->_fetch(1);
     if(ret==-1)
         return -1;
-	int rv = const_cast<DvUsb*>( this )->_discard(pb, room);
-	if(rv>0) on_event(eREAD, pb, rv);
-
+    size_t rv = const_cast<DvUsb*>( this )->_discard(pb, room);
+    if(rv>0)
+        on_event(eREAD, pb, rv);
+    return rv;
 }
 
 int DvUsb::_discard(uint8_t * dest , size_t len)

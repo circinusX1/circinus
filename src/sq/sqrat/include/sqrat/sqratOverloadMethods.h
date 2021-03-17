@@ -78,7 +78,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (SQ_FAILED(SQ_PTRS->get(vm, 1))) { // Lookup the proper overload
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #else
         SQ_PTRS->get(vm, 1);
@@ -124,7 +124,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (SQ_FAILED(SQ_PTRS->get(vm, 1))) { // Lookup the proper overload
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #else
         SQ_PTRS->get(vm, 1);

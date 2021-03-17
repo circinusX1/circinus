@@ -19,6 +19,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "rtxbus.h"
 #include "divais.h"
 
+bool UartDev::_squed;
 
 UartDev::UartDev(E_TYPE  e,
                  const char* dev,
@@ -32,8 +33,7 @@ UartDev::UartDev(E_TYPE  e,
 {
     _cr.append(1, 0xD);
     _cr.append(1, 0xA);
-
-    _o.BindCppObject(this);
+    UartDev::_squed ? _o.BindCppObject(this) : (void)(0);
 }
 
 UartDev::UartDev(SqObj& o,
@@ -57,7 +57,6 @@ UartDev::~UartDev()
 
 bool  UartDev::_write_now(const devdata_t& vl)
 {
-    _mon_dirt = true;
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
@@ -83,14 +82,12 @@ bool UartDev::_mon_callback(time_t tnow)
 
 const char* UartDev::_gets()
 {
-    _mon_dirt = false;
     const char* rv =  RtxBus<UartDev>::_gets();
     return rv;
 }
 
 SqArr UartDev::_read()
 {
-    _mon_dirt = false;
     return RtxBus<UartDev>::_read();
 }
 
@@ -104,9 +101,10 @@ void UartDev::on_event(E_VENT e,
                        int len,
                        int options)
 {
+    _mon_dirt = true;
 }
 
-bool	UartDev::_set_values(const char* key, const char* value)
+bool	UartDev::_set_value(const char* key, const char* value)
 {
     return bwrite((const uint8_t*)value, ::strlen(value));
 }
@@ -115,9 +113,9 @@ const char*	UartDev::_get_values(const char* key)
 {
     if(key[0]==ALLDATA)
     {
-        _forjson += "&value=";
-        _forjson += _curdata.c_chars();
-        return _forjson.c_str();
+        _retparams += "&value=";
+        _retparams += _cur_value.c_chars();
+        return _retparams.c_str();
     }
-    return _curdata.c_chars();
+    GETER_SYSCAT(); return Divais::_get_values(key);
 }

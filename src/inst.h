@@ -115,6 +115,7 @@ template <typename T> struct Reg
 {
     T* _pt;
     Reg(T* t):_pt(t){
+        assert(App); // init app before instantiate any object
         App->add(t);
     }
     ~Reg(){

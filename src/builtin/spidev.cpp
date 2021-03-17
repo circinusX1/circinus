@@ -18,14 +18,15 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "inst.h"
 #include "dlconfig.h"
 
+bool SpiDev::_squed;
+
 SpiDev::SpiDev(const char* spi, uint8_t addr, uint8_t mode, uint8_t wc, uint32_t freq,
                const char* name):DvSpi(spi,addr,mode,wc,freq),
                                  Divais (eBINARY, eSPI, name),
                                  Reg<SpiDev>(this),
                                  RtxBus<SpiDev>(this,false,true)
 {
-    _o.BindCppObject(this);
-
+    SpiDev::_squed ? _o.BindCppObject(this) : (void)(0);
 }
 
 SpiDev::SpiDev(SqObj& o,
@@ -48,7 +49,6 @@ SpiDev::~SpiDev()
 
 bool  SpiDev::_write_now(const devdata_t& vl)
 {
-    _mon_dirt = true;
     return this->bwrite(vl.c_bytes(), vl.length());
 }
 
@@ -59,19 +59,24 @@ size_t  SpiDev::_fecth(devdata_t& vl, const char* filter)
 
 SqArr  SpiDev::_readreg(int bytes)
 {
-    _mon_dirt = false;
     return RtxBus<SpiDev>::_readreg(0,bytes);
 }
 
 bool SpiDev::set_cb(SqMemb& ch, int bytes)
 {
+    _bytes = bytes;
     return this->Divais::set_cb(ch);
 }
 
 bool SpiDev::_mon_callback(time_t tnow)
 {
-    const SqArr& rv =  _readreg(_bufsz);
-    return this->_call_cb(rv);
+    if(_bytes)
+    {
+        const SqArr& rv =  _readreg(_bytes);
+        return this->_call_cb(rv);
+    }
+    const char* pvalues = this->_get_values(SALLDATA);
+    return this->_call_cb(pvalues);
 }
 
 void SpiDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)
@@ -80,25 +85,29 @@ void SpiDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)
 
 
 // 3,0x55,0c55,0x56,0x55
-bool	SpiDev::_set_values(const char* key, const char* value)
+bool	SpiDev::_set_value(const char* key, const char* value)
 {
-    devdata_t      loco;
-    strarray_t bytes;
-
-    _curdata.clear();
-    CFL::explode(value,',',bytes);
-    for(const auto& a:bytes)
+    if(!Divais::_set_value(key, value))
     {
-        int by;
-        sscanf(a.c_str(),"%02X",&by);
-        _curdata.pusht((uint8_t)by);
+        int  ival;
+        char two[4]={0};
+        _cur_value.clear();
+        _cur_value.let(::atoi(key),1);
+        for(int i=0;value[i];i+=2)
+        {
+            two[0] = value[i];
+            two[1] = value[i+1];
+            ::sscanf(two, "%0X2", &ival);
+            this->_cur_value.pusht((uint8_t)ival);
+        }
+        return true;
     }
-    return _curdata.length() > 0;
+    return false;
 }
 
 const char*	SpiDev::_get_values(const char* key)
 {
-    if(key[0]=='v') //address
-        return _curdata.to_string<int>().c_str();
-    GETER_SYSCAT();
+    if(key[0]=='V') //address
+        return _cur_value.to_string<int>().c_str();
+    GETER_SYSCAT(); return Divais::_get_values(key);
 }

@@ -163,6 +163,7 @@ void    Inst::comit_devs()
 
 void Inst::add(Divais* p)
 {
+    assert(this); // int the INst before creating any class instance
     const char* pk = p->dev_key();
     LOGD1("adding class " << pk);
     _devs[pk]=p;
@@ -220,7 +221,7 @@ bool   Inst::check_devs(time_t t)
     bool evs = false;
     for(auto& d : _devs)
     {
-        evs |= d.second->is_dirty(t);
+        evs |= d.second->notify_ifdirty(t);
     }
     return evs;
 }

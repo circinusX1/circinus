@@ -17,13 +17,14 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "pwmdev.h"
 #include "inst.h"
 
+bool PwmDev::_squed;
+
 PwmDev::PwmDev(const char* syspath, int period, int val, bool inv,
                 const char* name):
                 DvPwm(syspath,period,val,inv),Divais(eINT, ePWMM, name),Reg<PwmDev>(this)
 {
-    _o.BindCppObject(this);
+    PwmDev::_squed ? _o.BindCppObject(this) : (void)(0);
 }
-
 
 PwmDev::PwmDev(SqObj& o, const char* syspath, int period, int val, bool inv,
                const char* name):DvPwm(syspath,period,val,inv),
@@ -60,18 +61,10 @@ int      PwmDev::set_abs_duty(EPWM_VAL val)
 
 EPWM_VAL  PwmDev::get_duty()
 {
-    if(_mon_dirt)
-    {
-        _mon_dirt = false;
-        int val = _curdata.to_t<int>();
-        return _reversed ? 100-val : val;
-    }
     char val[8]={0};
     if(this->bread((uint8_t*)val, sizeof(val)))
     {
-        if(_monitor)
-            _check_dirt();
-        return GET_DUTY(_period(), _curdata.to_t<int>());
+        return GET_DUTY(_period(), _cur_value.to_t<int>());
     }
     return -1;
 }
@@ -98,30 +91,29 @@ void PwmDev::on_event(E_VENT e, const uint8_t* val, int len, int options)
     {
         ival = 100-ival;
     }
-    _curdata.let(ival); //stored as "1" string
+    _cur_value.let(ival); //stored as "1" string
 }
 
-bool	PwmDev::_set_values(const char* key, const char* value)
+bool	PwmDev::_set_value(const char* key, const char* value)
 {
-    if(key[0]=='d' || key[0]=='v') // duty / value
-        return set_duty(::atoi(value));
-    if(key[0]=='r') { _reversed = value[0]==1 ? true : false; return true;}
-    return false;
+    if(key[0]=='D' || key[0]=='V') return set_duty(::atoi(value));
+    if(key[0]=='R') { _reversed = value[0]==1 ? true : false; return true;}
+    return Divais::_set_value(key, value);
 }
 
 const char*	PwmDev::_get_values(const char* key)
 {
     if(key[0]==ALLDATA)
     {
-        _forjson += "&duty=";
-        _forjson += _curdata.to_string<int>();
-        _forjson += "&reverse=";
-        _forjson += std::to_string(_reversed);
-        return _forjson.c_str();
+        _retparams += "&V=";
+        _retparams += _cur_value.to_string<int>();
+        _retparams += "&R=";
+        _retparams += std::to_string(_reversed);
+        return _retparams.c_str();
     }
-    if(key[0]=='v') // duty
-        return _curdata.to_string<int>().c_str();
-    if(key[0]=='i') { return _reversed ? "1" : "0";}
-    GETER_SYSCAT();
+    if(key[0]=='V' || key[0]=='D') // duty
+        return _cur_value.to_string<int>().c_str();
+    if(key[0]=='R') { return _reversed ? "1" : "0";}
+    GETER_SYSCAT(); return Divais::_get_values(key);
 }
 

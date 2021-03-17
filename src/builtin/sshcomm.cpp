@@ -17,6 +17,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #ifdef WITH_SSH
 #include "sshcomm.h"
 
+bool SshComm::_squed;
 
 SshComm::SshComm(const char* cred,
                  const char* name):ComSsh(cred),
@@ -24,8 +25,7 @@ SshComm::SshComm(const char* cred,
     Reg<SshComm>(this),
     RtxBus<SshComm>(this)
 {
-    _o.BindCppObject(this);
-
+    SshComm::_squed ? _o.BindCppObject(this) : (void)(0);
 }
 
 SshComm::SshComm(SqObj& o,
@@ -42,12 +42,10 @@ SshComm::SshComm(SqObj& o,
 
 SshComm::~SshComm()
 {
-    IoType_t::destroy(&_uchars);
 }
 
 bool  SshComm::_write_now(const devdata_t& vl)
 {
-    _mon_dirt = true;
     return this->bwrite(vl[0].data(), vl[0].length());
 }
 
@@ -65,7 +63,6 @@ bool SshComm::_mon_callback(time_t tnow)
 
 const char* SshComm::_gets(int chars)
 {
-    _mon_dirt = false;
     return RtxBus<SshComm>::_gets(chars);
 }
 
@@ -76,16 +73,17 @@ void SshComm::set_cb(SqMemb& mem)
 
 void SshComm::on_event(E_VENT e, const uint8_t* buff, int len, int options)
 {
+    _mon_dirt = true;
 }
 
-bool	SshComm::_set_values(const char* key, const char* value)
+bool	SshComm::_set_value(const char* key, const char* value)
 {
     return false;
 }
 
 const char*	SshComm::_get_values(const char* key)
 {
-    return "";
+    GETER_SYSCAT(); return Divais::_get_values(key);
 }
 
 #endif //ifdef WITH_SSH

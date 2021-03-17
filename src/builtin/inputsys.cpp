@@ -37,11 +37,12 @@ enum {
 	CURSOR_COLOR   = 0x00FF00,
 };
 
+bool InputSys::_squed;
+
 InputSys::InputSys(E_INPUT e, const char* device, const char* name):
     Divais (eBINARY, eSPI, name),Reg<InputSys>(this),_sysfile(device),_edev(e)
 {
-    _o.BindCppObject(this);
-
+    InputSys::_squed ? _o.BindCppObject(this) : (void)(0);
 }
 
 InputSys::InputSys(SqObj& o,
@@ -112,7 +113,6 @@ void   InputSys::lclose()
 
 bool  InputSys::_write_now(const devdata_t& vl)
 {
-    _mon_dirt = true;
     return false;
 }
 
@@ -172,8 +172,6 @@ size_t  InputSys::_fecth(devdata_t& vl, const char* filter)
 
                 vl.typeit(eSTRUCT,0);
                 vl.let((const uint8_t*)&_ie, sizeof(_ie));
-                if(_monitor)
-                    _mon_dirt=_check_dirt();
                 return sizeof(struct input_event);
             }
         }
@@ -220,7 +218,7 @@ Sqrat::Array InputSys::get_touch()
 
 bool InputSys::_mon_callback(time_t tnow)
 {
-    if(_fecth(_curdata,nullptr))
+    if(_fecth(_cur_value,nullptr))
     {
         SqArr a;
         a.Resize(sizeof(_ie));
@@ -241,10 +239,11 @@ bool InputSys::set_cb(SqMemb& m)
 
 void InputSys::on_event(E_VENT e, const uint8_t* buff, int len, int options)
 {
+    _mon_dirt = true;
 }
 
 // 3,0x55,0c55,0x56,0x55
-bool	InputSys::_set_values(const char* key, const char* value)
+bool	InputSys::_set_value(const char* key, const char* value)
 {
     return false;
 }
@@ -253,19 +252,19 @@ const char*	InputSys::_get_values(const char* key)
 {
     char loco[64];
 
-    _forjson += "time=";
+    _retparams += "t=";
     ::sprintf(loco,"%ld.%06ld", _ie.time.tv_sec, _ie.time.tv_usec);
-    _forjson += loco;
-    _forjson += "&type=";
+    _retparams += loco;
+    _retparams += "&T=";
     ::sprintf(loco,"%d", _ie.type);
-    _forjson += loco;
-    _forjson += "&code=";
+    _retparams += loco;
+    _retparams += "&C=";
     ::sprintf(loco,"%d", _ie.code);
-    _forjson += loco;
+    _retparams += loco;
     ::sprintf(loco,"%d", _ie.value);
-    _forjson += "&value=";
-    _forjson += loco;
-    return _forjson.c_str();
+    _retparams += "&V=";
+    _retparams += loco;
+    return _retparams.c_str();
 }
 
 int InputSys::_ceil(int val, int div)

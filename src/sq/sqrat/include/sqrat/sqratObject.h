@@ -28,6 +28,7 @@
 #if !defined(_SCRAT_OBJECT_H_)
 #define _SCRAT_OBJECT_H_
 
+#include <iostream>
 #include <squirrel.h>
 #include <string.h>
 #include "sqr_imp_exp.h"
@@ -65,7 +66,11 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Object() : vm(0), release(true) {
-        SQ_PTRS->resetobject(&obj);
+        if(SQ_PTRS)
+            SQ_PTRS->resetobject(&obj);
+        else {
+            std::cout << "INIT PTRS FIRST \r\n";
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 // SCRIPT  TESTED
 // HOOK OLED LIKE HERE http://comarius.blogspot.com/2020/10/096-i2c-iic-spi-serial-128x64-white.html
 //
-::using(eI2C|eGPIO|ePWMM|eSRV|eDB);
+::using(eI2C|eGPIO|ePWMM|eSRV);
 ::include("modules/_oled96.inc");
 
 /*
@@ -26,7 +26,7 @@ i2cdetect -y -r 1  # detect OLED i2c address. '3c'
 */
 
 json := SRV(8000,"rest");
-local s = Oled96("/dev/i2c-1", 0x3c, "OLED96");
+local s = Oled96("/dev/i2c-0", 0x3c, "OLED96");
 
 //s.autoopen(false);
 function main(a)
@@ -35,8 +35,10 @@ function main(a)
     s.autoopen(false);
     if(s.xopen("128x64",0,0))
     {
+        s.set_cb(on_change,0xFF);
         s.clear_display(0);
-        k = run(kk, 1000);
+        s.write_string(0,1, get_strtime() ,2);
+        k = run(kk, 10000);
     }
     s.xclose();
     return k;
@@ -45,14 +47,13 @@ function main(a)
 var K=10;
 function kk(ctx,dev)
 {
+    println("kk called");
     s.write_string(0,1, get_strtime() ,2);
-    K++;
-  //  println("L1=" + l1.set_toggle());
-  //  println("L2=" + l2.set_toggle());
-  //  sleep(1000);
-
-   // ctx.get_dev("led2").set_toggle();
-    K--;
     return true;
 }
 
+function on_change(d,data)
+{
+    println("on_change:" + data);
+    return true;
+}

@@ -17,6 +17,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "rawsock.h"
 #include "inst.h"
 
+bool RawSock::_squed;
 
 RawSock::RawSock(E_TYPE e,
                  const char* ip,
@@ -26,7 +27,7 @@ RawSock::RawSock(E_TYPE e,
                                     Reg<RawSock>(this),
                                     RtxBus<RawSock>(this,false,true)
 {
-    _o.BindCppObject(this);
+    RawSock::_squed ? _o.BindCppObject(this) : (void)(0);
 }
 
 RawSock::RawSock(SqObj& o,
@@ -117,9 +118,10 @@ Sqrat::Array RawSock::read(int maxb)
 
 void RawSock::on_event(E_VENT e, const uint8_t* buff, int len, int options)
 {
+    _mon_dirt = true;
 }
 
-bool	RawSock::_set_values(const char* key, const char* value)
+bool	RawSock::_set_value(const char* key, const char* value)
 {
     return false;
 }

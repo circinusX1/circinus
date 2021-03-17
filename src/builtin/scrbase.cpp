@@ -24,7 +24,6 @@ ScrBase::ScrBase(SqObj& o, E_TYPE e, const char* name):Divais(e, eSCRIPT, name),
 {
     plug_it(o, name);
     _o.BindCppObject(this);
-
     std::cout << __FUNCTION__ << "\n";
 }
 
@@ -45,7 +44,8 @@ size_t  ScrBase::_fecth(devdata_t& vl, const char* filter)
 
 bool ScrBase::_mon_callback(time_t tnow)
 {
-    return false;
+    const char* pvalues = this->_get_values(SALLDATA);
+    return this->_call_cb(pvalues);
 }
 
 bool ScrBase::iopen(int)

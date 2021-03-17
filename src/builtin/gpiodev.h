@@ -61,12 +61,13 @@ public:
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
         cls.Functor(_SC("get_name"), &GpioDev::get_label_name);
         Sqrat::RootTable().Bind(_SC("GPIO"), cls);
+        GpioDev::_squed = true;
     }
 
 private:
     bool        _write_now(const devdata_t& vl);
     size_t      _fecth(devdata_t& vl, const char* filter);
-    bool        _set_values(const char* key, const char* value);
+    bool        _set_value(const char* key, const char* value);
     const char*	_get_values(const char* key);
 private:
     char        _sret[8];

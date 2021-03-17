@@ -116,7 +116,7 @@ void Bme280::monitor(bool m)
  * @param t  further usage
  * @return if this device is monitorred periodically for value changes.
  */
-bool  Bme280::is_dirty(time_t t)
+bool  Bme280::notify_ifdirty(time_t t)
 {
     if(_montorit)
     {

@@ -103,11 +103,12 @@ public:
 	};
 	const char* dev_key()const{return _ukey.c_str();};
 	void  reset();
-	bool is_dirty(time_t tnow){
-		if(_monitor){
-			return _mon_callback(tnow);
+	bool notify_ifdirty(time_t tnow){
+		if(_monitor && _mon_dirt){
+			_mon_dirt = false;
+			_mon_callback(tnow);
 		}
-		return false;
+		return _mon_dirt;
 	}
 	void    set_name(const char* name){_name=name;}
 	virtual bool iopen(int rm=0)=0;
@@ -125,13 +126,13 @@ public:
 	virtual void on_event(E_VENT e, const uint8_t* buff, int len, int options);
 protected:
 	virtual bool	_write_now(const devdata_t& a)=0;
-	virtual size_t  _fecth(devdata_t& _curdata, const char* filter)=0;
-	virtual bool	_set_values(const char* key, const char* value);
+	virtual size_t  _fecth(devdata_t& _cur_value, const char* filter)=0;
+	virtual bool	_set_value(const char* key, const char* value);
 	virtual const char*	_get_values(const char* key);
 	Sqrat::Object&	_so(){return _o;}
-	bool			_check_dirt();
 	template <class T> bool _call_cb(const T& d)
 	{
+		_mon_dirt = false;
 		if(!_on_event.IsNull())
 		{
 			try{
@@ -151,9 +152,9 @@ private:
 protected:
     std::string      _name;
     std::string      _ukey;
-    devdata_t		 _curdata;
-    devdata_t		 _old_data;
-    std::string      _forjson;
+    devdata_t		 _cur_value;
+    devdata_t		 _prev_value;
+    std::string      _retparams;
     bool             _mon_dirt;
     bool             _monitor;
     Sqrat::Object    _o;
@@ -232,12 +233,15 @@ public:
 
 
 #define OVERW(B1,B2)																\
+	static bool _squed; \
 	const char* get_label_name()const{return B2::name();}							\
 	void plug_it(Sqrat::Object& o,const char* dev_key){B2::plug_it(o, dev_key);}	\
 	bool iopen(int em=O_RDWR){return B1::iopen(em);}								\
 	void iclose(){B1::iclose();}													\
 	void on_event(E_VENT e, const uint8_t* buff, int len, int options=0);			\
 	bool _mon_callback(time_t tnow);
+
+
 
 #define IS_SNULL(per) per==0 || (per[0]=='(' && per[1]=='n')
 
@@ -248,8 +252,8 @@ int     do_ioctl(int ctl, int val){return 0;}; \
 int     do_ioctl(int ctl, uint8_t* buf, int expect){return 0;};
 
 
-#define GETER_SYSCAT()  if(key[0]=='s')  return sf().c_str();   \
-						if(key[0]=='k')  return __scats[peer_of()]; \
+#define GETER_SYSCAT()  if(key[0]=='Y')  return sf().c_str();   \
+						if(key[0]=='K')  return __scats[peer_of()]; \
 						return EMPTYS;
 
 #define NOPOS std::string::npos

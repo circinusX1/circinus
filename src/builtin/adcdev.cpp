@@ -17,11 +17,13 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "adcdev.h"
 #include "inst.h"
 
+bool AdcDev::_squed;
+
 AdcDev::AdcDev(const char* fname,
                  const char* name):DvAdc(fname),
                  Divais(eINT, eADC, name),Reg<AdcDev>(this)
 {
-    _o.BindCppObject(this);
+    AdcDev::_squed ? _o.BindCppObject(this) : (void)(0);
 }
 
 AdcDev::AdcDev(SqObj& o,
@@ -40,11 +42,10 @@ int  AdcDev::get_value()
 {
     char val[16] = {0};
 
-    _curdata.clear();
-    _mon_dirt = false;
-    if(this->bread((uint8_t*)val, sizeof(val))>0) //comes as string
+    _cur_value.clear();
+    if(this->bread((uint8_t*)val, sizeof(val))>0) //comes as string ->on_event
     {
-        return _curdata.atoi();
+        return _cur_value.atoi();
     }
     return -INT_MAX;
 }
@@ -71,29 +72,18 @@ bool AdcDev::set_cb(SqMemb& m)
 
 void AdcDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)
 {
+    _mon_dirt = true;
     int ival = ::atoi((const char*)buff);
-    _curdata.let(ival);
+    _cur_value.let(ival);
 }
 
 const char*	AdcDev::_get_values(const char* key)
 {
-    if(key[0]==ALLDATA)
-    {
-        _forjson += "&value=";
-        _forjson += _curdata.to_string<int>();
-        return _forjson.c_str();
-    }
-    else if(key[0]=='v'/*alue*/)
-        return _curdata.c_chars();
-    GETER_SYSCAT();
+    if(key[0]=='V') { return _cur_value.c_chars();}
+    GETER_SYSCAT(); return Divais::_get_values(key);
 }
 
-bool	AdcDev::_set_values(const char* key, const char* value)
+bool	AdcDev::_set_value(const char* key, const char* value)
 {
-    if(key[0]=='m'/*onitor*/) //monitor
-    {
-        _monitor = value[0]=='1' ? true : false;
-        return true;
-    }
-    return false;
+    return Divais::_set_value(key,value);
 }

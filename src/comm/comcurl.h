@@ -62,8 +62,8 @@ public:
         cls.Functor(_SC("set_put"), &ComCurl::set_put);
         cls.Functor(_SC("perform_cb"), &ComCurl::perform_cb);
         cls.Functor(_SC("perform"), &ComCurl::perform);
-
         Sqrat::RootTable().Bind(_SC("CURL"), cls);
+        ComCurl::_squed = true;
     }
 
     static size_t writeCallbackHdr(char* buf, size_t size, size_t nmemb, void* up);
@@ -71,7 +71,7 @@ public:
 
 protected:
 	virtual bool	_write_now(const devdata_t& a);
-	virtual size_t  _fecth(devdata_t& _curdata, const char* filter);
+	virtual size_t  _fecth(devdata_t& _cur_value, const char* filter);
 	virtual bool	_mon_callback(time_t tnow);
     size_t _receiving(char* buf, size_t nmemb);
 

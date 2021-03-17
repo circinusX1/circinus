@@ -23,6 +23,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "apis.h"
 #include "usbdev.h"
 #include "evqueue.h"
+#include "_test.h"
 #include "sqratimport.h"
 #include <linux/watchdog.h>
 
@@ -117,6 +118,9 @@ int _inner(int argc, char *argv[])
     MainThrId = pthread_self();
     if(Reincepe==false)
         std::cout << EMBIX_VERSION<<" " <<__DATE__<<" \n";
+
+    _testfoo();
+
     if(argc < 2)
     {
         std::cout << "requires a script as a parameter\n";

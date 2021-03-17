@@ -52,7 +52,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
 
@@ -92,7 +92,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)() const;
@@ -131,7 +131,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 3) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1);
@@ -176,7 +176,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 3) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1) const;
@@ -222,7 +222,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 4) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2);
@@ -269,7 +269,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 4) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2) const;
@@ -317,7 +317,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 5) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3);
@@ -366,7 +366,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 5) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3) const;
@@ -416,7 +416,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 6) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4);
@@ -467,7 +467,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 6) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4) const;
@@ -519,7 +519,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 7) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5);
@@ -573,7 +573,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 7) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5) const;
@@ -626,7 +626,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 8) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6);
@@ -680,7 +680,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 8) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6) const;
@@ -735,7 +735,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 9) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7);
@@ -791,7 +791,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 9) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7) const;
@@ -848,7 +848,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 10) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8);
@@ -906,7 +906,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 10) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8) const;
@@ -965,7 +965,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 11) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9);
@@ -1025,7 +1025,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 11) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9) const;
@@ -1087,7 +1087,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 12) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10);
@@ -1149,7 +1149,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 12) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10) const;
@@ -1213,7 +1213,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 13) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11);
@@ -1277,7 +1277,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 13) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11) const;
@@ -1343,7 +1343,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 14) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12);
@@ -1409,7 +1409,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 14) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12) const;
@@ -1476,7 +1476,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 15) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13);
@@ -1544,7 +1544,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 15) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13) const;
@@ -1613,7 +1613,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 16) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14);
@@ -1683,7 +1683,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 16) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14) const;
@@ -1764,7 +1764,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)();
@@ -1802,7 +1802,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)() const;
@@ -1841,7 +1841,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 3) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1);
@@ -1885,7 +1885,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 3) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1) const;
@@ -1930,7 +1930,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 4) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2);
@@ -1976,7 +1976,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 4) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2) const;
@@ -2023,7 +2023,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 5) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3);
@@ -2071,7 +2071,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 5) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3) const;
@@ -2120,7 +2120,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 6) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4);
@@ -2170,7 +2170,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 6) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4) const;
@@ -2221,7 +2221,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 7) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5);
@@ -2273,7 +2273,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 7) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5) const;
@@ -2326,7 +2326,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 8) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6);
@@ -2380,7 +2380,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 8) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6) const;
@@ -2435,7 +2435,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 9) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7);
@@ -2491,7 +2491,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 9) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7) const;
@@ -2548,7 +2548,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 10) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8);
@@ -2606,7 +2606,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 10) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8) const;
@@ -2665,7 +2665,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 11) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9);
@@ -2725,7 +2725,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 11) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9) const;
@@ -2787,7 +2787,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 12) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10);
@@ -2849,7 +2849,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 12) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10) const;
@@ -2913,7 +2913,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 13) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11);
@@ -2977,7 +2977,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 13) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11) const;
@@ -3043,7 +3043,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 14) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12);
@@ -3109,7 +3109,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 14) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12) const;
@@ -3176,7 +3176,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 15) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R&(C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13);
@@ -3244,7 +3244,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 15) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13) const;
@@ -3313,7 +3313,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 16) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14);
@@ -3383,7 +3383,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 16) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef R& (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14) const;
@@ -3465,7 +3465,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)();
@@ -3502,7 +3502,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)() const;
@@ -3540,7 +3540,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 3) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1);
@@ -3583,7 +3583,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 3) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1) const;
@@ -3627,7 +3627,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 4) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2);
@@ -3672,7 +3672,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 4) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2) const;
@@ -3718,7 +3718,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 5) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3);
@@ -3765,7 +3765,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 5) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3) const;
@@ -3813,7 +3813,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 6) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4);
@@ -3862,7 +3862,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 6) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4) const;
@@ -3912,7 +3912,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 7) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5);
@@ -3963,7 +3963,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 7) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5) const;
@@ -4015,7 +4015,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 8) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6);
@@ -4068,7 +4068,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 8) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6) const;
@@ -4122,7 +4122,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 9) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7);
@@ -4177,7 +4177,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 9) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7) const;
@@ -4233,7 +4233,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 10) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8);
@@ -4290,7 +4290,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 10) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8) const;
@@ -4348,7 +4348,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 11) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9);
@@ -4407,7 +4407,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 11) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9) const;
@@ -4467,7 +4467,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 12) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10);
@@ -4528,7 +4528,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 12) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10) const;
@@ -4590,7 +4590,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 13) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11);
@@ -4653,7 +4653,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 13) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11) const;
@@ -4717,7 +4717,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 14) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12);
@@ -4782,7 +4782,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 14) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12) const;
@@ -4848,7 +4848,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 15) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13);
@@ -4915,7 +4915,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 15) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13) const;
@@ -4983,7 +4983,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 16) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14);
@@ -5052,7 +5052,7 @@ public:
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 16) {
-            return SQ_PTRS->throwerror(vm, _SC("wrong number of parameters"));
+            return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));
         }
 #endif
         typedef void (C::*M)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14) const;

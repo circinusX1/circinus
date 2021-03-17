@@ -63,14 +63,14 @@ public:
         cls.Functor(_SC("get_name"), &RawSock::get_label_name);
         cls.Functor(_SC("set_tout"), &RawSock::_set_touts);
         cls.Functor(_SC("set_buff_size"), &RawSock::_set_buffers);
-
         Sqrat::RootTable().Bind(_SC("SOCKET"), cls);
+        RawSock::_squed = true;
     }
    
 protected:
     bool                _write_now(const devdata_t& vl);
     size_t              _fecth(devdata_t& vl, const char* filter);
-    bool                _set_values(const char* key, const char* value);
+    bool                _set_value(const char* key, const char* value);
     const char*         _get_values(const char* key);
 };
 

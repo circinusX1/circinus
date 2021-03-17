@@ -123,7 +123,7 @@ const char* Bmi160::name()const
 }
 
 
-bool Bmi160::is_dirty(time_t t)
+bool Bmi160::notify_ifdirty(time_t t)
 {
     return _dirt;
 }

@@ -65,7 +65,7 @@ typedef enum EPERIPH{
     each slot can store one type like int's floats
     [0,...] has associated type, data length, and data
 */
-#define MAX_SLOTS   10
+#define MAX_SLOTS   8
 class  devdata_t
 {
 public:
@@ -144,7 +144,10 @@ public:
     size_t length(int index=0)const{
         return _stor[index].length();
     }
+
+
     const uint8_t* c_bytes(int index=0)const {return (const uint8_t*)_stor[index].data();}
+
     devdata_t& operator=(const devdata_t &t){
         clear();
         for(size_t i=0;i<MAX_SLOTS;++i){
@@ -168,7 +171,7 @@ public:
         if(e== eBINARY)
             _dl[index] = 1;
     }
-    bool is_dirty(size_t t=0)const{return _stor[t].length();}
+    bool notify_ifdirty(size_t t=0)const{return _stor[t].length();}
     void fmt_hex(std::string& here, int index=0){
         char hex[4];
         for(size_t b=0; b < _stor[index].length(); ++b)
@@ -177,6 +180,7 @@ public:
             here+=hex;
         }
     }
+    std::basic_string<uint8_t>& operator[](int index){return _stor[index];}
 private:
 	std::basic_string<uint8_t>  _stor[MAX_SLOTS];
 	E_TYPE						_types[MAX_SLOTS];
@@ -191,7 +195,7 @@ public:
 	virtual ~I_IDev(){}
 	virtual const char* name()const=0;
 	virtual const char* dev_key()const=0;
-    virtual bool  is_dirty(time_t tnow)=0;
+    virtual bool  notify_ifdirty(time_t tnow)=0;
 	virtual bool  set_value(const char* key, const char* value)=0;
 	virtual const char* get_value(const char* key)=0;
 	virtual const devdata_t& get_data()const=0;
@@ -255,7 +259,7 @@ EXPORT bool start_module(HSKVM vm, sq_api* ptrs,  IInstance* pi, const char* nam
 #define ALL_VIRTUALS()								\
 	virtual const char* name()const;				\
 	virtual const char* dev_key()const;				\
-	virtual bool  is_dirty(time_t tnow);			\
+	virtual bool  notify_ifdirty(time_t tnow);			\
 	virtual bool  set_value(const char* key, const char* value); \
 	virtual const char* get_value(const char* key); \
 	virtual const devdata_t& get_data()const;		\

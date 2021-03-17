@@ -33,23 +33,23 @@ class I2CDev: public DvI2c,
               public RtxBus<I2CDev>// , public Divais
 {
 public:
-    explicit I2CDev(EI2CBUS i2c, uint8_t addr,const char* name=nullptr);
+    explicit I2CDev(EI2CBUS i2c, uint8_t addr, const char* name=nullptr);
     explicit I2CDev(SqObj&, EI2CBUS i2c, uint8_t addr,const char* name=nullptr);
-
-    explicit I2CDev(bool selector, const char* i2cfile, uint8_t addr,const char* name=nullptr);
-    explicit I2CDev(bool selector, SqObj&, const char* i2cfile, uint8_t addr,const char* name=nullptr);
+    // selector uses file
+    explicit I2CDev(const char* i2cfile, uint8_t addr,const char* name=nullptr);
+    explicit I2CDev(SqObj&, const char* i2cfile, uint8_t addr,const char* name=nullptr);
     virtual ~I2CDev();
     int     setreg(uint8_t cmd);
     SqArr  _readreg(uint8_t reg, int bytes);
-    bool    set_cb(SqMemb& ch, uint8_t reg); /*-1/+1*/
+    bool    set_cb(SqMemb& ch, int reg); /*-1/+1*/
     OVERW(DvI2c,Divais);
     static void squit(SqEnvi& e){
         Sqrat::Class<I2CDev> cls(e.theVM(), _SC("I2C"));
         cls.Ctor<EI2CBUS, uint8_t, const char*>();
         cls.Ctor<SqObj&, EI2CBUS, uint8_t, const char*>();
 
-        cls.Ctor<bool, const char*, uint8_t, const char*>();
-        cls.Ctor<bool, SqObj&, const char*, uint8_t, const char*>();
+        cls.Ctor<const char*, uint8_t, const char*>();
+        cls.Ctor<SqObj&, const char*, uint8_t, const char*>();
 
 
         cls.Functor(_SC("plug_it"), &I2CDev::plug_it);
@@ -68,16 +68,18 @@ public:
         cls.Functor(_SC("set_cb"), &I2CDev::set_cb);
 
         Sqrat::RootTable().Bind(_SC("I2C"), cls);
+        I2CDev::_squed = true;
     }
 
 protected:
     bool                _write_now(const devdata_t& vl);
     size_t              _fecth(devdata_t& vl, const char* filter);
-    bool                _set_values(const char* key, const char* value);
+    bool                _set_value(const char* key, const char* value);
     const char*         _get_values(const char* key);
 
 private:
     int                 _monreg_addr;
+
 };
 
 #endif // I2CDEV_H

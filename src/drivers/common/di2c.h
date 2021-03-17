@@ -36,7 +36,15 @@ typedef enum EI2C{}EI2C;
 enum EI2CBUS            {
     I2C_0  = 0,
     I2C_1  = 1,
-    I2C_2  = 2
+    I2C_2  = 2,
+    I2C_3  = 3,
+    I2C_4  = 4,
+    I2C_5  = 5,
+    I2C_6  = 6,
+    I2C_7  = 7,
+    I2C_8  = 8,
+    I2C_9  = 9,
+    I2C_10  = 10,
 };
 
 class DvI2c : public DvCore, public IoOps

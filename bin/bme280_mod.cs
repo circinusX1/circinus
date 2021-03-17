@@ -9,7 +9,6 @@ server := SRV(8000,"X");
 
 function main(x)
 {
-//    thp.monitor(showth);
     return run(mainloop,1000);
 }
 

@@ -42,10 +42,9 @@ public:
 
     virtual bool    iopen(int  mode=O_RDWR);
     virtual void    iclose();
-    virtual size_t     bread(uint8_t* buff, int len, int options=0);
+    virtual size_t  bread(uint8_t* buff, int len, int options=0);
     virtual int     bwrite(const uint8_t* buff, int len, int options=0);
     virtual void    flush();
-    virtual const  std::string& sf()const{return _tmp_file;}
     virtual EPERIPH peer_of()const{return eUSB;}
     virtual E_TYPE  data_of()const{return eBINARY;}
     virtual const char* err_desc()const{return _err.c_str();}
@@ -60,9 +59,9 @@ protected:
      libusb_device           **_devs;
      libusb_device_handle    *_dev_handle;
      uint8_t*                _large;
-     int                     _uchars->buf() = 0;
      int                     _v = 0;
      int                     _p = 0;
+     int                     _bytes=0;
 };
 
 }

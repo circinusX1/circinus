@@ -16,6 +16,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 #include "filedev.h"
 
+bool FileDev::_squed;
 
 FileDev::FileDev(E_TYPE e,
                  const char* file,
@@ -24,7 +25,7 @@ FileDev::FileDev(E_TYPE e,
                                    Reg<FileDev>(this),
                                    RtxBus<FileDev>(this,false,true)
 {
-    _o.BindCppObject(this);
+    FileDev::_squed ? _o.BindCppObject(this) : (void)(0);
 }
 
 FileDev::FileDev(SqObj& o,
@@ -67,14 +68,15 @@ bool FileDev::set_cb(SqMemb& m)
 
 void FileDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)
 {
+    _mon_dirt = true;
 }
 
 const char*	FileDev::_get_values(const char* key)
 {
-    GETER_SYSCAT();
+    GETER_SYSCAT(); return Divais::_get_values(key);
 }
 
-bool	FileDev::_set_values(const char* key, const char* value)
+bool	FileDev::_set_value(const char* key, const char* value)
 {
     return false;
 }

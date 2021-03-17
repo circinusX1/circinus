@@ -19,9 +19,10 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #define USBDEV_H
 
 #include "dusb.h"
-#include "iplugbase.h"
+#include "divais.h"
 #include "sqwrap.h"
 #include "rtxbus.h"
+
 
 using namespace GenericHw;
 
@@ -30,21 +31,21 @@ using namespace GenericHw;
 class UsbDev :  public DvUsb,
                 public Divais,
                 private Reg<UsbDev>,
-                public RtxBus<UsbDev>// , public Divais
+                public RtxBus<UsbDev>
 {
 public:
-    UsbDev(E_TYPE  e,const char* dev,const char* name=nullptr);
-    UsbDev(SqObj&, E_TYPE  e,const char* dev,const char* name=nullptr);
+    UsbDev(E_TYPE  e, const char* dev, const char* name);
+    UsbDev(SqObj&, E_TYPE  e, const char* dev,const char* name);
     virtual ~UsbDev();
     SqArr enumerate();
     bool  set_cb(SqMemb& mem);
-    const char* _gets(int chars);
+    const char* _gets();
     SqArr _read(int chars);
-    OVERW(DvUsb,Divais);
+    OVERW(DvUsb,Divais)
     static void squit(SqEnvi& e){
         Sqrat::Class<UsbDev> cls(e.theVM(), _SC("USB"));
-        cls.Ctor<const char*, const char*>();
-        cls.Ctor<SqObj&, const char*, const char*>();
+        cls.Ctor<E_TYPE,const char*, const char*>();
+        cls.Ctor<SqObj&, E_TYPE, const char*, const char*>();
 
         cls.Functor(_SC("plug_it"), &UsbDev::plug_it);
         cls.Functor(_SC("open"), &DvUsb::iopen);
@@ -58,23 +59,26 @@ public:
         cls.Functor(_SC("read"), &RtxBus<UsbDev>::_read);
         cls.Overload<int (UsbDev::*)(SqArr&)>(_SC("write"), &RtxBus<UsbDev>::_write);
         cls.Overload<bool (UsbDev::*)(SqArr&, SqMemb&)>(_SC("write_cb"), &RtxBus<UsbDev>::_write_cb);
-        cls.Overload<bool (UsbDev::*)(const char*, int)>(_SC("expect_str"), &RtxBus<UsbDev>::_expect_str);
-        cls.Overload<bool (UsbDev::*)(SqArr&, int)>(_SC("expect_bin"), &RtxBus<UsbDev>::_expect_bin);
+        cls.Overload<bool (UsbDev::*)(const char*)>(_SC("expect_str"), &RtxBus<UsbDev>::_expect_str);
+        cls.Overload<bool (UsbDev::*)(SqArr&)>(_SC("expect_bin"), &RtxBus<UsbDev>::_expect_bin);
         cls.Overload<const char* (UsbDev::*)()>(_SC("pick_str"), &RtxBus<UsbDev>::_pick_str);
         cls.Overload<SqArr (UsbDev::*)()>(_SC("pick_bin"), &RtxBus<UsbDev>::_pick_bin);
         cls.Overload<void (UsbDev::*)()>(_SC("flush"), &RtxBus<UsbDev>::_devflush);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
         cls.Functor(_SC("get_name"), &UsbDev::get_label_name);
+        cls.Overload<void (UsbDev::*)(size_t)>(_SC("set_tout"), &RtxBus<UsbDev>::_set_touts);
+        cls.Overload<void (UsbDev::*)(size_t,size_t)>(_SC("set_buff_size"), &RtxBus<UsbDev>::set_buff_size);
         Sqrat::RootTable().Bind(_SC("USB"), cls);
+        UsbDev::_squed = true;
     }
 protected:
     bool  _write_now(const devdata_t& vl);
     size_t  _fecth(devdata_t& vl, const char* filter);
-    bool                _set_values(const char* key, const char* value);
+    bool                _set_value(const char* key, const char* value);
     const char*         _get_values(const char* key);
 
 private:
-    bool     _curdata;
+
 };
 
 #endif // UARTDEV_H

@@ -44,12 +44,14 @@ public:
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
         cls.Functor(_SC("get_name"), &AdcDev::get_label_name);
         Sqrat::RootTable().Bind(_SC("ADC"), cls);
+        AdcDev::_squed = true;
     }
+
 private:
     bool        _write_now(const devdata_t& vl);
     size_t      _fecth(devdata_t& vl, const char* filter);
     const char*	_get_values(const char* key);
-    bool        _set_values(const char* key, const char* value);
+    bool        _set_value(const char* key, const char* value);
 
 };
 

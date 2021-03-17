@@ -29,6 +29,8 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 //static __thread HookPrint _hook_print;
 //static __thread HSKVM __vm;
 
+#define BGAP    32
+
 typedef const char  khar;
 static __thread    HookPrint    _hook_print;
 HSKVM  __thread     __vm;
@@ -184,8 +186,8 @@ int SqEnvi::push_main(bool call)
 
 EngScript SqEnvi::compile_script(const std::string& s,  const SQChar * debugInfo)
 {
-    char cwd[PATH_MAX];
-    char cwdf[PATH_MAX];
+    char cwd[PATH_MAX+BGAP];
+    char cwdf[PATH_MAX+BGAP];
     Sqrat::DefaultVM::Set(*_vm);
 
     _script = s;

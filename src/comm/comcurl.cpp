@@ -289,7 +289,7 @@ bool	ComCurl::_write_now(const devdata_t& a)
     return false;
 }
 
-size_t  ComCurl::_fecth(devdata_t& _curdata, const char* filter)
+size_t  ComCurl::_fecth(devdata_t& _cur_value, const char* filter)
 {
     return -1;
 }

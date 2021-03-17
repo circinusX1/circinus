@@ -3,7 +3,7 @@
 
 class MyDev  extends BASE
 {
-    _forjson="";
+    _retparams="";
     _data=[];
     _k  = 0;
     _uart = UART(eSTRING, "/dev/ttyUSB0",115200,"8N1","rs232");
@@ -11,7 +11,7 @@ class MyDev  extends BASE
     constructor(whatever)
     {
         _k    = 0;
-        _forjson = "";
+        _retparams = "";
         _data = [1,2,3,0,0];
 
         base.constructor(this, eSTRING, whatever);
@@ -41,7 +41,7 @@ class MyDev  extends BASE
             else
                 println(k + " = " + d);
         }
-        this._forjson=json;
+        this._retparams=json;
     }
 
     function set_value() // return array of max 5

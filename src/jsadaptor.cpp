@@ -162,7 +162,7 @@ bool Divais::get_value(rapidjson::Document* pd, const char* what)
             rapidjson::Value kvalue(emb._pd,allc);
             pd->AddMember(kname, kvalue, allc);
         }
-        return _forjson.c_str();
+        return _retparams.c_str();
     }//in script
     /***
     name:{
@@ -174,31 +174,31 @@ bool Divais::get_value(rapidjson::Document* pd, const char* what)
     rapidjson::Document::AllocatorType& allc = pd->GetAllocator();
     rapidjson::Value kisland(rapidjson::kObjectType);
     rapidjson::Value kname(_ukey.c_str(),allc);
-    for(size_t el = 0 ; el < _curdata.size(); el++)
+    for(size_t el = 0 ; el < _cur_value.size(); el++)
     {
         sprintf(seln,"%d",el);
-        if(_curdata.length(el)==0)continue;
+        if(_cur_value.length(el)==0)continue;
 
         rapidjson::Value elname(seln, allc);
 
         if(_etype==eSTRING)
         {
-            rapidjson::Value kvalue((const char*)_curdata.c_chars(),allc);
+            rapidjson::Value kvalue((const char*)_cur_value.c_chars(),allc);
             kisland.AddMember(elname, kvalue, allc);
         }
         else if(_etype==eFLOAT)
         {
-            double f = ::atof((const char*)_curdata.c_chars());
+            double f = ::atof((const char*)_cur_value.c_chars());
             kisland.AddMember(elname, f, allc);
         }
         else if(_etype==eINT)
         {
-            int f = ::atoi((const char*)_curdata.c_chars());
+            int f = ::atoi((const char*)_cur_value.c_chars());
             kisland.AddMember(elname, f, allc);
         }
         else
         {
-            const uint8_t* pb = _curdata.c_bytes();
+            const uint8_t* pb = _cur_value.c_bytes();
             rapidjson::Value dpts(rapidjson::kArrayType);
             for(size_t i=0; i< _writeata.length();++i)
             {

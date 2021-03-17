@@ -87,7 +87,8 @@ size_t  SoLib::_fecth(devdata_t& vl, const char* filter)
 
 bool SoLib::_mon_callback(time_t tnow)
 {
-    return false;
+    const char* pvalues = this->_get_values(SALLDATA);
+    return this->_call_cb(pvalues);
 }
 
 bool SoLib::iopen(int){return false;}

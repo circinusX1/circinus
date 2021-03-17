@@ -396,9 +396,9 @@ RestSrv::~RestSrv()
 
 int  RestSrv::_defer_to_device(I_IDev* pdev, const rapidjson::Document& value)
 {
-    devdata_t       data;
+    devdata_t   data;
     bool        apply = false;
-    devsmap_t devs;
+    devsmap_t   devs;
 
     if(pdev && value.IsObject())
     {

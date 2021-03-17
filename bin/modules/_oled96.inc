@@ -16,11 +16,12 @@ class Oled96 extends I2C
     constructor(i2cbus, address, name)
     {
         // bind vars / instance (not per class)
+        println("CALLING CTOR ");
         base.constructor(this, i2cbus, address, name); // on BBB I2C1 P9.17 P9.18
         _iScreenOffset = 0;
         _oled_flip = false;
         _oled_type = "";
-        _text="";
+        _text = "";
         _ucscreen=array(1024,0);
 
 
@@ -179,7 +180,6 @@ class Oled96 extends I2C
     {
         local y;
 
-
         local iLines = (_oled_type == "128x32" || _oled_type == "64x32") ? 4:8;
         local iCols = (_oled_type == "64x32") ? 4:8;
         local temp = array(iCols*16, ucData);
@@ -196,11 +196,17 @@ class Oled96 extends I2C
         return 0;
     }
 
-    function get_value(w){
-        return "text,"+ _text;
-    }
-    function set_value(key,value){
 
+    //  GOES TO WEB as text:"value" in the OLED JSON
+    function get_value(w){
+        var json_obj = {
+            text = _text,
+        }
+        return json_obj;
+    }
+
+    // http://localhost:8000/<?>OLED96/text=asds:f
+    function set_value(key, value){
         if(key=="text")
         {
             println("NEW TEXT:" +  value);
@@ -211,5 +217,9 @@ class Oled96 extends I2C
         return false;
     }
 
+    function on_event(thiso, newdata)
+    {
+        println("EVENT for:" + thiso + " = " + newdata);
+    }
 };
 

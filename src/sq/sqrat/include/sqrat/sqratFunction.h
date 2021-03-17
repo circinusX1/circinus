@@ -271,7 +271,7 @@ public:
 
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 1)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 
@@ -319,7 +319,7 @@ public:
 
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 2)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 #endif
@@ -373,7 +373,7 @@ public:
 
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 3)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 #endif
@@ -429,7 +429,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 4)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 #endif
@@ -488,7 +488,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 5)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 #endif
@@ -550,7 +550,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 6)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 #endif
@@ -616,7 +616,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 7)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 #endif
@@ -684,7 +684,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 8)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 #endif
@@ -755,7 +755,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 9)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 #endif
@@ -829,7 +829,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 10)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 #endif
@@ -906,7 +906,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 11)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 #endif
@@ -986,7 +986,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 12)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 #endif
@@ -1069,7 +1069,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 13)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 #endif
@@ -1155,7 +1155,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 14)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 #endif
@@ -1244,7 +1244,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 15)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return SharedPtr<R>();
 		}
 #endif
@@ -1300,7 +1300,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 1)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 
@@ -1341,7 +1341,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 2)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 #endif
@@ -1388,7 +1388,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 3)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 #endif
@@ -1438,7 +1438,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 4)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 #endif
@@ -1491,7 +1491,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 5)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 #endif
@@ -1547,7 +1547,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 6)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 #endif
@@ -1606,7 +1606,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 7)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 #endif
@@ -1668,7 +1668,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 8)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 #endif
@@ -1733,7 +1733,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 9)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 #endif
@@ -1801,7 +1801,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 10)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 #endif
@@ -1872,7 +1872,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 11)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 #endif
@@ -1946,7 +1946,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 12)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 #endif
@@ -2024,7 +2024,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 13)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 #endif
@@ -2104,7 +2104,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 14)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 #endif
@@ -2187,7 +2187,7 @@ public:
 		size_t nfreevars;
 		if (SQ_SUCCEEDED(SQ_PTRS->getclosureinfo(vm, -2, &nparams, &nfreevars)) && (nparams != 15)) {
 			SQ_PTRS->pop(vm, 2);
-			SQTHROW(vm, _SC("wrong number of parameters"));
+			SQTHROW(vm, _SC("parameters count or return type"));
 			return;
 		}
 #endif

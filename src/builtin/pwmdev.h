@@ -48,14 +48,14 @@ public:
         cls.Functor(_SC("set_invert"), &PwmDev::set_invert);
         cls.Functor(_SC("get_name"), &PwmDev::get_label_name);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
-
         Sqrat::RootTable().Bind(_SC("PWM"), cls);
+        PwmDev::_squed = true;
     }
    
 protected:
     bool  _write_now(const devdata_t& vl);
     size_t _fecth(devdata_t& vl, const char* filter);
-    bool                _set_values(const char* key, const char* value);
+    bool                _set_value(const char* key, const char* value);
     const char*         _get_values(const char* key);
 
 private:

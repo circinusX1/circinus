@@ -25,6 +25,8 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "gpiodev.h"
 #include "inst.h"
 
+bool GpioDev::_squed;
+
 GpioDev::GpioDev(EGPIO_PIN pn,
                  EPIN_DIR pd, int on,
                  const char* name):DvGpio(pn,pd,on),
@@ -34,7 +36,7 @@ GpioDev::GpioDev(EGPIO_PIN pn,
     _counter(0),
     _counting(false)
 {
-    _o.BindCppObject(this);
+    GpioDev::_squed ? _o.BindCppObject(this) : (void)(0);
     LOGD3(__FUNCTION__ <<" "<< name);
 }
 
@@ -63,7 +65,7 @@ GpioDev::GpioDev(EGPIO_PIN pn, int freq,
     _counter(0),
     _counting(freq < 0)
 {
-    _o.BindCppObject(this);
+    GpioDev::_squed ? _o.BindCppObject(this) : (void)(0);
     _monitor = true;
     if(freq>=0)
     {
@@ -101,12 +103,11 @@ int  GpioDev::set_value(int val)
 
 int  GpioDev::get_value()
 {
-    _curdata.clear();
+    _cur_value.clear();
     char val[8]={0};
     if(this->bread((uint8_t*)val,sizeof(val)))
     {
-        _mon_dirt=false;
-        return _curdata.to_t<int>();
+        return _cur_value.to_t<int>();
     }
     return -1;
 }
@@ -154,40 +155,38 @@ bool GpioDev::set_cb(SqMemb& mon)
 
 void GpioDev::on_event(E_VENT e, const uint8_t* val, int len, int options)
 {
+    _mon_dirt = true;
     if(e==eREAD)
     {
         int ival = ::atoi((const char*)val);
         if(_reversed)
             ival = !ival;
-        _curdata.let(ival);
+        _cur_value.let(ival);
     }
 }
 
-bool	GpioDev::_set_values(const char* key, const char* value)
+bool	GpioDev::_set_value(const char* key, const char* value)
 {
-    if(key[0]=='v') return set_value(::atoi(value));
-    if(key[0]=='f') return  set_freq(::atoi(value));
-    if(key[0]=='r') { _reversed = value[0]==1 ? true : false; return true;}
-    if(key[0]=='t') { return set_toggle();}
-    return false;
+    if(key[0]=='V') return set_value(::atoi(value));
+    if(key[0]=='F') return  set_freq(::atoi(value));
+    if(key[0]=='R') { _reversed = value[0]==1 ? true : false; return true;}
+    if(key[0]=='G') { return set_toggle();}
+    return Divais::_set_value(key, value);
 }
 
 const char*	GpioDev::_get_values(const char* key)
 {
     if(key[0]==ALLDATA)
     {
-        _forjson += "&value=";
-        _forjson += _curdata.to_string<int>();
-        _forjson += "&freq=";
-        _forjson += std::to_string(_freq);
-        _forjson += "&reverse=";
-        _forjson += std::to_string(_reversed);
-        return _forjson.c_str();
+        _retparams += "&V=" + _cur_value.to_string<int>();
+        _retparams += "&F=" + std::to_string(_freq);
+        _retparams += "&R=" + std::to_string(_reversed);
+        GETER_SYSCAT(); return Divais::_get_values(key);
     }
-    if(key[0]=='v') { return _curdata.c_chars();}
-    if(key[0]=='f') { ::sprintf(_sret,"%d",_freq); return _sret;}
-    if(key[0]=='r') { ::sprintf(_sret,"%d",_reversed); return _sret;}
-    GETER_SYSCAT();
+    if(key[0]=='V') { return _cur_value.c_chars();}
+    if(key[0]=='F') { ::sprintf(_sret,"%d",_freq); return _sret;}
+    if(key[0]=='R') { ::sprintf(_sret,"%d",_reversed); return _sret;}
+    GETER_SYSCAT(); return Divais::_get_values(key);
 }
 
 

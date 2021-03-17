@@ -16,8 +16,12 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 #ifdef WITH_USB
 #include "usbdev.h"
-#include "ctx.h"
+#include "inst.h"
 #include "rtxbus.h"
+#include "divais.h"
+
+bool UsbDev::_squed;
+
 
 UsbDev::UsbDev(E_TYPE  e,
                const char* dev,
@@ -26,8 +30,7 @@ UsbDev::UsbDev(E_TYPE  e,
                                   Reg<UsbDev>(this),
                                   RtxBus<UsbDev>(this,false,true)
 {
-    _o.BindCppObject(this);
-
+    UsbDev::_squed ? _o.BindCppObject(this) : (void)(0);
 }
 
 UsbDev::UsbDev( SqObj& o,
@@ -44,18 +47,16 @@ UsbDev::UsbDev( SqObj& o,
 
 UsbDev::~UsbDev()
 {
-    IoType_t::destroy(&_uchars);
 }
 
 bool  UsbDev::_write_now(const devdata_t& vl)
 {
-    _mon_dirt = true;
-    return this->bwrite(vl[0].data(), vl[0].length());
+    return this->bwrite(vl.c_bytes(), vl.length());
 }
 
-size_t  AdcDev::_fecth(devdata_t& vl, const char* filter)
+size_t  UsbDev::_fecth(devdata_t& vl, const char* filter)
 {
-    return this->bread(vl.c_bytes(), vl.length());
+    return 0;
 }
 
 SqArr UsbDev::enumerate()
@@ -81,57 +82,53 @@ SqArr UsbDev::enumerate()
 
 bool UsbDev::_mon_callback(time_t tnow)
 {
-    if(this->bread(_uchars->buf(), _uchars->cap()))
-    {
-        return _mon_dirt=true;
+    if(_etype==eSTRING){
+        const char* rv = RtxBus<UsbDev>::_gets();
+        if(rv && *rv)
+            return this->Divais::_call_cb(rv);
+    }
+    else{
+        const SqArr& rv = RtxBus<UsbDev>::_read();
+        if(rv.Length())
+            return this->Divais::_call_cb(rv);
     }
     return false;
 }
 
-const char* UsbDev::_gets(int chars)
+const char* UsbDev::_gets()
 {
-    _mon_dirt = false;
-    if(_curdata)
-    {
-        _curdata=false;
-        return (const char*)_uchars->buf();
-    }
-    return RtxBus<UsbDev>::_gets(chars);
+    return RtxBus<UsbDev>::_gets();
 }
 
 SqArr UsbDev::_read(int chars)
 {
-    _mon_dirt = false;
-    if(_curdata)
-    {
-        _curdata=false;
-        SqArr  rar(App->psqvm(), _uchars->len());
-        for(size_t i = 0 ; i < _uchars->len(); i++)
-        {
-            rar.SetValue(i, _uchars->at(i));
-        }
-        return rar;
-    }
-    return RtxBus<UsbDev>::_read(chars);
+    return RtxBus<UsbDev>::_read();
 }
 
 bool UsbDev::set_cb(SqMemb& mem)
 {
-    return this->Divais::set_cb(m);
+    return this->Divais::set_cb(mem);
 }
 
 void UsbDev::on_event(E_VENT e, const uint8_t* buff, int len, int options)
 {
+    _mon_dirt = true;
 }
 
-bool	UsbDev::_set_values(const char* key, const char* value)
+bool	UsbDev::_set_value(const char* key, const char* value)
 {
     return bwrite((const uint8_t*)value, ::strlen(value));
 }
 
 const char*	UsbDev::_get_values(const char* key)
 {
-    return _curdata.to_string();
+    if(key[0]==ALLDATA)
+    {
+        _retparams += "&value=";
+        _retparams += _cur_value.c_chars();
+        return _retparams.c_str();
+    }
+    GETER_SYSCAT(); return Divais::_get_values(key);
 }
 
 
