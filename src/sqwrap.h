@@ -179,7 +179,7 @@ private:
                     int line/*line*/,
                     const SQChar * func/*funcname*/);
     static void print_func(HSKVM, const SQChar * s,...);
-    static int error_handler(HSKVM v);
+    static isize_t error_handler(HSKVM v);
     void  _init(size_t sz=16386);
 
 private:

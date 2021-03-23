@@ -66,7 +66,7 @@ template <typename T, bool b>
 struct popAsInt
 {
     T value;
-    popAsInt(HSKVM vm, int idx)
+    popAsInt(HSKVM vm, isize_t idx)
     {
         SQObjectType value_type = SQ_PTRS->gettype(vm, idx);
         switch(value_type) {
@@ -76,14 +76,14 @@ struct popAsInt
             value = static_cast<T>(sqValueb);
             break;
         case OT_INTEGER:
-            int sqValue;
+            isize_t sqValue;
             SQ_PTRS->getinteger(vm, idx, &sqValue);
             value = static_cast<T>(sqValue);
             break;
         case OT_FLOAT:
             SQFloat sqValuef;
             SQ_PTRS->getfloat(vm, idx, &sqValuef);
-			value = static_cast<T>(static_cast<int>(sqValuef));
+			value = static_cast<T>(static_cast<isize_t>(sqValuef));
             break;
         default:
             SQTHROW(vm, FormatTypeError(vm, idx, _SC("integer")));
@@ -97,7 +97,7 @@ template <typename T>
 struct popAsInt<T, false>
 {
     T value;  // cannot be initialized because unknown constructor parameters
-    popAsInt(HSKVM /*vm*/, int /*idx*/)
+    popAsInt(HSKVM /*vm*/, isize_t /*idx*/)
     {
         // keep the current error message already set previously, do not touch that here
     }
@@ -107,7 +107,7 @@ template <typename T>
 struct popAsFloat
 {
     T value;
-    popAsFloat(HSKVM vm, int idx)
+    popAsFloat(HSKVM vm, isize_t idx)
     {
         SQObjectType value_type = SQ_PTRS->gettype(vm, idx);
         switch(value_type) {
@@ -117,7 +117,7 @@ struct popAsFloat
             value = static_cast<T>(sqValueb);
             break;
         case OT_INTEGER:
-            int sqValue; \
+            isize_t sqValue; \
             SQ_PTRS->getinteger(vm, idx, &sqValue);
             value = static_cast<T>(sqValue);
             break;
@@ -160,26 +160,26 @@ struct Var {
     /// This function MUST have its Error handled if it occurred.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         SQTRY()
         T* ptr = ClassType<T>::GetInstance(vm, idx);
         if (ptr != NULL) {
             value = *ptr;
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        } else if (is_convertible<T, int>::YES) { /* value is likely of integral type like enums */
+        } else if (is_convertible<T, isize_t>::YES) { /* value is likely of integral type like enums */
             SQCLEAR(vm); // clear the previous error
-            value = popAsInt<T, is_convertible<T, int>::YES>(vm, idx).value;
+            value = popAsInt<T, is_convertible<T, isize_t>::YES>(vm, idx).value;
 #endif
         } else {
             // initialize value to avoid warnings
-            value = popAsInt<T, is_convertible<T, int>::YES>(vm, idx).value;
+            value = popAsInt<T, is_convertible<T, isize_t>::YES>(vm, idx).value;
         }
         SQCATCH(vm) {
 #if defined (SCRAT_USE_EXCEPTIONS)
             SQUNUSED(e); // avoid "unreferenced local variable" warning
 #endif
-            if (is_convertible<T, int>::YES) { /* value is likely of integral type like enums */
-                value = popAsInt<T, is_convertible<T, int>::YES>(vm, idx).value;
+            if (is_convertible<T, isize_t>::YES) { /* value is likely of integral type like enums */
+                value = popAsInt<T, is_convertible<T, isize_t>::YES>(vm, idx).value;
             } else {
                 SQRETHROW(vm);
             }
@@ -197,7 +197,7 @@ struct Var {
         if (ClassType<T>::hasClassData(vm))
             ClassType<T>::PushInstanceCopy(vm, value);
         else /* try integral type */
-            pushAsInt<T, is_convertible<T, int>::YES>().push(vm, value);
+            pushAsInt<T, is_convertible<T, isize_t>::YES>().push(vm, value);
     }
 
 private:
@@ -205,7 +205,7 @@ private:
     template <class T2, bool b>
     struct pushAsInt {
         void push(HSKVM vm, const T2& /*value*/) {
-            assert(false); // fails because called before a Sqrat::Class for T exists and T is not convertible to int
+            assert(false); // fails because called before a Sqrat::Class for T exists and T is not convertible to isize_t
             SQ_PTRS->pushnull(vm);
         }
     };
@@ -213,7 +213,7 @@ private:
     template <class T2>
     struct pushAsInt<T2, true> {
         void push(HSKVM vm, const T2& value) {
-            SQ_PTRS->pushinteger(vm, static_cast<int>(value));
+            SQ_PTRS->pushinteger(vm, static_cast<isize_t>(value));
         }
     };
 
@@ -240,7 +240,7 @@ struct Var<T&> {
     /// This function MUST have its Error handled if it occurred.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) : value(*ClassType<T>::GetInstance(vm, idx)) {
+    Var(HSKVM vm, isize_t idx) : value(*ClassType<T>::GetInstance(vm, idx)) {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,7 +254,7 @@ struct Var<T&> {
         if (ClassType<T>::hasClassData(vm))
             ClassType<T>::PushInstance(vm, &value);
         else /* try integral type */
-            pushAsInt<T, is_convertible<T, int>::YES>().push(vm, value);
+            pushAsInt<T, is_convertible<T, isize_t>::YES>().push(vm, value);
     }
 
 private:
@@ -262,7 +262,7 @@ private:
     template <class T2, bool b>
     struct pushAsInt {
         void push(HSKVM vm, const T2& /*value*/) {
-            assert(false); // fails because called before a Sqrat::Class for T exists and T is not convertible to int
+            assert(false); // fails because called before a Sqrat::Class for T exists and T is not convertible to isize_t
             SQ_PTRS->pushnull(vm);
         }
     };
@@ -270,7 +270,7 @@ private:
     template <class T2>
     struct pushAsInt<T2, true> {
         void push(HSKVM vm, const T2& value) {
-            SQ_PTRS->pushinteger(vm, static_cast<int>(value));
+            SQ_PTRS->pushinteger(vm, static_cast<isize_t>(value));
         }
     };
 };
@@ -296,7 +296,7 @@ struct Var<T*> {
     /// This function MUST have its Error handled if it occurred.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) : value(ClassType<T>::GetInstance(vm, idx, true)) {
+    Var(HSKVM vm, isize_t idx) : value(ClassType<T>::GetInstance(vm, idx, true)) {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -333,7 +333,7 @@ struct Var<T* const> {
     /// This function MUST have its Error handled if it occurred.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) : value(ClassType<T>::GetInstance(vm, idx, true)) {
+    Var(HSKVM vm, isize_t idx) : value(ClassType<T>::GetInstance(vm, idx, true)) {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -369,7 +369,7 @@ struct Var<const T&> {
     /// This function MUST have its Error handled if it occurred.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) : value(*ClassType<T>::GetInstance(vm, idx)) {
+    Var(HSKVM vm, isize_t idx) : value(*ClassType<T>::GetInstance(vm, idx)) {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -405,7 +405,7 @@ struct Var<const T*> {
     /// This function MUST have its Error handled if it occurred.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) : value(ClassType<T>::GetInstance(vm, idx, true)) {
+    Var(HSKVM vm, isize_t idx) : value(ClassType<T>::GetInstance(vm, idx, true)) {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -441,7 +441,7 @@ struct Var<const T* const> {
     /// This function MUST have its Error handled if it occurred.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) : value(ClassType<T>::GetInstance(vm, idx, true)) {
+    Var(HSKVM vm, isize_t idx) : value(ClassType<T>::GetInstance(vm, idx, true)) {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -478,7 +478,7 @@ struct Var<SharedPtr<T> > {
     /// This function MUST have its Error handled if it occurred.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         if (SQ_PTRS->gettype(vm, idx) != OT_NULL) {
             Var<T> instance(vm, idx);
             SQCATCH_NOEXCEPT(vm) {
@@ -505,22 +505,22 @@ struct Var<SharedPtr<T> > {
  template<> \
  struct Var<type> { \
      type value; \
-     Var(HSKVM vm, int idx) { \
+     Var(HSKVM vm, isize_t idx) { \
          value = popAsInt<type, true>(vm, idx).value; \
      } \
      static void push(HSKVM vm, const type& value) { \
-         SQ_PTRS->pushinteger(vm, static_cast<int>(value)); \
+         SQ_PTRS->pushinteger(vm, static_cast<isize_t>(value)); \
      } \
  };\
  \
  template<> \
  struct Var<const type&> { \
      type value; \
-     Var(HSKVM vm, int idx) { \
+     Var(HSKVM vm, isize_t idx) { \
          value = popAsInt<type, true>(vm, idx).value; \
      } \
      static void push(HSKVM vm, const type& value) { \
-         SQ_PTRS->pushinteger(vm, static_cast<int>(value)); \
+         SQ_PTRS->pushinteger(vm, static_cast<isize_t>(value)); \
      } \
  };
 
@@ -547,7 +547,7 @@ SCRAT_INTEGER(signed __int64)
  template<> \
  struct Var<type> { \
      type value; \
-     Var(HSKVM vm, int idx) { \
+     Var(HSKVM vm, isize_t idx) { \
          value = popAsFloat<type>(vm, idx).value; \
      } \
      static void push(HSKVM vm, const type& value) { \
@@ -558,7 +558,7 @@ SCRAT_INTEGER(signed __int64)
  template<> \
  struct Var<const type&> { \
      type value; \
-     Var(HSKVM vm, int idx) { \
+     Var(HSKVM vm, isize_t idx) { \
          value = popAsFloat<type>(vm, idx).value; \
      } \
      static void push(HSKVM vm, const type& value) { \
@@ -584,7 +584,7 @@ struct Var<bool> {
     /// \param idx Index trying to be read
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         bool sqValue;
         SQ_PTRS->tobool(vm, idx, &sqValue);
         value = (sqValue != 0);
@@ -617,7 +617,7 @@ struct Var<const bool&> {
     /// \param idx Index trying to be read
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         bool sqValue;
         SQ_PTRS->tobool(vm, idx, &sqValue);
         value = (sqValue != 0);
@@ -656,7 +656,7 @@ public:
     /// \param idx Index trying to be read
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         SQ_PTRS->tostring(vm, idx);
         SQ_PTRS->getstackobj(vm, -1, &obj);
         SQ_PTRS->getstring(vm, -1, (const SQChar**)&value);
@@ -684,7 +684,7 @@ public:
     /// \param len   Length of the string (defaults to finding the length by searching for a terminating null-character)
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void push(HSKVM vm, const SQChar* value, int len = -1) {
+    static void push(HSKVM vm, const SQChar* value, isize_t len = -1) {
         SQ_PTRS->pushstring(vm, value, len);
     }
 };
@@ -710,7 +710,7 @@ public:
     /// \param idx Index trying to be read
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         SQ_PTRS->tostring(vm, idx);
         SQ_PTRS->getstackobj(vm, -1, &obj);
         SQ_PTRS->getstring(vm, -1, &value);
@@ -738,7 +738,7 @@ public:
     /// \param len   Length of the string (defaults to finding the length by searching for a terminating null-character)
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void push(HSKVM vm, const SQChar* value, int len = -1) {
+    static void push(HSKVM vm, const SQChar* value, isize_t len = -1) {
         SQ_PTRS->pushstring(vm, value, len);
     }
 };
@@ -758,7 +758,7 @@ struct Var<string> {
     /// \param idx Index trying to be read
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         const SQChar* ret;
         SQ_PTRS->tostring(vm, idx);
         SQ_PTRS->getstring(vm, -1, &ret);
@@ -793,7 +793,7 @@ struct Var<const string&> {
     /// \param idx Index trying to be read
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         const SQChar* ret;
         SQ_PTRS->tostring(vm, idx);
         SQ_PTRS->getstring(vm, -1, &ret);
@@ -829,7 +829,7 @@ struct Var<std::string> {
     /// \param idx Index trying to be read
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         const SQChar* ret;
         SQ_PTRS->tostring(vm, idx);
         SQ_PTRS->getstring(vm, -1, &ret);
@@ -865,7 +865,7 @@ struct Var<const std::string&> {
     /// \param idx Index trying to be read
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         const SQChar* ret;
         SQ_PTRS->tostring(vm, idx);
         SQ_PTRS->getstring(vm, -1, &ret);
@@ -907,7 +907,7 @@ public:
     /// \param idx Index trying to be read
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         std::string holder;
         const SQChar *sv;
         SQ_PTRS->tostring(vm, idx);
@@ -940,7 +940,7 @@ public:
     /// \param len   Length of the string (defaults to finding the length by searching for a terminating null-character)
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void push(HSKVM vm, const char* value, int len = -1) {
+    static void push(HSKVM vm, const char* value, isize_t len = -1) {
         SQ_PTRS->pushstring(vm, string_to_wstring(std::string(value)).c_str(), len);
     }
 };
@@ -966,7 +966,7 @@ public:
     /// \param idx Index trying to be read
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         std::string holder;
         const SQChar *sv;
         SQ_PTRS->tostring(vm, idx);
@@ -999,7 +999,7 @@ public:
     /// \param len   Length of the string (defaults to finding the length by searching for a terminating null-character)
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void push(HSKVM vm, const char* value, int len = -1) {
+    static void push(HSKVM vm, const char* value, isize_t len = -1) {
         SQ_PTRS->pushstring(vm, string_to_wstring(std::string(value)).c_str(), len);
     }
 };

@@ -21,16 +21,16 @@
 #define OUTER  5
 
 struct SQExpState {
-    int  etype;       /* expr. type; one of EXPR, OBJECT, BASE, OUTER or LOCAL */
-    int  epos;        /* expr. location on stack; -1 for OBJECT and BASE */
+    isize_t  etype;       /* expr. type; one of EXPR, OBJECT, BASE, OUTER or LOCAL */
+    isize_t  epos;        /* expr. location on stack; -1 for OBJECT and BASE */
     bool       donot_get;   /* signal not to deref the next value */
 };
 
 #define MAX_COMPILER_ERROR_LEN 256
 
 struct SQScope {
-    int outers;
-    int stacksize;
+    isize_t outers;
+    isize_t stacksize;
 };
 
 #define BEGIN_SCOPE() SQScope __oldscope__ = _scope; \
@@ -49,7 +49,7 @@ struct SQScope {
     _scope = __oldscope__; \
     }
 
-#define END_SCOPE() {   int oldouters = _fs->_outers;\
+#define END_SCOPE() {   isize_t oldouters = _fs->_outers;\
     if(_fs->GetStackSize() != _scope.stacksize) { \
     _fs->SetStackSize(_scope.stacksize); \
     if(oldouters != _fs->_outers) { \
@@ -59,8 +59,8 @@ struct SQScope {
     _scope = __oldscope__; \
     }
 
-#define BEGIN_BREAKBLE_BLOCK()  int __nbreaks__=_fs->_unresolvedbreaks.size(); \
-    int __ncontinues__=_fs->_unresolvedcontinues.size(); \
+#define BEGIN_BREAKBLE_BLOCK()  isize_t __nbreaks__=_fs->_unresolvedbreaks.size(); \
+    isize_t __ncontinues__=_fs->_unresolvedcontinues.size(); \
     _fs->_breaktargets.push_back(0);_fs->_continuetargets.push_back(0);
 
 #define END_BREAKBLE_BLOCK(continue_target) {__nbreaks__=_fs->_unresolvedbreaks.size()-__nbreaks__; \
@@ -96,11 +96,11 @@ public:
         va_end(vl);
         longjmp(_errorjmp,1);
     }
-    void Lex(int type=0){
+    void Lex(isize_t type=0){
         _token = _lex.Lex(type);
     }
 
-    SQObject Expect(int tok)
+    SQObject Expect(isize_t tok)
     {
         if(_token != tok) {
             if(_token == TK_CONSTRUCTOR && tok == TK_IDENTIFIER) {
@@ -159,7 +159,7 @@ public:
         }
     }
     void MoveIfCurrentTargetIsLocal() {
-        int trg = _fs->TopTarget();
+        isize_t trg = _fs->TopTarget();
         if(_fs->IsLocal(trg)) {
             trg = _fs->PopTarget(); //pops the target and moves it
             _fs->AddInstruction(_OP_MOVE, _fs->PushTarget(), trg);
@@ -177,7 +177,7 @@ public:
         _fs->AddParameter(_fs->CreateString(_SC("vargv")));
         _fs->_varparams = true;
         _fs->_sourcename = _sourcename;
-        int stacksize = _fs->GetStackSize();
+        isize_t stacksize = _fs->GetStackSize();
         if(setjmp(_errorjmp) == 0) {
             Lex();
             while(_token > 0){ //_token is  TK_U8
@@ -247,7 +247,7 @@ public:
             }
             Lex();
             if(!IsEndOfStatement()) {
-                int retexp = _fs->GetCurrentPos()+1;
+                isize_t retexp = _fs->GetCurrentPos()+1;
                 CommaExpr();
                 if(op == _OP_RETURN && _fs->_traps > 0)
                     _fs->AddInstruction(_OP_POPTRAP, _fs->_traps, 0);
@@ -334,24 +334,24 @@ public:
     }
     void EmitDerefOp(SQOpcode op)
     {
-        int val = _fs->PopTarget();
-        int key = _fs->PopTarget();
-        int src = _fs->PopTarget();
+        isize_t val = _fs->PopTarget();
+        isize_t key = _fs->PopTarget();
+        isize_t src = _fs->PopTarget();
         _fs->AddInstruction(op,_fs->PushTarget(),src,key,val);
     }
-    void Emit2ArgsOP(SQOpcode op, int p3 = 0)
+    void Emit2ArgsOP(SQOpcode op, isize_t p3 = 0)
     {
-        int p2 = _fs->PopTarget(); //src in OP_GET
-        int p1 = _fs->PopTarget(); //key in OP_GET
+        isize_t p2 = _fs->PopTarget(); //src in OP_GET
+        isize_t p1 = _fs->PopTarget(); //key in OP_GET
         _fs->AddInstruction(op,_fs->PushTarget(), p1, p2, p3);
     }
-    void EmitCompoundArith(int tok, int etype, int pos)
+    void EmitCompoundArith(isize_t tok, isize_t etype, isize_t pos)
     {
         /* Generate code depending on the expression type */
         switch(etype) {
         case LOCAL:{
-            int p2 = _fs->PopTarget(); //src in OP_GET
-            int p1 = _fs->PopTarget(); //key in OP_GET
+            isize_t p2 = _fs->PopTarget(); //src in OP_GET
+            isize_t p1 = _fs->PopTarget(); //key in OP_GET
             _fs->PushTarget(p1);
             //EmitCompArithLocal(tok, p1, p1, p2);
             _fs->AddInstruction(ChooseArithOpByToken(tok),p1, p2, p1, 0);
@@ -361,17 +361,17 @@ public:
         case OBJECT:
         case BASE:
         {
-            int val = _fs->PopTarget();
-            int key = _fs->PopTarget();
-            int src = _fs->PopTarget();
+            isize_t val = _fs->PopTarget();
+            isize_t key = _fs->PopTarget();
+            isize_t src = _fs->PopTarget();
             /* _OP_COMPARITH mixes dest obj and source val in the arg1 */
             _fs->AddInstruction(_OP_COMPARITH, _fs->PushTarget(), (src<<16)|val, key, ChooseCompArithCharByToken(tok));
         }
             break;
         case OUTER:
         {
-            int val = _fs->TopTarget();
-            int tmp = _fs->PushTarget();
+            isize_t val = _fs->TopTarget();
+            isize_t tmp = _fs->PushTarget();
             _fs->AddInstruction(_OP_GETOUTER,   tmp, pos);
             _fs->AddInstruction(ChooseArithOpByToken(tok), tmp, val, tmp, 0);
             _fs->PopTarget();
@@ -385,7 +385,7 @@ public:
     {
         for(Expression();_token == ',';_fs->PopTarget(), Lex(), CommaExpr());
     }
-    void Expression(int inst_tok=0)
+    void Expression(isize_t inst_tok=0)
     {
         SQExpState es = _es;
         _es.etype     = EXPR;
@@ -400,9 +400,9 @@ public:
         case TK_MULEQ:
         case TK_DIVEQ:
         case TK_MODEQ:{
-            int op = _token;
-            int ds = _es.etype;
-            int pos = _es.epos;
+            isize_t op = _token;
+            isize_t ds = _es.etype;
+            isize_t pos = _es.epos;
             if(ds == EXPR) Error(_SC("can't assign expression"));
             else if(ds == BASE) Error(_SC("'base' cannot be modified"));
             Lex(); Expression();
@@ -418,8 +418,8 @@ public:
                 switch(ds) {
                 case LOCAL:
                 {
-                    int src = _fs->PopTarget();
-                    int dst = _fs->TopTarget();
+                    isize_t src = _fs->PopTarget();
+                    isize_t dst = _fs->TopTarget();
                     _fs->AddInstruction(_OP_MOVE, dst, src);
                 }
                     break;
@@ -429,8 +429,8 @@ public:
                     break;
                 case OUTER:
                 {
-                    int src = _fs->PopTarget();
-                    int dst = _fs->PushTarget();
+                    isize_t src = _fs->PopTarget();
+                    isize_t dst = _fs->PushTarget();
                     _fs->AddInstruction(_OP_SETOUTER, dst, pos, src);
                 }
                 }
@@ -448,17 +448,17 @@ public:
         case _SC('?'): {
             Lex();
             _fs->AddInstruction(_OP_JZ, _fs->PopTarget());
-            int jzpos = _fs->GetCurrentPos();
-            int trg = _fs->PushTarget();
+            isize_t jzpos = _fs->GetCurrentPos();
+            isize_t trg = _fs->PushTarget();
             Expression();
-            int first_exp = _fs->PopTarget();
+            isize_t first_exp = _fs->PopTarget();
             if(trg != first_exp) _fs->AddInstruction(_OP_MOVE, trg, first_exp);
-            int endfirstexp = _fs->GetCurrentPos();
+            isize_t endfirstexp = _fs->GetCurrentPos();
             _fs->AddInstruction(_OP_JMP, 0, 0);
             Expect(_SC(':'));
-            int jmppos = _fs->GetCurrentPos();
+            isize_t jmppos = _fs->GetCurrentPos();
             Expression();
-            int second_exp = _fs->PopTarget();
+            isize_t second_exp = _fs->PopTarget();
             if(trg != second_exp) _fs->AddInstruction(_OP_MOVE, trg, second_exp);
             _fs->SetInstructionParam(jmppos, 1, _fs->GetCurrentPos() - jmppos);
             _fs->SetInstructionParam(jzpos, 1, endfirstexp - jzpos + 1);
@@ -477,11 +477,11 @@ public:
         (this->*f)();
         _es = es;
     }
-    template<typename T> void BIN_EXP(SQOpcode op, T f,int op3 = 0)
+    template<typename T> void BIN_EXP(SQOpcode op, T f,isize_t op3 = 0)
     {
         Lex();
         INVOKE_EXP(f);
-        int op1 = _fs->PopTarget();int op2 = _fs->PopTarget();
+        isize_t op1 = _fs->PopTarget();isize_t op2 = _fs->PopTarget();
         _fs->AddInstruction(op, _fs->PushTarget(), op1, op2, op3);
         _es.etype = EXPR;
     }
@@ -489,14 +489,14 @@ public:
     {
         LogicalAndExp();
         for(;;) if(_token == TK_OR) {
-            int first_exp = _fs->PopTarget();
-            int trg = _fs->PushTarget();
+            isize_t first_exp = _fs->PopTarget();
+            isize_t trg = _fs->PushTarget();
             _fs->AddInstruction(_OP_OR, trg, 0, first_exp, 0);
-            int jpos = _fs->GetCurrentPos();
+            isize_t jpos = _fs->GetCurrentPos();
             if(trg != first_exp) _fs->AddInstruction(_OP_MOVE, trg, first_exp);
             Lex(); INVOKE_EXP(&SQCompiler::LogicalOrExp);
             _fs->SnoozeOpt();
-            int second_exp = _fs->PopTarget();
+            isize_t second_exp = _fs->PopTarget();
             if(trg != second_exp) _fs->AddInstruction(_OP_MOVE, trg, second_exp);
             _fs->SnoozeOpt();
             _fs->SetInstructionParam(jpos, 1, (_fs->GetCurrentPos() - jpos));
@@ -509,14 +509,14 @@ public:
         BitwiseOrExp();
         for(;;) switch(_token) {
         case TK_AND: {
-            int first_exp = _fs->PopTarget();
-            int trg = _fs->PushTarget();
+            isize_t first_exp = _fs->PopTarget();
+            isize_t trg = _fs->PushTarget();
             _fs->AddInstruction(_OP_AND, trg, 0, first_exp, 0);
-            int jpos = _fs->GetCurrentPos();
+            isize_t jpos = _fs->GetCurrentPos();
             if(trg != first_exp) _fs->AddInstruction(_OP_MOVE, trg, first_exp);
             Lex(); INVOKE_EXP(&SQCompiler::LogicalAndExp);
             _fs->SnoozeOpt();
-            int second_exp = _fs->PopTarget();
+            isize_t second_exp = _fs->PopTarget();
             if(trg != second_exp) _fs->AddInstruction(_OP_MOVE, trg, second_exp);
             _fs->SnoozeOpt();
             _fs->SetInstructionParam(jpos, 1, (_fs->GetCurrentPos() - jpos));
@@ -582,7 +582,7 @@ public:
         default: return;
         }
     }
-    SQOpcode ChooseArithOpByToken(int tok)
+    SQOpcode ChooseArithOpByToken(isize_t tok)
     {
         switch(tok) {
         case TK_PLUSEQ: case '+': return _OP_ADD;
@@ -594,9 +594,9 @@ public:
         }
         return _OP_ADD;
     }
-    int ChooseCompArithCharByToken(int tok)
+    isize_t ChooseCompArithCharByToken(isize_t tok)
     {
-        int oper;
+        isize_t oper;
         switch(tok){
         case TK_MINUSEQ: oper = '-'; break;
         case TK_PLUSEQ: oper = '+'; break;
@@ -630,7 +630,7 @@ public:
     //if 'pos' != -1 the previous variable is a local variable
     void PrefixedExpr()
     {
-        int pos = Factor();
+        isize_t pos = Factor();
         for(;;) {
             switch(_token) {
             case _SC('.'):
@@ -672,7 +672,7 @@ public:
             case TK_PLUSPLUS:
             {
                 if(IsEndOfStatement()) return;
-                int diff = (_token==TK_MINUSMINUS) ? -1 : 1;
+                isize_t diff = (_token==TK_MINUSMINUS) ? -1 : 1;
                 Lex();
                 switch(_es.etype)
                 {
@@ -683,13 +683,13 @@ public:
                     Emit2ArgsOP(_OP_PINC, diff);
                     break;
                 case LOCAL: {
-                    int src = _fs->PopTarget();
+                    isize_t src = _fs->PopTarget();
                     _fs->AddInstruction(_OP_PINCL, _fs->PushTarget(), src, 0, diff);
                 }
                     break;
                 case OUTER: {
-                    int tmp1 = _fs->PushTarget();
-                    int tmp2 = _fs->PushTarget();
+                    isize_t tmp1 = _fs->PushTarget();
+                    isize_t tmp2 = _fs->PushTarget();
                     _fs->AddInstruction(_OP_GETOUTER, tmp2, _es.epos);
                     _fs->AddInstruction(_OP_PINCL,    tmp1, tmp2, 0, diff);
                     _fs->AddInstruction(_OP_SETOUTER, tmp2, _es.epos, tmp2);
@@ -702,10 +702,10 @@ public:
             case _SC('('):
                 switch(_es.etype) {
                 case OBJECT: {
-                    int key     = _fs->PopTarget();  /* location of the key */
-                    int table   = _fs->PopTarget();  /* location of the object */
-                    int closure = _fs->PushTarget(); /* location for the closure */
-                    int ttarget = _fs->PushTarget(); /* location for 'this' pointer */
+                    isize_t key     = _fs->PopTarget();  /* location of the key */
+                    isize_t table   = _fs->PopTarget();  /* location of the object */
+                    isize_t closure = _fs->PushTarget(); /* location for the closure */
+                    isize_t ttarget = _fs->PushTarget(); /* location for 'this' pointer */
                     _fs->AddInstruction(_OP_PREPCALL, closure, key, table, ttarget);
                 }
                     break;
@@ -728,7 +728,7 @@ public:
             }
         }
     }
-    int Factor()
+    isize_t Factor()
     {
         //_es.etype = EXPR;
         switch(_token)
@@ -756,7 +756,7 @@ public:
             case TK_CONSTRUCTOR: id = _fs->CreateString(_SC("constructor"),11); break;
             }
 
-            int pos = -1;
+            isize_t pos = -1;
             Lex();
             if((pos = _fs->GetLocalVariable(id)) != -1) {
                 /* Handle a local variable (includes 'this') */
@@ -841,13 +841,13 @@ public:
             break;
         case _SC('['): {
             _fs->AddInstruction(_OP_NEWOBJ, _fs->PushTarget(),0,0,NOT_ARRAY);
-            int apos = _fs->GetCurrentPos(),key = 0;
+            isize_t apos = _fs->GetCurrentPos(),key = 0;
             Lex();
             while(_token != _SC(']')) {
                 Expression();
                 if(_token == _SC(',')) Lex();
-                int val = _fs->PopTarget();
-                int array = _fs->TopTarget();
+                isize_t val = _fs->PopTarget();
+                isize_t array = _fs->TopTarget();
                 _fs->AddInstruction(_OP_APPENDARRAY, array, val, AAT_STACK);
                 key++;
             }
@@ -892,7 +892,7 @@ public:
         _es.etype = EXPR;
         return -1;
     }
-    void EmitLoadConstInt(int value,int target)
+    void EmitLoadConstInt(isize_t value,isize_t target)
     {
         if(target < 0) {
             target = _fs->PushTarget();
@@ -904,7 +904,7 @@ public:
             _fs->AddInstruction(_OP_LOAD, target, _fs->GetNumericConstant(value));
         }
     }
-    void EmitLoadConstFloat(SQFloat value,int target)
+    void EmitLoadConstFloat(SQFloat value,isize_t target)
     {
         if(target < 0) {
             target = _fs->PushTarget();
@@ -919,7 +919,7 @@ public:
     void UnaryOP(SQOpcode op)
     {
         PrefixedExpr();
-        int src = _fs->PopTarget();
+        isize_t src = _fs->PopTarget();
         _fs->AddInstruction(op, _fs->PushTarget(), src);
     }
     bool NeedGet()
@@ -938,7 +938,7 @@ public:
     }
     void FunctionCallArgs(bool rawcall = false)
     {
-        int nargs = 1;//this
+        isize_t nargs = 1;//this
         while(_token != _SC(')')) {
             Expression();
             MoveIfCurrentTargetIsLocal();
@@ -953,14 +953,14 @@ public:
             if (nargs < 3) Error(_SC("rawcall requires at least 2 parameters (callee and this)"));
             nargs -= 2; //removes callee and this from count
         }
-        for(int i = 0; i < (nargs - 1); i++) _fs->PopTarget();
-        int stackbase = _fs->PopTarget();
-        int closure = _fs->PopTarget();
+        for(isize_t i = 0; i < (nargs - 1); i++) _fs->PopTarget();
+        isize_t stackbase = _fs->PopTarget();
+        isize_t closure = _fs->PopTarget();
         _fs->AddInstruction(_OP_CALL, _fs->PushTarget(), closure, stackbase, nargs);
         if (_token == '{')
         {
-            int retval = _fs->TopTarget();
-            int nkeys = 0;
+            isize_t retval = _fs->TopTarget();
+            isize_t nkeys = 0;
             Lex();
             while (_token != '}') {
                 switch (_token) {
@@ -975,16 +975,16 @@ public:
                 }
                 if (_token == ',') Lex();
                 nkeys++;
-                int val = _fs->PopTarget();
-                int key = _fs->PopTarget();
+                isize_t val = _fs->PopTarget();
+                isize_t key = _fs->PopTarget();
                 _fs->AddInstruction(_OP_SET, 0xFF, retval, key, val);
             }
             Lex();
         }
     }
-    void ParseTableOrClass(int separator,int terminator)
+    void ParseTableOrClass(isize_t separator,isize_t terminator)
     {
-        int tpos = _fs->GetCurrentPos(),nkeys = 0;
+        isize_t tpos = _fs->GetCurrentPos(),nkeys = 0;
         while(_token != terminator) {
             bool hasattrs = false;
             bool isstatic = false;
@@ -1003,7 +1003,7 @@ public:
             switch(_token) {
             case TK_FUNCTION:
             case TK_CONSTRUCTOR:{
-                int tk = _token;
+                isize_t tk = _token;
                 Lex();
                 SQObject id = tk == TK_FUNCTION ? Expect(TK_IDENTIFIER) : _fs->CreateString(_SC("constructor"));
                 Expect(_SC('('));
@@ -1032,13 +1032,13 @@ public:
             }
             if(_token == separator) Lex();//optional comma/semicolon
             nkeys++;
-            int val = _fs->PopTarget();
-            int key = _fs->PopTarget();
-            int attrs = hasattrs ? _fs->PopTarget():-1;
+            isize_t val = _fs->PopTarget();
+            isize_t key = _fs->PopTarget();
+            isize_t attrs = hasattrs ? _fs->PopTarget():-1;
             ((void)attrs);
             assert((hasattrs && (attrs == key-1)) || !hasattrs);
             unsigned char flags = (hasattrs?NEW_SLOT_ATTRIBUTES_FLAG:0)|(isstatic?NEW_SLOT_STATIC_FLAG:0);
-            int table = _fs->TopTarget(); //<<BECAUSE OF THIS NO COMMON EMIT FUNC IS POSSIBLE
+            isize_t table = _fs->TopTarget(); //<<BECAUSE OF THIS NO COMMON EMIT FUNC IS POSSIBLE
             if(separator == _SC(',')) { //hack recognizes a table from the separator
                 _fs->AddInstruction(_OP_NEWSLOT, 0xFF, table, key, val);
             }
@@ -1050,7 +1050,7 @@ public:
             _fs->SetInstructionParam(tpos, 1, nkeys);
         Lex();
     }
-    void LocalDeclStatement(int inst_tok)
+    void LocalDeclStatement(isize_t inst_tok)
     {
         SQObject varname;
         Lex(inst_tok);
@@ -1070,8 +1070,8 @@ public:
             if(_token == _SC('=')) {
                 Lex(inst_tok);
                 Expression();
-                int src = _fs->PopTarget();
-                int dest = _fs->PushTarget();
+                isize_t src = _fs->PopTarget();
+                isize_t dest = _fs->PushTarget();
                 if(dest != src) _fs->AddInstruction(_OP_MOVE, dest, src);
             }
             else{
@@ -1143,17 +1143,17 @@ public:
     }
     void IfStatement()
     {
-        int jmppos;
+        isize_t jmppos;
         bool haselse = false;
         Lex(); Expect(_SC('(')); CommaExpr(); Expect(_SC(')'));
         _fs->AddInstruction(_OP_JZ, _fs->PopTarget());
-        int jnepos = _fs->GetCurrentPos();
+        isize_t jnepos = _fs->GetCurrentPos();
 
 
 
         IfBlock();
         //
-        /*static int n = 0;
+        /*static isize_t n = 0;
         if (_token != _SC('}') && _token != TK_ELSE) {
             printf("IF %d-----------------------!!!!!!!!!\n", n);
             if (n == 5)
@@ -1165,7 +1165,7 @@ public:
         }*/
 
 
-        int endifblock = _fs->GetCurrentPos();
+        isize_t endifblock = _fs->GetCurrentPos();
         if(_token == TK_ELSE){
             haselse = true;
             //BEGIN_SCOPE();
@@ -1181,7 +1181,7 @@ public:
     }
     void WhileStatement()
     {
-        int jzpos, jmppos;
+        isize_t jzpos, jmppos;
         jmppos = _fs->GetCurrentPos();
         Lex(); Expect(_SC('(')); CommaExpr(); Expect(_SC(')'));
 
@@ -1201,13 +1201,13 @@ public:
     void DoWhileStatement()
     {
         Lex();
-        int jmptrg = _fs->GetCurrentPos();
+        isize_t jmptrg = _fs->GetCurrentPos();
         BEGIN_BREAKBLE_BLOCK()
                 BEGIN_SCOPE();
         Statement();
         END_SCOPE();
         Expect(TK_WHILE);
-        int continuetrg = _fs->GetCurrentPos();
+        isize_t continuetrg = _fs->GetCurrentPos();
         Expect(_SC('(')); CommaExpr(); Expect(_SC(')'));
         _fs->AddInstruction(_OP_JZ, _fs->PopTarget(), 1);
         _fs->AddInstruction(_OP_JMP, 0, jmptrg - _fs->GetCurrentPos() - 1);
@@ -1226,31 +1226,31 @@ public:
         }
         Expect(_SC(';'));
         _fs->SnoozeOpt();
-        int jmppos = _fs->GetCurrentPos();
-        int jzpos = -1;
+        isize_t jmppos = _fs->GetCurrentPos();
+        isize_t jzpos = -1;
         if(_token != _SC(';')) { CommaExpr(); _fs->AddInstruction(_OP_JZ, _fs->PopTarget()); jzpos = _fs->GetCurrentPos(); }
         Expect(_SC(';'));
         _fs->SnoozeOpt();
-        int expstart = _fs->GetCurrentPos() + 1;
+        isize_t expstart = _fs->GetCurrentPos() + 1;
         if(_token != _SC(')')) {
             CommaExpr();
             _fs->PopTarget();
         }
         Expect(_SC(')'));
         _fs->SnoozeOpt();
-        int expend = _fs->GetCurrentPos();
-        int expsize = (expend - expstart) + 1;
+        isize_t expend = _fs->GetCurrentPos();
+        isize_t expsize = (expend - expstart) + 1;
         SQInstructionVec exp;
         if(expsize > 0) {
-            for(int i = 0; i < expsize; i++)
+            for(isize_t i = 0; i < expsize; i++)
                 exp.push_back(_fs->GetInstruction(expstart + i));
             _fs->PopInstructions(expsize);
         }
         BEGIN_BREAKBLE_BLOCK()
                 Statement();
-        int continuetrg = _fs->GetCurrentPos();
+        isize_t continuetrg = _fs->GetCurrentPos();
         if(expsize > 0) {
-            for(int i = 0; i < expsize; i++)
+            for(isize_t i = 0; i < expsize; i++)
                 _fs->AddInstruction(exp[i]);
         }
         _fs->AddInstruction(_OP_JMP, 0, jmppos - _fs->GetCurrentPos() - 1, 0);
@@ -1277,19 +1277,19 @@ public:
         BEGIN_SCOPE();
         //put the table in the stack(evaluate the table expression)
         Expression(); Expect(_SC(')'));
-        int container = _fs->TopTarget();
+        isize_t container = _fs->TopTarget();
         //push the index local var
-        int indexpos = _fs->PushLocalVariable(idxname);
+        isize_t indexpos = _fs->PushLocalVariable(idxname);
         _fs->AddInstruction(_OP_LOADNULLS, indexpos,1);
         //push the value local var
-        int valuepos = _fs->PushLocalVariable(valname);
+        isize_t valuepos = _fs->PushLocalVariable(valname);
         _fs->AddInstruction(_OP_LOADNULLS, valuepos,1);
         //push reference index
-        int itrpos = _fs->PushLocalVariable(_fs->CreateString(_SC("@ITERATOR@"))); //use invalid id to make it inaccessible
+        isize_t itrpos = _fs->PushLocalVariable(_fs->CreateString(_SC("@ITERATOR@"))); //use invalid id to make it inaccessible
         _fs->AddInstruction(_OP_LOADNULLS, itrpos,1);
-        int jmppos = _fs->GetCurrentPos();
+        isize_t jmppos = _fs->GetCurrentPos();
         _fs->AddInstruction(_OP_FOREACH, container, 0, indexpos);
-        int foreachpos = _fs->GetCurrentPos();
+        isize_t foreachpos = _fs->GetCurrentPos();
         _fs->AddInstruction(_OP_POSTFOREACH, container, 0, indexpos);
         //generate the statement code
         BEGIN_BREAKBLE_BLOCK()
@@ -1306,11 +1306,11 @@ public:
     {
         Lex(); Expect(_SC('(')); CommaExpr(); Expect(_SC(')'));
         Expect(_SC('{'));
-        int expr = _fs->TopTarget();
+        isize_t expr = _fs->TopTarget();
         bool bfirst = true;
-        int tonextcondjmp = -1;
-        int skipcondjmp = -1;
-        int __nbreaks__ = _fs->_unresolvedbreaks.size();
+        isize_t tonextcondjmp = -1;
+        isize_t skipcondjmp = -1;
+        isize_t __nbreaks__ = _fs->_unresolvedbreaks.size();
         _fs->_breaktargets.push_back(0);
         while(_token == TK_CASE) {
             if(!bfirst) {
@@ -1320,8 +1320,8 @@ public:
             }
             //condition
             Lex(); Expression(); Expect(_SC(':'));
-            int trg = _fs->PopTarget();
-            int eqtarget = trg;
+            isize_t trg = _fs->PopTarget();
+            isize_t eqtarget = trg;
             bool local = _fs->IsLocal(trg);
             if(local) {
                 eqtarget = _fs->PushTarget(); //we need to allocate a extra reg
@@ -1446,7 +1446,7 @@ public:
         Expect(_SC('{'));
 
         SQObject table = _fs->CreateTable();
-        int nval = 0;
+        isize_t nval = 0;
         while(_token != _SC('}')) {
             SQObject key = Expect(TK_IDENTIFIER);
             SQObject val;
@@ -1475,7 +1475,7 @@ public:
         _fs->_traps++;
         if(_fs->_breaktargets.size()) _fs->_breaktargets.top()++;
         if(_fs->_continuetargets.size()) _fs->_continuetargets.top()++;
-        int trappos = _fs->GetCurrentPos();
+        isize_t trappos = _fs->GetCurrentPos();
         {
             BEGIN_SCOPE();
             Statement();
@@ -1486,19 +1486,19 @@ public:
         if(_fs->_breaktargets.size()) _fs->_breaktargets.top()--;
         if(_fs->_continuetargets.size()) _fs->_continuetargets.top()--;
         _fs->AddInstruction(_OP_JMP, 0, 0);
-        int jmppos = _fs->GetCurrentPos();
+        isize_t jmppos = _fs->GetCurrentPos();
         _fs->SetInstructionParam(trappos, 1, (_fs->GetCurrentPos() - trappos));
         Expect(TK_CATCH); Expect(_SC('(')); exid = Expect(TK_IDENTIFIER); Expect(_SC(')'));
         {
             BEGIN_SCOPE();
-            int ex_target = _fs->PushLocalVariable(exid);
+            isize_t ex_target = _fs->PushLocalVariable(exid);
             _fs->SetInstructionParam(trappos, 0, ex_target);
             Statement();
             _fs->SetInstructionParams(jmppos, 0, (_fs->GetCurrentPos() - jmppos), 0);
             END_SCOPE();
         }
     }
-    void FunctionExp(int ftype,bool lambda = false)
+    void FunctionExp(isize_t ftype,bool lambda = false)
     {
         Lex(); Expect(_SC('('));
         SQObjectPtr dummy;
@@ -1507,8 +1507,8 @@ public:
     }
     void ClassExp()
     {
-        int base = -1;
-        int attrs = -1;
+        isize_t base = -1;
+        isize_t attrs = -1;
         if(_token == TK_EXTENDS) {
             Lex(); Expression();
             base = _fs->TopTarget();
@@ -1541,10 +1541,10 @@ public:
         }
         _es = es;
     }
-    void PrefixIncDec(int token)
+    void PrefixIncDec(isize_t token)
     {
         SQExpState  es;
-        int diff = (token==TK_MINUSMINUS) ? -1 : 1;
+        isize_t diff = (token==TK_MINUSMINUS) ? -1 : 1;
         Lex();
         es = _es;
         _es.donot_get = true;
@@ -1556,12 +1556,12 @@ public:
             Emit2ArgsOP(_OP_INC, diff);
         }
         else if(_es.etype==LOCAL) {
-            int src = _fs->TopTarget();
+            isize_t src = _fs->TopTarget();
             _fs->AddInstruction(_OP_INCL, src, src, 0, diff);
 
         }
         else if(_es.etype==OUTER) {
-            int tmp = _fs->PushTarget();
+            isize_t tmp = _fs->PushTarget();
             _fs->AddInstruction(_OP_GETOUTER, tmp, _es.epos);
             _fs->AddInstruction(_OP_INCL,     tmp, tmp, 0, diff);
             _fs->AddInstruction(_OP_SETOUTER, tmp, _es.epos, tmp);
@@ -1575,7 +1575,7 @@ public:
         SQObject paramname;
         funcstate->AddParameter(_fs->CreateString(_SC("this")));
         funcstate->_sourcename = _sourcename;
-        int defparams = 0;
+        isize_t defparams = 0;
         while(_token!=_SC(')')) {
             if(_token == TK_VARPARAMS) {
                 if(defparams > 0) Error(_SC("function with default parameters cannot have variable number of parameters"));
@@ -1602,7 +1602,7 @@ public:
             }
         }
         Expect(_SC(')'));
-        for(int n = 0; n < defparams; n++) {
+        for(isize_t n = 0; n < defparams; n++) {
             _fs->PopTarget();
         }
 
@@ -1626,20 +1626,20 @@ public:
         _fs->_functions.push_back(func);
         _fs->PopChildState();
     }
-    void ResolveBreaks(SQMembState *funcstate, int ntoresolve)
+    void ResolveBreaks(SQMembState *funcstate, isize_t ntoresolve)
     {
         while(ntoresolve > 0) {
-            int pos = funcstate->_unresolvedbreaks.back();
+            isize_t pos = funcstate->_unresolvedbreaks.back();
             funcstate->_unresolvedbreaks.pop_back();
             //set the jmp instruction
             funcstate->SetInstructionParams(pos, 0, funcstate->GetCurrentPos() - pos, 0);
             ntoresolve--;
         }
     }
-    void ResolveContinues(SQMembState *funcstate, int ntoresolve, int targetpos)
+    void ResolveContinues(SQMembState *funcstate, isize_t ntoresolve, isize_t targetpos)
     {
         while(ntoresolve > 0) {
-            int pos = funcstate->_unresolvedcontinues.back();
+            isize_t pos = funcstate->_unresolvedcontinues.back();
             funcstate->_unresolvedcontinues.pop_back();
             //set the jmp instruction
             funcstate->SetInstructionParams(pos, 0, targetpos - pos, 0);
@@ -1647,14 +1647,14 @@ public:
         }
     }
 private:
-    int _token;
+    isize_t _token;
     SQMembState *_fs;
     SQObjectPtr _sourcename;
     SQLexer _lex;
     bool _lineinfo;
     bool _raiseerror;
-    int _debugline;
-    int _debugop;
+    isize_t _debugline;
+    isize_t _debugop;
     SQExpState   _es;
     SQScope _scope;
     SQChar _compilererror[MAX_COMPILER_ERROR_LEN];

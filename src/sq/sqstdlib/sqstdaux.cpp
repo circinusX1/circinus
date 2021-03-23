@@ -10,12 +10,12 @@ void sqstd_printcallstack(HSKVM v)
     SQPRINTFUNCTION pf = sq_geterrorfunc(v);
     if(pf) {
         SQStackInfos si;
-        int i;
+        isize_t i;
         SQFloat f;
         const SQChar *s;
-        int level=1; //1 is to skip this function that is level 0
+        isize_t level=1; //1 is to skip this function that is level 0
         const SQChar *name=0;
-        int seq=0;
+        isize_t seq=0;
         pf(v,_SC("\nCALLSTACK\n"));
         while(SQ_SUCCEEDED(sq_stackinfos(v,level,&si)))
         {
@@ -98,7 +98,7 @@ void sqstd_printcallstack(HSKVM v)
     }
 }
 
-static int _sqstd_aux_printerror(HSKVM v)
+static isize_t _sqstd_aux_printerror(HSKVM v)
 {
     SQPRINTFUNCTION pf = sq_geterrorfunc(v);
     if(pf) {
@@ -116,7 +116,7 @@ static int _sqstd_aux_printerror(HSKVM v)
     return 0;
 }
 
-void _sqstd_compiler_error(HSKVM v,const SQChar *sErr,const SQChar *sSource,int line,int column)
+void _sqstd_compiler_error(HSKVM v,const SQChar *sErr,const SQChar *sSource,isize_t line,isize_t column)
 {
     SQPRINTFUNCTION pf = sq_geterrorfunc(v);
     if(pf) {
@@ -133,12 +133,12 @@ void sqstd_seterrorhandlers(HSKVM v)
 
 SQRESULT sqstd_throwerrorf(HSKVM v,const SQChar *err,...)
 {
-    int n=256;
+    isize_t n=256;
     va_list args;
 begin:
     va_start(args,err);
     SQChar *b=sq_getscratchpad(v,n);
-    int r=scvsprintf(b,n,err,args);
+    isize_t r=scvsprintf(b,n,err,args);
     va_end(args);
     if (r>=n) {
         n=r+1;//required+null

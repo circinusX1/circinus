@@ -62,7 +62,7 @@ bool SQClass::NewSlot(SQSharedState *ss,const SQObjectPtr &key,const SQObjectPtr
         return true;
     }
     if(belongs_to_static_table) {
-        int mmidx;
+        isize_t mmidx;
         if((sq_type(val) == OT_CLOSURE || sq_type(val) == OT_NATIVECLOSURE) &&
             (mmidx = ss->GetMetaMethodIdxByName(key)) != -1) {
             _metamethods[mmidx] = val;
@@ -78,7 +78,7 @@ bool SQClass::NewSlot(SQSharedState *ss,const SQObjectPtr &key,const SQObjectPtr
                 bool isconstructor;
                 SQVM::IsEqual(ss->_constructoridx, key, isconstructor);
                 if(isconstructor) {
-                    _constructoridx = (int)_methods.size();
+                    _constructoridx = (isize_t)_methods.size();
                 }
                 SQClassMember m;
                 m.val = theval;
@@ -104,10 +104,10 @@ SQInstance *SQClass::CreateInstance()
     return SQInstance::Create(_opt_ss(this),this);
 }
 
-int SQClass::Next(const SQObjectPtr &refpos, SQObjectPtr &outkey, SQObjectPtr &outval)
+isize_t SQClass::Next(const SQObjectPtr &refpos, SQObjectPtr &outkey, SQObjectPtr &outval)
 {
     SQObjectPtr oval;
-    int idx = _members->Next(false,refpos,outkey,oval);
+    isize_t idx = _members->Next(false,refpos,outkey,oval);
     if(idx != -1) {
         if(_ismethod(oval)) {
             outval = _methods[_member_idx(oval)].val;
@@ -154,7 +154,7 @@ void SQInstance::Init(SQSharedState *ss)
     ADD_TO_CHAIN(&_sharedstate->_gc_chain, this);
 }
 
-SQInstance::SQInstance(SQSharedState *ss, SQClass *c, int memsize)
+SQInstance::SQInstance(SQSharedState *ss, SQClass *c, isize_t memsize)
 {
     _memsize = memsize;
     _class = c;
@@ -165,7 +165,7 @@ SQInstance::SQInstance(SQSharedState *ss, SQClass *c, int memsize)
     Init(ss);
 }
 
-SQInstance::SQInstance(SQSharedState *ss, SQInstance *i, int memsize)
+SQInstance::SQInstance(SQSharedState *ss, SQInstance *i, isize_t memsize)
 {
     _memsize = memsize;
     _class = i->_class;

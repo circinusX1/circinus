@@ -129,7 +129,7 @@ void SqEnvi::print_func(HSKVM, const SQChar * s,...)
     std::cout.flush();
 }
 
-int SqEnvi::error_handler(HSKVM v)
+isize_t SqEnvi::error_handler(HSKVM v)
 {
     //AutoLock a(&_m);
     const SQChar *sErr = 0;

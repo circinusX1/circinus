@@ -20,19 +20,19 @@
         return sq_throwerror(v,_SC("the blob is invalid"));
 
 
-static int _blob_resize(HSKVM v)
+static isize_t _blob_resize(HSKVM v)
 {
     SETUP_BLOB(v);
-    int size;
+    isize_t size;
     sq_getinteger(v,2,&size);
     if(!self->Resize(size))
         return sq_throwerror(v,_SC("resize failed"));
     return 0;
 }
 
-static void __swap_dword(unsigned int *n)
+static void __swap_dword(size_t *n)
 {
-    *n=(unsigned int)(((*n&0xFF000000)>>24)  |
+    *n=(size_t)(((*n&0xFF000000)>>24)  |
             ((*n&0x00FF0000)>>8)  |
             ((*n&0x0000FF00)<<8)  |
             ((*n&0x000000FF)<<24));
@@ -43,32 +43,32 @@ static void __swap_word(unsigned short *n)
     *n=(unsigned short)((*n>>8)&0x00FF)| ((*n<<8)&0xFF00);
 }
 
-static int _blob_swap4(HSKVM v)
+static isize_t _blob_swap4(HSKVM v)
 {
     SETUP_BLOB(v);
-    int num=(self->Len()-(self->Len()%4))>>2;
-    unsigned int *t=(unsigned int *)self->GetBuf();
-    for(int i = 0; i < num; i++) {
+    isize_t num=(self->Len()-(self->Len()%4))>>2;
+    size_t *t=(size_t *)self->GetBuf();
+    for(isize_t i = 0; i < num; i++) {
         __swap_dword(&t[i]);
     }
     return 0;
 }
 
-static int _blob_swap2(HSKVM v)
+static isize_t _blob_swap2(HSKVM v)
 {
     SETUP_BLOB(v);
-    int num=(self->Len()-(self->Len()%2))>>1;
+    isize_t num=(self->Len()-(self->Len()%2))>>1;
     unsigned short *t = (unsigned short *)self->GetBuf();
-    for(int i = 0; i < num; i++) {
+    for(isize_t i = 0; i < num; i++) {
         __swap_word(&t[i]);
     }
     return 0;
 }
 
-static int _blob__set(HSKVM v)
+static isize_t _blob__set(HSKVM v)
 {
     SETUP_BLOB(v);
-    int idx,val;
+    isize_t idx,val;
     sq_getinteger(v,2,&idx);
     sq_getinteger(v,3,&val);
     if(idx < 0 || idx >= self->Len())
@@ -78,10 +78,10 @@ static int _blob__set(HSKVM v)
     return 1;
 }
 
-static int _blob__get(HSKVM v)
+static isize_t _blob__get(HSKVM v)
 {
     SETUP_BLOB(v);
-    int idx;
+    isize_t idx;
 	
 	if ((sq_gettype(v, 2) & SQOBJECT_NUMERIC) == 0)
 	{
@@ -95,14 +95,14 @@ static int _blob__get(HSKVM v)
     return 1;
 }
 
-static int _blob__nexti(HSKVM v)
+static isize_t _blob__nexti(HSKVM v)
 {
     SETUP_BLOB(v);
     if(sq_gettype(v,2) == OT_NULL) {
         sq_pushinteger(v, 0);
         return 1;
     }
-    int idx;
+    isize_t idx;
     if(SQ_SUCCEEDED(sq_getinteger(v, 2, &idx))) {
         if(idx+1 < self->Len()) {
             sq_pushinteger(v, idx+1);
@@ -114,13 +114,13 @@ static int _blob__nexti(HSKVM v)
     return sq_throwerror(v,_SC("internal error (_nexti) wrong argument type"));
 }
 
-static int _blob__typeof(HSKVM v)
+static isize_t _blob__typeof(HSKVM v)
 {
     sq_pushstring(v,_SC("blob"),-1);
     return 1;
 }
 
-static int _blob_releasehook(PVOID p, int SQ_UNUSED_ARG(size))
+static isize_t _blob_releasehook(PVOID p, isize_t SQ_UNUSED_ARG(size))
 {
     SQBlob *self = (SQBlob*)p;
     self->~SQBlob();
@@ -128,10 +128,10 @@ static int _blob_releasehook(PVOID p, int SQ_UNUSED_ARG(size))
     return 1;
 }
 
-static int _blob_constructor(HSKVM v)
+static isize_t _blob_constructor(HSKVM v)
 {
-    int nparam = sq_gettop(v);
-    int size = 0;
+    isize_t nparam = sq_gettop(v);
+    isize_t size = 0;
     if(nparam == 2) {
         sq_getinteger(v, 2, &size);
     }
@@ -148,7 +148,7 @@ static int _blob_constructor(HSKVM v)
     return 0;
 }
 
-static int _blob__cloned(HSKVM v)
+static isize_t _blob__cloned(HSKVM v)
 {
     SQBlob *other = NULL;
     {
@@ -185,46 +185,46 @@ static const SQRegFunction _blob_methods[] = {
 
 //GLOBAL FUNCTIONS
 
-static int _g_blob_casti2f(HSKVM v)
+static isize_t _g_blob_casti2f(HSKVM v)
 {
-    int i;
+    isize_t i;
     sq_getinteger(v,2,&i);
     sq_pushfloat(v,*((const SQFloat *)&i));
     return 1;
 }
 
-static int _g_blob_castf2i(HSKVM v)
+static isize_t _g_blob_castf2i(HSKVM v)
 {
     SQFloat f;
     sq_getfloat(v,2,&f);
-    sq_pushinteger(v,*((const int *)&f));
+    sq_pushinteger(v,*((const isize_t *)&f));
     return 1;
 }
 
-static int _g_blob_swap2(HSKVM v)
+static isize_t _g_blob_swap2(HSKVM v)
 {
-    int i;
+    isize_t i;
     sq_getinteger(v,2,&i);
     short s=(short)i;
     sq_pushinteger(v,(s<<8)|((s>>8)&0x00FF));
     return 1;
 }
 
-static int _g_blob_swap4(HSKVM v)
+static isize_t _g_blob_swap4(HSKVM v)
 {
-    int i;
+    isize_t i;
     sq_getinteger(v,2,&i);
-    unsigned int t4 = (unsigned int)i;
+    size_t t4 = (size_t)i;
     __swap_dword(&t4);
-    sq_pushinteger(v,(int)t4);
+    sq_pushinteger(v,(isize_t)t4);
     return 1;
 }
 
-static int _g_blob_swapfloat(HSKVM v)
+static isize_t _g_blob_swapfloat(HSKVM v)
 {
     SQFloat f;
     sq_getfloat(v,2,&f);
-    __swap_dword((unsigned int *)&f);
+    __swap_dword((size_t *)&f);
     sq_pushfloat(v,f);
     return 1;
 }
@@ -239,7 +239,7 @@ static const SQRegFunction bloblib_funcs[]={
     {NULL,(SQFUNCTION)0,0,NULL}
 };
 
-SQRESULT sqstd_getblob(HSKVM v,int idx,PVOID *ptr)
+SQRESULT sqstd_getblob(HSKVM v,isize_t idx,PVOID *ptr)
 {
     SQBlob *blob;
     if(SQ_FAILED(sq_getinstanceup(v,idx,(PVOID *)&blob,(PVOID)SQSTD_BLOB_TYPE_TAG)))
@@ -248,7 +248,7 @@ SQRESULT sqstd_getblob(HSKVM v,int idx,PVOID *ptr)
     return SQ_OK;
 }
 
-int sqstd_getblobsize(HSKVM v,int idx)
+isize_t sqstd_getblobsize(HSKVM v,isize_t idx)
 {
     SQBlob *blob;
     if(SQ_FAILED(sq_getinstanceup(v,idx,(PVOID *)&blob,(PVOID)SQSTD_BLOB_TYPE_TAG)))
@@ -256,9 +256,9 @@ int sqstd_getblobsize(HSKVM v,int idx)
     return blob->Len();
 }
 
-PVOID sqstd_createblob(HSKVM v, int size)
+PVOID sqstd_createblob(HSKVM v, isize_t size)
 {
-    int top = sq_gettop(v);
+    isize_t top = sq_gettop(v);
     sq_pushregistrytable(v);
     sq_pushstring(v,_SC("std_blob"),-1);
     if(SQ_SUCCEEDED(sq_get(v,-2))) {

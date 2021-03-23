@@ -44,7 +44,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "comcurl.h"
 #include "comssh.h"
 #include "inputsys.h"
-#include "fastaccess.h"
+#include "buff.h"
 #include "inst.h"
 
 
@@ -559,6 +559,14 @@ void println(const char* text)
     fprintf(stdout,"%s\n",text);
 }
 
+size_t pointer(size_t val)
+{
+    printf("from foo = %p %ull\n", val, val);
+    val = INT_MAX * 4;
+    printf("new foo = %p %ull \n", val, val);
+    return val;
+}
+
 void errorln(const char* text)
 {
     fprintf(stderr,"[0;31m%s[0m\n",text);
@@ -641,6 +649,7 @@ void usingop(int32_t flags)
 {
     SqEnvi* sq = App->scr_env();
 
+    Buff::squit(*sq);
     if(flags & eGPIO)   GpioDev::squit(*sq);
     if(flags & ePWMM)   PwmDev::squit(*sq);
     if(flags & eI2C)    I2CDev::squit(*sq);
@@ -773,6 +782,7 @@ void globals_expose(SqEnvi& sq)
 	Sqrat::RootTable(sq.theVM()).Functor("U", &uu);
 	Sqrat::RootTable(sq.theVM()).Functor("using", &usingop);
 	Sqrat::RootTable(sq.theVM()).Functor("consolein", &cho_in);
+	Sqrat::RootTable(sq.theVM()).Functor("pointer", &pointer);
 
 }
 

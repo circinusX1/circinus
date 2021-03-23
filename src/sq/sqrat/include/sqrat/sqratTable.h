@@ -136,7 +136,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class V>
-    TableBase& SetValue(const int index, const V& val) {
+    TableBase& SetValue(const isize_t index, const V& val) {
         BindValue<V>(index, val, false);
         return *this;
     }
@@ -170,7 +170,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class V>
-    TableBase& SetInstance(const int index, V* val) {
+    TableBase& SetInstance(const isize_t index, V* val) {
         BindInstance<V>(index, val, false);
         return *this;
     }
@@ -187,13 +187,13 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class F>
-    TableBase& Functor(const SQChar* name, F method, int nargs=0) {
+    TableBase& Functor(const SQChar* name, F method, isize_t nargs=0) {
         BindMemb(name, &method, sizeof(method), SqGlobalMemb(method), false, nargs);
         return *this;
     }
 
     template<class F>
-    TableBase& MembRt(const SQChar* name, F method, int nargs) {
+    TableBase& MembRt(const SQChar* name, F method, isize_t nargs) {
         BindMembRt(name, &method, sizeof(method), SqGlobalMembRt(method), nargs);
         return *this;
     }
@@ -297,7 +297,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    SharedPtr<T> GetValue(int index)
+    SharedPtr<T> GetValue(isize_t index)
     {
         SQ_PTRS->pushobject(vm, obj);
         SQ_PTRS->pushinteger(vm, index);
@@ -367,7 +367,7 @@ public:
     /// \return Function found in the Table (null if failed)
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Function GetFunction(const int index) {
+    Function GetFunction(const isize_t index) {
         HSQOBJECT funcObj;
         SQ_PTRS->pushobject(vm, GetObject());
         SQ_PTRS->pushinteger(vm, index);
@@ -500,7 +500,7 @@ struct Var<Table> {
     /// This function MUST have its Error handled if it occurred.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         HSQOBJECT obj;
         SQ_PTRS->resetobject(&obj);
         SQ_PTRS->getstackobj(vm,idx,&obj);
@@ -533,14 +533,14 @@ struct Var<Table> {
 /// Used to get and push Table instances to and from the stack as references (tables are always references in Squirrel)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-struct Var<Table&> : Var<Table> {Var(HSKVM vm, int idx) : Var<Table>(vm, idx) {}};
+struct Var<Table&> : Var<Table> {Var(HSKVM vm, isize_t idx) : Var<Table>(vm, idx) {}};
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Used to get and push Table instances to and from the stack as references (tables are always references in Squirrel)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-struct Var<const Table&> : Var<Table> {Var(HSKVM vm, int idx) : Var<Table>(vm, idx) {}};
+struct Var<const Table&> : Var<Table> {Var(HSKVM vm, isize_t idx) : Var<Table>(vm, idx) {}};
 
 }
 

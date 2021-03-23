@@ -116,14 +116,14 @@ void SQMembState::Error(const SQChar *err)
 void SQMembState::Dump(SQFunctionProto *func)
 {
     size_t n=0,i;
-    int si;
+    isize_t si;
     scprintf(_SC("SQInstruction sizeof %d\n"),(int32_t)sizeof(SQInstruction));
     scprintf(_SC("SQObject sizeof %d\n"), (int32_t)sizeof(SQObject));
     scprintf(_SC("--------------------------------------------------------------------\n"));
     scprintf(_SC("*****FUNCTION [%s]\n"),sq_type(func->_name)==OT_STRING?_stringval(func->_name):_SC("unknown"));
     scprintf(_SC("-----LITERALS\n"));
     SQObjectPtr refidx,key,val;
-    int idx;
+    isize_t idx;
     SQObjectPtrVec templiterals;
     templiterals.resize(_nliterals);
     while((idx=_table(_literals)->Next(false,refidx,key,val))!=-1) {
@@ -164,12 +164,12 @@ void SQMembState::Dump(SQFunctionProto *func)
         SQInstruction &inst=_instructions[i];
         if(inst.op==_OP_LOAD || inst.op==_OP_DLOAD || inst.op==_OP_PREPCALLK || inst.op==_OP_GETK ){
 
-            int lidx = inst._arg1;
+            isize_t lidx = inst._arg1;
             scprintf(_SC("[%03d] %15s %d "), (int32_t)n,g_InstrDesc[inst.op].name,inst._arg0);
             if(lidx >= 0xFFFFFFFF)
                 scprintf(_SC("null"));
             else {
-                int refidx;
+                isize_t refidx;
                 SQObjectPtr val,key,refo;
                 while(((refidx=_table(_literals)->Next(false,refo,key,val))!= -1) && (_integer(val) != lidx)) {
                     refo = refidx;
@@ -185,7 +185,7 @@ void SQMembState::Dump(SQFunctionProto *func)
                 if(lidx >= 0xFFFFFFFF)
                     scprintf(_SC("null"));
                 else {
-                    int refidx;
+                    isize_t refidx;
                     SQObjectPtr val,key,refo;
                     while(((refidx=_table(_literals)->Next(false,refo,key,val))!= -1) && (_integer(val) != lidx)) {
                         refo = refidx;
@@ -212,17 +212,17 @@ void SQMembState::Dump(SQFunctionProto *func)
 }
 #endif
 
-int SQMembState::GetNumericConstant(const int cons)
+isize_t SQMembState::GetNumericConstant(const isize_t cons)
 {
     return GetConstant(SQObjectPtr(cons));
 }
 
-int SQMembState::GetNumericConstant(const SQFloat cons)
+isize_t SQMembState::GetNumericConstant(const SQFloat cons)
 {
     return GetConstant(SQObjectPtr(cons));
 }
 
-int SQMembState::GetConstant(const SQObject &cons)
+isize_t SQMembState::GetConstant(const SQObject &cons)
 {
     SQObjectPtr val;
     if(!_table(_literals)->Get(cons,val))
@@ -238,7 +238,7 @@ int SQMembState::GetConstant(const SQObject &cons)
     return _integer(val);
 }
 
-void SQMembState::SetInstructionParams(int pos,int arg0,int arg1,int arg2,int arg3)
+void SQMembState::SetInstructionParams(isize_t pos,isize_t arg0,isize_t arg1,isize_t arg2,isize_t arg3)
 {
     _instructions[pos]._arg0=(unsigned char)*((size_t *)&arg0);
     _instructions[pos]._arg1=(int32_t)*((size_t *)&arg1);
@@ -246,7 +246,7 @@ void SQMembState::SetInstructionParams(int pos,int arg0,int arg1,int arg2,int ar
     _instructions[pos]._arg3=(unsigned char)*((size_t *)&arg3);
 }
 
-void SQMembState::SetInstructionParam(int pos,int arg,int val)
+void SQMembState::SetInstructionParam(isize_t pos,isize_t arg,isize_t val)
 {
     switch(arg){
         case 0:_instructions[pos]._arg0=(unsigned char)*((size_t *)&val);break;
@@ -256,9 +256,9 @@ void SQMembState::SetInstructionParam(int pos,int arg,int val)
     };
 }
 
-int SQMembState::AllocStackPos()
+isize_t SQMembState::AllocStackPos()
 {
-    int npos=_vlocals.size();
+    isize_t npos=_vlocals.size();
     _vlocals.push_back(SQLocalVarInfo());
     if(_vlocals.size()>((size_t)_stacksize)) {
         if(_stacksize>MAX_FUNC_STACKSIZE) Error(_SC("internal compiler error: too many locals"));
@@ -267,7 +267,7 @@ int SQMembState::AllocStackPos()
     return npos;
 }
 
-int SQMembState::PushTarget(int n)
+isize_t SQMembState::PushTarget(isize_t n)
 {
     if(n!=-1){
         _targetstack.push_back(n);
@@ -278,14 +278,14 @@ int SQMembState::PushTarget(int n)
     return n;
 }
 
-int SQMembState::GetUpTarget(int n){
+isize_t SQMembState::GetUpTarget(isize_t n){
     return _targetstack[((_targetstack.size()-1)-n)];
 }
 
-int SQMembState::TopTarget(){
+isize_t SQMembState::TopTarget(){
     return _targetstack.back();
 }
-int SQMembState::PopTarget()
+isize_t SQMembState::PopTarget()
 {
     size_t npos=_targetstack.back();
     assert(npos < _vlocals.size());
@@ -297,15 +297,15 @@ int SQMembState::PopTarget()
     return npos;
 }
 
-int SQMembState::GetStackSize()
+isize_t SQMembState::GetStackSize()
 {
     return _vlocals.size();
 }
 
-int SQMembState::CountOuters(int stacksize)
+isize_t SQMembState::CountOuters(isize_t stacksize)
 {
-    int outers = 0;
-    int k = _vlocals.size() - 1;
+    isize_t outers = 0;
+    isize_t k = _vlocals.size() - 1;
     while(k >= stacksize) {
         SQLocalVarInfo &lvi = _vlocals[k];
         k--;
@@ -316,9 +316,9 @@ int SQMembState::CountOuters(int stacksize)
     return outers;
 }
 
-void SQMembState::SetStackSize(int n)
+void SQMembState::SetStackSize(isize_t n)
 {
-    int size=_vlocals.size();
+    isize_t size=_vlocals.size();
     while(size>n){
         size--;
         SQLocalVarInfo lvi = _vlocals.back();
@@ -350,9 +350,9 @@ bool SQMembState::IsLocal(size_t stkpos)
     return false;
 }
 
-int SQMembState::PushLocalVariable(const SQObject &name)
+isize_t SQMembState::PushLocalVariable(const SQObject &name)
 {
-    int pos=_vlocals.size();
+    isize_t pos=_vlocals.size();
     SQLocalVarInfo lvi;
     lvi._name=name;
     lvi._start_op=GetCurrentPos()+1;
@@ -364,9 +364,9 @@ int SQMembState::PushLocalVariable(const SQObject &name)
 
 
 
-int SQMembState::GetLocalVariable(const SQObject &name)
+isize_t SQMembState::GetLocalVariable(const SQObject &name)
 {
-    int locals=_vlocals.size();
+    isize_t locals=_vlocals.size();
     while(locals>=1){
         SQLocalVarInfo &lvi = _vlocals[locals-1];
         if(sq_type(lvi._name)==OT_STRING && _string(lvi._name)==_string(name)){
@@ -377,33 +377,33 @@ int SQMembState::GetLocalVariable(const SQObject &name)
     return -1;
 }
 
-void SQMembState::MarkLocalAsOuter(int pos)
+void SQMembState::MarkLocalAsOuter(isize_t pos)
 {
     SQLocalVarInfo &lvi = _vlocals[pos];
     lvi._end_op = UINT_MINUS_ONE;
     _outers++;
 }
 
-int SQMembState::GetOuterVariable(const SQObject &name)
+isize_t SQMembState::GetOuterVariable(const SQObject &name)
 {
-    int outers = _outervalues.size();
-    for(int i = 0; i<outers; i++) {
+    isize_t outers = _outervalues.size();
+    for(isize_t i = 0; i<outers; i++) {
         if(_string(_outervalues[i]._name) == _string(name))
             return i;
     }
-    int pos=-1;
+    isize_t pos=-1;
     if(_parent) {
         pos = _parent->GetLocalVariable(name);
         if(pos == -1) {
             pos = _parent->GetOuterVariable(name);
             if(pos != -1) {
-                _outervalues.push_back(SQOuterVar(name,SQObjectPtr(int(pos)),otOUTER)); //local
+                _outervalues.push_back(SQOuterVar(name,SQObjectPtr(isize_t(pos)),otOUTER)); //local
                 return _outervalues.size() - 1;
             }
         }
         else {
             _parent->MarkLocalAsOuter(pos);
-            _outervalues.push_back(SQOuterVar(name,SQObjectPtr(int(pos)),otLOCAL)); //local
+            _outervalues.push_back(SQOuterVar(name,SQObjectPtr(isize_t(pos)),otLOCAL)); //local
             return _outervalues.size() - 1;
 
 
@@ -418,7 +418,7 @@ void SQMembState::AddParameter(const SQObject &name)
     _parameters.push_back(name);
 }
 
-void SQMembState::AddLineInfos(int line,bool lineop,bool force)
+void SQMembState::AddLineInfos(isize_t line,bool lineop,bool force)
 {
     if(_lastline!=line || force){
         SQLineInfo li;
@@ -433,8 +433,8 @@ void SQMembState::AddLineInfos(int line,bool lineop,bool force)
 
 void SQMembState::DiscardTarget()
 {
-    int discardedtarget = PopTarget();
-    int size = _instructions.size();
+    isize_t discardedtarget = PopTarget();
+    isize_t size = _instructions.size();
     if(size > 0 && _optimization){
         SQInstruction &pi = _instructions[size-1];//previous instruction
         switch(pi.op) {
@@ -448,7 +448,7 @@ void SQMembState::DiscardTarget()
 
 void SQMembState::AddInstruction(SQInstruction &i)
 {
-    int size = _instructions.size();
+    isize_t size = _instructions.size();
     if(size > 0 && _optimization){ //simple optimizer
         SQInstruction &pi = _instructions[size-1];//previous instruction
         switch(i.op) {
@@ -498,7 +498,7 @@ void SQMembState::AddInstruction(SQInstruction &i)
             }
             break;
         case _OP_APPENDARRAY: {
-            int aat = -1;
+            isize_t aat = -1;
             switch(pi.op) {
             case _OP_LOAD: aat = AAT_LITERAL; break;
             case _OP_LOADINT: aat = AAT_INT; break;
@@ -575,17 +575,17 @@ void SQMembState::AddInstruction(SQInstruction &i)
     _instructions.push_back(i);
 }
 
-SQObject SQMembState::CreateString(const SQChar *s,int len)
+SQObject SQMembState::CreateString(const SQChar *s,isize_t len)
 {
     SQObjectPtr ns(SQString::Create(_sharedstate,s,len));
-    _table(_strings)->NewSlot(ns,(int)1);
+    _table(_strings)->NewSlot(ns,(isize_t)1);
     return ns;
 }
 
 SQObject SQMembState::CreateTable()
 {
     SQObjectPtr nt(SQTable::Create(_sharedstate,0));
-    _table(_strings)->NewSlot(nt,(int)1);
+    _table(_strings)->NewSlot(nt,(isize_t)1);
     return nt;
 }
 
@@ -597,7 +597,7 @@ SQFunctionProto *SQMembState::BuildProto()
         _lineinfos.size(),_localvarinfos.size(),_defaultparams.size());
 
     SQObjectPtr refidx,key,val;
-    int idx;
+    isize_t idx;
 
     f->_stacksize = _stacksize;
     f->_sourcename = _sourcename;

@@ -81,7 +81,7 @@ public:
     /// Bind cannot be called "inline" like other functions because it introduces order-of-initialization bugs.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void Bind(const int index, Object& obj) {
+    void Bind(const isize_t index, Object& obj) {
         SQ_PTRS->pushobject(vm, GetObject());
         SQ_PTRS->pushinteger(vm, index);
         SQ_PTRS->pushobject(vm, obj.GetObject());
@@ -98,7 +98,7 @@ public:
     /// \return The Array itself so the call can be chained
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ArrayBase& SquirrelMemb(const int index, SQFUNCTION func) {
+    ArrayBase& SquirrelMemb(const isize_t index, SQFUNCTION func) {
         SQ_PTRS->pushobject(vm, GetObject());
         SQ_PTRS->pushinteger(vm, index);
         SQ_PTRS->newclosure(vm, func, 0, 0);
@@ -119,7 +119,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class V>
-    ArrayBase& SetValue(const int index, const V& val) {
+    ArrayBase& SetValue(const isize_t index, const V& val) {
         SQ_PTRS->pushobject(vm, GetObject());
         SQ_PTRS->pushinteger(vm, index);
         PushVar(vm, val);
@@ -140,7 +140,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class V>
-    ArrayBase& SetInstance(const int index, V* val) {
+    ArrayBase& SetInstance(const isize_t index, V* val) {
         BindInstance<V>(index, val, false);
         return *this;
     }
@@ -157,7 +157,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class F>
-    ArrayBase& Functor(const int index, F method) {
+    ArrayBase& Functor(const isize_t index, F method) {
         BindMemb(index, &method, sizeof(method), SqGlobalMemb(method));
         return *this;
     }
@@ -176,7 +176,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    SharedPtr<T> GetValue(int index)
+    SharedPtr<T> GetValue(isize_t index)
     {
         SQ_PTRS->pushobject(vm, obj);
         SQ_PTRS->pushinteger(vm, index);
@@ -209,7 +209,7 @@ public:
 
 
 
-    SQObjectType GetType(int index)
+    SQObjectType GetType(isize_t index)
     {
         SQ_PTRS->pushobject(vm, obj);
         SQ_PTRS->pushinteger(vm, index);
@@ -249,7 +249,7 @@ public:
     /// \return Function found in the Array (null if failed)
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Function GetFunction(const int index) {
+    Function GetFunction(const isize_t index) {
         HSQOBJECT funcObj;
         SQ_PTRS->pushobject(vm, GetObject());
         SQ_PTRS->pushinteger(vm, index);
@@ -285,7 +285,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
-    void GetArray(T* array, int size)
+    void GetArray(T* array, isize_t size)
     {
         HSQOBJECT value = GetObject();
         SQ_PTRS->pushobject(vm, value);
@@ -297,7 +297,7 @@ public:
         }
 #endif
         SQ_PTRS->pushnull(vm);
-        int i;
+        isize_t i;
         while (SQ_SUCCEEDED(SQ_PTRS->next(vm, -2))) {
             SQ_PTRS->getinteger(vm, -2, &i);
             if (i >= size) break;
@@ -370,7 +370,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class V>
-    ArrayBase& Insert(const int destpos, const V& val) {
+    ArrayBase& Insert(const isize_t destpos, const V& val) {
         SQ_PTRS->pushobject(vm, GetObject());
         PushVar(vm, val);
         SQ_PTRS->arrayinsert(vm, -2, destpos);
@@ -390,7 +390,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class V>
-    ArrayBase& Insert(const int destpos, V* val) {
+    ArrayBase& Insert(const isize_t destpos, V* val) {
         SQ_PTRS->pushobject(vm, GetObject());
         PushVar(vm, val);
         SQ_PTRS->arrayinsert(vm, -2, destpos);
@@ -426,7 +426,7 @@ public:
     /// \return The Array itself so the call can be chained
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ArrayBase& Remove(const int itemidx) {
+    ArrayBase& Remove(const isize_t itemidx) {
         SQ_PTRS->pushobject(vm, GetObject());
         SQ_PTRS->arrayremove(vm, -1, itemidx);
         SQ_PTRS->pop(vm,1); // pop array
@@ -441,7 +441,7 @@ public:
     /// \return The Array itself so the call can be chained
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ArrayBase& Resize(const int newsize) {
+    ArrayBase& Resize(const isize_t newsize) {
         SQ_PTRS->pushobject(vm, GetObject());
         SQ_PTRS->arrayresize(vm, -1, newsize);
         SQ_PTRS->pop(vm,1); // pop array
@@ -467,10 +467,10 @@ public:
     /// \return Length in number of elements
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    int Length() const
+    isize_t Length() const
     {
         SQ_PTRS->pushobject(vm, obj);
-        int r = SQ_PTRS->getsize(vm, -1);
+        isize_t r = SQ_PTRS->getsize(vm, -1);
         SQ_PTRS->pop(vm, 1);
         return r;
     }
@@ -499,7 +499,7 @@ public:
     /// \param size An optional size hint
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Array(HSKVM v, const int size = 0) : ArrayBase(v) {
+    Array(HSKVM v, const isize_t size = 0) : ArrayBase(v) {
         SQ_PTRS->newarray(vm, size);
         SQ_PTRS->getstackobj(vm,-1,&obj);
         SQ_PTRS->addref(vm, &obj);
@@ -544,7 +544,7 @@ struct Var<Array> {
     /// This function MUST have its Error handled if it occurred.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         HSQOBJECT obj;
         SQ_PTRS->resetobject(&obj);
         SQ_PTRS->getstackobj(vm,idx,&obj);
@@ -576,13 +576,13 @@ struct Var<Array> {
 /// Used to get and push Array instances to and from the stack as references (arrays are always references in Squirrel)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-struct Var<Array&> : Var<Array> {Var(HSKVM vm, int idx) : Var<Array>(vm, idx) {}};
+struct Var<Array&> : Var<Array> {Var(HSKVM vm, isize_t idx) : Var<Array>(vm, idx) {}};
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Used to get and push Array instances to and from the stack as references (arrays are always references in Squirrel)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-struct Var<const Array&> : Var<Array> {Var(HSKVM vm, int idx) : Var<Array>(vm, idx) {}};
+struct Var<const Array&> : Var<Array> {Var(HSKVM vm, isize_t idx) : Var<Array>(vm, idx) {}};
 
 }
 

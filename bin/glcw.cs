@@ -2,7 +2,7 @@
 ::using(eSOLIB);
 
 lib := LIB("libglfw.so");
-lib2 := LIB("libGL.so.1.0.0");
+lib2 := LIB("libGL.so");
 
 var srv = SRV(8000,"srv");
 GL_COLOR_BUFFER_BIT := 0x00004000
@@ -40,12 +40,19 @@ KKK := 0;
 function main(x)
 {
     println("program gl window");
-
+    
+    var p = pointer(0xFFFFFFFFFF);
+    println("scr pointer is" + p);
+    p = pointer(p);
+    println("scr pointer is" + p);
+    
    var ii = glfwInit();
 
    var window = glfwCreateWindow(640, 480, "Hello World", null, null);
+   println("window id " + typeof window);
    if (window==null)
    {
+       println("window val " + window);
        println("---------iit terminated ");
        glfwTerminate();
        return false;
@@ -56,10 +63,10 @@ function main(x)
    while (!glfwWindowShouldClose(window))
    {
         glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(0.0,0.0,0.0,0.0);
+        glClearColor(1.0,1.0,0.0,0.0);
         var ratio = 640.0 / 480.0;
 
-        glViewport(0, 0, 600, 400);
+        glViewport(0, 0, 800, 600);
         glMatrixMode(0x1701);
         glLoadIdentity();
         glOrtho(-ratio, ratio, -1.0, 1.0, 1.0, -1.0);
@@ -69,9 +76,9 @@ function main(x)
         glRotatef(KKK++, 0.0, 0.0, 1.0);
 
         glBegin(GL_TRIANGLES);
-        glVertex3f(-1.1, -1.1, 0.0);
-        glVertex3f(0.0, 1.1, 0.0);
-        glVertex3f(1.1, -1.1, 0.0);
+        glVertex3f(-10.1, -10.1, 0.0);
+        glVertex3f(0.0, 10.1, 0.0);
+        glVertex3f(10.1, -10.1, 0.0);
         glEnd();
 
         glfwSwapBuffers(window);

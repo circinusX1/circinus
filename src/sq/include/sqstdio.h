@@ -8,12 +8,12 @@
 
 struct SQStream {
     virtual ~SQStream() {}
-    virtual int Read(void *buffer, int size) = 0;
-    virtual int Write(void *buffer, int size) = 0;
-    virtual int Flush() = 0;
-    virtual int Tell() = 0;
-    virtual int Len() = 0;
-    virtual int Seek(int offset, int origin) = 0;
+    virtual isize_t Read(void *buffer, isize_t size) = 0;
+    virtual isize_t Write(void *buffer, isize_t size) = 0;
+    virtual isize_t Flush() = 0;
+    virtual isize_t Tell() = 0;
+    virtual isize_t Len() = 0;
+    virtual isize_t Seek(isize_t offset, isize_t origin) = 0;
     virtual bool IsValid() = 0;
     virtual bool EOS() = 0;
 };
@@ -28,16 +28,16 @@ extern "C" {
 typedef void* SQFILE;
 
 SQUIRREL_API SQFILE sqstd_fopen(const SQChar *,const SQChar *);
-SQUIRREL_API int sqstd_fread(PVOID, int, int, SQFILE);
-SQUIRREL_API int sqstd_fwrite(const PVOID, int, int, SQFILE);
-SQUIRREL_API int sqstd_fseek(SQFILE , int , int);
-SQUIRREL_API int sqstd_ftell(SQFILE);
-SQUIRREL_API int sqstd_fflush(SQFILE);
-SQUIRREL_API int sqstd_fclose(SQFILE);
-SQUIRREL_API int sqstd_feof(SQFILE);
+SQUIRREL_API isize_t sqstd_fread(PVOID, isize_t, isize_t, SQFILE);
+SQUIRREL_API isize_t sqstd_fwrite(const PVOID, isize_t, isize_t, SQFILE);
+SQUIRREL_API isize_t sqstd_fseek(SQFILE , isize_t , isize_t);
+SQUIRREL_API isize_t sqstd_ftell(SQFILE);
+SQUIRREL_API isize_t sqstd_fflush(SQFILE);
+SQUIRREL_API isize_t sqstd_fclose(SQFILE);
+SQUIRREL_API isize_t sqstd_feof(SQFILE);
 
 SQUIRREL_API SQRESULT sqstd_createfile(HSKVM v, SQFILE file,bool own);
-SQUIRREL_API SQRESULT sqstd_getfile(HSKVM v, int idx, SQFILE *file);
+SQUIRREL_API SQRESULT sqstd_getfile(HSKVM v, isize_t idx, SQFILE *file);
 
 //compiler helpers
 SQUIRREL_API SQRESULT sqstd_loadfile(HSKVM v,const SQChar *filename,bool printerror);

@@ -16,12 +16,12 @@ struct SQString : public SQRefCounted
     SQString(){}
     ~SQString(){}
 public:
-    static SQString *Create(SQSharedState *ss, const SQChar *, int len = -1 );
-    int Next(const SQObjectPtr &refpos, SQObjectPtr &outkey, SQObjectPtr &outval);
+    static SQString *Create(SQSharedState *ss, const SQChar *, isize_t len = -1 );
+    isize_t Next(const SQObjectPtr &refpos, SQObjectPtr &outkey, SQObjectPtr &outval);
     void Release();
     SQSharedState *_sharedstate;
     SQString *_next; //chain for the string table
-    int _len;
+    isize_t _len;
     size_t _hash;
     SQChar _val[1];
 };

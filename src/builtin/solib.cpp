@@ -21,9 +21,9 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 SoLib::SoLib(const char* plugin):Divais(eVOID, eSOLIB, plugin),Reg<SoLib>(this)
 {
-    _soh = dlopen(plugin, RTLD_NOW | RTLD_LOCAL | RTLD_NOLOAD); //RTLD_NOLOAD flag is not specified in POSIX.1-2001..so not the best solution :(
+    _soh = dlopen(plugin, RTLD_NOW | RTLD_LOCAL); //RTLD_NOLOAD flag is not specified in POSIX.1-2001..so not the best solution :(
     if (_soh == NULL) {
-        _soh = dlopen(plugin, RTLD_NOW | RTLD_LOCAL);
+        _soh = dlopen(plugin, RTLD_NOW | RTLD_LOCAL | RTLD_NOLOAD);
         if (_soh == NULL){
             LOGE(__FUNCTION__ << dlerror());
             return;
@@ -62,6 +62,7 @@ bool SoLib::load(const char* foo, bool ret, int nargs)
             return false;
         }
         LOGI("adding function " << foo << " " << std::hex << uf.sz <<std::dec<< " to root");
+        if(nargs==0 && ret!=0){nargs=BOGUS_ARGS;}
         Sqrat::RootTable(VM()).MembRt(foo, pfoo, ret ? -nargs : nargs);
         return true;
     }

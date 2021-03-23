@@ -331,7 +331,7 @@ SQRESULT sqrat_import(HSKVM v) {
     return res;
 }
 
-static int sqratbase_import(HSKVM v) {
+static isize_t sqratbase_import(HSKVM v) {
     int args = sq_gettop(v);
     switch(args) {
     case 2:
@@ -352,7 +352,7 @@ SQRESULT sqrat_register_importlib(HSKVM v) {
     sq_pushroottable(v);
 
     sq_pushstring(v, _SC("import"), -1);
-    sq_newclosure(v, &sqratbase_import, 0);
+    sq_newclosure(v, &sqratbase_import, 0,0);
     sq_newslot(v, -3, 0);
     sq_pop(v, 1); // pop sqrat table
     return SQ_OK;

@@ -44,7 +44,8 @@ bool    DvFile::iopen(int mode)
 	else if((mode & 0x6))
 		smode="a";
 
-	return ::fopen(_dev_node.c_str(), smode.c_str())!=0;
+	_pf=::fopen(_dev_node.c_str(), smode.c_str());
+	return _pf != nullptr;
 }
 
 void    DvFile::iclose()
@@ -56,16 +57,18 @@ void    DvFile::iclose()
 
 size_t     DvFile::bread(uint8_t* buff, int len, int offset)
 {
+	size_t rv = -1;
 	if(_mode & O_WRONLY && _pf)
 	{
 		if(offset>0)
 		{
 			::fseek(_pf, offset, SEEK_SET);
 		}
-		size_t rv = ::fread(buff, sizeof(uint8_t), len, _pf);
-		if(rv>0) on_event(eREAD, buff, len, offset);
+		rv = ::fread(buff, sizeof(uint8_t), len, _pf);
+		if(rv>0) 
+			on_event(eREAD, buff, len, offset);
 	}
-	return -1;
+	return rv;
 }
 
 int     DvFile::bwrite(const uint8_t* buff, int len, int offset)

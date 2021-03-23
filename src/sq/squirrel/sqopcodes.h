@@ -3,7 +3,7 @@
 #define _SQOPCODES_H_
 
 #define MAX_FUNC_STACKSIZE 0xFF
-#define MAX_LITERALS ((int)0x7FFFFFFF)
+#define MAX_LITERALS ((isize_t)0x7FFFFFFF)
 
 enum BitWiseOP {
     BW_AND = 0,
@@ -110,10 +110,10 @@ struct SQInstruction
 {
     SQInstruction(){};
     SQInstruction(SQOpcode _op,
-                  int a0=0,
-                  int a1=0,
-                  int a2=0,
-                  int a3=0)
+                  isize_t a0=0,
+                  isize_t a1=0,
+                  isize_t a2=0,
+                  isize_t a3=0)
     {
         op = (unsigned char)_op;
         _arg0 = (unsigned char)a0;

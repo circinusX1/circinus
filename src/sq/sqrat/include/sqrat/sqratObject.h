@@ -287,7 +287,7 @@ public:
     /// \return An Object representing the value of the slot (can be a null object if nothing was found)
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Object GetSlot(int index) const {
+    Object GetSlot(isize_t index) const {
         HSQOBJECT slotObj;
         SQ_PTRS->pushobject(vm, GetObject());
         SQ_PTRS->pushinteger(vm, index);
@@ -323,7 +323,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <class T>
-    T Cast(int index=-1) const {
+    T Cast(isize_t index=-1) const {
         SQ_PTRS->pushobject(vm, GetObject());
         T ret = Var<T>(vm, index).value;
         SQ_PTRS->pop(vm, 1);
@@ -352,9 +352,9 @@ public:
     /// \return Size of Object
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    int GetSize() const {
+    isize_t GetSize() const {
         SQ_PTRS->pushobject(vm, GetObject());
-        int ret = SQ_PTRS->getsize(vm, -1);
+        isize_t ret = SQ_PTRS->getsize(vm, -1);
         SQ_PTRS->pop(vm, 1);
         return ret;
     }
@@ -408,7 +408,7 @@ public:
 
         HSQOBJECT Key;
         HSQOBJECT Value;
-        int Index;
+        isize_t Index;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,7 +443,7 @@ protected:
 
     // Bind a function and it's associated Squirrel closure to the object
     inline void BindMemb(const SQChar* name, void* method, size_t methodSize,
-                         SQFUNCTION func,  bool staticVar = false, int nargs=0)
+                         SQFUNCTION func,  bool staticVar = false, isize_t nargs=0)
     {
         SQ_PTRS->pushobject(vm, GetObject());
         SQ_PTRS->pushstring(vm, name, -1);
@@ -456,7 +456,7 @@ protected:
         SQ_PTRS->pop(vm,1); // pop table
     }
 
-    inline void BindMemb(const int index, void* method, size_t methodSize,
+    inline void BindMemb(const isize_t index, void* method, size_t methodSize,
                          SQFUNCTION func, bool staticVar = false) {
         SQ_PTRS->pushobject(vm, GetObject());
         SQ_PTRS->pushinteger(vm, index);
@@ -473,7 +473,7 @@ protected:
                            void* method,
                            size_t methodSize,
                            SQFUNCTION_RT func,
-                           int nargs,
+                           isize_t nargs,
                            bool staticVar = false)
     {
         SQ_PTRS->pushobject(vm, GetObject());
@@ -490,7 +490,7 @@ protected:
 
 
     // Bind a function and it's associated Squirrel closure to the object
-    inline void BindOverload(const SQChar* name, void* method, size_t methodSize, SQFUNCTION func, SQFUNCTION overload, int argCount, bool staticVar = false) {
+    inline void BindOverload(const SQChar* name, void* method, size_t methodSize, SQFUNCTION func, SQFUNCTION overload, isize_t argCount, bool staticVar = false) {
         string overloadName = SqOverloadName::Get(name, argCount);
 
         SQ_PTRS->pushobject(vm, GetObject());
@@ -521,7 +521,7 @@ protected:
         SQ_PTRS->pop(vm,1); // pop table
     }
     template<class V>
-    inline void BindValue(const int index, const V& val, bool staticVar = false) {
+    inline void BindValue(const isize_t index, const V& val, bool staticVar = false) {
         SQ_PTRS->pushobject(vm, GetObject());
         SQ_PTRS->pushinteger(vm, index);
         PushVar(vm, val);
@@ -539,7 +539,7 @@ protected:
         SQ_PTRS->pop(vm,1); // pop table
     }
     template<class V>
-    inline void BindInstance(const int index, V* val, bool staticVar = false) {
+    inline void BindInstance(const isize_t index, V* val, bool staticVar = false) {
         SQ_PTRS->pushobject(vm, GetObject());
         SQ_PTRS->pushinteger(vm, index);
         PushVar(vm, val);
@@ -552,10 +552,10 @@ protected:
 
 /// @cond DEV
 template<>
-inline void Object::BindValue<int>(const SQChar* name, const int & val, bool staticVar /* = false */) {
+inline void Object::BindValue<isize_t>(const SQChar* name, const isize_t & val, bool staticVar /* = false */) {
     SQ_PTRS->pushobject(vm, GetObject());
     SQ_PTRS->pushstring(vm, name, -1);
-    PushVar<int>(vm, val);
+    PushVar<isize_t>(vm, val);
     SQ_PTRS->newslot(vm, -3, staticVar);
     SQ_PTRS->pop(vm,1); // pop table
 }
@@ -579,7 +579,7 @@ struct Var<Object> {
     /// This function MUST have its Error handled if it occurred.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Var(HSKVM vm, int idx) {
+    Var(HSKVM vm, isize_t idx) {
         HSQOBJECT sqValue;
         SQ_PTRS->getstackobj(vm, idx, &sqValue);
         value = Object(sqValue, vm);
@@ -601,13 +601,13 @@ struct Var<Object> {
 /// Used to get and push Object instances to and from the stack as references (Object is always a reference)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-struct Var<Object&> : Var<Object> {Var(HSKVM vm, int idx) : Var<Object>(vm, idx) {}};
+struct Var<Object&> : Var<Object> {Var(HSKVM vm, isize_t idx) : Var<Object>(vm, idx) {}};
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Used to get and push Object instances to and from the stack as references (Object is always a reference)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-struct Var<const Object&> : Var<Object> {Var(HSKVM vm, int idx) : Var<Object>(vm, idx) {}};
+struct Var<const Object&> : Var<Object> {Var(HSKVM vm, isize_t idx) : Var<Object>(vm, idx) {}};
 
 }
 

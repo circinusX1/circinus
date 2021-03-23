@@ -260,7 +260,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R>
 	SharedPtr<R> Fcall() {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -308,7 +308,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R, class A1>
 	SharedPtr<R> Fcall(A1 a1) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -362,7 +362,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R, class A1, class A2>
 	SharedPtr<R> Fcall(A1 a1, A2 a2) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -419,7 +419,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R, class A1, class A2, class A3>
 	SharedPtr<R> Fcall(A1 a1, A2 a2, A3 a3) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -478,7 +478,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R, class A1, class A2, class A3, class A4>
 	SharedPtr<R> Fcall(A1 a1, A2 a2, A3 a3, A4 a4) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -540,7 +540,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R, class A1, class A2, class A3, class A4, class A5>
 	SharedPtr<R> Fcall(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -605,7 +605,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R, class A1, class A2, class A3, class A4, class A5, class A6>
 	SharedPtr<R> Fcall(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -674,7 +674,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
 	SharedPtr<R> Fcall(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -745,7 +745,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
 	SharedPtr<R> Fcall(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -819,7 +819,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
 	SharedPtr<R> Fcall(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -896,7 +896,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10>
 	SharedPtr<R> Fcall(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -976,7 +976,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11>
 	SharedPtr<R> Fcall(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1059,7 +1059,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12>
 	SharedPtr<R> Fcall(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1145,7 +1145,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13>
 	SharedPtr<R> Fcall(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1234,7 +1234,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14>
 	SharedPtr<R> Fcall(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1290,7 +1290,7 @@ public:
 	///
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void Execute() {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1331,7 +1331,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class A1>
 	void Execute(A1 a1) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1378,7 +1378,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class A1, class A2>
 	void Execute(A1 a1, A2 a2) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1428,7 +1428,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class A1, class A2, class A3>
 	void Execute(A1 a1, A2 a2, A3 a3) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1481,7 +1481,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class A1, class A2, class A3, class A4>
 	void Execute(A1 a1, A2 a2, A3 a3, A4 a4) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1537,7 +1537,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class A1, class A2, class A3, class A4, class A5>
 	void Execute(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1596,7 +1596,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class A1, class A2, class A3, class A4, class A5, class A6>
 	void Execute(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1658,7 +1658,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class A1, class A2, class A3, class A4, class A5, class A6, class A7>
 	void Execute(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1723,7 +1723,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
 	void Execute(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1791,7 +1791,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
 	void Execute(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1862,7 +1862,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10>
 	void Execute(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -1936,7 +1936,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11>
 	void Execute(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -2013,7 +2013,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12>
 	void Execute(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -2094,7 +2094,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13>
 	void Execute(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -2177,7 +2177,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14>
 	void Execute(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14) {
-		int top = SQ_PTRS->gettop(vm);
+		isize_t top = SQ_PTRS->gettop(vm);
 
 		SQ_PTRS->pushobject(vm, obj);
 		SQ_PTRS->pushobject(vm, env);
@@ -2661,7 +2661,7 @@ struct Var<Function> {
 	/// This function MUST have its Error handled if it occurred.
 	///
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	Var(HSKVM vm, int idx) {
+	Var(HSKVM vm, isize_t idx) {
 		HSQOBJECT sqEnv;
 		HSQOBJECT sqValue;
 		SQ_PTRS->getstackobj(vm, 1, &sqEnv);
@@ -2691,13 +2691,13 @@ struct Var<Function> {
 /// Used to get and push Function instances to and from the stack as references (functions are always references in Squirrel)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-struct Var<Function&> : Var<Function> {Var(HSKVM vm, int idx) : Var<Function>(vm, idx) {}};
+struct Var<Function&> : Var<Function> {Var(HSKVM vm, isize_t idx) : Var<Function>(vm, idx) {}};
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Used to get and push Function instances to and from the stack as references (functions are always references in Squirrel)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-struct Var<const Function&> : Var<Function> {Var(HSKVM vm, int idx) : Var<Function>(vm, idx) {}};
+struct Var<const Function&> : Var<Function> {Var(HSKVM vm, isize_t idx) : Var<Function>(vm, idx) {}};
 
 }
 

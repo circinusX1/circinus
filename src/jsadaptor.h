@@ -138,7 +138,7 @@ struct TblJsTbl final
             case OT_BOOL:
             {
                 rapidjson::Value kname(s,_at);
-                rapidjson::Value kvalue(v._unVal.nInteger);
+                rapidjson::Value kvalue(int(v._unVal.nInteger));
                 _pd.AddMember(kname,kvalue,_at);
             }
                 break;

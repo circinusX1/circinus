@@ -8,9 +8,9 @@
 #include "sqclosure.h"
 #include "sqstring.h"
 
-SQRESULT sq_getfunctioninfo(HSKVM v,int level,SQFunctionInfo *fi)
+SQRESULT sq_getfunctioninfo(HSKVM v,isize_t level,SQFunctionInfo *fi)
 {
-    int cssize = v->_callsstacksize;
+    isize_t cssize = v->_callsstacksize;
     if (cssize > level) {
         SQVM::CallInfo &ci = v->_callsstack[cssize-level-1];
         if(sq_isclosure(ci._closure)) {
@@ -26,9 +26,9 @@ SQRESULT sq_getfunctioninfo(HSKVM v,int level,SQFunctionInfo *fi)
     return sq_throwerror(v,_SC("the object is not a closure"));
 }
 
-SQRESULT sq_stackinfos(HSKVM v, int level, SQStackInfos *si)
+SQRESULT sq_stackinfos(HSKVM v, isize_t level, SQStackInfos *si)
 {
-    int cssize = v->_callsstacksize;
+    isize_t cssize = v->_callsstacksize;
     if (cssize > level) {
         memset(si, 0, sizeof(SQStackInfos));
         SQVM::CallInfo &ci = v->_callsstack[cssize-level-1];
@@ -60,7 +60,7 @@ void SQVM::Raise_Error(const SQChar *s, ...)
 {
     va_list vl;
     va_start(vl, s);
-    int buffersize = (int)scstrlen(s)+(NUMBER_MAX_CHAR*2);
+    isize_t buffersize = (isize_t)scstrlen(s)+(NUMBER_MAX_CHAR*2);
     scvsprintf(_sp(sq_rsl(buffersize)),buffersize, s, vl);
     va_end(vl);
     _lasterror = SQString::Create(_ss(this),_spval,-1);
@@ -101,13 +101,13 @@ void SQVM::Raise_CompareError(const SQObject &o1, const SQObject &o2)
 }
 
 
-void SQVM::Raise_ParamTypeError(int nparam,int typemask,int type)
+void SQVM::Raise_ParamTypeError(isize_t nparam,isize_t typemask,isize_t type)
 {
     SQObjectPtr exptypes = SQString::Create(_ss(this), _SC(""), -1);
-    int found = 0;
-    for(int i=0; i<16; i++)
+    isize_t found = 0;
+    for(isize_t i=0; i<16; i++)
     {
-        int mask = ((int)1) << i;
+        isize_t mask = ((isize_t)1) << i;
         if(typemask & (mask)) {
             if(found>0) StringCat(exptypes,SQString::Create(_ss(this), _SC("|"), -1), exptypes);
             found ++;

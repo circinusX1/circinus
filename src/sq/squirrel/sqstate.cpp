@@ -29,13 +29,13 @@ SQSharedState::SQSharedState()
 
 #define newmetamethod(s) {  \
     _metamethods->push_back(SQString::Create(this,s));  \
-    _table(_metamethodsmap)->NewSlot(_metamethods->back(),(int)(_metamethods->size()-1)); \
+    _table(_metamethodsmap)->NewSlot(_metamethods->back(),(isize_t)(_metamethods->size()-1)); \
     }
 
 bool CompileTypemask(SQIntVec &res,const SQChar *typemask)
 {
-    int i = 0;
-    int mask = 0;
+    isize_t i = 0;
+    isize_t mask = 0;
     while(typemask[i] != 0) {
         switch(typemask[i]) {
             case 'o': mask |= _RT_NULL; break;
@@ -75,7 +75,7 @@ bool CompileTypemask(SQIntVec &res,const SQChar *typemask)
 
 SQTable *CreateDefaultDelegate(SQSharedState *ss,const SQRegFunction *funcz)
 {
-    int i=0;
+    isize_t i=0;
     SQTable *t=SQTable::Create(ss,0);
     while(funcz[i].name!=0){
         SQNativeClosure *nc = SQNativeClosure::Create(ss,funcz[i].f,0);
@@ -210,7 +210,7 @@ SQSharedState::~SQSharedState()
 }
 
 
-int SQSharedState::GetMetaMethodIdxByName(const SQObjectPtr &name)
+isize_t SQSharedState::GetMetaMethodIdxByName(const SQObjectPtr &name)
 {
     if(sq_type(name) != OT_STRING)
         return -1;
@@ -264,9 +264,9 @@ void SQSharedState::RunMark(SQVM* SQ_UNUSED_ARG(vm),SQCollectable **tchain)
 
 }
 
-int SQSharedState::ResurrectUnreachable(SQVM *vm)
+isize_t SQSharedState::ResurrectUnreachable(SQVM *vm)
 {
-    int n=0;
+    isize_t n=0;
     SQCollectable *tchain=NULL;
 
     RunMark(vm,&tchain);
@@ -318,9 +318,9 @@ int SQSharedState::ResurrectUnreachable(SQVM *vm)
     return n;
 }
 
-int SQSharedState::CollectGarbage(SQVM *vm)
+isize_t SQSharedState::CollectGarbage(SQVM *vm)
 {
-    int n = 0;
+    isize_t n = 0;
     SQCollectable *tchain = NULL;
 
     RunMark(vm,&tchain);
@@ -371,9 +371,9 @@ void SQCollectable::RemoveFromChain(SQCollectable **chain,SQCollectable *c)
 }
 #endif
 
-SQChar* SQSharedState::GetScratchPad(int size)
+SQChar* SQSharedState::GetScratchPad(isize_t size)
 {
-    int newsize;
+    isize_t newsize;
     if(size>0) {
         if(_scratchpadsize < size) {
             newsize = size + (size>>1);
@@ -570,17 +570,17 @@ SQStringTable::~SQStringTable()
     _strings = NULL;
 }
 
-void SQStringTable::AllocNodes(int size)
+void SQStringTable::AllocNodes(isize_t size)
 {
     _numofslots = size;
     _strings = (SQString**)SQ_MALLOC(sizeof(SQString*)*_numofslots);
     memset(_strings,0,sizeof(SQString*)*_numofslots);
 }
 
-SQString *SQStringTable::Add(const SQChar *news,int len)
+SQString *SQStringTable::Add(const SQChar *news,isize_t len)
 {
     if(len<0)
-        len = (int)scstrlen(news);
+        len = (isize_t)scstrlen(news);
     size_t newhash = ::_hashstr(news,len);
     size_t h = newhash&(_numofslots-1);
     SQString *s;
@@ -604,12 +604,12 @@ SQString *SQStringTable::Add(const SQChar *news,int len)
     return t;
 }
 
-void SQStringTable::Resize(int size)
+void SQStringTable::Resize(isize_t size)
 {
-    int oldsize=_numofslots;
+    isize_t oldsize=_numofslots;
     SQString **oldtable=_strings;
     AllocNodes(size);
-    for (int i=0; i<oldsize; i++){
+    for (isize_t i=0; i<oldsize; i++){
         SQString *p = oldtable[i];
         while(p){
             SQString *next = p->_next;
@@ -635,7 +635,7 @@ void SQStringTable::Remove(SQString *bs)
             else
                 _strings[h] = s->_next;
             _slotused--;
-            int slen = s->_len;
+            isize_t slen = s->_len;
             s->~SQString();
             SQ_FREE(s,sizeof(SQString) + sq_rsl(slen));
             return;

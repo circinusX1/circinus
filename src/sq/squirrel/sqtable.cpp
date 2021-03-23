@@ -7,9 +7,9 @@ see copyright notice in squirrel.h
 #include "sqfuncproto.h"
 #include "sqclosure.h"
 
-SQTable::SQTable(SQSharedState *ss,int nInitialSize)
+SQTable::SQTable(SQSharedState *ss,isize_t nInitialSize)
 {
-    int pow2size=MINPOWER2;
+    isize_t pow2size=MINPOWER2;
     while(nInitialSize>pow2size)pow2size=pow2size<<1;
     AllocNodes(pow2size);
     _usednodes = 0;
@@ -30,10 +30,10 @@ void SQTable::Remove(const SQObjectPtr &key)
     }
 }
 
-void SQTable::AllocNodes(int nSize)
+void SQTable::AllocNodes(isize_t nSize)
 {
     _HashNode *nodes=(_HashNode *)SQ_MALLOC(sizeof(_HashNode)*nSize);
-    for(int i=0;i<nSize;i++){
+    for(isize_t i=0;i<nSize;i++){
         _HashNode &n = nodes[i];
         new (&n) _HashNode;
         n.next=NULL;
@@ -45,11 +45,11 @@ void SQTable::AllocNodes(int nSize)
 
 void SQTable::Rehash(bool force)
 {
-    int oldsize=_numofnodes;
+    isize_t oldsize=_numofnodes;
     //prevent problems with the integer division
     if(oldsize<4)oldsize=4;
     _HashNode *nold=_nodes;
-    int nelems=CountUsed();
+    isize_t nelems=CountUsed();
     if (nelems >= oldsize-oldsize/4)  /* using more than 3/4? */
         AllocNodes(oldsize*2);
     else if (nelems <= oldsize/4 &&  /* less than 1/4? */
@@ -60,12 +60,12 @@ void SQTable::Rehash(bool force)
     else
         return;
     _usednodes = 0;
-    for (int i=0; i<oldsize; i++) {
+    for (isize_t i=0; i<oldsize; i++) {
         _HashNode *old = nold+i;
         if (sq_type(old->key) != OT_NULL)
             NewSlot(old->key,old->val);
     }
-    for(int k=0;k<oldsize;k++)
+    for(isize_t k=0;k<oldsize;k++)
         nold[k].~_HashNode();
     SQ_FREE(nold,oldsize*sizeof(_HashNode));
 }
@@ -78,7 +78,7 @@ SQTable *SQTable::Clone()
     _HashNode *basedst = nt->_nodes;
     _HashNode *src = _nodes;
     _HashNode *dst = nt->_nodes;
-    int n = 0;
+    isize_t n = 0;
     for(n = 0; n < _numofnodes; n++) {
         dst->key = src->key;
         dst->val = src->val;
@@ -95,7 +95,7 @@ SQTable *SQTable::Clone()
     nt->_firstfree = basedst + (_firstfree - basesrc);
     nt->_usednodes = _usednodes;
 #else
-    int ridx=0;
+    isize_t ridx=0;
     SQObjectPtr key,val;
     while((ridx=Next(true,ridx,key,val))!=-1){
         nt->NewSlot(key,val);
@@ -173,9 +173,9 @@ bool SQTable::NewSlot(const SQObjectPtr &key,const SQObjectPtr &val)
     return NewSlot(key, val);
 }
 
-int SQTable::Next(bool getweakrefs,const SQObjectPtr &refpos, SQObjectPtr &outkey, SQObjectPtr &outval)
+isize_t SQTable::Next(bool getweakrefs,const SQObjectPtr &refpos, SQObjectPtr &outkey, SQObjectPtr &outval)
 {
-    int idx = (int)TranslateIndex(refpos);
+    isize_t idx = (isize_t)TranslateIndex(refpos);
     while (idx < _numofnodes) {
         if(sq_type(_nodes[idx].key) != OT_NULL) {
             //first found
@@ -204,7 +204,7 @@ bool SQTable::Set(const SQObjectPtr &key, const SQObjectPtr &val)
 
 void SQTable::_ClearNodes()
 {
-    for(int i = 0;i < _numofnodes; i++) { _HashNode &n = _nodes[i]; n.key.Null(); n.val.Null(); }
+    for(isize_t i = 0;i < _numofnodes; i++) { _HashNode &n = _nodes[i]; n.key.Null(); n.val.Null(); }
 }
 
 void SQTable::Finalize()

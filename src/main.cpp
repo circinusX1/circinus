@@ -119,8 +119,6 @@ int _inner(int argc, char *argv[])
     if(Reincepe==false)
         std::cout << EMBIX_VERSION<<" " <<__DATE__<<" \n";
 
-    _testfoo();
-
     if(argc < 2)
     {
         std::cout << "requires a script as a parameter\n";

@@ -62,25 +62,25 @@ enum SQMetaMethod{
 
 
 #define _CONSTRUCT_VECTOR(type,size,ptr) { \
-    for(int n = 0; n < ((int)size); n++) { \
+    for(isize_t n = 0; n < ((isize_t)size); n++) { \
             new (&ptr[n]) type(); \
         } \
 }
 
 #define _DESTRUCT_VECTOR(type,size,ptr) { \
-    for(int nl = 0; nl < ((int)size); nl++) { \
+    for(isize_t nl = 0; nl < ((isize_t)size); nl++) { \
             ptr[nl].~type(); \
     } \
 }
 
 #define _COPY_VECTOR(dest,src,size) { \
-    for(int _n_ = 0; _n_ < ((int)size); _n_++) { \
+    for(isize_t _n_ = 0; _n_ < ((isize_t)size); _n_++) { \
         dest[_n_] = src[_n_]; \
     } \
 }
 
 #define _NULL_SQOBJECT_VECTOR(vec,size) { \
-    for(int _n_ = 0; _n_ < ((int)size); _n_++) { \
+    for(isize_t _n_ = 0; _n_ < ((isize_t)size); _n_++) { \
         vec[_n_].Null(); \
     } \
 }
@@ -158,7 +158,7 @@ struct SQObjectPtr;
 #define _userdataval(obj) ((PVOID)sq_aligning((obj)._unVal.pUserData + 1))
 
 #define tofloat(num) ((sq_type(num)==OT_INTEGER)?(SQFloat)_integer(num):_float(num))
-#define tointeger(num) ((sq_type(num)==OT_FLOAT)?(int)_float(num):_integer(num))
+#define tointeger(num) ((sq_type(num)==OT_FLOAT)?(isize_t)_float(num):_integer(num))
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 #if defined(SQUSEDOUBLE) && !defined(_SQ64) || !defined(SQUSEDOUBLE) && defined(_SQ64)
@@ -239,7 +239,7 @@ struct SQObjectPtr : public SQObject
     _REF_TYPE_DECL(OT_THREAD,SQVM,pThread)
     _REF_TYPE_DECL(OT_FUNCPROTO,SQFunctionProto,pFunctionProto)
 
-    _SCALAR_TYPE_DECL(OT_INTEGER,int,nInteger)
+    _SCALAR_TYPE_DECL(OT_INTEGER,isize_t,nInteger)
     _SCALAR_TYPE_DECL(OT_FLOAT,SQFloat,fFloat)
     _SCALAR_TYPE_DECL(OT_USERPOINTER,PVOID,pUserPointer)
     SQObjectPtr(bool bBool)
@@ -353,7 +353,7 @@ struct SQDelegable : public CHAINABLE_OBJ {
 
 size_t TranslateIndex(const SQObjectPtr &idx);
 typedef sqvector<SQObjectPtr> SQObjectPtrVec;
-typedef sqvector<int> SQIntVec;
+typedef sqvector<isize_t> SQIntVec;
 const SQChar *GetTypeName(const SQObjectPtr &obj1);
 const SQChar *IdType2Name(SQObjectType type);
 

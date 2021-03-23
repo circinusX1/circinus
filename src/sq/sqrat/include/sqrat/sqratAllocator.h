@@ -43,17 +43,17 @@ namespace Sqrat {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template< class T >
 class is_default_constructible {
-    template<int x>
+    template<isize_t x>
     class receive_size{};
 
     template< class U >
-    static int sfinae( receive_size< sizeof U() > * );
+    static isize_t sfinae( receive_size< sizeof U() > * );
 
     template< class U >
     static char sfinae( ... );
 
 public:
-    enum { value = sizeof( sfinae<T>(0) ) == sizeof(int) };
+    enum { value = sizeof( sfinae<T>(0) ) == sizeof(isize_t) };
 };
 /// @endcond
 
@@ -102,7 +102,7 @@ public:
     /// This function should only need to be used when custom constructors are bound with Class::SquirrelMemb.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void SetInstance(HSKVM vm, int idx, C* ptr)
+    static void SetInstance(HSKVM vm, isize_t idx, C* ptr)
     {
         ClassData<C>* cd = ClassType<C>::getClassData(vm);
         SQ_PTRS->setinstanceup(vm, idx, new std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >(ptr, cd->instances));
@@ -118,7 +118,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static int New(HSKVM vm) {
+    static isize_t New(HSKVM vm) {
         SetInstance(vm, 1, NewC<C, is_default_constructible<C>::value >().p);
         return 0;
     }
@@ -127,12 +127,12 @@ public:
     /// @cond DEV
     /// following iNew functions are used only if constructors are bound via Ctor() in Sqrat::Class (safe to ignore)
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         return New(vm);
     }
 
     template <typename A1>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         SQCATCH_NOEXCEPT(vm) {
@@ -147,7 +147,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -164,7 +164,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2,typename A3>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -183,7 +183,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -204,7 +204,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -227,7 +227,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -252,7 +252,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6,typename A7>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -279,7 +279,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6,typename A7,typename A8>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -308,7 +308,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6,typename A7,typename A8,typename A9>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -352,7 +352,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static int Copy(HSKVM vm, int idx, const void* value) {
+    static isize_t Copy(HSKVM vm, isize_t idx, const void* value) {
         SetInstance(vm, idx, new C(*static_cast<const C*>(value)));
         return 0;
     }
@@ -366,7 +366,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static int Delete(PVOID ptr, int size) {
+    static isize_t Delete(PVOID ptr, isize_t size) {
         SQUNUSED(size);
         std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >* instance = reinterpret_cast<std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >*>(ptr);
         instance->second->erase(instance->first);
@@ -397,7 +397,7 @@ public:
     /// This function should only need to be used when custom constructors are bound with Class::SquirrelMemb.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void SetInstance(HSKVM vm, int idx, C* ptr)
+    static void SetInstance(HSKVM vm, isize_t idx, C* ptr)
     {
         ClassData<C>* cd = ClassType<C>::getClassData(vm);
         SQ_PTRS->setinstanceup(vm, idx, new std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >(ptr, cd->instance));
@@ -413,7 +413,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static int New(HSKVM vm) {
+    static isize_t New(HSKVM vm) {
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         return SQ_PTRS->throwerror(vm, (ClassType<C>::ClassName() + string(_SC(" constructing is not allowed"))).c_str());
 #else
@@ -432,7 +432,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static int Copy(HSKVM vm, int idx, const void* value) {
+    static isize_t Copy(HSKVM vm, isize_t idx, const void* value) {
         SQUNUSED(vm);
         SQUNUSED(idx);
         SQUNUSED(value);
@@ -448,7 +448,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static int Delete(PVOID ptr, int size) {
+    static isize_t Delete(PVOID ptr, isize_t size) {
         SQUNUSED(size);
         std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >* instance = reinterpret_cast<std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >*>(ptr);
         instance->second->erase(instance->first);
@@ -479,7 +479,7 @@ public:
     /// This function should only need to be used when custom constructors are bound with Class::SquirrelMemb.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void SetInstance(HSKVM vm, int idx, C* ptr)
+    static void SetInstance(HSKVM vm, isize_t idx, C* ptr)
     {
         ClassData<C>* cd = ClassType<C>::getClassData(vm);
         SQ_PTRS->setinstanceup(vm, idx, new std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >(ptr, cd->instances));
@@ -495,7 +495,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static int New(HSKVM vm) {
+    static isize_t New(HSKVM vm) {
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         return SQ_PTRS->throwerror(vm, (ClassType<C>::ClassName() + string(_SC(" constructing is not allowed"))).c_str());
 #else
@@ -514,7 +514,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static int Copy(HSKVM vm, int idx, const void* value) {
+    static isize_t Copy(HSKVM vm, isize_t idx, const void* value) {
         SetInstance(vm, idx, new C(*static_cast<const C*>(value)));
         return 0;
     }
@@ -528,7 +528,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static int Delete(PVOID ptr, int size) {
+    static isize_t Delete(PVOID ptr, isize_t size) {
         SQUNUSED(size);
         std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >* instance = reinterpret_cast<std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >*>(ptr);
         instance->second->erase(instance->first);
@@ -584,7 +584,7 @@ public:
     /// This function should only need to be used when custom constructors are bound with Class::SquirrelMemb.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static void SetInstance(HSKVM vm, int idx, C* ptr)
+    static void SetInstance(HSKVM vm, isize_t idx, C* ptr)
     {
         ClassData<C>* cd = ClassType<C>::getClassData(vm);
         SQ_PTRS->setinstanceup(vm, idx, new std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >(ptr, cd->instances));
@@ -600,7 +600,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static int New(HSKVM vm) {
+    static isize_t New(HSKVM vm) {
         SetInstance(vm, 1, NewC<C, is_default_constructible<C>::value >().p);
         return 0;
     }
@@ -609,12 +609,12 @@ public:
     /// @cond DEV
     /// following iNew functions are used only if constructors are bound via Ctor() in Sqrat::Class (safe to ignore)
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         return New(vm);
     }
 
     template <typename A1>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         SQCATCH_NOEXCEPT(vm) {
@@ -629,7 +629,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -646,7 +646,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2,typename A3>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -665,7 +665,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -686,7 +686,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -709,7 +709,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -734,7 +734,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6,typename A7>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -761,7 +761,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6,typename A7,typename A8>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -790,7 +790,7 @@ public:
         return 0;
     }
     template <typename A1,typename A2,typename A3,typename A4,typename A5,typename A6,typename A7,typename A8,typename A9>
-    static int iNew(HSKVM vm) {
+    static isize_t iNew(HSKVM vm) {
         SQTRY()
         Var<A1> a1(vm, 2);
         Var<A2> a2(vm, 3);
@@ -832,7 +832,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static int Copy(HSKVM vm, int idx, const void* value) {
+    static isize_t Copy(HSKVM vm, isize_t idx, const void* value) {
         SQUNUSED(vm);
         SQUNUSED(idx);
         SQUNUSED(value);
@@ -848,7 +848,7 @@ public:
     /// \return Squirrel error code
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static int Delete(PVOID ptr, int size) {
+    static isize_t Delete(PVOID ptr, isize_t size) {
         SQUNUSED(size);
         std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >* instance = reinterpret_cast<std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >*>(ptr);
         instance->second->erase(instance->first);

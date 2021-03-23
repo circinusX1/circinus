@@ -18,9 +18,9 @@ inline size_t HashObj(const SQObjectPtr &key)
 {
     switch(sq_type(key)) {
         case OT_STRING:     return _string(key)->_hash;
-        case OT_FLOAT:      return (size_t)((int)_float(key));
+        case OT_FLOAT:      return (size_t)((isize_t)_float(key));
         case OT_BOOL:
-        case OT_INTEGER:    return (size_t)((int)_integer(key));
+        case OT_INTEGER:    return (size_t)((isize_t)_integer(key));
         default:            return hashptr(key._unVal.pRefCounted);
     }
 }
@@ -37,16 +37,16 @@ private:
     };
     _HashNode *_firstfree;
     _HashNode *_nodes;
-    int _numofnodes;
-    int _usednodes;
+    isize_t _numofnodes;
+    isize_t _usednodes;
 
 ///////////////////////////
-    void AllocNodes(int nSize);
+    void AllocNodes(isize_t nSize);
     void Rehash(bool force);
-    SQTable(SQSharedState *ss, int nInitialSize);
+    SQTable(SQSharedState *ss, isize_t nInitialSize);
     void _ClearNodes();
 public:
-    static SQTable* Create(SQSharedState *ss,int nInitialSize)
+    static SQTable* Create(SQSharedState *ss,isize_t nInitialSize)
     {
         SQTable *newtable = (SQTable*)SQ_MALLOC(sizeof(SQTable));
         new (newtable) SQTable(ss, nInitialSize);
@@ -59,7 +59,7 @@ public:
     {
         SetDelegate(NULL);
         REMOVE_FROM_CHAIN(&_sharedstate->_gc_chain, this);
-        for (int i = 0; i < _numofnodes; i++) _nodes[i].~_HashNode();
+        for (isize_t i = 0; i < _numofnodes; i++) _nodes[i].~_HashNode();
         SQ_FREE(_nodes, _numofnodes * sizeof(_HashNode));
     }
 #ifndef NO_GARBAGE_COLLECTOR
@@ -77,7 +77,7 @@ public:
         return NULL;
     }
     //for compiler use
-    inline bool GetStr(const SQChar* key,int keylen,SQObjectPtr &val)
+    inline bool GetStr(const SQChar* key,isize_t keylen,SQObjectPtr &val)
     {
         size_t hash = _hashstr(key,keylen);
         _HashNode *n = &_nodes[hash & (_numofnodes - 1)];
@@ -99,9 +99,9 @@ public:
     bool Set(const SQObjectPtr &key, const SQObjectPtr &val);
     //returns true if a new slot has been created false if it was already present
     bool NewSlot(const SQObjectPtr &key,const SQObjectPtr &val);
-    int Next(bool getweakrefs,const SQObjectPtr &refpos, SQObjectPtr &outkey, SQObjectPtr &outval);
+    isize_t Next(bool getweakrefs,const SQObjectPtr &refpos, SQObjectPtr &outkey, SQObjectPtr &outval);
 
-    int CountUsed(){ return _usednodes;}
+    isize_t CountUsed(){ return _usednodes;}
     void Clear();
     void Release()
     {

@@ -337,7 +337,7 @@ private:
 
     Error() {}
 
-    static int error_cleanup_hook(PVOID ptr, int size) {
+    static isize_t error_cleanup_hook(PVOID ptr, isize_t size) {
         SQUNUSED(size);
         string** ud = reinterpret_cast<string**>(ptr);
         delete *ud;
@@ -445,7 +445,7 @@ private:
 /// \return String containing a nice type error message
 ///
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline string FormatTypeError(HSKVM vm, int idx, const string& expectedType) {
+inline string FormatTypeError(HSKVM vm, isize_t idx, const string& expectedType) {
     string err = _SC("wrong type (") + expectedType + _SC(" expected");
 #if (SQUIRREL_VERSION_NUMBER>= 200) && (SQUIRREL_VERSION_NUMBER < 300) // Squirrel 2.x
     err = err + _SC(")");
@@ -508,8 +508,8 @@ class SharedPtr
 private:
 
     T*            m_Ptr;
-    unsigned int* m_RefCount;
-    unsigned int* m_RefCountRefCount;
+    size_t* m_RefCount;
+    size_t* m_RefCountRefCount;
 
 public:
 
@@ -714,10 +714,10 @@ public:
 
         m_Ptr = ptr;
 
-        m_RefCount = new unsigned int;
+        m_RefCount = new size_t;
         *m_RefCount = 1;
 
-        m_RefCountRefCount = new unsigned int;
+        m_RefCountRefCount = new size_t;
         *m_RefCountRefCount = 1;
     }
 
@@ -736,10 +736,10 @@ public:
 
         m_Ptr = static_cast<T*>(ptr);
 
-        m_RefCount = new unsigned int;
+        m_RefCount = new size_t;
         *m_RefCount = 1;
 
-        m_RefCountRefCount = new unsigned int;
+        m_RefCountRefCount = new size_t;
         *m_RefCountRefCount = 1;
     }
 
@@ -952,8 +952,8 @@ class WeakPtr
 private:
 
     T*            m_Ptr;
-    unsigned int* m_RefCount;
-    unsigned int* m_RefCountRefCount;
+    size_t* m_RefCount;
+    size_t* m_RefCountRefCount;
 
 public:
 

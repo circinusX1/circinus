@@ -69,12 +69,12 @@ public:
         }
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if(SQ_FAILED(SQ_PTRS->compilebuffer(vm, script.c_str(), static_cast<int>(script.size() /** sizeof(SQChar)*/), name.c_str(), true))) {
+        if(SQ_FAILED(SQ_PTRS->compilebuffer(vm, script.c_str(), static_cast<isize_t>(script.size() /** sizeof(SQChar)*/), name.c_str(), true))) {
             SQTHROW(vm, LastErrorString(vm));
             return;
         }
 #else
-        SQ_PTRS->compilebuffer(vm, script.c_str(), static_cast<int>(script.size() /** sizeof(SQChar)*/), name.c_str(), true);
+        SQ_PTRS->compilebuffer(vm, script.c_str(), static_cast<isize_t>(script.size() /** sizeof(SQChar)*/), name.c_str(), true);
 #endif
         SQ_PTRS->getstackobj(vm,-1,&obj);
         SQ_PTRS->addref(vm, &obj);
@@ -96,12 +96,12 @@ public:
         }
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
-        if(SQ_FAILED(SQ_PTRS->compilebuffer(vm, script.c_str(), static_cast<int>(script.size() /** sizeof(SQChar)*/), name.c_str(), true))) {
+        if(SQ_FAILED(SQ_PTRS->compilebuffer(vm, script.c_str(), static_cast<isize_t>(script.size() /** sizeof(SQChar)*/), name.c_str(), true))) {
             errMsg = LastErrorString(vm);
             return false;
         }
 #else
-        SQ_PTRS->compilebuffer(vm, script.c_str(), static_cast<int>(script.size() /** sizeof(SQChar)*/), name.c_str(), true);
+        SQ_PTRS->compilebuffer(vm, script.c_str(), static_cast<isize_t>(script.size() /** sizeof(SQChar)*/), name.c_str(), true);
 #endif
         SQ_PTRS->getstackobj(vm,-1,&obj);
         SQ_PTRS->addref(vm, &obj);
@@ -175,7 +175,7 @@ public:
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if(!sq_isnull(obj)) {
             SQRESULT result;
-            int top = SQ_PTRS->gettop(vm);
+            isize_t top = SQ_PTRS->gettop(vm);
             SQ_PTRS->pushobject(vm, obj);
             SQ_PTRS->pushroottable(vm);
             result = SQ_PTRS->call(vm, 1, false, true);
@@ -186,7 +186,7 @@ public:
             }
         }
 #else
-        int top = SQ_PTRS->gettop(vm);
+        isize_t top = SQ_PTRS->gettop(vm);
         SQ_PTRS->pushobject(vm, obj);
         SQ_PTRS->pushroottable(vm);
         SQ_PTRS->call(vm, 1, false, true);
@@ -204,7 +204,7 @@ public:
     bool Run(string& errMsg) {
         if(!sq_isnull(obj)) {
             SQRESULT result;
-            int top = SQ_PTRS->gettop(vm);
+            isize_t top = SQ_PTRS->gettop(vm);
             SQ_PTRS->pushobject(vm, obj);
             SQ_PTRS->pushroottable(vm);
             result = SQ_PTRS->call(vm, 1, false, true);

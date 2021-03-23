@@ -48,7 +48,7 @@ public:
 
     // Arg Count 0
     template <bool overloaded /*= false*/>
-    static int Memb0(HSKVM vm) {
+    static isize_t Memb0(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
@@ -88,7 +88,7 @@ public:
     }
 
     template <bool overloaded /*= false*/>
-    static int Memb0C(HSKVM vm) {
+    static isize_t Memb0C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
@@ -127,7 +127,7 @@ public:
 
     // Arg Count 1
     template <class A1, bool overloaded /*= false*/>
-    static int Memb1(HSKVM vm) {
+    static isize_t Memb1(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 3) {
@@ -172,7 +172,7 @@ public:
     }
 
     template <class A1, bool overloaded /*= false*/>
-    static int Memb1C(HSKVM vm) {
+    static isize_t Memb1C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 3) {
@@ -218,7 +218,7 @@ public:
 
     // Arg Count 2
     template <class A1, class A2, bool overloaded /*= false*/>
-    static int Memb2(HSKVM vm) {
+    static isize_t Memb2(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 4) {
@@ -265,7 +265,7 @@ public:
     }
 
     template <class A1, class A2, bool overloaded /*= false*/>
-    static int Memb2C(HSKVM vm) {
+    static isize_t Memb2C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 4) {
@@ -313,7 +313,7 @@ public:
 
     // Arg Count 3
     template <class A1, class A2, class A3, bool overloaded /*= false*/>
-    static int Memb3(HSKVM vm) {
+    static isize_t Memb3(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 5) {
@@ -362,7 +362,7 @@ public:
     }
 
     template <class A1, class A2, class A3, bool overloaded /*= false*/>
-    static int Memb3C(HSKVM vm) {
+    static isize_t Memb3C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 5) {
@@ -412,7 +412,7 @@ public:
 
     // Arg Count 4
     template <class A1, class A2, class A3, class A4, bool overloaded /*= false*/>
-    static int Memb4(HSKVM vm) {
+    static isize_t Memb4(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 6) {
@@ -463,7 +463,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, bool overloaded /*= false*/>
-    static int Memb4C(HSKVM vm) {
+    static isize_t Memb4C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 6) {
@@ -515,7 +515,7 @@ public:
 
     // Arg Count 5
     template <class A1, class A2, class A3, class A4, class A5, bool overloaded /*= false*/>
-    static int Memb5(HSKVM vm) {
+    static isize_t Memb5(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 7) {
@@ -569,7 +569,7 @@ public:
 
 
     template <class A1, class A2, class A3, class A4, class A5, bool overloaded /*= false*/>
-    static int Memb5C(HSKVM vm) {
+    static isize_t Memb5C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 7) {
@@ -622,7 +622,7 @@ public:
 
     // Arg Count 6
     template <class A1, class A2, class A3, class A4, class A5, class A6, bool overloaded /*= false*/>
-    static int Memb6(HSKVM vm) {
+    static isize_t Memb6(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 8) {
@@ -676,7 +676,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, bool overloaded /*= false*/>
-    static int Memb6C(HSKVM vm) {
+    static isize_t Memb6C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 8) {
@@ -731,7 +731,7 @@ public:
 
     // Arg Count 7
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, bool overloaded /*= false*/>
-    static int Memb7(HSKVM vm) {
+    static isize_t Memb7(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 9) {
@@ -787,7 +787,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, bool overloaded /*= false*/>
-    static int Memb7C(HSKVM vm) {
+    static isize_t Memb7C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 9) {
@@ -844,7 +844,7 @@ public:
 
     // Arg Count 8
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, bool overloaded /*= false*/>
-    static int Memb8(HSKVM vm) {
+    static isize_t Memb8(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 10) {
@@ -902,7 +902,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, bool overloaded /*= false*/>
-    static int Memb8C(HSKVM vm) {
+    static isize_t Memb8C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 10) {
@@ -961,7 +961,7 @@ public:
 
     // Arg Count 9
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, bool overloaded /*= false*/>
-    static int Memb9(HSKVM vm) {
+    static isize_t Memb9(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 11) {
@@ -1021,7 +1021,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, bool overloaded /*= false*/>
-    static int Memb9C(HSKVM vm) {
+    static isize_t Memb9C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 11) {
@@ -1083,7 +1083,7 @@ public:
 
     // Arg Count 10
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, bool overloaded /*= false*/>
-    static int Memb10(HSKVM vm) {
+    static isize_t Memb10(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 12) {
@@ -1145,7 +1145,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, bool overloaded  /*= false*/ >
-    static int Memb10C(HSKVM vm) {
+    static isize_t Memb10C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 12) {
@@ -1209,7 +1209,7 @@ public:
 
     // Arg Count 11
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, bool overloaded /*= false*/>
-    static int Memb11(HSKVM vm) {
+    static isize_t Memb11(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 13) {
@@ -1273,7 +1273,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, bool overloaded /*= false*/>
-    static int Memb11C(HSKVM vm) {
+    static isize_t Memb11C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 13) {
@@ -1339,7 +1339,7 @@ public:
 
     // Arg Count 12
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, bool overloaded /*= false*/  >
-    static int Memb12(HSKVM vm) {
+    static isize_t Memb12(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 14) {
@@ -1405,7 +1405,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, bool overloaded /*= false*/>
-    static int Memb12C(HSKVM vm) {
+    static isize_t Memb12C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 14) {
@@ -1472,7 +1472,7 @@ public:
 
     // Arg Count 13
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, bool overloaded /*= false*/>
-    static int Memb13(HSKVM vm) {
+    static isize_t Memb13(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 15) {
@@ -1540,7 +1540,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, bool overloaded /*= false*/>
-    static int Memb13C(HSKVM vm) {
+    static isize_t Memb13C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 15) {
@@ -1609,7 +1609,7 @@ public:
 
     // Arg Count 14
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, bool overloaded /*= false*/>
-    static int Memb14(HSKVM vm) {
+    static isize_t Memb14(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 16) {
@@ -1679,7 +1679,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, bool overloaded /*= false*/>
-    static int Memb14C(HSKVM vm) {
+    static isize_t Memb14C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 16) {
@@ -1760,7 +1760,7 @@ public:
 
     // Arg Count 0
     template <bool overloaded /*= false*/>
-    static int Memb0(HSKVM vm) {
+    static isize_t Memb0(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
@@ -1798,7 +1798,7 @@ public:
     }
 
     template <bool overloaded /*= false*/>
-    static int Memb0C(HSKVM vm) {
+    static isize_t Memb0C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
@@ -1837,7 +1837,7 @@ public:
 
     // Arg Count 1
     template <class A1, bool overloaded /*= false*/>
-    static int Memb1(HSKVM vm) {
+    static isize_t Memb1(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 3) {
@@ -1881,7 +1881,7 @@ public:
     }
 
     template <class A1, bool overloaded /*= false*/>
-    static int Memb1C(HSKVM vm) {
+    static isize_t Memb1C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 3) {
@@ -1926,7 +1926,7 @@ public:
 
     // Arg Count 2
     template <class A1, class A2, bool overloaded /*= false*/>
-    static int Memb2(HSKVM vm) {
+    static isize_t Memb2(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 4) {
@@ -1972,7 +1972,7 @@ public:
     }
 
     template <class A1, class A2, bool overloaded /*= false*/>
-    static int Memb2C(HSKVM vm) {
+    static isize_t Memb2C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 4) {
@@ -2019,7 +2019,7 @@ public:
 
     // Arg Count 3
     template <class A1, class A2, class A3, bool overloaded /*= false*/>
-    static int Memb3(HSKVM vm) {
+    static isize_t Memb3(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 5) {
@@ -2067,7 +2067,7 @@ public:
     }
 
     template <class A1, class A2, class A3, bool overloaded /*= false*/>
-    static int Memb3C(HSKVM vm) {
+    static isize_t Memb3C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 5) {
@@ -2116,7 +2116,7 @@ public:
 
     // Arg Count 4
     template <class A1, class A2, class A3, class A4, bool overloaded /*= false*/>
-    static int Memb4(HSKVM vm) {
+    static isize_t Memb4(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 6) {
@@ -2166,7 +2166,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, bool overloaded /*= false*/>
-    static int Memb4C(HSKVM vm) {
+    static isize_t Memb4C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 6) {
@@ -2217,7 +2217,7 @@ public:
 
     // Arg Count 5
     template <class A1, class A2, class A3, class A4, class A5, bool overloaded /*= false*/>
-    static int Memb5(HSKVM vm) {
+    static isize_t Memb5(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 7) {
@@ -2269,7 +2269,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, bool overloaded /*= false*/>
-    static int Memb5C(HSKVM vm) {
+    static isize_t Memb5C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 7) {
@@ -2322,7 +2322,7 @@ public:
 
     // Arg Count 6
     template <class A1, class A2, class A3, class A4, class A5, class A6, bool overloaded /*= false*/>
-    static int Memb6(HSKVM vm) {
+    static isize_t Memb6(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 8) {
@@ -2376,7 +2376,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, bool overloaded /*= false*/>
-    static int Memb6C(HSKVM vm) {
+    static isize_t Memb6C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 8) {
@@ -2431,7 +2431,7 @@ public:
 
     // Arg Count 7
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, bool overloaded /*= false*/>
-    static int Memb7(HSKVM vm) {
+    static isize_t Memb7(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 9) {
@@ -2487,7 +2487,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, bool overloaded /*= false*/>
-    static int Memb7C(HSKVM vm) {
+    static isize_t Memb7C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 9) {
@@ -2544,7 +2544,7 @@ public:
 
     // Arg Count 8
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, bool overloaded /*= false*/>
-    static int Memb8(HSKVM vm) {
+    static isize_t Memb8(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 10) {
@@ -2602,7 +2602,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, bool overloaded /*= false*/>
-    static int Memb8C(HSKVM vm) {
+    static isize_t Memb8C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 10) {
@@ -2661,7 +2661,7 @@ public:
 
     // Arg Count 9
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, bool overloaded /*= false*/>
-    static int Memb9(HSKVM vm) {
+    static isize_t Memb9(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 11) {
@@ -2721,7 +2721,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, bool overloaded /*= false*/>
-    static int Memb9C(HSKVM vm) {
+    static isize_t Memb9C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 11) {
@@ -2783,7 +2783,7 @@ public:
 
     // Arg Count 10
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, bool overloaded /*= false*/>
-    static int Memb10(HSKVM vm) {
+    static isize_t Memb10(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 12) {
@@ -2845,7 +2845,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, bool overloaded  /*= false*/ >
-    static int Memb10C(HSKVM vm) {
+    static isize_t Memb10C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 12) {
@@ -2909,7 +2909,7 @@ public:
 
     // Arg Count 11
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, bool overloaded /*= false*/>
-    static int Memb11(HSKVM vm) {
+    static isize_t Memb11(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 13) {
@@ -2973,7 +2973,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, bool overloaded /*= false*/>
-    static int Memb11C(HSKVM vm) {
+    static isize_t Memb11C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 13) {
@@ -3039,7 +3039,7 @@ public:
 
     // Arg Count 12
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, bool overloaded /*= false*/  >
-    static int Memb12(HSKVM vm) {
+    static isize_t Memb12(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 14) {
@@ -3105,7 +3105,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, bool overloaded /*= false*/>
-    static int Memb12C(HSKVM vm) {
+    static isize_t Memb12C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 14) {
@@ -3172,7 +3172,7 @@ public:
 
     // Arg Count 13
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, bool overloaded /*= false*/>
-    static int Memb13(HSKVM vm) {
+    static isize_t Memb13(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 15) {
@@ -3240,7 +3240,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, bool overloaded /*= false*/>
-    static int Memb13C(HSKVM vm) {
+    static isize_t Memb13C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 15) {
@@ -3309,7 +3309,7 @@ public:
 
     // Arg Count 14
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, bool overloaded /*= false*/>
-    static int Memb14(HSKVM vm) {
+    static isize_t Memb14(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 16) {
@@ -3379,7 +3379,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, bool overloaded /*= false*/>
-    static int Memb14C(HSKVM vm) {
+    static isize_t Memb14C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 16) {
@@ -3461,7 +3461,7 @@ public:
 
     // Arg Count 0
     template <bool overloaded /*= false*/>
-    static int Memb0(HSKVM vm) {
+    static isize_t Memb0(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
@@ -3498,7 +3498,7 @@ public:
     }
 
     template <bool overloaded /*= false*/>
-    static int Memb0C(HSKVM vm) {
+    static isize_t Memb0C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
@@ -3536,7 +3536,7 @@ public:
 
     // Arg Count 1
     template <class A1, bool overloaded /*= false*/>
-    static int Memb1(HSKVM vm) {
+    static isize_t Memb1(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 3) {
@@ -3579,7 +3579,7 @@ public:
     }
 
     template <class A1, bool overloaded /*= false*/>
-    static int Memb1C(HSKVM vm) {
+    static isize_t Memb1C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 3) {
@@ -3623,7 +3623,7 @@ public:
 
     // Arg Count 2
     template <class A1, class A2, bool overloaded /*= false*/>
-    static int Memb2(HSKVM vm) {
+    static isize_t Memb2(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 4) {
@@ -3668,7 +3668,7 @@ public:
     }
 
     template <class A1, class A2, bool overloaded /*= false*/>
-    static int Memb2C(HSKVM vm) {
+    static isize_t Memb2C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 4) {
@@ -3714,7 +3714,7 @@ public:
 
     // Arg Count 3
     template <class A1, class A2, class A3, bool overloaded /*= false*/>
-    static int Memb3(HSKVM vm) {
+    static isize_t Memb3(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 5) {
@@ -3761,7 +3761,7 @@ public:
     }
 
     template <class A1, class A2, class A3, bool overloaded /*= false*/>
-    static int Memb3C(HSKVM vm) {
+    static isize_t Memb3C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 5) {
@@ -3809,7 +3809,7 @@ public:
 
     // Arg Count 4
     template <class A1, class A2, class A3, class A4, bool overloaded /*= false*/>
-    static int Memb4(HSKVM vm) {
+    static isize_t Memb4(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 6) {
@@ -3858,7 +3858,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, bool overloaded /*= false*/>
-    static int Memb4C(HSKVM vm) {
+    static isize_t Memb4C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 6) {
@@ -3908,7 +3908,7 @@ public:
 
     // Arg Count 5
     template <class A1, class A2, class A3, class A4, class A5, bool overloaded /*= false*/>
-    static int Memb5(HSKVM vm) {
+    static isize_t Memb5(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 7) {
@@ -3959,7 +3959,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, bool overloaded /*= false*/>
-    static int Memb5C(HSKVM vm) {
+    static isize_t Memb5C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 7) {
@@ -4011,7 +4011,7 @@ public:
 
     // Arg Count 6
     template <class A1, class A2, class A3, class A4, class A5, class A6, bool overloaded /*= false*/>
-    static int Memb6(HSKVM vm) {
+    static isize_t Memb6(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 8) {
@@ -4064,7 +4064,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, bool overloaded /*= false*/>
-    static int Memb6C(HSKVM vm) {
+    static isize_t Memb6C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 8) {
@@ -4118,7 +4118,7 @@ public:
 
     // Arg Count 7
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, bool overloaded /*= false*/>
-    static int Memb7(HSKVM vm) {
+    static isize_t Memb7(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 9) {
@@ -4173,7 +4173,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, bool overloaded /*= false*/>
-    static int Memb7C(HSKVM vm) {
+    static isize_t Memb7C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 9) {
@@ -4229,7 +4229,7 @@ public:
 
     // Arg Count 8
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, bool overloaded /*= false*/>
-    static int Memb8(HSKVM vm) {
+    static isize_t Memb8(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 10) {
@@ -4286,7 +4286,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, bool overloaded /*= false*/>
-    static int Memb8C(HSKVM vm) {
+    static isize_t Memb8C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 10) {
@@ -4344,7 +4344,7 @@ public:
 
     // Arg Count 9
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, bool overloaded /*= false*/>
-    static int Memb9(HSKVM vm) {
+    static isize_t Memb9(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 11) {
@@ -4403,7 +4403,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, bool overloaded /*= false*/>
-    static int Memb9C(HSKVM vm) {
+    static isize_t Memb9C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 11) {
@@ -4463,7 +4463,7 @@ public:
 
     // Arg Count 10
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, bool overloaded /*= false*/>
-    static int Memb10(HSKVM vm) {
+    static isize_t Memb10(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 12) {
@@ -4524,7 +4524,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, bool overloaded /*= false*/>
-    static int Memb10C(HSKVM vm) {
+    static isize_t Memb10C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 12) {
@@ -4586,7 +4586,7 @@ public:
 
     // Arg Count 11
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, bool overloaded /*= false*/>
-    static int Memb11(HSKVM vm) {
+    static isize_t Memb11(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 13) {
@@ -4649,7 +4649,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, bool overloaded /*= false*/>
-    static int Memb11C(HSKVM vm) {
+    static isize_t Memb11C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 13) {
@@ -4713,7 +4713,7 @@ public:
 
     // Arg Count 12
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, bool overloaded /*= false*/>
-    static int Memb12(HSKVM vm) {
+    static isize_t Memb12(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 14) {
@@ -4778,7 +4778,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, bool overloaded /*= false*/>
-    static int Memb12C(HSKVM vm) {
+    static isize_t Memb12C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 14) {
@@ -4844,7 +4844,7 @@ public:
 
     // Arg Count 13
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, bool overloaded /*= false*/>
-    static int Memb13(HSKVM vm) {
+    static isize_t Memb13(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 15) {
@@ -4911,7 +4911,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, bool overloaded /*= false*/>
-    static int Memb13C(HSKVM vm) {
+    static isize_t Memb13C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 15) {
@@ -4979,7 +4979,7 @@ public:
 
     // Arg Count 14
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, bool overloaded /*= false*/>
-    static int Memb14(HSKVM vm) {
+    static isize_t Memb14(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 16) {
@@ -5048,7 +5048,7 @@ public:
     }
 
     template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, bool overloaded /*= false*/>
-    static int Memb14C(HSKVM vm) {
+    static isize_t Memb14C(HSKVM vm) {
 
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 16) {
@@ -5442,7 +5442,7 @@ inline SQFUNCTION SqMemberMemb(R& (C::* /*method*/)(A1, A2, A3, A4, A5, A6, A7, 
 //
 
 template <class C, class V>
-inline int sqDefaultGet(HSKVM vm) {
+inline isize_t sqDefaultGet(HSKVM vm) {
     C* ptr;
     SQTRY()
     ptr = Var<C*>(vm, 1).value;
@@ -5465,7 +5465,7 @@ inline int sqDefaultGet(HSKVM vm) {
 }
 
 template <class C, class V>
-inline int sqStaticGet(HSKVM vm) {
+inline isize_t sqStaticGet(HSKVM vm) {
     typedef V *M;
     M* memberPtr = NULL;
     SQ_PTRS->getuserdata(vm, -1, (PVOID*)&memberPtr, NULL); // Get Member...
@@ -5476,7 +5476,7 @@ inline int sqStaticGet(HSKVM vm) {
     return 1;
 }
 
-inline int sqVarGet(HSKVM vm) {
+inline isize_t sqVarGet(HSKVM vm) {
     // Find the get method in the get table
     SQ_PTRS->push(vm, 2);
 #if !defined (SCRAT_NO_ERROR_CHECKING)
@@ -5514,7 +5514,7 @@ inline int sqVarGet(HSKVM vm) {
 //
 
 template <class C, class V>
-inline int sqDefaultSet(HSKVM vm) {
+inline isize_t sqDefaultSet(HSKVM vm) {
     C* ptr;
     SQTRY()
     ptr = Var<C*>(vm, 1).value;
@@ -5548,7 +5548,7 @@ inline int sqDefaultSet(HSKVM vm) {
 }
 
 template <class C, class V>
-inline int sqStaticSet(HSKVM vm) {
+inline isize_t sqStaticSet(HSKVM vm) {
     typedef V *M;
     M* memberPtr = NULL;
     SQ_PTRS->getuserdata(vm, -1, (PVOID*)&memberPtr, NULL); // Get Member...
@@ -5570,7 +5570,7 @@ inline int sqStaticSet(HSKVM vm) {
     return 0;
 }
 
-inline int sqVarSet(HSKVM vm) {
+inline isize_t sqVarSet(HSKVM vm) {
     // Find the set method in the set table
     SQ_PTRS->push(vm, 2);
 #if !defined (SCRAT_NO_ERROR_CHECKING)

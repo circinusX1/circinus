@@ -299,8 +299,8 @@ SQRESULT sqrat_import(HSKVM v) {
     return res;
 }
 
-static int sqratbase_import(HSKVM v) {
-    int args = sq_gettop(v);
+static isize_t sqratbase_import(HSKVM v) {
+    isize_t args = sq_gettop(v);
     switch(args) {
     case 2:
         sq_pushroottable(v);

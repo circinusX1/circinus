@@ -39,7 +39,7 @@ namespace Sqrat
 /// @cond DEV
 
 // The copy function for a class
-typedef int (*COPYFUNC)(HSKVM, int, const void*);
+typedef isize_t (*COPYFUNC)(HSKVM, isize_t, const void*);
 
 // Every Squirrel class instance made by Sqrat has its type tag set to a AbstractStaticClassData object that is unique per C++ class
 struct AbstractStaticClassData {
@@ -153,7 +153,7 @@ public:
         return getStaticClassData().Lock()->copyMemb;
     }
 
-    static int DeleteInstance(PVOID ptr, int size) {
+    static isize_t DeleteInstance(PVOID ptr, isize_t size) {
         SQUNUSED(size);
         std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >* instance = reinterpret_cast<std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >*>(ptr);
         instance->second->erase(instance->first);
@@ -195,7 +195,7 @@ public:
 #endif
     }
 
-    static C* GetInstance(HSKVM vm, int idx, bool nullAllowed = false) {
+    static C* GetInstance(HSKVM vm, isize_t idx, bool nullAllowed = false) {
         AbstractStaticClassData* classType = NULL;
         std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >* instance = NULL;
         if (hasClassData(vm)) /* type checking only done if the value has type data else it may be enum */
@@ -228,7 +228,7 @@ public:
         AbstractStaticClassData* actualType;
         SQ_PTRS->gettypetag(vm, idx, (PVOID*)&actualType);
         if (actualType == NULL) {
-            int top = SQ_PTRS->gettop(vm);
+            isize_t top = SQ_PTRS->gettop(vm);
             SQ_PTRS->getclass(vm, idx);
             while (actualType == NULL) {
                 SQ_PTRS->getbase(vm, -1);

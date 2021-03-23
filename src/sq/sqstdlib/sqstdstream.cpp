@@ -16,11 +16,11 @@
     if(!self || !self->IsValid())  \
         return sq_throwerror(v,_SC("the stream is invalid"));
 
-int _stream_readblob(HSKVM v)
+isize_t _stream_readblob(HSKVM v)
 {
     SETUP_STREAM(v);
     PVOID data,blobp;
-    int size,res;
+    isize_t size,res;
     sq_getinteger(v,2,&size);
     if(size > self->Len()) {
         size = self->Len();
@@ -37,14 +37,14 @@ int _stream_readblob(HSKVM v)
 #define SAFE_READN(ptr,len) { \
     if(self->Read(ptr,len) != len) return sq_throwerror(v,_SC("io error")); \
     }
-int _stream_readn(HSKVM v)
+isize_t _stream_readn(HSKVM v)
 {
     SETUP_STREAM(v);
-    int format;
+    isize_t format;
     sq_getinteger(v, 2, &format);
     switch(format) {
     case 'l': {
-        int i;
+        isize_t i;
         SAFE_READN(&i, sizeof(i));
         sq_pushinteger(v, i);
               }
@@ -97,10 +97,10 @@ int _stream_readn(HSKVM v)
     return 1;
 }
 
-int _stream_writeblob(HSKVM v)
+isize_t _stream_writeblob(HSKVM v)
 {
     PVOID data;
-    int size;
+    isize_t size;
     SETUP_STREAM(v);
     if(SQ_FAILED(sqstd_getblob(v,2,&data)))
         return sq_throwerror(v,_SC("invalid parameter"));
@@ -111,18 +111,18 @@ int _stream_writeblob(HSKVM v)
     return 1;
 }
 
-int _stream_writen(HSKVM v)
+isize_t _stream_writen(HSKVM v)
 {
     SETUP_STREAM(v);
-    int format, ti;
+    isize_t format, ti;
     SQFloat tf;
     sq_getinteger(v, 3, &format);
     switch(format) {
     case 'l': {
-        int i;
+        isize_t i;
         sq_getinteger(v, 2, &ti);
         i = ti;
-        self->Write(&i, sizeof(int));
+        self->Write(&i, sizeof(isize_t));
               }
         break;
     case 'i': {
@@ -180,13 +180,13 @@ int _stream_writen(HSKVM v)
     return 0;
 }
 
-int _stream_seek(HSKVM v)
+isize_t _stream_seek(HSKVM v)
 {
     SETUP_STREAM(v);
-    int offset, origin = SQ_SEEK_SET;
+    isize_t offset, origin = SQ_SEEK_SET;
     sq_getinteger(v, 2, &offset);
     if(sq_gettop(v) > 2) {
-        int t;
+        isize_t t;
         sq_getinteger(v, 3, &t);
         switch(t) {
             case 'b': origin = SQ_SEEK_SET; break;
@@ -199,21 +199,21 @@ int _stream_seek(HSKVM v)
     return 1;
 }
 
-int _stream_tell(HSKVM v)
+isize_t _stream_tell(HSKVM v)
 {
     SETUP_STREAM(v);
     sq_pushinteger(v, self->Tell());
     return 1;
 }
 
-int _stream_len(HSKVM v)
+isize_t _stream_len(HSKVM v)
 {
     SETUP_STREAM(v);
     sq_pushinteger(v, self->Len());
     return 1;
 }
 
-int _stream_flush(HSKVM v)
+isize_t _stream_flush(HSKVM v)
 {
     SETUP_STREAM(v);
     if(!self->Flush())
@@ -223,7 +223,7 @@ int _stream_flush(HSKVM v)
     return 1;
 }
 
-int _stream_eos(HSKVM v)
+isize_t _stream_eos(HSKVM v)
 {
     SETUP_STREAM(v);
     if(self->EOS())
@@ -233,7 +233,7 @@ int _stream_eos(HSKVM v)
     return 1;
 }
 
- int _stream__cloned(HSKVM v)
+ isize_t _stream__cloned(HSKVM v)
  {
      return sq_throwerror(v,_SC("this object cannot be cloned"));
  }
@@ -260,7 +260,7 @@ void init_streamclass(HSKVM v)
         sq_pushstring(v,_SC("std_stream"),-1);
         sq_newclass(v,SQFalse);
         sq_settypetag(v,-1,(PVOID)((size_t)SQSTD_STREAM_TYPE_TAG));
-        int i = 0;
+        isize_t i = 0;
         while(_stream_methods[i].name != 0) {
             const SQRegFunction &f = _stream_methods[i];
             sq_pushstring(v,f.name,-1);
@@ -287,7 +287,7 @@ SQRESULT declare_stream(HSKVM v,const SQChar* name,PVOID typetag,const SQChar* r
 {
     if(sq_gettype(v,-1) != OT_TABLE)
         return sq_throwerror(v,_SC("table expected"));
-    int top = sq_gettop(v);
+    isize_t top = sq_gettop(v);
     //create delegate
     init_streamclass(v);
     sq_pushregistrytable(v);
@@ -296,7 +296,7 @@ SQRESULT declare_stream(HSKVM v,const SQChar* name,PVOID typetag,const SQChar* r
     if(SQ_SUCCEEDED(sq_get(v,-3))) {
         sq_newclass(v,SQTrue);
         sq_settypetag(v,-1,typetag);
-        int i = 0;
+        isize_t i = 0;
         while(methods[i].name != 0) {
             const SQRegFunction &f = methods[i];
             sq_pushstring(v,f.name,-1);

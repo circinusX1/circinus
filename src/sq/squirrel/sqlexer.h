@@ -14,34 +14,34 @@ struct SQLexer
     ~SQLexer();
     void Init(SQSharedState *ss,SQLEXREADFUNC rg,PVOID up,CompilerErrorMemb efunc,void *ed);
     void Error(const SQChar *err);
-    int Lex(int inst_tok=0);
-    const SQChar *Tok2Str(int tok);
+    isize_t Lex(isize_t inst_tok=0);
+    const SQChar *Tok2Str(isize_t tok);
 private:
-    int GetIDType(const SQChar *s,int len);
-    int ReadString(int ndelim,bool verbatim);
-    int ReadNumber(int tok=0);
+    isize_t GetIDType(const SQChar *s,isize_t len);
+    isize_t ReadString(isize_t ndelim,bool verbatim);
+    isize_t ReadNumber(isize_t tok=0);
     void LexBlockComment();
     void LexLineComment();
-    int ReadID();
+    isize_t ReadID();
     void Next();
 #ifdef SQUNICODE
 #if WCHAR_SIZE == 2
-    int AddUTF16(size_t ch);
+    isize_t AddUTF16(size_t ch);
 #endif
 #else
-    int AddUTF8(size_t ch);
+    isize_t AddUTF8(size_t ch);
 #endif
-    int ProcessStringHexEscape(SQChar *dest, int maxdigits);
-    int _curtoken;
+    isize_t ProcessStringHexEscape(SQChar *dest, isize_t maxdigits);
+    isize_t _curtoken;
     SQTable *_keywords;
     bool _reached_eof;
 public:
-    int _prevtoken;
-    int _currentline;
-    int _lasttokenline;
-    int _currentcolumn;
+    isize_t _prevtoken;
+    isize_t _currentline;
+    isize_t _lasttokenline;
+    isize_t _currentcolumn;
     const SQChar *_svalue;
-    int _nvalue;
+    isize_t _nvalue;
     SQFloat _fvalue;
     SQLEXREADFUNC _readf;
     PVOID _up;
@@ -50,7 +50,7 @@ public:
     sqvector<SQChar> _longstr;
     CompilerErrorMemb _errfunc;
     void *_errtarget;
-    int _decl_type; // mco-mco
+    isize_t _decl_type; // mco-mco
 };
 
 #endif

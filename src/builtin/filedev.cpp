@@ -42,7 +42,7 @@ FileDev::FileDev(SqObj& o,
 
 FileDev::~FileDev()
 {
-
+    delete _pb;
 }
 
 bool  FileDev::_write_now(const devdata_t& vl)
@@ -80,3 +80,12 @@ bool	FileDev::_set_value(const char* key, const char* value)
 {
     return false;
 }
+
+int  FileDev::fetch(Buff& buf)
+{
+    int bytes = this->bread(buf.buffer(), buf.length());
+    return bytes;
+}
+
+
+

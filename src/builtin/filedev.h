@@ -22,6 +22,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "sqwrap.h"
 #include "inst.h"
 #include "rtxbus.h"
+#include "buff.h"
 
 using namespace GenericHw;
 
@@ -36,6 +37,7 @@ public:
     FileDev(SqObj&, E_TYPE e, const char* , const char* name=nullptr);
     virtual ~FileDev();
     bool set_cb(SqMemb& mon);
+    int  fetch(Buff& buf);
     OVERW(DvFile,Divais)
     static void squit(SqEnvi& e){
         Sqrat::Class<FileDev> cls(e.theVM(), _SC("FILE"));
@@ -51,6 +53,7 @@ public:
         cls.Overload<int (FileDev::*)(SqArr&)>(_SC("write"), &RtxBus<FileDev>::_write);
         cls.Overload<void (FileDev::*)()>(_SC("flush"), &RtxBus<FileDev>::_devflush);
         cls.Overload<void (Divais::*)(const char*)>(_SC("set_name"), &Divais::set_name);
+        cls.Functor(_SC("fetch"), &FileDev::fetch);
         cls.Functor(_SC("get_name"), &FileDev::get_label_name);
         Sqrat::RootTable().Bind(_SC("FILE"), cls);
         FileDev::_squed = true;
@@ -61,7 +64,7 @@ protected:
 private:
     bool  _write_now(const devdata_t& vl);
     size_t  _fecth(devdata_t& vl, const char* filter);
-
+    Buff*   _pb = nullptr;
 };
 
 #endif // FILEDEV_H

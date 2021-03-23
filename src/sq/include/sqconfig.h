@@ -28,7 +28,7 @@ typedef size_t SQRawObjectVal; //is 32 bits on 32 bits builds and 64 bits otherw
 #endif
 
 typedef void* PVOID;
-typedef int   SQRESULT;
+typedef isize_t   SQRESULT;
 
 #ifdef SQUNICODE
 #include <wchar.h>

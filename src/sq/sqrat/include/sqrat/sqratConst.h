@@ -78,7 +78,7 @@ public:
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     virtual Enumeration& Const(const SQChar* name, const int val) {
-        BindValue<int>(name, val, false);
+        BindValue<isize_t>(name, val, false);
         return *this;
     }
 

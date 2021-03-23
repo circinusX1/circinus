@@ -13,11 +13,11 @@ struct SQStringTable
 {
     SQStringTable(SQSharedState*ss);
     ~SQStringTable();
-    SQString *Add(const SQChar *,int len);
+    SQString *Add(const SQChar *,isize_t len);
     void Remove(SQString *);
 private:
-    void Resize(int size);
-    void AllocNodes(int size);
+    void Resize(isize_t size);
+    void AllocNodes(isize_t size);
     SQString **_strings;
     size_t _numofslots;
     size_t _slotused;
@@ -62,12 +62,12 @@ struct SQSharedState
     ~SQSharedState();
     void Init();
 public:
-    SQChar* GetScratchPad(int size);
-    int GetMetaMethodIdxByName(const SQObjectPtr &name);
+    SQChar* GetScratchPad(isize_t size);
+    isize_t GetMetaMethodIdxByName(const SQObjectPtr &name);
 #ifndef NO_GARBAGE_COLLECTOR
-    int CollectGarbage(SQVM *vm);
+    isize_t CollectGarbage(SQVM *vm);
     void RunMark(SQVM *vm,SQCollectable **tchain);
-    int ResurrectUnreachable(SQVM *vm);
+    isize_t ResurrectUnreachable(SQVM *vm);
     static void MarkObject(SQObjectPtr &o,SQCollectable **chain);
 #endif
     SQObjectPtrVec *_metamethods;
@@ -113,7 +113,7 @@ public:
     SQRELEASEHOOK _releasehook;
 private:
     SQChar *_scratchpad;
-    int _scratchpadsize;
+    isize_t _scratchpadsize;
 };
 
 #define _sp(s) (_sharedstate->GetScratchPad(s))

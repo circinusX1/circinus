@@ -4,7 +4,7 @@
 
 struct SQBlob : public SQStream
 {
-    SQBlob(int size) {
+    SQBlob(isize_t size) {
         _size = size;
         _allocated = size;
         _buf = (unsigned char *)sq_malloc(size);
@@ -15,7 +15,7 @@ struct SQBlob : public SQStream
     virtual ~SQBlob() {
         sq_free(_buf, _allocated);
     }
-    int Write(void *buffer, int size) {
+    isize_t Write(void *buffer, isize_t size) {
         if(!CanAdvance(size)) {
             GrowBufOf(_ptr + size - _size);
         }
@@ -23,8 +23,8 @@ struct SQBlob : public SQStream
         _ptr += size;
         return size;
     }
-    int Read(void *buffer,int size) {
-        int n = size;
+    isize_t Read(void *buffer,isize_t size) {
+        isize_t n = size;
         if(!CanAdvance(size)) {
             if((_size - _ptr) > 0)
                 n = _size - _ptr;
@@ -34,7 +34,7 @@ struct SQBlob : public SQStream
         _ptr += n;
         return n;
     }
-    bool Resize(int n) {
+    bool Resize(isize_t n) {
         if(!_owns) return false;
         if(n != _allocated) {
             unsigned char *newbuf = (unsigned char *)sq_malloc(n);
@@ -53,7 +53,7 @@ struct SQBlob : public SQStream
         }
         return true;
     }
-    bool GrowBufOf(int n)
+    bool GrowBufOf(isize_t n)
     {
         bool ret = true;
         if(_size + n > _allocated) {
@@ -65,11 +65,11 @@ struct SQBlob : public SQStream
         _size = _size + n;
         return ret;
     }
-    bool CanAdvance(int n) {
+    bool CanAdvance(isize_t n) {
         if(_ptr+n>_size)return false;
         return true;
     }
-    int Seek(int offset, int origin) {
+    isize_t Seek(isize_t offset, isize_t origin) {
         switch(origin) {
             case SQ_SEEK_SET:
                 if(offset > _size || offset < 0) return -1;
@@ -93,14 +93,14 @@ struct SQBlob : public SQStream
     bool EOS() {
         return _ptr == _size;
     }
-    int Flush() { return 0; }
-    int Tell() { return _ptr; }
-    int Len() { return _size; }
+    isize_t Flush() { return 0; }
+    isize_t Tell() { return _ptr; }
+    isize_t Len() { return _size; }
     PVOID GetBuf(){ return _buf; }
 private:
-    int _size;
-    int _allocated;
-    int _ptr;
+    isize_t _size;
+    isize_t _allocated;
+    isize_t _ptr;
     unsigned char *_buf;
     bool _owns;
 };

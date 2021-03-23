@@ -58,7 +58,7 @@ class Class : public Object
 {
 private:
 
-    static int cleanup_hook(PVOID ptr, int size) {
+    static isize_t cleanup_hook(PVOID ptr, isize_t size) {
         SQUNUSED(size);
         ClassData<C>** ud = reinterpret_cast<ClassData<C>**>(ptr);
         delete *ud;
@@ -551,17 +551,17 @@ protected:
 
 /// @cond DEV
 
-    static int ClassWeakref(HSKVM vm) {
+    static isize_t ClassWeakref(HSKVM vm) {
         SQ_PTRS->weakref(vm, -1);
         return 1;
     }
 
-    static int ClassTypeof(HSKVM vm) {
+    static isize_t ClassTypeof(HSKVM vm) {
         SQ_PTRS->pushstring(vm, ClassType<C>::ClassName().c_str(), -1);
         return 1;
     }
 
-    static int ClassCloned(HSKVM vm) {
+    static isize_t ClassCloned(HSKVM vm) {
         SQTRY()
         Sqrat::Var<const C*> other(vm, 2);
         SQCATCH_NOEXCEPT(vm) {
@@ -667,7 +667,7 @@ protected:
     }
 
     // constructor binding
-    Class& BindConstructor(SQFUNCTION method, int nParams, const SQChar *name = 0) {
+    Class& BindConstructor(SQFUNCTION method, isize_t nParams, const SQChar *name = 0) {
         SQFUNCTION overload = SqOverloadMemb(method);
         bool alternative_global = false;
         if (name == 0)
@@ -910,7 +910,7 @@ class DerivedClass : public Class<C, A>
 {
 private:
 
-    static int cleanup_hook(PVOID ptr, int size) {
+    static isize_t cleanup_hook(PVOID ptr, isize_t size) {
         SQUNUSED(size);
         ClassData<C>** ud = reinterpret_cast<ClassData<C>**>(ptr);
         delete *ud;

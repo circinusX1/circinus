@@ -20,12 +20,12 @@ static bool isfmtchr(SQChar ch)
     return SQFalse;
 }
 
-static int validate_format(HSKVM v, SQChar *fmt, const SQChar *src, int n,int &width)
+static isize_t validate_format(HSKVM v, SQChar *fmt, const SQChar *src, isize_t n,isize_t &width)
 {
     SQChar *dummy;
     SQChar swidth[MAX_WFORMAT_LEN];
-    int wc = 0;
-    int start = n;
+    isize_t wc = 0;
+    isize_t start = n;
     fmt[0] = '%';
     while (isfmtchr(src[n])) n++;
     while (scisdigit(src[n])) {
@@ -65,7 +65,7 @@ static int validate_format(HSKVM v, SQChar *fmt, const SQChar *src, int n,int &w
     return n;
 }
 
-SQRESULT sqstd_format(HSKVM v,int nformatstringidx,int *outlen,SQChar **output)
+SQRESULT sqstd_format(HSKVM v,isize_t nformatstringidx,isize_t *outlen,SQChar **output)
 {
     const SQChar *format;
     SQChar *dest;
@@ -74,10 +74,10 @@ SQRESULT sqstd_format(HSKVM v,int nformatstringidx,int *outlen,SQChar **output)
     if (SQ_FAILED(res)) {
         return res; // propagate the error
     }
-    int format_size = sq_getsize(v,nformatstringidx);
-    int allocated = (format_size+2)*sizeof(SQChar);
+    isize_t format_size = sq_getsize(v,nformatstringidx);
+    isize_t allocated = (format_size+2)*sizeof(SQChar);
     dest = sq_getscratchpad(v,allocated);
-    int n = 0,i = 0, nparam = nformatstringidx+1, w = 0;
+    isize_t n = 0,i = 0, nparam = nformatstringidx+1, w = 0;
     //while(format[n] != '\0')
     while(n < format_size)
     {
@@ -96,10 +96,10 @@ SQRESULT sqstd_format(HSKVM v,int nformatstringidx,int *outlen,SQChar **output)
                 return sq_throwerror(v,_SC("not enough parameters for the given format string"));
             n = validate_format(v,fmt,format,n,w);
             if(n < 0) return -1;
-            int addlen = 0;
-            int valtype = 0;
+            isize_t addlen = 0;
+            isize_t valtype = 0;
             const SQChar *ts = NULL;
-            int ti = 0;
+            isize_t ti = 0;
             SQFloat tf = 0;
             switch(format[n]) {
             case 's':
@@ -112,7 +112,7 @@ SQRESULT sqstd_format(HSKVM v,int nformatstringidx,int *outlen,SQChar **output)
 #ifdef _SQ64
                 {
                 size_t flen = scstrlen(fmt);
-                int fpos = flen - 1;
+                isize_t fpos = flen - 1;
                 SQChar f = fmt[fpos];
                 const SQChar *prec = (const SQChar *)_PRINT_INT_PREC;
                 while(*prec != _SC('\0')) {
@@ -157,12 +157,12 @@ SQRESULT sqstd_format(HSKVM v,int nformatstringidx,int *outlen,SQChar **output)
 
 void sqstd_pushstringf(HSKVM v,const SQChar *s,...)
 {
-    int n=256;
+    isize_t n=256;
     va_list args;
 begin:
     va_start(args,s);
     SQChar *b=sq_getscratchpad(v,n);
-    int r=scvsprintf(b,n,s,args);
+    isize_t r=scvsprintf(b,n,s,args);
     va_end(args);
     if (r>=n) {
         n=r+1;//required+null
@@ -174,10 +174,10 @@ begin:
     }
 }
 
-static int _string_printf(HSKVM v)
+static isize_t _string_printf(HSKVM v)
 {
     SQChar *dest = NULL;
-    int length = 0;
+    isize_t length = 0;
     if(SQ_FAILED(sqstd_format(v,2,&length,&dest)))
         return -1;
 
@@ -187,10 +187,10 @@ static int _string_printf(HSKVM v)
     return 0;
 }
 
-static int _string_format(HSKVM v)
+static isize_t _string_format(HSKVM v)
 {
     SQChar *dest = NULL;
-    int length = 0;
+    isize_t length = 0;
     if(SQ_FAILED(sqstd_format(v,2,&length,&dest)))
         return -1;
     sq_pushstring(v,dest,length);
@@ -204,7 +204,7 @@ static void __strip_l(const SQChar *str,const SQChar **start)
     *start = t;
 }
 
-static void __strip_r(const SQChar *str,int len,const SQChar **end)
+static void __strip_r(const SQChar *str,isize_t len,const SQChar **end)
 {
     if(len == 0) {
         *end = str;
@@ -215,18 +215,18 @@ static void __strip_r(const SQChar *str,int len,const SQChar **end)
     *end = t + 1;
 }
 
-static int _string_strip(HSKVM v)
+static isize_t _string_strip(HSKVM v)
 {
     const SQChar *str,*start,*end;
     sq_getstring(v,2,&str);
-    int len = sq_getsize(v,2);
+    isize_t len = sq_getsize(v,2);
     __strip_l(str,&start);
     __strip_r(str,len,&end);
     sq_pushstring(v,start,end - start);
     return 1;
 }
 
-static int _string_lstrip(HSKVM v)
+static isize_t _string_lstrip(HSKVM v)
 {
     const SQChar *str,*start;
     sq_getstring(v,2,&str);
@@ -235,25 +235,25 @@ static int _string_lstrip(HSKVM v)
     return 1;
 }
 
-static int _string_rstrip(HSKVM v)
+static isize_t _string_rstrip(HSKVM v)
 {
     const SQChar *str,*end;
     sq_getstring(v,2,&str);
-    int len = sq_getsize(v,2);
+    isize_t len = sq_getsize(v,2);
     __strip_r(str,len,&end);
     sq_pushstring(v,str,end - str);
     return 1;
 }
 
-static int _string_split(HSKVM v)
+static isize_t _string_split(HSKVM v)
 {
     const SQChar *str,*seps;
     SQChar *stemp;
     sq_getstring(v,2,&str);
     sq_getstring(v,3,&seps);
-    int sepsize = sq_getsize(v,3);
+    isize_t sepsize = sq_getsize(v,3);
     if(sepsize == 0) return sq_throwerror(v,_SC("empty separators string"));
-    int memsize = (sq_getsize(v,2)+1)*sizeof(SQChar);
+    isize_t memsize = (sq_getsize(v,2)+1)*sizeof(SQChar);
     stemp = sq_getscratchpad(v,memsize);
     memcpy(stemp,str,memsize);
     SQChar *start = stemp;
@@ -262,7 +262,7 @@ static int _string_split(HSKVM v)
     while(*end != '\0')
     {
         SQChar cur = *end;
-        for(int i = 0; i < sepsize; i++)
+        for(isize_t i = 0; i < sepsize; i++)
         {
             if(cur == seps[i])
             {
@@ -283,11 +283,11 @@ static int _string_split(HSKVM v)
     return 1;
 }
 
-static int _string_escape(HSKVM v)
+static isize_t _string_escape(HSKVM v)
 {
     const SQChar *str;
     SQChar *dest,*resstr;
-    int size;
+    isize_t size;
     sq_getstring(v,2,&str);
     size = sq_getsize(v,2);
     if(size == 0) {
@@ -297,21 +297,21 @@ static int _string_escape(HSKVM v)
 #ifdef SQUNICODE
 #if WCHAR_SIZE == 2
     const SQChar *escpat = _SC("\\x%04x");
-    const int maxescsize = 6;
+    const isize_t maxescsize = 6;
 #else //WCHAR_SIZE == 4
     const SQChar *escpat = _SC("\\x%08x");
-    const int maxescsize = 10;
+    const isize_t maxescsize = 10;
 #endif
 #else
     const SQChar *escpat = _SC("\\x%02x");
-    const int maxescsize = 4;
+    const isize_t maxescsize = 4;
 #endif
-    int destcharsize = (size * maxescsize); //assumes every char could be escaped
+    isize_t destcharsize = (size * maxescsize); //assumes every char could be escaped
     resstr = dest = (SQChar *)sq_getscratchpad(v,destcharsize * sizeof(SQChar));
     SQChar c;
     SQChar escch;
-    int escaped = 0;
-    for(int n = 0; n < size; n++){
+    isize_t escaped = 0;
+    for(isize_t n = 0; n < size; n++){
         c = *str++;
         escch = 0;
         if(scisprint(c) || c == 0) {
@@ -353,13 +353,13 @@ static int _string_escape(HSKVM v)
     return 1;
 }
 
-static int _string_startswith(HSKVM v)
+static isize_t _string_startswith(HSKVM v)
 {
     const SQChar *str,*cmp;
     sq_getstring(v,2,&str);
     sq_getstring(v,3,&cmp);
-    int len = sq_getsize(v,2);
-    int cmplen = sq_getsize(v,3);
+    isize_t len = sq_getsize(v,2);
+    isize_t cmplen = sq_getsize(v,3);
     bool ret = SQFalse;
     if(cmplen <= len) {
         ret = memcmp(str,cmp,sq_rsl(cmplen)) == 0 ? SQTrue : SQFalse;
@@ -368,13 +368,13 @@ static int _string_startswith(HSKVM v)
     return 1;
 }
 
-static int _string_endswith(HSKVM v)
+static isize_t _string_endswith(HSKVM v)
 {
     const SQChar *str,*cmp;
     sq_getstring(v,2,&str);
     sq_getstring(v,3,&cmp);
-    int len = sq_getsize(v,2);
-    int cmplen = sq_getsize(v,3);
+    isize_t len = sq_getsize(v,2);
+    isize_t cmplen = sq_getsize(v,3);
     bool ret = SQFalse;
     if(cmplen <= len) {
         ret = memcmp(&str[len - cmplen],cmp,sq_rsl(cmplen)) == 0 ? SQTrue : SQFalse;
@@ -387,14 +387,14 @@ static int _string_endswith(HSKVM v)
     SQRex *self = NULL; \
     sq_getinstanceup(v,1,(PVOID *)&self,0);
 
-static int _rexobj_releasehook(PVOID p, int SQ_UNUSED_ARG(size))
+static isize_t _rexobj_releasehook(PVOID p, isize_t SQ_UNUSED_ARG(size))
 {
     SQRex *self = ((SQRex *)p);
     sqstd_rex_free(self);
     return 1;
 }
 
-static int _regexp_match(HSKVM v)
+static isize_t _regexp_match(HSKVM v)
 {
     SETUP_REX(v);
     const SQChar *str;
@@ -419,11 +419,11 @@ static void _addrexmatch(HSKVM v,const SQChar *str,const SQChar *begin,const SQC
     sq_rawset(v,-3);
 }
 
-static int _regexp_search(HSKVM v)
+static isize_t _regexp_search(HSKVM v)
 {
     SETUP_REX(v);
     const SQChar *str,*begin,*end;
-    int start = 0;
+    isize_t start = 0;
     sq_getstring(v,2,&str);
     if(sq_gettop(v) > 2) sq_getinteger(v,3,&start);
     if(sqstd_rex_search(self,str+start,&begin,&end) == SQTrue) {
@@ -433,18 +433,18 @@ static int _regexp_search(HSKVM v)
     return 0;
 }
 
-static int _regexp_capture(HSKVM v)
+static isize_t _regexp_capture(HSKVM v)
 {
     SETUP_REX(v);
     const SQChar *str,*begin,*end;
-    int start = 0;
+    isize_t start = 0;
     sq_getstring(v,2,&str);
     if(sq_gettop(v) > 2) sq_getinteger(v,3,&start);
     if(sqstd_rex_search(self,str+start,&begin,&end) == SQTrue) {
-        int n = sqstd_rex_getsubexpcount(self);
+        isize_t n = sqstd_rex_getsubexpcount(self);
         SQRexMatch match;
         sq_newarray(v,0);
-        for(int i = 0;i < n; i++) {
+        for(isize_t i = 0;i < n; i++) {
             sqstd_rex_getsubexp(self,i,&match);
             if(match.len > 0)
                 _addrexmatch(v,str,match.begin,match.begin+match.len);
@@ -457,14 +457,14 @@ static int _regexp_capture(HSKVM v)
     return 0;
 }
 
-static int _regexp_subexpcount(HSKVM v)
+static isize_t _regexp_subexpcount(HSKVM v)
 {
     SETUP_REX(v);
     sq_pushinteger(v,sqstd_rex_getsubexpcount(self));
     return 1;
 }
 
-static int _regexp_constructor(HSKVM v)
+static isize_t _regexp_constructor(HSKVM v)
 {
     const SQChar *error,*pattern;
     sq_getstring(v,2,&pattern);
@@ -475,7 +475,7 @@ static int _regexp_constructor(HSKVM v)
     return 0;
 }
 
-static int _regexp__typeof(HSKVM v)
+static isize_t _regexp__typeof(HSKVM v)
 {
     sq_pushstring(v,_SC("regexp"),-1);
     return 1;
@@ -509,11 +509,11 @@ static const SQRegFunction stringlib_funcs[]={
 #undef _DECL_FUNC
 
 
-int sqstd_register_stringlib(HSKVM v)
+isize_t sqstd_register_stringlib(HSKVM v)
 {
     sq_pushstring(v,_SC("regexp"),-1);
     sq_newclass(v,SQFalse);
-    int i = 0;
+    isize_t i = 0;
     while(rexobj_funcs[i].name != 0) {
         const SQRegFunction &f = rexobj_funcs[i];
         sq_pushstring(v,f.name,-1);

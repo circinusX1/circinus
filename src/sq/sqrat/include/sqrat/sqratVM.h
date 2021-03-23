@@ -96,7 +96,7 @@ private:
         va_end(vl);
     }
 
-    static int runtimeErrorHandler(HSKVM v)
+    static isize_t runtimeErrorHandler(HSKVM v)
     {
         const SQChar *sErr = 0;
         if(SQ_PTRS->gettop(v) >= 1)
@@ -117,11 +117,11 @@ private:
     static void compilerErrorHandler(HSKVM v,
                                      const SQChar* desc,
                                      const SQChar* source,
-                                     int line,
-                                     int column)
+                                     isize_t line,
+                                     isize_t column)
     {
         SQChar buf[512];
-        scsprintf(buf, _SC("%s:%d:%d: %s"), source, (int) line, (int) column, desc);
+        scsprintf(buf, _SC("%s:%d:%d: %s"), source, (isize_t) line, (isize_t) column, desc);
         buf[sizeof(buf) - 1] = 0;
         s_getVM(v)->m_lastErrorMsg = buf;
     }
@@ -153,7 +153,7 @@ public:
     /// \param libsToLoad       Specifies what standard Squirrel libraries should be loaded
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    SqratVM(int initialStackSize = 1024, unsigned char libsToLoad = LIB_ALL): m_vm(SQ_PTRS->open(initialStackSize))
+    SqratVM(isize_t initialStackSize = 1024, unsigned char libsToLoad = LIB_ALL): m_vm(SQ_PTRS->open(initialStackSize))
         , m_rootTable(new Sqrat::RootTable(m_vm))
         , m_script(new Sqrat::Script(m_vm))
         , m_lastErrorMsg()

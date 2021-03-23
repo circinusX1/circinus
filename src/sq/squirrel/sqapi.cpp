@@ -13,7 +13,7 @@
 #include "sqfuncstate.h"
 #include "sqclass.h"
 
-static bool sq_aux_gettypedarg(HSKVM v,int idx,SQObjectType type,SQObjectPtr **o)
+static bool sq_aux_gettypedarg(HSKVM v,isize_t idx,SQObjectType type,SQObjectPtr **o)
 {
     *o = &stack_get(v,idx);
     if(sq_type(**o) != type){
@@ -32,14 +32,14 @@ static bool sq_aux_gettypedarg(HSKVM v,int idx,SQObjectType type,SQObjectPtr **o
 }
 
 
-int sq_aux_invalidtype(HSKVM v,SQObjectType type)
+isize_t sq_aux_invalidtype(HSKVM v,SQObjectType type)
 {
     size_t buf_size = 100 *sizeof(SQChar);
     scsprintf(_ss(v)->GetScratchPad(buf_size), buf_size, _SC("unexpected type %s"), IdType2Name(type));
     return sq_throwerror(v, _ss(v)->GetScratchPad(-1));
 }
 
-HSKVM sq_open(int initialstacksize)
+HSKVM sq_open(isize_t initialstacksize)
 {
     SQSharedState *ss;
     SQVM *v;
@@ -57,7 +57,7 @@ HSKVM sq_open(int initialstacksize)
     return v;
 }
 
-HSKVM sq_newthread(HSKVM friendvm, int initialstacksize)
+HSKVM sq_newthread(HSKVM friendvm, isize_t initialstacksize)
 {
     SQSharedState *ss;
     SQVM *v;
@@ -75,7 +75,7 @@ HSKVM sq_newthread(HSKVM friendvm, int initialstacksize)
     }
 }
 
-int sq_getvmstate(HSKVM v)
+isize_t sq_getvmstate(HSKVM v)
 {
     if(v->_suspended)
         return SQ_VMSTATE_SUSPENDED;
@@ -119,7 +119,7 @@ void sq_close(HSKVM v)
     sq_delete(ss, SQSharedState);
 }
 
-int sq_getversion()
+isize_t sq_getversion()
 {
     return SQUIRREL_VERSION_NUMBER;
 }
@@ -194,7 +194,7 @@ const SQChar *sq_objtostring(const HSQOBJECT *o)
     return NULL;
 }
 
-int sq_objtointeger(const HSQOBJECT *o)
+isize_t sq_objtointeger(const HSQOBJECT *o)
 {
     if(sq_isnumeric(*o)) {
         return tointeger(*o);
@@ -231,14 +231,14 @@ void sq_pushnull(HSKVM v)
     v->PushNull();
 }
 
-void sq_pushstring(HSKVM v,const SQChar *s,int len)
+void sq_pushstring(HSKVM v,const SQChar *s,isize_t len)
 {
     if(s && *s)
         v->Push(SQObjectPtr(SQString::Create(_ss(v), s, len)));
     else v->PushNull();
 }
 
-void sq_pushinteger(HSKVM v,int n)
+void sq_pushinteger(HSKVM v,isize_t n)
 {
     v->Push(n);
 }
@@ -275,12 +275,12 @@ void sq_newtable(HSKVM v)
     v->Push(SQTable::Create(_ss(v), 0));
 }
 
-void sq_newtableex(HSKVM v,int initialcapacity)
+void sq_newtableex(HSKVM v,isize_t initialcapacity)
 {
     v->Push(SQTable::Create(_ss(v), initialcapacity));
 }
 
-void sq_newarray(HSKVM v,int size)
+void sq_newarray(HSKVM v,isize_t size)
 {
     v->Push(SQArray::Create(_ss(v), size));
 }
@@ -309,7 +309,7 @@ bool sq_instanceof(HSKVM v)
     return _instance(inst)->InstanceOf(_class(cl))?SQTrue:SQFalse;
 }
 
-SQRESULT sq_arrayappend(HSKVM v,int idx)
+SQRESULT sq_arrayappend(HSKVM v,isize_t idx)
 {
     sq_aux_paramscheck(v,2);
     SQObjectPtr *arr;
@@ -319,7 +319,7 @@ SQRESULT sq_arrayappend(HSKVM v,int idx)
     return SQ_OK;
 }
 
-SQRESULT sq_arraypop(HSKVM v,int idx,bool pushval)
+SQRESULT sq_arraypop(HSKVM v,isize_t idx,bool pushval)
 {
     sq_aux_paramscheck(v, 1);
     SQObjectPtr *arr;
@@ -332,7 +332,7 @@ SQRESULT sq_arraypop(HSKVM v,int idx,bool pushval)
     return sq_throwerror(v, _SC("empty array"));
 }
 
-SQRESULT sq_arrayresize(HSKVM v,int idx,int newsize)
+SQRESULT sq_arrayresize(HSKVM v,isize_t idx,isize_t newsize)
 {
     sq_aux_paramscheck(v,1);
     SQObjectPtr *arr;
@@ -345,7 +345,7 @@ SQRESULT sq_arrayresize(HSKVM v,int idx,int newsize)
 }
 
 
-SQRESULT sq_arrayreverse(HSKVM v,int idx)
+SQRESULT sq_arrayreverse(HSKVM v,isize_t idx)
 {
     sq_aux_paramscheck(v, 1);
     SQObjectPtr *o;
@@ -353,9 +353,9 @@ SQRESULT sq_arrayreverse(HSKVM v,int idx)
     SQArray *arr = _array(*o);
     if(arr->Size() > 0) {
         SQObjectPtr t;
-        int size = arr->Size();
-        int n = size >> 1; size -= 1;
-        for(int i = 0; i < n; i++) {
+        isize_t size = arr->Size();
+        isize_t n = size >> 1; size -= 1;
+        for(isize_t i = 0; i < n; i++) {
             t = arr->_values[i];
             arr->_values[i] = arr->_values[size-i];
             arr->_values[size-i] = t;
@@ -365,7 +365,7 @@ SQRESULT sq_arrayreverse(HSKVM v,int idx)
     return SQ_OK;
 }
 
-SQRESULT sq_arrayremove(HSKVM v,int idx,int itemidx)
+SQRESULT sq_arrayremove(HSKVM v,isize_t idx,isize_t itemidx)
 {
     sq_aux_paramscheck(v, 1);
     SQObjectPtr *arr;
@@ -373,7 +373,7 @@ SQRESULT sq_arrayremove(HSKVM v,int idx,int itemidx)
     return _array(*arr)->Remove(itemidx) ? SQ_OK : sq_throwerror(v,_SC("index out of range"));
 }
 
-SQRESULT sq_arrayinsert(HSKVM v,int idx,int destpos)
+SQRESULT sq_arrayinsert(HSKVM v,isize_t idx,isize_t destpos)
 {
     sq_aux_paramscheck(v, 1);
     SQObjectPtr *arr;
@@ -383,7 +383,7 @@ SQRESULT sq_arrayinsert(HSKVM v,int idx,int destpos)
     return ret;
 }
 
-void sq_newclosure(HSKVM v,SQFUNCTION func,size_t nfreevars, int nargs)
+void sq_newclosure(HSKVM v,SQFUNCTION func,size_t nfreevars, isize_t nargs)
 {
     SQNativeClosure *nc = SQNativeClosure::Create(_ss(v), func,nfreevars);
     nc->_args = nargs;
@@ -395,7 +395,7 @@ void sq_newclosure(HSKVM v,SQFUNCTION func,size_t nfreevars, int nargs)
     v->Push(SQObjectPtr(nc));
 }
 
-void sq_newclosure_rt(HSKVM v,SQFUNCTION_RT func, size_t nfreevars, int nargs)
+void sq_newclosure_rt(HSKVM v,SQFUNCTION_RT func, size_t nfreevars, isize_t nargs)
 {
     SQNativeClosure *nc = SQNativeClosure::CreateRt(_ss(v), func, nargs, nfreevars);
     nc->_nparamscheck = 0;
@@ -406,8 +406,8 @@ void sq_newclosure_rt(HSKVM v,SQFUNCTION_RT func, size_t nfreevars, int nargs)
     v->Push(SQObjectPtr(nc));
 }
 
-SQRESULT sq_getclosureinfo(HSKVM v,int idx,size_t *nparams,size_t *nfreevars)
-//                        HSKVM v,int idx,int *nparams,int *nfreevars)
+SQRESULT sq_getclosureinfo(HSKVM v,isize_t idx,size_t *nparams,size_t *nfreevars)
+//                        HSKVM v,isize_t idx,isize_t *nparams,isize_t *nfreevars)
 {
     SQObject o = stack_get(v, idx);
     if(sq_type(o) == OT_CLOSURE) {
@@ -421,13 +421,13 @@ SQRESULT sq_getclosureinfo(HSKVM v,int idx,size_t *nparams,size_t *nfreevars)
     {
         SQNativeClosure *c = _nativeclosure(o);
         *nparams = c->_nparamscheck;
-        *nfreevars = (int)c->_noutervalues;
+        *nfreevars = (isize_t)c->_noutervalues;
         return SQ_OK;
     }
     return sq_throwerror(v,_SC("the object is not a closure"));
 }
 
-SQRESULT sq_setnativeclosurename(HSKVM v,int idx,const SQChar *name)
+SQRESULT sq_setnativeclosurename(HSKVM v,isize_t idx,const SQChar *name)
 {
     SQObject o = stack_get(v, idx);
     if(sq_isnativeclosure(o)) {
@@ -438,7 +438,7 @@ SQRESULT sq_setnativeclosurename(HSKVM v,int idx,const SQChar *name)
     return sq_throwerror(v,_SC("the object is not a nativeclosure"));
 }
 
-SQRESULT sq_setparamscheck(HSKVM v,int nparamscheck,const SQChar *typemask)
+SQRESULT sq_setparamscheck(HSKVM v,isize_t nparamscheck,const SQChar *typemask)
 {
     SQObject o = stack_get(v, -1);
     if(!sq_isnativeclosure(o))
@@ -460,7 +460,7 @@ SQRESULT sq_setparamscheck(HSKVM v,int nparamscheck,const SQChar *typemask)
     return SQ_OK;
 }
 
-SQRESULT sq_bindenv(HSKVM v,int idx)
+SQRESULT sq_bindenv(HSKVM v,isize_t idx)
 {
     SQObjectPtr &o = stack_get(v,idx);
     if(!sq_isnativeclosure(o) &&
@@ -497,7 +497,7 @@ SQRESULT sq_bindenv(HSKVM v,int idx)
     return SQ_OK;
 }
 
-SQRESULT sq_getclosurename(HSKVM v,int idx)
+SQRESULT sq_getclosurename(HSKVM v,isize_t idx)
 {
     SQObjectPtr &o = stack_get(v,idx);
     if(!sq_isnativeclosure(o) &&
@@ -513,7 +513,7 @@ SQRESULT sq_getclosurename(HSKVM v,int idx)
     return SQ_OK;
 }
 
-SQRESULT sq_setclosureroot(HSKVM v,int idx)
+SQRESULT sq_setclosureroot(HSKVM v,isize_t idx)
 {
     SQObjectPtr &c = stack_get(v,idx);
     SQObject o = stack_get(v, -1);
@@ -526,7 +526,7 @@ SQRESULT sq_setclosureroot(HSKVM v,int idx)
     return sq_throwerror(v, _SC("invalid type"));
 }
 
-SQRESULT sq_getclosureroot(HSKVM v,int idx)
+SQRESULT sq_getclosureroot(HSKVM v,isize_t idx)
 {
     SQObjectPtr &c = stack_get(v,idx);
     if(!sq_isclosure(c)) return sq_throwerror(v, _SC("closure expected"));
@@ -534,7 +534,7 @@ SQRESULT sq_getclosureroot(HSKVM v,int idx)
     return SQ_OK;
 }
 
-SQRESULT sq_clear(HSKVM v,int idx)
+SQRESULT sq_clear(HSKVM v,isize_t idx)
 {
     SQObject &o=stack_get(v,idx);
     switch(sq_type(o)) {
@@ -625,17 +625,17 @@ SQRELEASEHOOK sq_getsharedreleasehook(HSKVM v)
     return _ss(v)->_releasehook;
 }
 
-void sq_push(HSKVM v,int idx)
+void sq_push(HSKVM v,isize_t idx)
 {
     v->Push(stack_get(v, idx));
 }
 
-SQObjectType sq_gettype(HSKVM v,int idx)
+SQObjectType sq_gettype(HSKVM v,isize_t idx)
 {
     return sq_type(stack_get(v, idx));
 }
 
-SQRESULT sq_typeof(HSKVM v,int idx)
+SQRESULT sq_typeof(HSKVM v,isize_t idx)
 {
     SQObjectPtr &o = stack_get(v, idx);
     SQObjectPtr res;
@@ -646,7 +646,7 @@ SQRESULT sq_typeof(HSKVM v,int idx)
     return SQ_OK;
 }
 
-SQRESULT sq_tostring(HSKVM v,int idx)
+SQRESULT sq_tostring(HSKVM v,isize_t idx)
 {
     SQObjectPtr &o = stack_get(v, idx);
     SQObjectPtr res;
@@ -657,13 +657,13 @@ SQRESULT sq_tostring(HSKVM v,int idx)
     return SQ_OK;
 }
 
-void sq_tobool(HSKVM v, int idx, bool *b)
+void sq_tobool(HSKVM v, isize_t idx, bool *b)
 {
     SQObjectPtr &o = stack_get(v, idx);
     *b = SQVM::IsFalse(o)?SQFalse:SQTrue;
 }
 
-SQRESULT sq_getinteger(HSKVM v,int idx,int *i)
+SQRESULT sq_getinteger(HSKVM v,isize_t idx,isize_t *i)
 {
     SQObjectPtr &o = stack_get(v, idx);
     if(sq_isnumeric(o)) {
@@ -677,7 +677,7 @@ SQRESULT sq_getinteger(HSKVM v,int idx,int *i)
     return SQ_ERROR;
 }
 
-SQRESULT sq_getfloat(HSKVM v,int idx,SQFloat *f)
+SQRESULT sq_getfloat(HSKVM v,isize_t idx,SQFloat *f)
 {
     SQObjectPtr &o = stack_get(v, idx);
     if(sq_isnumeric(o)) {
@@ -687,7 +687,7 @@ SQRESULT sq_getfloat(HSKVM v,int idx,SQFloat *f)
     return SQ_ERROR;
 }
 
-SQRESULT sq_getbool(HSKVM v,int idx,bool *b)
+SQRESULT sq_getbool(HSKVM v,isize_t idx,bool *b)
 {
     SQObjectPtr &o = stack_get(v, idx);
     if(sq_isbool(o)) {
@@ -697,7 +697,7 @@ SQRESULT sq_getbool(HSKVM v,int idx,bool *b)
     return SQ_ERROR;
 }
 
-SQRESULT sq_getstringandsize(HSKVM v,int idx,const SQChar **c,int *size)
+SQRESULT sq_getstringandsize(HSKVM v,isize_t idx,const SQChar **c,isize_t *size)
 {
     SQObjectPtr *o = NULL;
     _GETSAFE_OBJ(v, idx, OT_STRING,o);
@@ -706,7 +706,7 @@ SQRESULT sq_getstringandsize(HSKVM v,int idx,const SQChar **c,int *size)
     return SQ_OK;
 }
 
-SQRESULT sq_getstring(HSKVM v,int idx,const SQChar **c)
+SQRESULT sq_getstring(HSKVM v,isize_t idx,const SQChar **c)
 {
     SQObjectPtr *o = NULL;
     _GETSAFE_OBJ(v, idx, OT_STRING,o);
@@ -714,7 +714,7 @@ SQRESULT sq_getstring(HSKVM v,int idx,const SQChar **c)
     return SQ_OK;
 }
 
-SQRESULT sq_getthread(HSKVM v,int idx,HSKVM *thread)
+SQRESULT sq_getthread(HSKVM v,isize_t idx,HSKVM *thread)
 {
     SQObjectPtr *o = NULL;
     _GETSAFE_OBJ(v, idx, OT_THREAD,o);
@@ -722,7 +722,7 @@ SQRESULT sq_getthread(HSKVM v,int idx,HSKVM *thread)
     return SQ_OK;
 }
 
-SQRESULT sq_clone(HSKVM v,int idx)
+SQRESULT sq_clone(HSKVM v,isize_t idx)
 {
     SQObjectPtr &o = stack_get(v,idx);
     v->PushNull();
@@ -733,7 +733,7 @@ SQRESULT sq_clone(HSKVM v,int idx)
     return SQ_OK;
 }
 
-int sq_getsize(HSKVM v, int idx)
+isize_t sq_getsize(HSKVM v, isize_t idx)
 {
     SQObjectPtr &o = stack_get(v, idx);
     SQObjectType type = sq_type(o);
@@ -749,13 +749,13 @@ int sq_getsize(HSKVM v, int idx)
     }
 }
 
-size_t sq_gethash(HSKVM v, int idx)
+size_t sq_gethash(HSKVM v, isize_t idx)
 {
     SQObjectPtr &o = stack_get(v, idx);
     return HashObj(o);
 }
 
-SQRESULT sq_getuserdata(HSKVM v,int idx,PVOID *p,PVOID *typetag)
+SQRESULT sq_getuserdata(HSKVM v,isize_t idx,PVOID *p,PVOID *typetag)
 {
     SQObjectPtr *o = NULL;
     _GETSAFE_OBJ(v, idx, OT_USERDATA,o);
@@ -764,7 +764,7 @@ SQRESULT sq_getuserdata(HSKVM v,int idx,PVOID *p,PVOID *typetag)
     return SQ_OK;
 }
 
-SQRESULT sq_settypetag(HSKVM v,int idx,PVOID typetag)
+SQRESULT sq_settypetag(HSKVM v,isize_t idx,PVOID typetag)
 {
     SQObjectPtr &o = stack_get(v,idx);
     switch(sq_type(o)) {
@@ -786,7 +786,7 @@ SQRESULT sq_getobjtypetag(const HSQOBJECT *o,PVOID * typetag)
   return SQ_OK;
 }
 
-SQRESULT sq_gettypetag(HSKVM v,int idx,PVOID *typetag)
+SQRESULT sq_gettypetag(HSKVM v,isize_t idx,PVOID *typetag)
 {
     SQObjectPtr &o = stack_get(v,idx);
     if (SQ_FAILED(sq_getobjtypetag(&o, typetag)))
@@ -795,13 +795,13 @@ SQRESULT sq_gettypetag(HSKVM v,int idx,PVOID *typetag)
 }
 
 // mco-mco
-SQObjectType sq_sgettype(HSKVM v,int idx)
+SQObjectType sq_sgettype(HSKVM v,isize_t idx)
 {
     SQObjectPtr &o = stack_get(v,idx);
     return o._type;
 }
 
-SQRESULT sq_getuserpointer(HSKVM v, int idx, PVOID *p)
+SQRESULT sq_getuserpointer(HSKVM v, isize_t idx, PVOID *p)
 {
     SQObjectPtr *o = NULL;
     _GETSAFE_OBJ(v, idx, OT_USERPOINTER,o);
@@ -809,7 +809,7 @@ SQRESULT sq_getuserpointer(HSKVM v, int idx, PVOID *p)
     return SQ_OK;
 }
 
-SQRESULT sq_setinstanceup(HSKVM v, int idx, PVOID p)
+SQRESULT sq_setinstanceup(HSKVM v, isize_t idx, PVOID p)
 {
     SQObjectPtr &o = stack_get(v,idx);
     if(sq_type(o) != OT_INSTANCE) return sq_throwerror(v,_SC("the object is not a class instance"));
@@ -817,7 +817,7 @@ SQRESULT sq_setinstanceup(HSKVM v, int idx, PVOID p)
     return SQ_OK;
 }
 
-SQRESULT sq_setclassudsize(HSKVM v, int idx, int udsize)
+SQRESULT sq_setclassudsize(HSKVM v, isize_t idx, isize_t udsize)
 {
     SQObjectPtr &o = stack_get(v,idx);
     if(sq_type(o) != OT_CLASS) return sq_throwerror(v,_SC("the object is not a class"));
@@ -827,7 +827,7 @@ SQRESULT sq_setclassudsize(HSKVM v, int idx, int udsize)
 }
 
 
-SQRESULT sq_getinstanceup(HSKVM v, int idx, PVOID *p,PVOID typetag)
+SQRESULT sq_getinstanceup(HSKVM v, isize_t idx, PVOID *p,PVOID typetag)
 {
     SQObjectPtr &o = stack_get(v,idx);
     if(sq_type(o) != OT_INSTANCE) return sq_throwerror(v,_SC("the object is not a class instance"));
@@ -844,21 +844,21 @@ SQRESULT sq_getinstanceup(HSKVM v, int idx, PVOID *p,PVOID typetag)
     return SQ_OK;
 }
 
-int sq_gettop(HSKVM v)
+isize_t sq_gettop(HSKVM v)
 {
     return (v->_top) - v->_stackbase;
 }
 
-void sq_settop(HSKVM v, int newtop)
+void sq_settop(HSKVM v, isize_t newtop)
 {
-    int top = sq_gettop(v);
+    isize_t top = sq_gettop(v);
     if(top > newtop)
         sq_pop(v, top - newtop);
     else
         while(top++ < newtop) sq_pushnull(v);
 }
 
-void sq_pop(HSKVM v, int nelemstopop)
+void sq_pop(HSKVM v, isize_t nelemstopop)
 {
     assert(v->_top >= nelemstopop);
     v->Pop(nelemstopop);
@@ -871,19 +871,19 @@ void sq_poptop(HSKVM v)
 }
 
 
-void sq_remove(HSKVM v, int idx)
+void sq_remove(HSKVM v, isize_t idx)
 {
     v->Remove(idx);
 }
 
-int sq_cmp(HSKVM v)
+isize_t sq_cmp(HSKVM v)
 {
-    int res;
+    isize_t res;
     v->ObjCmp(stack_get(v, -1), stack_get(v, -2),res);
     return res;
 }
 
-SQRESULT sq_newslot(HSKVM v, int idx, bool bstatic)
+SQRESULT sq_newslot(HSKVM v, isize_t idx, bool bstatic)
 {
     sq_aux_paramscheck(v, 3);
     SQObjectPtr &self = stack_get(v, idx);
@@ -896,7 +896,7 @@ SQRESULT sq_newslot(HSKVM v, int idx, bool bstatic)
     return SQ_OK;
 }
 
-SQRESULT sq_deleteslot(HSKVM v,int idx,bool pushval)
+SQRESULT sq_deleteslot(HSKVM v,isize_t idx,bool pushval)
 {
     sq_aux_paramscheck(v, 2);
     SQObjectPtr *self;
@@ -913,7 +913,7 @@ SQRESULT sq_deleteslot(HSKVM v,int idx,bool pushval)
     return SQ_OK;
 }
 
-SQRESULT sq_set(HSKVM v,int idx)
+SQRESULT sq_set(HSKVM v,isize_t idx)
 {
     SQObjectPtr &self = stack_get(v, idx);
     if(v->Set(self, v->GetUp(-2), v->GetUp(-1),DONT_FALL_BACK)) {
@@ -923,7 +923,7 @@ SQRESULT sq_set(HSKVM v,int idx)
     return SQ_ERROR;
 }
 
-SQRESULT sq_rawset(HSKVM v,int idx)
+SQRESULT sq_rawset(HSKVM v,isize_t idx)
 {
     SQObjectPtr &self = stack_get(v, idx);
     SQObjectPtr &key = v->GetUp(-2);
@@ -961,7 +961,7 @@ SQRESULT sq_rawset(HSKVM v,int idx)
     v->Raise_IdxError(v->GetUp(-2));return SQ_ERROR;
 }
 
-SQRESULT sq_newmember(HSKVM v,int idx,bool bstatic)
+SQRESULT sq_newmember(HSKVM v,isize_t idx,bool bstatic)
 {
     SQObjectPtr &self = stack_get(v, idx);
     if(sq_type(self) != OT_CLASS) return sq_throwerror(v, _SC("new member only works with classes"));
@@ -975,7 +975,7 @@ SQRESULT sq_newmember(HSKVM v,int idx,bool bstatic)
     return SQ_OK;
 }
 
-SQRESULT sq_rawnewmember(HSKVM v,int idx,bool bstatic)
+SQRESULT sq_rawnewmember(HSKVM v,isize_t idx,bool bstatic)
 {
     SQObjectPtr &self = stack_get(v, idx);
     if(sq_type(self) != OT_CLASS) return sq_throwerror(v, _SC("new member only works with classes"));
@@ -989,7 +989,7 @@ SQRESULT sq_rawnewmember(HSKVM v,int idx,bool bstatic)
     return SQ_OK;
 }
 
-SQRESULT sq_setdelegate(HSKVM v,int idx)
+SQRESULT sq_setdelegate(HSKVM v,isize_t idx)
 {
     SQObjectPtr &self = stack_get(v, idx);
     SQObjectPtr &mt = v->GetUp(-1);
@@ -1020,7 +1020,7 @@ SQRESULT sq_setdelegate(HSKVM v,int idx)
     return SQ_OK;
 }
 
-SQRESULT sq_rawdeleteslot(HSKVM v,int idx,bool pushval)
+SQRESULT sq_rawdeleteslot(HSKVM v,isize_t idx,bool pushval)
 {
     sq_aux_paramscheck(v, 2);
     SQObjectPtr *self;
@@ -1037,7 +1037,7 @@ SQRESULT sq_rawdeleteslot(HSKVM v,int idx,bool pushval)
     return SQ_OK;
 }
 
-SQRESULT sq_getdelegate(HSKVM v,int idx)
+SQRESULT sq_getdelegate(HSKVM v,isize_t idx)
 {
     SQObjectPtr &self=stack_get(v,idx);
     switch(sq_type(self)){
@@ -1055,7 +1055,7 @@ SQRESULT sq_getdelegate(HSKVM v,int idx)
 
 }
 
-SQRESULT sq_get(HSKVM v,int idx)
+SQRESULT sq_get(HSKVM v,isize_t idx)
 {
     SQObjectPtr &self=stack_get(v,idx);
     SQObjectPtr &obj = v->GetUp(-1);
@@ -1065,7 +1065,7 @@ SQRESULT sq_get(HSKVM v,int idx)
     return SQ_ERROR;
 }
 
-SQRESULT sq_rawget(HSKVM v,int idx)
+SQRESULT sq_rawget(HSKVM v,isize_t idx)
 {
     SQObjectPtr &self=stack_get(v,idx);
     SQObjectPtr &obj = v->GetUp(-1);
@@ -1102,7 +1102,7 @@ SQRESULT sq_rawget(HSKVM v,int idx)
     return sq_throwerror(v,_SC("the entity doesn't exist"));
 }
 
-SQRESULT sq_getstackobj(HSKVM v,int idx,HSQOBJECT *po)
+SQRESULT sq_getstackobj(HSKVM v,isize_t idx,HSQOBJECT *po)
 {
     *po=stack_get(v,idx);
     return SQ_OK;
@@ -1112,7 +1112,7 @@ const SQChar *sq_getlocal(HSKVM v,size_t level,size_t idx)
 {
     size_t cstksize=v->_callsstacksize;
     size_t lvl=(cstksize-level)-1;
-    int stackbase=v->_stackbase;
+    isize_t stackbase=v->_stackbase;
     if(lvl<cstksize){
         for(size_t i=0;i<level;i++){
             SQVM::CallInfo &ci=v->_callsstack[(cstksize-i)-1];
@@ -1123,12 +1123,12 @@ const SQChar *sq_getlocal(HSKVM v,size_t level,size_t idx)
             return NULL;
         SQClosure *c=_closure(ci._closure);
         SQFunctionProto *func=c->_function;
-        if(func->_noutervalues > (int)idx) {
+        if(func->_noutervalues > (isize_t)idx) {
             v->Push(*_outer(c->_outervalues[idx])->_valptr);
             return _stringval(func->_outervalues[idx]._name);
         }
         idx -= func->_noutervalues;
-        return func->GetLocal(v,stackbase,idx,(int)(ci._ip-func->_instructions)-1);
+        return func->GetLocal(v,stackbase,idx,(isize_t)(ci._ip-func->_instructions)-1);
     }
     return NULL;
 }
@@ -1167,7 +1167,7 @@ void sq_getlasterror(HSKVM v)
     v->Push(v->_lasterror);
 }
 
-SQRESULT sq_reservestack(HSKVM v,int nsize)
+SQRESULT sq_reservestack(HSKVM v,isize_t nsize)
 {
     if (((size_t)v->_top + nsize) > v->_stack.size()) {
         if(v->_nmetamethodscall) {
@@ -1192,7 +1192,7 @@ SQRESULT sq_resume(HSKVM v,bool retval,bool raiseerror)
     return sq_throwerror(v,_SC("only generators can be resumed"));
 }
 
-SQRESULT sq_call(HSKVM v,int params,bool retval,bool raiseerror)
+SQRESULT sq_call(HSKVM v,isize_t params,bool retval,bool raiseerror)
 {
     SQObjectPtr res;
     if(!v->Call(v->GetUp(-(params+1)),params,v->_top-params,res,raiseerror?true:false)){
@@ -1206,7 +1206,7 @@ SQRESULT sq_call(HSKVM v,int params,bool retval,bool raiseerror)
     return SQ_OK;
 }
 
-SQRESULT sq_tailcall(HSKVM v, int nparams)
+SQRESULT sq_tailcall(HSKVM v, isize_t nparams)
 {
 	SQObjectPtr &res = v->GetUp(-(nparams + 1));
 	if (sq_type(res) != OT_CLOSURE) {
@@ -1218,7 +1218,7 @@ SQRESULT sq_tailcall(HSKVM v, int nparams)
 		return sq_throwerror(v, _SC("generators cannot be tail called"));
 	}
 	
-	int stackbase = (v->_top - nparams) - v->_stackbase;
+	isize_t stackbase = (v->_top - nparams) - v->_stackbase;
 	if (!v->TailCall(clo, stackbase, nparams)) {
 		return SQ_ERROR;
 	}
@@ -1235,7 +1235,7 @@ SQRESULT sq_wakeupvm(HSKVM v,bool wakeupret,bool retval,bool raiseerror,bool thr
     SQObjectPtr ret;
     if(!v->_suspended)
         return sq_throwerror(v,_SC("cannot resume a vm that is not running any code"));
-    int target = v->_suspended_target;
+    isize_t target = v->_suspended_target;
     if(wakeupret) {
         if(target != -1) {
             v->GetAt(v->_stackbase+v->_suspended_target)=v->GetUp(-1); //retval
@@ -1251,7 +1251,7 @@ SQRESULT sq_wakeupvm(HSKVM v,bool wakeupret,bool retval,bool raiseerror,bool thr
     return SQ_OK;
 }
 
-void sq_setreleasehook(HSKVM v,int idx,SQRELEASEHOOK hook)
+void sq_setreleasehook(HSKVM v,isize_t idx,SQRELEASEHOOK hook)
 {
     SQObjectPtr &ud=stack_get(v,idx);
     switch(sq_type(ud) ) {
@@ -1262,7 +1262,7 @@ void sq_setreleasehook(HSKVM v,int idx,SQRELEASEHOOK hook)
     }
 }
 
-SQRELEASEHOOK sq_getreleasehook(HSKVM v,int idx)
+SQRELEASEHOOK sq_getreleasehook(HSKVM v,isize_t idx)
 {
     SQObjectPtr &ud=stack_get(v,idx);
     switch(sq_type(ud) ) {
@@ -1307,7 +1307,7 @@ SQRESULT sq_readclosure(HSKVM v,SQREADFUNC r,PVOID up)
     return SQ_OK;
 }
 
-SQChar *sq_getscratchpad(HSKVM v,int minsize)
+SQChar *sq_getscratchpad(HSKVM v,isize_t minsize)
 {
     return _ss(v)->GetScratchPad(minsize);
 }
@@ -1322,7 +1322,7 @@ SQRESULT sq_resurrectunreachable(HSKVM v)
 #endif
 }
 
-int sq_collectgarbage(HSKVM v)
+isize_t sq_collectgarbage(HSKVM v)
 {
 #ifndef NO_GARBAGE_COLLECTOR
     return _ss(v)->CollectGarbage(v);
@@ -1341,7 +1341,7 @@ SQRESULT sq_getcallee(HSKVM v)
     return sq_throwerror(v,_SC("no closure in the calls stack"));
 }
 
-const SQChar *sq_getfreevariable(HSKVM v,int idx,size_t nval)
+const SQChar *sq_getfreevariable(HSKVM v,isize_t idx,size_t nval)
 {
     SQObjectPtr &self=stack_get(v,idx);
     const SQChar *name = NULL;
@@ -1370,7 +1370,7 @@ const SQChar *sq_getfreevariable(HSKVM v,int idx,size_t nval)
     return name;
 }
 
-SQRESULT sq_setfreevariable(HSKVM v,int idx,size_t nval)
+SQRESULT sq_setfreevariable(HSKVM v,isize_t idx,size_t nval)
 {
     SQObjectPtr &self=stack_get(v,idx);
     switch(sq_type(self))
@@ -1396,7 +1396,7 @@ SQRESULT sq_setfreevariable(HSKVM v,int idx,size_t nval)
     return SQ_OK;
 }
 
-SQRESULT sq_setattributes(HSKVM v,int idx)
+SQRESULT sq_setattributes(HSKVM v,isize_t idx)
 {
     SQObjectPtr *o = NULL;
     _GETSAFE_OBJ(v, idx, OT_CLASS,o);
@@ -1418,7 +1418,7 @@ SQRESULT sq_setattributes(HSKVM v,int idx)
     return sq_throwerror(v,_SC("wrong index"));
 }
 
-SQRESULT sq_getattributes(HSKVM v,int idx)
+SQRESULT sq_getattributes(HSKVM v,isize_t idx)
 {
     SQObjectPtr *o = NULL;
     _GETSAFE_OBJ(v, idx, OT_CLASS,o);
@@ -1438,7 +1438,7 @@ SQRESULT sq_getattributes(HSKVM v,int idx)
     return sq_throwerror(v,_SC("wrong index"));
 }
 
-SQRESULT sq_getmemberhandle(HSKVM v,int idx,HSQMEMBERHANDLE *handle)
+SQRESULT sq_getmemberhandle(HSKVM v,isize_t idx,HSQMEMBERHANDLE *handle)
 {
     SQObjectPtr *o = NULL;
     _GETSAFE_OBJ(v, idx, OT_CLASS,o);
@@ -1485,7 +1485,7 @@ SQRESULT _getmemberbyhandle(HSKVM v,SQObjectPtr &self,const HSQMEMBERHANDLE *han
     return SQ_OK;
 }
 
-SQRESULT sq_getbyhandle(HSKVM v,int idx,const HSQMEMBERHANDLE *handle)
+SQRESULT sq_getbyhandle(HSKVM v,isize_t idx,const HSQMEMBERHANDLE *handle)
 {
     SQObjectPtr &self = stack_get(v,idx);
     SQObjectPtr *val = NULL;
@@ -1496,7 +1496,7 @@ SQRESULT sq_getbyhandle(HSKVM v,int idx,const HSQMEMBERHANDLE *handle)
     return SQ_OK;
 }
 
-SQRESULT sq_setbyhandle(HSKVM v,int idx,const HSQMEMBERHANDLE *handle)
+SQRESULT sq_setbyhandle(HSKVM v,isize_t idx,const HSQMEMBERHANDLE *handle)
 {
     SQObjectPtr &self = stack_get(v,idx);
     SQObjectPtr &newval = stack_get(v,-1);
@@ -1509,7 +1509,7 @@ SQRESULT sq_setbyhandle(HSKVM v,int idx,const HSQMEMBERHANDLE *handle)
     return SQ_OK;
 }
 
-SQRESULT sq_getbase(HSKVM v,int idx)
+SQRESULT sq_getbase(HSKVM v,isize_t idx)
 {
     SQObjectPtr *o = NULL;
     _GETSAFE_OBJ(v, idx, OT_CLASS,o);
@@ -1520,7 +1520,7 @@ SQRESULT sq_getbase(HSKVM v,int idx)
     return SQ_OK;
 }
 
-SQRESULT sq_getclass(HSKVM v,int idx)
+SQRESULT sq_getclass(HSKVM v,isize_t idx)
 {
     SQObjectPtr *o = NULL;
     _GETSAFE_OBJ(v, idx, OT_INSTANCE,o);
@@ -1528,7 +1528,7 @@ SQRESULT sq_getclass(HSKVM v,int idx)
     return SQ_OK;
 }
 
-SQRESULT sq_createinstance(HSKVM v,int idx)
+SQRESULT sq_createinstance(HSKVM v,isize_t idx)
 {
     SQObjectPtr *o = NULL;
     _GETSAFE_OBJ(v, idx, OT_CLASS,o);
@@ -1536,7 +1536,7 @@ SQRESULT sq_createinstance(HSKVM v,int idx)
     return SQ_OK;
 }
 
-void sq_weakref(HSKVM v,int idx)
+void sq_weakref(HSKVM v,isize_t idx)
 {
     SQObject &o=stack_get(v,idx);
     if(ISREFCOUNTED(sq_type(o))) {
@@ -1546,7 +1546,7 @@ void sq_weakref(HSKVM v,int idx)
     v->Push(o);
 }
 
-SQRESULT sq_getweakrefval(HSKVM v,int idx)
+SQRESULT sq_getweakrefval(HSKVM v,isize_t idx)
 {
     SQObjectPtr &o = stack_get(v,idx);
     if(sq_type(o) != OT_WEAKREF) {
@@ -1575,13 +1575,13 @@ SQRESULT sq_getdefaultdelegate(HSKVM v,SQObjectType t)
     return SQ_OK;
 }
 
-SQRESULT sq_next(HSKVM v,int idx)
+SQRESULT sq_next(HSKVM v,isize_t idx)
 {
     SQObjectPtr o=stack_get(v,idx),&refpos = stack_get(v,-1),realkey,val;
     if(sq_type(o) == OT_GENERATOR) {
         return sq_throwerror(v,_SC("cannot iterate a generator"));
     }
-    int faketojump;
+    isize_t faketojump;
     if(!v->FOREACH_OP(o,realkey,val,refpos,0,666,faketojump))
         return SQ_ERROR;
     if(faketojump != 666) {
@@ -1594,11 +1594,11 @@ SQRESULT sq_next(HSKVM v,int idx)
 
 struct BufState{
     const SQChar *buf;
-    int ptr;
-    int size;
+    isize_t ptr;
+    isize_t size;
 };
 
-int buf_lexfeed(PVOID file)
+isize_t buf_lexfeed(PVOID file)
 {
     BufState *buf=(BufState*)file;
     if(buf->size<(buf->ptr+1))
@@ -1606,7 +1606,7 @@ int buf_lexfeed(PVOID file)
     return buf->buf[buf->ptr++];
 }
 
-SQRESULT sq_compilebuffer(HSKVM v,const SQChar *s,int size,const SQChar *sourcename,bool raiseerror) {
+SQRESULT sq_compilebuffer(HSKVM v,const SQChar *s,isize_t size,const SQChar *sourcename,bool raiseerror) {
     BufState buf;
     buf.buf = s;
     buf.size = size;
@@ -1614,7 +1614,7 @@ SQRESULT sq_compilebuffer(HSKVM v,const SQChar *s,int size,const SQChar *sourcen
     return sq_compile(v, buf_lexfeed, &buf, sourcename, raiseerror);
 }
 
-void sq_move(HSKVM dest,HSKVM src,int idx)
+void sq_move(HSKVM dest,HSKVM src,isize_t idx)
 {
     dest->Push(stack_get(src,idx));
 }
