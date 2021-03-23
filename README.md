@@ -15,6 +15,11 @@
        * ADC
        * UART
           * OPTIONAL RESFULL SERVER (JSON)
+
+
+
+
+
        
 
 ##### Published: 1 Oct 2017
@@ -36,7 +41,9 @@ var pwm = PWM("0.0", 1000/*freq*/, 100/*initial load*/, false/*reverse*/, "pwm"/
 pwm.set_value(80);
 li.call_back(my_function, ON_RISE|ON_FALL);
 ```
+#### WAY FASTER
 
+[![video](https://raw.githubusercontent.com/circinusX1/circinus/master/docs/cirfast.gif)](https://youtu.be/ZMlJj0PciWA)
 
 #### SDK
 [!SDK](https://github.com/circinusX1/circinus/wiki)
