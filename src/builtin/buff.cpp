@@ -78,11 +78,13 @@ void Buff::set(Sqrat::Array& a)
             *((int*)(_pb + _offs[i])) = c;
         }
             break;   
+#if defined(__LP64__) && __LP64__
         case  sizeof(size_t):{
             size_t c = *a.GetValue<size_t>(i);   
             *((size_t*)(_pb + _offs[i])) = c;
         }
             break;   
+#endif 
         default:assert(0);
         }
     }

@@ -135,7 +135,7 @@ typedef enum tagSQObjectType{
     OT_CLASS =          (_RT_CLASS|SQOBJECT_REF_COUNTED),
     OT_INSTANCE =       (_RT_INSTANCE|SQOBJECT_REF_COUNTED|SQOBJECT_DELEGABLE),
     OT_WEAKREF =        (_RT_WEAKREF|SQOBJECT_REF_COUNTED),
-    OT_OUTER =          (_RT_OUTER|SQOBJECT_REF_COUNTED) //internal usage only
+    OT_OUTER =          (_RT_OUTER|SQOBJECT_REF_COUNTED), //internal usage only
 }SQObjectType;
 
 #define ISREFCOUNTED(t) (t&SQOBJECT_REF_COUNTED)

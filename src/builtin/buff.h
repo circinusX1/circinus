@@ -42,8 +42,6 @@ public:
         cls.Functor(_SC("get"), &Buff::get);
         cls.Functor(_SC("length"), &Buff::length);
         cls.Functor(_SC("test"), &Buff::test);
-
-
         Sqrat::RootTable().Bind(_SC("BUFF"), cls);
     }
 

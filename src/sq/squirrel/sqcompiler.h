@@ -83,7 +83,6 @@ struct SQVM;
 #define TK_REAL    334
 #define TK_DOUBLE   335
 
-
 typedef void(*CompilerErrorMemb)(void *ud, const SQChar *s);
 bool Compile(SQVM *vm, SQLEXREADFUNC rg, PVOID up, const SQChar *sourcename, SQObjectPtr &out, bool raiseerror, bool lineinfo);
 #endif //_SQCOMPILER_H_

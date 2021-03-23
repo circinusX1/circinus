@@ -242,6 +242,18 @@ struct SQObjectPtr : public SQObject
     _SCALAR_TYPE_DECL(OT_INTEGER,isize_t,nInteger)
     _SCALAR_TYPE_DECL(OT_FLOAT,SQFloat,fFloat)
     _SCALAR_TYPE_DECL(OT_USERPOINTER,PVOID,pUserPointer)
+    
+    _SCALAR_TYPE_DECL(OT_INTEGER,int8_t,nInteger) // mco-struct
+    _SCALAR_TYPE_DECL(OT_INTEGER,uint8_t,nInteger)
+    _SCALAR_TYPE_DECL(OT_INTEGER,int16_t,nInteger)
+    _SCALAR_TYPE_DECL(OT_INTEGER,uint16_t,nInteger)
+    _SCALAR_TYPE_DECL(OT_INTEGER,int32_t,nInteger)
+    _SCALAR_TYPE_DECL(OT_INTEGER,uint32_t,nInteger)
+    _SCALAR_TYPE_DECL(OT_INTEGER,int64_t,nInteger)
+    _SCALAR_TYPE_DECL(OT_INTEGER,uint64_t,nInteger)
+    _SCALAR_TYPE_DECL(OT_INTEGER,float,fFloat)
+    
+    
     SQObjectPtr(bool bBool)
     {
         SQ_OBJECT_RAWINIT()

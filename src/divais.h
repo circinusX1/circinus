@@ -228,6 +228,18 @@ public:
         this->resize(rez-1);
         _cap = rez-1;
     }
+    void append(const uint8_t* b, const size_t& l)
+    {
+        this->std::basic_string<uint8_t,
+                          std::char_traits<uint8_t>,
+                          fast_allocator<uint8_t> >::append(b,l);
+    }
+    void append(const bytes_t& b, const size_t& l)
+    {
+        this->std::basic_string<uint8_t,
+                          std::char_traits<uint8_t>,
+                          fast_allocator<uint8_t> >::append(b.data(),l);
+    }
     size_t cap()const{return _cap-1;}
 };
 
