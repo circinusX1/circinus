@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include <stdint.h>
 #include <stddef.h>
+#include <sqconfig.h>
 
 
 #ifdef _SQ_CONFIG_INCLUDE
@@ -34,8 +35,7 @@ THE SOFTWARE.
 extern "C" {
 #endif
 
-typedef   long long isize_t;   
-typedef   size_t    pointer_t;   
+
 
 #ifndef SQUIRREL_API
 #define SQUIRREL_API extern

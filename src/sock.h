@@ -446,12 +446,12 @@ public:
     virtual int     receive(unsigned char* buff, int length,  SADDR_46& rsin);
     virtual int     receive(char* buff, int length, int port=0, const char* ip=0  );
     virtual int     receive(char* buff, int length,  SADDR_46& rsin);
-    void            SetRsin(const  SADDR_46& in){::memcpy(&_remote_sin, &in, sizeof( SADDR_46));}
+    void            SetRsin(const  SADDR_46& in){_remote_sin = in;}
     int             connect(const char* sip, int port, CancelCB cbCall=sock::DefCBCall, void* pUser=0);
     int             set_rsin(const char* sip, int port);
     int             bind(const char* ip=0, int port=0);
     SADDR_46&          remote(){return _remote_sin;}
-    void            remote(SADDR_46& s){memcpy(&_remote_sin,&s,sizeof(s));}
+    void            remote(SADDR_46& in){_remote_sin = in;}
     char*           ssock_addrip();
 
 protected:

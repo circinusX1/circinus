@@ -1,5 +1,9 @@
 
 #include <stdint.h>
+#include <cstdint>
+
+#ifndef STD_CONFIG
+#define STD_CONFIG
 
 #ifdef SQUSEDOUBLE
 typedef double SQFloat;
@@ -27,7 +31,13 @@ typedef size_t SQRawObjectVal; //is 32 bits on 32 bits builds and 64 bits otherw
 #endif
 #endif
 
+
+typedef   long long isize_t;   
+typedef   size_t    pointer_t;   
+
+
 typedef void* PVOID;
+
 typedef isize_t   SQRESULT;
 
 #ifdef SQUNICODE
@@ -121,5 +131,8 @@ typedef char SQChar;
 #define _PRINT_INT_PREC _SC("ll")
 #define _PRINT_INT_FMT _SC("%d")
 #else
-#define _PRINT_INT_FMT _SC("%d")
+#define _PRINT_INT_PREC _SC("ll")
+#define _PRINT_INT_FMT _SC("%lld")
 #endif
+
+#endif //  STD_CONFIG

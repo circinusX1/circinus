@@ -83,10 +83,10 @@ const char* RawSock::gets(int chars)
     bytes_t loco(chars);
 
     _t1.clear();
-    const int bytes = this->select_receive(loco.data(), loco.cap(), _tout);
+    const int bytes = this->select_receive((uint8_t*)loco.data(), loco.cap(), _tout);
     if(bytes){
         loco.resize(bytes);
-        _t1.assign(loco.data(),loco.length());
+        _t1.assign((uint8_t*)loco.data(),loco.length());
     }
     return (const char*)_t1.data();
 }
@@ -95,14 +95,14 @@ int RawSock::write(Sqrat::Array& a)
 {
     const int sz = a.GetSize();
     bytes_t loco(sz);
-    a.GetArray(loco.data(), sz);
-    return this->sendall(loco.data(),sz);
+    a.GetArray((uint8_t*)loco.data(), sz);
+    return this->sendall((uint8_t*)loco.data(),sz);
 }
 
 Sqrat::Array RawSock::read(int maxb)
 {
     bytes_t loco(maxb);
-    const int bytes = this->select_receive(loco.data(), loco.cap(), _tout);
+    const int bytes = this->select_receive((uint8_t*)loco.data(), loco.cap(), _tout);
     if(bytes>0)
     {
         SqArr  rar(App->psqvm(), bytes);

@@ -72,6 +72,9 @@ public:
     devdata_t(){
 		::memset(_dl,0,sizeof(_dl));
 	}
+	devdata_t(const devdata_t& r){
+		::memcpy(_dl,&r,sizeof(_dl));
+	}
     template <size_t T>
     devdata_t(const uint8_t* d, size_t bytes, int index=0){
         assert(index<=MAX_SLOTS);

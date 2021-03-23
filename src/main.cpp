@@ -65,10 +65,11 @@ int main(int argc, char *argv[])
     signal(SIGPIPE, __sipPipe);
     signal(SIGBUS, __sipPipe);
     signal(SIGKILL, __sigInt);
-#endif //
-
+#else //
+    signal(SIGKILL, __sigInt);
+#endif 
     do {
-#ifdef DEEP_DEBUG
+#ifdef DEBUG_AUTO_RELOAD_SCRIPT
         if(Reincepe)
         {
             std::string c;

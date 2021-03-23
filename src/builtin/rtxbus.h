@@ -70,10 +70,10 @@ public:
             while(fut < tick_count())
             {
                 bytes_t       loco(_bufsz);
-                const size_t  bytes = _pd->bread(loco.data(), loco.cap());
+                const size_t  bytes = _pd->bread((uint8_t*)loco.data(), loco.cap());
                 if(bytes ==0 ) continue;
                 loco.resize(bytes);
-                srv = f.Fcall<bool>(loco.data());
+                srv = f.Fcall<bool>((uint8_t*)loco.data());
                 fut = 0;
                 if(*srv.Get()==false)
                 {
@@ -97,7 +97,7 @@ public:
             while(fut>tick_count())
             {
                 bytes_t       loco(_bufsz);
-                const size_t  bytes = _pd->bread(loco.data(), loco.cap());
+                const size_t  bytes = _pd->bread((uint8_t*)loco.data(), loco.cap());
                 if(bytes ==0 ) continue;
 
                 loco.resize(bytes);
@@ -125,10 +125,10 @@ public:
         bytes_t     loco(_bufsz);
 
         _pd->reset();
-        const size_t  bytes = _pd->bread(loco.data(), loco.cap());
+        const size_t  bytes = _pd->bread((uint8_t*)loco.data(), loco.cap());
         if(bytes){
             loco.resize(bytes);
-            _t1.assign(loco.data(), bytes);
+            _t1.assign((uint8_t*)loco.data(), bytes);
             return (const char*)_t1.data();
         }
         return __empty.c_str();
@@ -141,7 +141,7 @@ public:
         bytes_t         loco(_bufsz);
 
         _pd->reset();
-        const size_t  bytes = _pd->bread(loco.data(), loco.cap());
+        const size_t  bytes = _pd->bread((uint8_t*)loco.data(), loco.cap());
         if(bytes){
             rar.Resize(bytes);
             for(size_t i = 0 ; i < bytes; i++)
@@ -162,9 +162,9 @@ public:
         const int   sz = a.GetSize();
         bytes_t     loco(sz);
 
-        a.GetArray(loco.data(), sz);
+        a.GetArray((uint8_t*)loco.data(), sz);
         loco.resize(sz);
-        return _pd->fwrite(loco.data(), sz);
+        return _pd->fwrite((uint8_t*)loco.data(), sz);
     }
 
     SqArr _fread(int bytes)
@@ -173,7 +173,7 @@ public:
         bytes_t    loco(bytes);
         SqArr      rar(App->psqvm(), 0);
 
-        const int rv = _pd->fread(loco.data(), bytes);
+        const int rv = _pd->fread((uint8_t*)loco.data(), bytes);
         loco.resize(rv);
         if(rv>0)
         {
@@ -192,7 +192,7 @@ public:
         SqArr       rar(App->psqvm(), 0);
         bytes_t     loco(chars);
 
-        const size_t bytes = _pd->bread(loco.data(), chars, reg);
+        const size_t bytes = _pd->bread((uint8_t*)loco.data(), chars, reg);
         if(bytes>0)
         {
             rar.Resize(bytes);
@@ -213,8 +213,8 @@ public:
             bytes_t  loco(sz);
 
             _devflush();
-            a.GetArray(loco.data(), sz);
-            sz = _pd->bwrite(loco.data(),sz);
+            a.GetArray((uint8_t*)loco.data(), sz);
+            sz = _pd->bwrite((uint8_t*)loco.data(),sz);
         }
         return sz;
     }
@@ -228,8 +228,8 @@ public:
             bytes_t loco(sz);
 
             _devflush();
-            a.GetArray(loco.data(), sz);
-            sz = _pd->bwrite(loco.data(), sz, reg);
+            a.GetArray((uint8_t*)loco.data(), sz);
+            sz = _pd->bwrite((uint8_t*)loco.data(), sz, reg);
         }
         else
         {
@@ -244,8 +244,8 @@ public:
         size_t      sz = a.GetSize();
         bytes_t     loco(std::max((size_t)toread,sz));
 
-        a.GetArray(loco.data(), sz);
-        if(_pd->do_ioctl(ctl, loco.data(), toread)==toread)
+        a.GetArray((uint8_t*)loco.data(), sz);
+        if(_pd->do_ioctl(ctl, (uint8_t*)loco.data(), toread)==toread)
         {
             for(int i=0;i<toread;++i){
                 a.SetValue(i,loco[i]);
@@ -283,10 +283,10 @@ public:
 
         while(tick_count() < fut)
         {
-            const size_t bytes = _pd->bread(loco.data(), loco.cap());
+            const size_t bytes = _pd->bread((uint8_t*)loco.data(), loco.cap());
             if(bytes == 0) continue;
             loco.resize(bytes);
-            _t1.append(loco.data(), bytes);
+            _t1.append((uint8_t*)loco.data(), bytes);
             const int ns  = a.GetSize();
             for(int i=0;i<ns;i++)
             {
@@ -313,7 +313,7 @@ public:
         _t1.clear();
         while(tick_count() < fut)
         {
-            const size_t bytes = _pd->bread(loco.data(), loco.cap());
+            const size_t bytes = _pd->bread((uint8_t*)loco.data(), loco.cap());
             if(bytes==0) continue;
             _t1.append(loco,bytes);
             const size_t f = _t1.find((const uint8_t*)ex, 0, sz);
@@ -335,7 +335,7 @@ public:
         bytes_t  income(_bufsz);
         int      from = 0;
 
-        a.GetArray(loco.data(), sz);
+        a.GetArray((uint8_t*)loco.data(), sz);
         _t1.clear();
         while(tick_count() < fut)
         {

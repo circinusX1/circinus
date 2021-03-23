@@ -31,10 +31,10 @@ static int l_recycle()
 {
     if(!LgFl.empty())
     {
-        char drloc[256] = {0};
-        char fname[256] = {0};
-        char siletmp1[256];
-        char siletmp2[256];
+        char drloc[200] = {0};
+        char fname[200] = {0};
+        char siletmp1[460];
+        char siletmp2[460];
 
 
         ::strcpy(siletmp1,  LgFl.c_str());
@@ -78,10 +78,12 @@ static int l_recycle()
     return 0;
 }
 
+#if 0
 static int is_big_endian(void) {
     static const int n = 1;
     return ((char *) &n)[0] == 0;
 }
+#endif // 0
 
 LogScop::LogScop(const char* ch):op(ch)
 {

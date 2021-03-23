@@ -46,7 +46,7 @@ SoLib::SoLib(SqObj& o,
     }
 }
 
-bool SoLib::load(const char* foo, bool ret, int nargs)
+bool SoLib::load(const char* foo, bool ret, isize_t nargs)
 {
     if(_soh)
     {

@@ -4,6 +4,8 @@
 
 #include "sqopcodes.h"
 #include "sqobject.h"
+#include "sqconfig.h"
+
 #define MAX_NATIVE_CALLS 100
 #define MIN_STACK_OVERHEAD 15
 
@@ -21,7 +23,12 @@ void sq_base_register(HSKVM v);
 struct SQExceptionTrap{
     SQExceptionTrap() {}
     SQExceptionTrap(isize_t ss, isize_t stackbase,SQInstruction *ip, isize_t ex_target){ _stacksize = ss; _stackbase = stackbase; _ip = ip; _extarget = ex_target;}
-    SQExceptionTrap(const SQExceptionTrap &et) { (*this) = et;  }
+    SQExceptionTrap(const SQExceptionTrap &et) { 
+        _stackbase=et._stackbase;
+        _stacksize=et._stacksize;
+        _ip=et._ip;
+        _extarget=et._extarget;
+    }
     isize_t _stackbase;
     isize_t _stacksize;
     SQInstruction *_ip;

@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
+#include "_config.h"
 #include <linux/watchdog.h>
 #include <sys/ioctl.h>
 #include <termios.h>
@@ -561,9 +562,6 @@ void println(const char* text)
 
 size_t pointer(size_t val)
 {
-    printf("from foo = %p %ull\n", val, val);
-    val = INT_MAX * 4;
-    printf("new foo = %p %ull \n", val, val);
     return val;
 }
 
@@ -659,13 +657,15 @@ void usingop(int32_t flags)
     if(flags & eUART)   UartDev::squit(*sq);
     if(flags & eBASE)   ScrBase::squit(*sq);
     if(flags & eSRV)    RestSrv::squit(*sq);
-    if(flags & eDB)     Database::squit(*sq);
     if(flags & eFILE)   FileDev::squit(*sq);
     if(flags & eSOLIB)  SoLib::squit(*sq);
     if(flags & eSOCKET)   RawSock::squit(*sq);
     if(flags & eINPUT)   InputSys::squit(*sq);
     //if(flags & eDEVMODULE) ModuDev::squit(*sq);
     if(flags & eSUNRS)   SunTimes::squit(*sq);
+#ifdef WITH_SQLITE
+        if(flags & eDB)     Database::squit(*sq);
+#endif
 #ifdef WITH_CURL
     if(flags & eCURL)   ComCurl::squit(*sq);
 #endif //#ifdef WITH_USB
@@ -713,7 +713,7 @@ void globals_expose(SqEnvi& sq)
 			.Const("eDB",eDB)
 			.Const("eFILE",eFILE)
 			.Const("eSOLIB",eSOLIB)
-			.Const("eSOLIB",eUSB)
+			.Const("eUSB",eUSB)
 			.Const("eSOCKET",eSOCKET)
 			.Const("eDEVMODULE",eDEVMODULE)
 			.Const("eCURL",eCURL)
@@ -785,4 +785,3 @@ void globals_expose(SqEnvi& sq)
 	Sqrat::RootTable(sq.theVM()).Functor("pointer", &pointer);
 
 }
-

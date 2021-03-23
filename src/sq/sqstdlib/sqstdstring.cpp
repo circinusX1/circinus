@@ -120,8 +120,11 @@ SQRESULT sqstd_format(HSKVM v,isize_t nformatstringidx,isize_t *outlen,SQChar **
                 }
                 fmt[fpos++] = f;
                 fmt[fpos++] = _SC('\0');
-                }
+                }   
+#if __cplusplus > 201402L
                 [[fallthrough]];
+#endif
+
 #endif
             case 'c':
                 if(SQ_FAILED(sq_getinteger(v,nparam,&ti)))

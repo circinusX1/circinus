@@ -137,7 +137,7 @@ bool	I2CDev::_set_value(const char* key, const char* value)
         {
             two[0] = value[i];
             two[1] = value[i+1];
-            ::sscanf(two, "%0X2", &ival);
+            ::sscanf(two, "%02X", &ival);
             this->_cur_value.pusht((uint8_t)ival);
         }
         return true;

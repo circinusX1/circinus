@@ -101,7 +101,7 @@ extern Inst*        App;
 extern EALIV        ApStat;
 extern std::string  SqErrStr;
 
-#ifdef DEEP_DEBUG
+#ifdef DEBUG_AUTO_RELOAD_SCRIPT
 #   define RESTART  RELOAD_S
 #else
 #   define RESTART  EXIT_APP

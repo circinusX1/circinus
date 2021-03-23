@@ -617,8 +617,8 @@ tcp_sock::tcp_sock()
 SOCKET tcp_sock::create(int , int opt, const char* )
 {
     _error = 0;
-    ::memset(&_local_sin,0,sizeof(_local_sin));
-    ::memset(&_remote_sin,0,sizeof(_remote_sin));
+    _local_sin.clear();
+    _remote_sin.clear();
     assert(_thesock<=0);
     _thesock = ::socket(AF_INET, SOCK_STREAM, 0);
     if((int)_thesock < 0)
@@ -683,8 +683,8 @@ tcp_srv_sock::~tcp_srv_sock() {}
 SOCKET tcp_srv_sock::create(int port, int opt, const char* iface)
 {
     _error = 0;
-    ::memset(&_local_sin,0,sizeof(_local_sin));
-    ::memset(&_remote_sin,0,sizeof(_remote_sin));
+    _local_sin.clear();
+    _remote_sin.clear();
     assert(_thesock<=0);
     _thesock = ::socket(AF_INET, SOCK_STREAM, 0);
     if(_thesock <= 0)
@@ -747,7 +747,7 @@ SOCKET tcp_srv_sock::create(const SADDR_46& r, int opt)
 SOCKET tcp_srv_sock::accept(tcp_clis& cliSock)
 {
     _error = 0;
-    ::memset(&cliSock._remote_sin,0,sizeof(cliSock._remote_sin));
+    cliSock._remote_sin.clear();
     socklen_t clilen = (socklen_t)sizeof(cliSock._remote_sin);
     cliSock._thesock = ::accept(_thesock,
                                 (struct sockaddr*)&cliSock._remote_sin,
@@ -1142,7 +1142,7 @@ SOCKET udp_sock::create(int port, int tcpp, const char* addr)
     _thesock = ::socket(AF_INET, SOCK_DGRAM, tcpp);
     if((int)-1 == (int)_thesock)
         return -1;
-    ::memset(&_local_sin, 0, sizeof(_local_sin));
+    _local_sin.clear();
 
     _local_sin.sin_family        = AF_INET;
     _local_sin.sin_addr.s_addr   = addr ? inet_addr(addr): htonl(INADDR_ANY);
@@ -1322,7 +1322,7 @@ int  udp_sock::receive(unsigned char* buff, int length, int port, const char* ip
         }
         else
         {
-            memset(&_remote_sin,0,sizeof(_remote_sin));
+            _remote_sin.clear();
             socklen_t iRecvLen   = _remote_sin.rsz();
             rcv =  (int)recvfrom (_thesock, (char*)buff, length,
                                   0,

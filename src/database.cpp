@@ -13,7 +13,7 @@ THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
-
+#ifdef WITH_SQLITE
 #include <ctime>
 #include <sys/stat.h>
 #include <dlfcn.h>
@@ -284,7 +284,4 @@ int Database::_resize()
     _db = 0;
     return 0;
 }
-
-
-
-
+#endif //#ifdef WITH_SQLITE

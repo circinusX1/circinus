@@ -34,7 +34,7 @@ public:
     bool iopen(int);
     void  iclose();
 
-    bool load(const char* foo, bool ret, int nargs);
+    bool load(const char* foo, bool ret, isize_t nargs);
     static void squit(SqEnvi& sq)
     {
         Sqrat::Class<SoLib> cls(sq.theVM(), _SC("LIB"));

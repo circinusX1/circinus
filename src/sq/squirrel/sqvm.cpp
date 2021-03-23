@@ -317,6 +317,9 @@ bool SQVM::ToString(const SQObjectPtr &o,SQObjectPtr &res)
                 }
             }
         }
+#if __cplusplus > 201402L
+                [[fallthrough]];
+#endif
 
     default:
         scsprintf(_sp(sq_rsl((sizeof(void*)*2)+NUMBER_MAX_CHAR)),sq_rsl((sizeof(void*)*2)+NUMBER_MAX_CHAR),_SC("(%s : 0x%p)"),GetTypeName(o),(void*)_rawval(o));
@@ -751,6 +754,10 @@ exception_restore:
                     continue;
                 }
             }
+#if __cplusplus > 201402L
+                [[fallthrough]];
+#endif
+                
             case _OP_CALL: {
                 SQObjectPtr clo = STK(arg1);
                 switch (sq_type(clo)) {
@@ -810,6 +817,9 @@ exception_restore:
                         }
                         break;
                     }
+#if __cplusplus > 201402L
+                [[fallthrough]];
+#endif
 
                     //Raise_Error(_SC("attempt to call '%s'"), GetTypeName(clo));
                     //SQ_THROW();
@@ -1349,6 +1359,9 @@ isize_t SQVM::FallBackGet(const SQObjectPtr &self,const SQObjectPtr &key,SQObjec
             return FALLBACK_NO_MATCH;
         }
         //go through
+#if __cplusplus > 201402L
+                [[fallthrough]];
+#endif
 
     case OT_INSTANCE: {
         SQObjectPtr closure;
@@ -1418,6 +1431,10 @@ isize_t SQVM::FallBackSet(const SQObjectPtr &self,const SQObjectPtr &key,const S
             if(Set(_table(self)->_delegate,key,val,DONT_FALL_BACK)) return FALLBACK_OK;
         }
         //keps on going
+#if __cplusplus > 201402L
+                [[fallthrough]];
+#endif
+        
     case OT_INSTANCE:
     case OT_USERDATA:{
         SQObjectPtr closure;

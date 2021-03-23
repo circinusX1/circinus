@@ -173,7 +173,7 @@ void Divais::_tbl2string(Sqrat::Table& t, std::string& s)
         switch(_RAW_TYPE(o._type))
         {
         case _RT_NULL:         ::sprintf(out, "%d",0); break;
-        case _RT_INTEGER:      ::sprintf(out, "%d", SQ_PTRS->objtointeger(&o)); break;
+        case _RT_INTEGER:      ::sprintf(out, "%lld", SQ_PTRS->objtointeger(&o)); break;
         case _RT_FLOAT:        ::sprintf(out, "%d", SQ_PTRS->objtobool(&o));   break;
         case _RT_BOOL:         ::sprintf(out, "%f", SQ_PTRS->objtofloat(&o)); break;
         case _RT_STRING:

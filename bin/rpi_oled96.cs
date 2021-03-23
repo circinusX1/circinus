@@ -25,7 +25,7 @@ i2cdetect -y -r 1  # detect OLED i2c address. '3c'
 */
 
 json := SRV(8000,"rest");
-local s = Oled96("/dev/i2c-2", 0x3c, "OLED96");
+local s = Oled96("/dev/i2c-9", 0x3c, "OLED96");
 
 //s.autoopen(false);
 function main(a)

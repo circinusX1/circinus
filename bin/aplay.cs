@@ -20,7 +20,7 @@ function main(x)
     var buffer = BUFF([4096]);                  //   file buffer
     var format = BUFF(['i''i','i','i','v']);    // format structure int, int int int void
     format.set([16,44100,2,1,0]);               // populate structure
-
+    
     ao_initialize();                            // init ao
     var default_driver = ao_default_driver_id();    
     var device = ao_open_live(default_driver, format.get(), 0);

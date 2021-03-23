@@ -2075,6 +2075,7 @@ public:
     template <isize_t startIdx, bool overloaded /*= false*/>
     static isize_t MembX(HSKVM vm, isize_t nargs)
     {
+#pragma GCC diagnostic ignored "-Wcast-function-type"  
         if(nargs>8)
         {
             return SQ_PTRS->throwerror(vm, "too many parameters");
@@ -2142,6 +2143,7 @@ public:
         }
         if(rv)
         {
+            
             any_tsize r;
             switch(nargs)
             {
@@ -2169,6 +2171,7 @@ public:
             case 0:{ ((type_v0)(
                 *method))();
             } break;
+
             case 1:{ ((type_v1)(*method))(u[0].v);} break;
             case 2:{ ((type_v2)(*method))(u[0].v,u[1].v);} break;
             case 3:{ ((type_v3)(*method))(u[0].v,u[1].v,u[2].v);} break;
@@ -2179,6 +2182,7 @@ public:
             }
         }
         return rv;
+#pragma GCC diagnostic pop        
     }
 
 };

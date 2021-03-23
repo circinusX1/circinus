@@ -56,7 +56,6 @@ Buff::Buff(Sqrat::Array & a)
 
 void Buff::set(Sqrat::Array& a)
 {
-    int     off=0;
     int sz = a.GetSize();
     
     for(int i=0;i<sz;i++)

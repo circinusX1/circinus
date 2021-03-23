@@ -163,8 +163,10 @@ static isize_t sqstd_rex_charnode(SQRex *exp,bool isclass)
                     exp->_nodes[node].left = *exp->_p;
                     exp->_p++;
                     return node;
-                } //else default
+                }                                  
+#if __cplusplus > 201402L
                 [[fallthrough]];
+#endif
             default:
                 t = *exp->_p; exp->_p++;
                 return sqstd_rex_newnode(exp,t);
