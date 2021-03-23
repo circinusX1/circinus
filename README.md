@@ -50,9 +50,9 @@ li.call_back(my_function, ON_RISE|ON_FALL);
 [![video](https://raw.githubusercontent.com/circinusX1/circinus/master/docs/rrembdemo.gif)](https://youtu.be/ZMlJj0PciWA)
 
 
-#### WAY FASTER
+#### FASTER
 
-[![video](https://raw.githubusercontent.com/circinusX1/circinus/master/docs/cirfast.png)](https://youtu.be/ZMlJj0PciWA)
+[![video](https://github.com/circinusX1/circinus/blob/sqint_64/docs/cirfast.png)](https://youtu.be/ZMlJj0PciWA)
 
 
 ## RASPBERRY-PI GPIO, PWM, SPI, I2C, UART FRAMEWORK.  
