@@ -97,7 +97,6 @@ pointer_t Buff::get()
 
 void Buff::test(isize_t pv)
 {
-    SSS* psss= (SSS*)pv;
     printf("\n");
 }
 
