@@ -146,36 +146,6 @@ public:
         case TK_FLOAT:
             ret = SQObjectPtr(_lex._fvalue);
             break;
-        case TK_INT8:
-            ret = SQObjectPtr((int8_t)_lex._nvalue & 0xFF);
-            break;
-        case TK_UINT8:
-            ret = SQObjectPtr((uint8_t)_lex._nvalue & 0xFF);
-            break;
-        case TK_INT16:
-            ret = SQObjectPtr((int16_t)_lex._nvalue & 0xFFFF);
-            break;
-        case TK_UINT16:
-            ret = SQObjectPtr((uint16_t)_lex._nvalue & 0xFFFF);
-            break;
-        case TK_INT32:
-            ret = SQObjectPtr((int32_t)_lex._nvalue & 0xFFFF);
-            break;
-        case TK_UINT32:
-            ret = SQObjectPtr((uint32_t)_lex._nvalue & 0xFFFF);
-            break;
-        case TK_INT64:
-            ret = SQObjectPtr((int64_t)_lex._nvalue & 0xFFFFFFFF);
-            break;
-        case TK_UINT64:
-            ret = SQObjectPtr((uint64_t)_lex._nvalue & 0xFFFFFF);
-            break;
-        case TK_REAL:
-            ret = SQObjectPtr((float)_lex._fvalue);
-            break;
-        case TK_DOUBLE:
-            ret = SQObjectPtr((double)_lex._fvalue);
-            break;            
         }
         Lex();
         return ret;
