@@ -40,17 +40,23 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 Inst*               App;
 
-Inst::Inst(SqEnvi& sq, char* p[]):Sqrat::Class<Inst>(sq.theVM(),"App")
+Inst::Inst(SqEnvi& sq, char* p[], int argc):Sqrat::Class<Inst>(sq.theVM(),"App")
 {
     App = this;
     _thisbin = p[0];
-    if(p[1]){ _param = p[1]; }
+
+    _params = new SqArr(App->psqvm(), argc-1);
+    for(int a=1;a<argc;a++)
+    {
+        _params->SetValue(a-1,p[a]);
+    }
     this->Functor(_SC("notify"), &Inst::notify);
     this->Functor(_SC("get_dev"), &Inst::get_sqo);
     this->Functor(_SC("set_timer"), &Inst::set_timer);
     this->Functor(_SC("set_priority"), &Inst::set_priority);
     this->Functor(_SC("start_task"), &Inst::start_task);
     this->Functor(_SC("_sync"), &Inst::sync_all);
+    this->Functor(_SC("args"), &Inst::params);
     Sqrat::RootTable().Bind(_SC("App"), *this);
 }
 
@@ -71,6 +77,7 @@ Inst::~Inst()
              }
         }
     }
+    delete _params;
     App=nullptr;
 }
 
@@ -105,9 +112,9 @@ void Inst::remove(const Divais* p)
     _devs.erase(p->dev_key());
 }
 
-const char* Inst::notify(const char* appname)
+const SqArr& Inst::notify(const char* appname)
 {
-    return param();
+    return params();
 }
 
 SQVM* Inst::psqvm()

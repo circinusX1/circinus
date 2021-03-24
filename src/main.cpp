@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
 int _inner(int argc, char *argv[])
 {
     SqEnvi              sq;
-    Inst                ctx(sq, argv);
+    Inst                ctx(sq, argv, argc);
     std::string         scrname;
     std::string         exscrstr;
 

@@ -46,9 +46,10 @@ public:
     }
 
 private:
-    uint8_t* _pb = nullptr;
-    Sqrat::Object    _o;
-    std::vector<int>  _offs;
+    struct dlayout_t{int type; int len; int off;  uint8_t* puser;}; 
+    uint8_t*                    _pb = nullptr;
+    Sqrat::Object               _o;
+    std::vector<dlayout_t>      _layout;
     int _isz = 0;
 };
 

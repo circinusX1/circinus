@@ -24,68 +24,86 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <poll.h>
 #include "buff.h"
 #include "inst.h"
-
+#include <ao/ao.h>
 
 Buff::Buff(Sqrat::Array & a)
 {
     int sz = a.GetSize();
-    int tl = 0;
+    dlayout_t dt = {0,0,0,nullptr};
+    
     for(int i=0;i<sz;i++)
     {
-        int cl = *a.GetValue<char>(i);
+        int cl = *a.GetValue<int>(i);
+        dt.type = cl;
+        dt.puser = nullptr;
+        dt.len = 0;
         switch(cl)
         {
-            case 'c':cl=sizeof(char);break;
-            case 's':cl=sizeof(short);break;
-            case 'i':cl=sizeof(int);break;
-            case 'l':cl=sizeof(size_t);break;
-            case 'v':cl=sizeof(void*);break;
-            default:
-                cl = *a.GetValue<int>(i);
-                break;
+                case 'B': dt.len=sizeof(char);      break;
+                case 'W': dt.len=sizeof(short);     break;
+                case 'I': dt.len=sizeof(int);       break;
+                case 'Z': dt.len=sizeof(size_t);    break;
+                case 'P': dt.len=(sizeof(uint8_t*));break;
+                default:  dt.len=cl; break;
         }
-        _offs.push_back(tl);
-        tl += cl;
+        _layout.push_back(dt);
+        dt.off += dt.len;
     }
-     _offs.push_back(tl);
-    _pb = new uint8_t[tl];
-    ::memset(_pb,0,tl);
-    _isz = tl;
+    _layout.push_back(dt);
+    _pb = new uint8_t[dt.len];
+    ::memset(_pb,0,dt.len);
+    _isz = dt.len;
     _o.BindCppObject(this);
 }
 
 void Buff::set(Sqrat::Array& a)
 {
     int sz = a.GetSize();
-    
+    bool isptr = false;
     for(int i=0;i<sz;i++)
     {
-        int off = _offs[i+1]-_offs[i];
-        switch(off)
+        dlayout_t& p = _layout[i];
+        switch(p.len)
         {
         case sizeof(char):{ 
             char c = *a.GetValue<char>(i);   
-            *((char*)(_pb + _offs[i])) = c;
+            *((char*)(_pb + p.off)) = c;
         }
             break;
         case  sizeof(short):{
             short c = *a.GetValue<short>(i);   
-            *((short*)(_pb + _offs[i])) = c;
-        }
-            break;   
-        case  sizeof(int):{
-            int c = *a.GetValue<int>(i);   
-            *((int*)(_pb + _offs[i])) = c;
+            *((short*)(_pb + p.off)) = c;
         }
             break;   
 #if defined(__LP64__) && __LP64__
-        case  sizeof(size_t):{
-            size_t c = *a.GetValue<size_t>(i);   
-            *((size_t*)(_pb + _offs[i])) = c;
+        case  sizeof(size_t):
+#endif 
+        case  sizeof(int):{
+            if(p.type=='I')
+            {
+                int c = *a.GetValue<int>(i);   
+                *((int*)(_pb + p.off)) = c;
+            }
+            else if(p.type=='Z')
+            {
+                int c = *a.GetValue<size_t>(i);   
+                *((size_t*)(_pb + p.off)) = c;
+            }
+            else if(p.type=='P')
+            {
+                const char* c = *a.GetValue<const char*>(i);
+                p.puser = new uint8_t[::strlen(c)+1];
+                char* ptrdst = (char*)(_pb + p.off);
+                *((size_t*)(_pb + p.off)) = (size_t)p.puser;
+                ::memcpy(p.puser,c,::strlen(c)+1);
+            }
         }
             break;   
-#endif 
-        default:assert(0);
+        default:
+            LOGE("invalid buff slot length");
+            assert(0);
+            break;
+            
         }
     }
     return;
@@ -93,6 +111,8 @@ void Buff::set(Sqrat::Array& a)
 
 pointer_t Buff::get()
 {
+    ao_option* p = (ao_option*)_pb;
+    
     return (isize_t)_pb;
 }
 
@@ -104,4 +124,6 @@ void Buff::test(isize_t pv)
 Buff::~Buff()
 {
     delete[] _pb;
+    for(const auto& a : _layout)
+        delete[] a.puser;
 }

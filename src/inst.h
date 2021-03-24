@@ -46,7 +46,7 @@ class Inst : public Mpthrd, public Sqrat::Class<Inst>, public IInstance
 public:
     friend class RestSrv;
     friend class Database;
-    Inst(SqEnvi& sq, char* p[]);
+    Inst(SqEnvi& sq, char* p[], int argc);
     virtual ~Inst();
 
 public:
@@ -66,8 +66,8 @@ public:
     int     set_priority(int p);
     int     start_task(const char* script_file);
     bool    check_devs(time_t t);
-    const   char* notify(const char* appname);
-    const   char* param()const{return _param.c_str();}
+    const   SqArr& notify(const char* appname);
+    const SqArr& params()const{return *_params;}
 
     const   char* get_value(const char* per, const char* what);
     void    comit_devs();
@@ -85,7 +85,7 @@ private:
     std::vector<pid_t>              _childrens;
     std::string                     _webreq;
     std::string                     _webresp;
-    std::string                     _param;
+    SqArr*                           _params;
     std::string                     _thisbin;
     SqObj                           _o;
     bool                            _okey;

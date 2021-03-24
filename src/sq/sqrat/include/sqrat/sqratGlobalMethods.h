@@ -2172,8 +2172,8 @@ public:
                 *method))();
             } break;
 
-            case 1:{ ((type_v1)(*method))(u[0].v);} break;
-            case 2:{ ((type_v2)(*method))(u[0].v,u[1].v);} break;
+            case 1:{ ((type_v1)(*method))(u[0].v); } break;
+            case 2:{ ((type_v2)(*method))(u[0].v,u[1].v); } break;
             case 3:{ ((type_v3)(*method))(u[0].v,u[1].v,u[2].v);} break;
             case 4:{ ((type_v4)(*method))(u[0].v,u[1].v,u[2].v,u[3].v);} break;
             case 5:{ ((type_v5)(*method))(u[0].v,u[1].v,u[2].v,u[3].v,u[4].v);} break;
@@ -2184,7 +2184,6 @@ public:
         return rv;
 #pragma GCC diagnostic pop        
     }
-
 };
 
 
