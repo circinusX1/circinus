@@ -2,6 +2,7 @@
 #ifndef _SQFUNCTION_H_
 #define _SQFUNCTION_H_
 
+#include<vector>
 #include "sqopcodes.h"
 
 enum SQOuterType {
@@ -39,18 +40,26 @@ struct SQLocalVarInfo
         _start_op=lvi._start_op;
         _end_op=lvi._end_op;
         _pos=lvi._pos;
+        _typ = lvi._typ;
     }
     SQObjectPtr _name;
-    size_t _start_op;
-    size_t _end_op;
-    size_t _pos;
+    int _start_op;
+    int _end_op;
+    int _pos;
+    int _typ;
 };
 
 struct SQLineInfo { isize_t _line;isize_t _op; };
-
+/*
 typedef sqvector<SQOuterVar> SQOuterVarVec;
 typedef sqvector<SQLocalVarInfo> SQLocalVarInfoVec;
 typedef sqvector<SQLineInfo> SQLineInfoVec;
+*/
+
+typedef std::vector<SQOuterVar> SQOuterVarVec;
+typedef std::vector<SQLocalVarInfo> SQLocalVarInfoVec;
+typedef std::vector<SQLineInfo> SQLineInfoVec;
+
 
 #define _FUNC_SIZE(ni,nl,nparams,nfuncs,nouters,nlineinf,localinf,defparams) (sizeof(SQFunctionProto) \
         +((ni-1)*sizeof(SQInstruction))+(nl*sizeof(SQObjectPtr)) \

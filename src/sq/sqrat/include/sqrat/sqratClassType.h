@@ -30,7 +30,7 @@
 
 #include <squirrel.h>
 #include <typeinfo>
-#include "sqr_imp_exp.h"
+#include "sq_modapi.h"
 #include "sqratUtil.h"
 
 namespace Sqrat

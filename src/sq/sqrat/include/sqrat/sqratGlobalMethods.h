@@ -30,7 +30,7 @@
 #define _SCRAT_GLOBAL_METHODS_H_
 
 #include <squirrel.h>
-#include "sqr_imp_exp.h"
+#include "sq_modapi.h"
 #include "sqratTypes.h"
 
 

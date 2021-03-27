@@ -15,7 +15,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
 
 #include <iostream>
-#include "sqwrap.h"
+#include "sq_engine.h"
 #include "apis.h"
 #include "divais.h"
 

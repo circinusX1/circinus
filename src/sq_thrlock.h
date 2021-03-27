@@ -32,7 +32,7 @@
 #include <squirrel.h>
 #include <mutex>
 #include <condition_variable>
-#include "sqr_imp_exp.h"
+#include "sq_import.h"
 #ifdef WITH_MAIN_MUTEX
 #include "osthread.h"
 

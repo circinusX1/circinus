@@ -13,6 +13,10 @@ lib.load("ao_play",false,3);
 lib.load("ao_close",0,1);
 lib.load("ao_shutdown",0,0);
 
+
+
+
+
 function main(ctx)
 {
     var param = ctx.args();
@@ -31,7 +35,7 @@ function main(ctx)
     var format  = BUFF(['I''I','I','I','P']);    // format structure int, int int int void
     var options = BUFF(['P','P','P']);
     format.set([16,44100,2,1,0]);               // populate structure
-    options.set([ param[1], param[2] ]);        // param[0] is the script name
+    options.set([ param[1], param[2]]);      // param[0] is the script name
     options.get();
     
     ao_initialize();                            // init ao

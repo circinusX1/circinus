@@ -24,7 +24,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "usbdev.h"
 #include "evqueue.h"
 #include "_test.h"
-#include "sqratimport.h"
+#include "sq_import.h"
 #include <linux/watchdog.h>
 
 bool        Reincepe     = false;

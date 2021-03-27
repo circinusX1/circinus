@@ -21,7 +21,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <linux/input.h>
 #include <fcntl.h>
 #include "divais.h"
-#include "sqwrap.h"
+#include "sq_engine.h"
 #include "inst.h"
 #include "rtxbus.h"
 

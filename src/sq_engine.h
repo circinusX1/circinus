@@ -30,7 +30,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <sqstdstring.h>
 #include <sqrat.h>
 #include <vector>
-#include "sqratThread.h"
+#include "sq_thrlock.h"
 #include "osthread.h"
 
 class SqEnvi;

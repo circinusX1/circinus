@@ -31,7 +31,7 @@
 #include <iostream>
 #include <squirrel.h>
 #include <string.h>
-#include "sqr_imp_exp.h"
+#include "sq_modapi.h"
 #include "sqratAllocator.h"
 #include "sqratTypes.h"
 #include "sqratOverloadMethods.h"

@@ -17,7 +17,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #ifndef SDRBASE_H
 #define SDRBASE_H
 
-#include "sqwrap.h"
+#include "sq_engine.h"
 #include "divais.h"
 #include "dcore.h"
 #include "inst.h"

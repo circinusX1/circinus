@@ -1,13 +1,9 @@
 
+var    var2 = 255;
+var       v    = var2+1;
 
-function ret()
-{
-    return -2;
-}
-
-uint8_t      var2 = -1;
-
-println("val=" + var2);
+print("uint8="  + var2 + "\n");
+print("var="  + v + "\n");
 
 
 function main(c)

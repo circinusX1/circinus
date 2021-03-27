@@ -1070,7 +1070,7 @@ public:
             varname = Expect(TK_IDENTIFIER);
             if(_token == _SC('=')) {
                 Lex(inst_tok);
-                Expression();
+                Expression(inst_tok);
                 isize_t src = _fs->PopTarget();
                 isize_t dest = _fs->PushTarget();
                 if(dest != src) _fs->AddInstruction(_OP_MOVE, dest, src);
@@ -1079,7 +1079,7 @@ public:
                 _fs->AddInstruction(_OP_LOADNULLS, _fs->PushTarget(),1);
             }
             _fs->PopTarget();
-            _fs->PushLocalVariable(varname);
+            _fs->PushLocalVariable(varname, inst_tok);
             if(_token == _SC(',')) Lex(); else break;
         } while(1);
     }

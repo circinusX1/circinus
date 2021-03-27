@@ -20,7 +20,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <stdint.h>
 #include <mutex>
 #include <condition_variable>
-#include "sqwrap.h"
+#include "sq_engine.h"
 #include "osthread.h"
 #include "evqueue.h"
 #include "divais.h"

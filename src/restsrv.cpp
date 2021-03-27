@@ -19,7 +19,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "apis.h"
 #include "divais.h"
 #include "dcore.h"
-#include "sqratThread.h"
+#include "sq_thrlock.h"
 
 RestSrv* Prest;
 bool     RestDisabled;

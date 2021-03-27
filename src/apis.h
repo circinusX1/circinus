@@ -40,7 +40,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <atomic>
 #include <errno.h>
 #include <mutex>
-#include "sqwrap.h"
+#include "sq_engine.h"
 #include "sqratConst.h"
 #include "restsrv.h"
 #include "logs.h"

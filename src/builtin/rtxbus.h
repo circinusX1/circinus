@@ -18,7 +18,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #define RTXBUS_H
 
 #include "divais.h"
-#include "sqwrap.h"
+#include "sq_engine.h"
 #include "inst.h"
 #include "dserial.h"
 

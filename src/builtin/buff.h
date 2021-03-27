@@ -19,10 +19,23 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 #include "dgpio.h"
 #include "divais.h"
-#include "sqwrap.h"
+#include "sq_engine.h"
 #include "inst.h"
 
 using namespace GenericHw;
+
+union Uc{
+    uint8_t* pu;
+    void*    pv;
+    char*    pc;
+    size_t   sz;
+    int      iv;
+    short    sv;
+    char     cv;
+    unsigned int      uv;
+    unsigned short    us;
+    unsigned char     uc;
+};
 
 
 class Buff
@@ -32,21 +45,34 @@ public:
     virtual ~Buff();
     void set(Sqrat::Array& a);
     pointer_t get();
+    pointer_t deref();
+    const char* str();
+    pointer_t at(int offset);
     uint8_t* buffer(){return _pb;};
     int length(){return _isz;}
-    void test(isize_t pv);
+    void test();
      static void squit(SqEnvi& e){
         Sqrat::Class<Buff> cls(e.theVM(), _SC("BUFF"));
         cls.Ctor<Sqrat::Array>();
         cls.Functor(_SC("set"), &Buff::set);
         cls.Functor(_SC("get"), &Buff::get);
+        cls.Functor(_SC("deref"), &Buff::deref);
+        cls.Functor(_SC("str"), &Buff::str);
         cls.Functor(_SC("length"), &Buff::length);
         cls.Functor(_SC("test"), &Buff::test);
         Sqrat::RootTable().Bind(_SC("BUFF"), cls);
     }
 
 private:
-    struct dlayout_t{int type; int len; int off;  uint8_t* puser;}; 
+     void _clear();
+private:     
+     
+    struct dlayout_t{
+        int     type; 
+        int     len; 
+        int     off;  
+        uint8_t* puser;
+    }; 
     uint8_t*                    _pb = nullptr;
     Sqrat::Object               _o;
     std::vector<dlayout_t>      _layout;

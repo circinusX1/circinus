@@ -19,7 +19,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 #include "dserial.h"
 #include "divais.h"
-#include "sqwrap.h"
+#include "sq_engine.h"
 #include "rtxbus.h"
 
 using namespace GenericHw;

@@ -350,13 +350,14 @@ bool SQMembState::IsLocal(size_t stkpos)
     return false;
 }
 
-isize_t SQMembState::PushLocalVariable(const SQObject &name)
+isize_t SQMembState::PushLocalVariable(const SQObject &name, int typev)
 {
     isize_t pos=_vlocals.size();
     SQLocalVarInfo lvi;
     lvi._name=name;
     lvi._start_op=GetCurrentPos()+1;
     lvi._pos=_vlocals.size();
+    lvi._typ = typev; // mco
     _vlocals.push_back(lvi);
     if(_vlocals.size()>((size_t)_stacksize))_stacksize=_vlocals.size();
     return pos;

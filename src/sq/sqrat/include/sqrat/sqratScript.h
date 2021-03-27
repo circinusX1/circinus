@@ -30,7 +30,7 @@
 
 #include <squirrel.h>
 #include <sqstdio.h>
-#include "sqr_imp_exp.h"
+#include "sq_modapi.h"
 #include <string.h>
 
 #include "sqratObject.h"

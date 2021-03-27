@@ -39,7 +39,7 @@ struct SQMembState
     isize_t GetCurrentPos(){return _instructions.size()-1;}
     isize_t GetNumericConstant(const isize_t cons);
     isize_t GetNumericConstant(const SQFloat cons);
-    isize_t PushLocalVariable(const SQObject &name);
+    isize_t PushLocalVariable(const SQObject &name, int typ=0);
     void AddParameter(const SQObject &name);
     //void AddOuterValue(const SQObject &name);
     isize_t GetLocalVariable(const SQObject &name);

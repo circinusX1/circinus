@@ -33,7 +33,7 @@
 #include <squirrel.h>
 #include <string.h>
 #include <algorithm>
-#include "sqr_imp_exp.h"
+#include "sq_modapi.h"
 #if defined(SCRAT_USE_CXX11_OPTIMIZATIONS)
 #include <unordered_map>
 #endif

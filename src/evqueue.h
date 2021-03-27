@@ -27,7 +27,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <vector>
 #include <sqrat.h>
 #include "osthread.h"
-#include "sqwrap.h"
+#include "sq_engine.h"
 #include "logs.h"
 #include "divais.h"
 

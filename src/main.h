@@ -18,7 +18,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #define MAIN_H_
 
 #include "inst.h"
-#include "sqwrap.h"
+#include "sq_engine.h"
 
 extern int					Carams;
 extern const char**			Params;

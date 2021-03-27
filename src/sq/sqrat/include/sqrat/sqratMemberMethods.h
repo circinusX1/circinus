@@ -30,9 +30,9 @@
 #define _SCRAT_MEMBER_METHODS_H_
 
 #include <squirrel.h>
-#include "sqr_imp_exp.h"
+#include "sq_modapi.h"
 #include "sqratTypes.h"
-#include "sqratThread.h"
+#include "sq_thrlock.h"
 
 namespace Sqrat {
 

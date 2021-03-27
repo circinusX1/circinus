@@ -31,7 +31,7 @@
 #include <squirrel.h>
 #include <sqstdaux.h>
 #include <sstream>
-#include "sqr_imp_exp.h"
+#include "sq_modapi.h"
 #include "sqratTypes.h"
 #include "sqratUtil.h"
 #include "sqratGlobalMethods.h"

@@ -42,7 +42,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 //
 //  COM 2019-Nov-22, Rat moved to use pointers to functions
 #include <assert.h>
-#include "sqratimport.h"
+#include "sq_import.h"
 #include "sqmodule.h"
 
 //#include "sqratlib/sqratBase.h"

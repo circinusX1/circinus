@@ -25,8 +25,8 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "swdog.h"
 #include "sqratTable.h"
 #include "sqratObject.h"
-#include "sqratimport.h"
-#include "sqwrap.h"
+#include "sq_import.h"
+#include "sq_engine.h"
 #include "sunset.h"
 #include "filedev.h"
 #include "i2cdev.h"
@@ -560,6 +560,12 @@ void println(const char* text)
     fprintf(stdout,"%s\n",text);
 }
 
+void frint(const char* fmt, size_t val)
+{
+    fprintf(stdout,fmt,val);
+}
+
+
 size_t pointer(size_t val)
 {
     return val;
@@ -766,6 +772,7 @@ void globals_expose(SqEnvi& sq)
 	Sqrat::RootTable(sq.theVM()).Functor("run", &run);
 	Sqrat::RootTable(sq.theVM()).Functor("exitapp", &exitapp);
 	Sqrat::RootTable(sq.theVM()).Functor("println", &println);
+	Sqrat::RootTable(sq.theVM()).Functor("frint", &frint);
 	Sqrat::RootTable(sq.theVM()).Functor("errorln", &errorln);
 	Sqrat::RootTable(sq.theVM()).Functor("sys_config", &sys_config);
 	Sqrat::RootTable(sq.theVM()).Functor("S8", &s8);

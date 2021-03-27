@@ -28,7 +28,7 @@ struct SQVM;
 #define TK_FOREACH  279
 #define TK_IN   280
 #define TK_NEWSLOT  281
-#define TK_MODULO   282TK_LOCAL
+#define TK_MODULO   282
 #define TK_LOCAL    283
 #define TK_CLONE    284
 #define TK_FUNCTION 285
