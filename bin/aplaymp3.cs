@@ -66,7 +66,7 @@ class Mp3Cls
         }
         return _bits;
     }
-
+    
     function bits(){return _bits;}
     function rate(){return _rate.deref();}
     function channels(){return _chann.deref();}
@@ -82,7 +82,6 @@ class Mp3Cls
         }
         return 0;
     }
-    
     
     function tearit(){
         if(_mh){
@@ -103,9 +102,9 @@ function main(ctx)
         return false;
     }
     
-    
     var mp3 = Mp3Cls();
     println("using device " + param[1] + " hw:" + param[2]);
+    //          https://www.youtube.com/watch?v=ZK5rCuuXhmQ
     if(mp3.open("/home/marius/Music/dafface.mp3"))
     {
         println("FILE IS OPEN");
@@ -138,7 +137,7 @@ function main(ctx)
         }
         ao_close(device);
         ao_shutdown();
-        mp3.tearit()
+        mp3.tearit();
         println("done");
     }
     return false;

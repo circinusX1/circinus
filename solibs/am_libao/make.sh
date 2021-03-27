@@ -6,7 +6,7 @@ rm -rf *.so*
 arch=$(uname -m)
 oss=$(uname)
 libname=$(pwd | awk -F"/" '{print $NF}')
-includes="../include"
+includes="../include ../../src"
 
 for k in $(ls *.cpp);do
     g++ -c -Wall -Werror -fpic -I${includes} $k

@@ -8,14 +8,14 @@ oss=$(uname)
 pushd src/sq/squirrel
 # rm -rf *.o
 rm -rf *.a
-g++ -std=c++17 -I../include -c -fPIC  *.cpp 
+g++ -std=c++17 -I../../ -I../include -c -fPIC  *.cpp 
 ar rcs libsquirrel-${arch}-${oss}.a *.o
 popd 
 
 pushd src/sq/sqstdlib
 rm -rf *.o
 rm -rf *.a
-g++ -std=c++17 -I../include -c -fPIC  *.cpp 
+g++ -std=c++17 -I../../ -I../include -c -fPIC  *.cpp 
 ar rcs libsqstdlib-${arch}-${oss}.a *.o
 popd 
 
@@ -25,7 +25,7 @@ mv src/sq/squirrel/libsquirrel-${arch}-${oss}.a ./lib
 
 
 pushd src
-includes="-I./sq/sqrat/include/sqrat -I./sq/include -I./sq/squirrel -I./sq/sqrat -I./sq/sqrat/include -I./builtin -I./drivers/platform/linux/${BOARD} -I./drivers -I./drivers/common -I./comm  -I./rapidjson/include -I./"
+includes="-I./sq/sqrat/include/sqrat -I./sq/include -I./sq/squirrel -I./sq/sqrat -I./sq/sqrat/include -I./builtin -I./drivers/platform/linux/${BOARD} -I./drivers -I./drivers/common -I./comm  -I./rapidjson/include -I./ -I../../src -I../../../src"
 libs="-L../lib -lsquirrel-${arch}-${oss} -lsqstdlib-${arch}-${oss} -lpthread -ldl"
 defines="-DWITH_MAIN_MUTEX -D${BOARD}"
 files="*.cpp ./builtin/*.cpp ./drivers/*.cpp ./drivers/platform/linux/${BOARD}/*.cpp"
@@ -54,15 +54,16 @@ pushd modules
     done
 popd
 
-echo "MAKING SOLIBS"
-pushd solibs
-    for mod in $(ls -d */);do
-        pushd $mod
-            echo "BUILDING $mod"
-            [[ -f ./make.sh ]] && ./make.sh
-            cp -rf ./*.so ../../bin/solibs/
-        popd
-    done
-popd
+# no need we can load so direct
+#echo "MAKING SOLIBS"
+#pushd solibs
+#    for mod in $(ls -d */);do
+#        pushd $mod
+#            echo "BUILDING $mod"
+#            [[ -f ./make.sh ]] && ./make.sh
+#            cp -rf ./*.so ../../bin/solibs/
+#        popd
+#    done
+#popd
 
 
