@@ -401,7 +401,7 @@ Credits:
 
 ###  Examples:
 
-
+#### PWM
 
 ```cpp
 
@@ -465,6 +465,11 @@ function loop(ctx,devs)
     return true;
 }
 
+```
+
+#### BMP 280 
+
+```
 
 //////////////////////////////////////////////////////////////
 
@@ -502,6 +507,12 @@ function mainloop(ctx, notused)
 
 }
 
+
+```
+
+#### LEDS I2C
+
+```
 
 //////////////////////////////////////////////////////////
 // SCRIPT  TESTED. CP2112 MUX
@@ -542,6 +553,12 @@ function loop(ctx, dev)
 
 ///////////////////////////////////////////////////////////////////
 
+
+```
+
+#### ESP96  light control
+
+```
 
 // SCRIPT  TESTED   WEB ACCESS TO ESP96 LIGHT CONTROL
 
@@ -603,6 +620,10 @@ function loo(x,d)
 
 /////////////////////////////////////////////////////////////////////////
 
+```
+#### Another PWM
+
+```
 
 
 /**
@@ -663,6 +684,10 @@ function callback(dev, data)
 }
 
 
+```
+#### OLED96
+
+```
 
 // SCRIPT  TESTED ON OLED DISPLAY TEST
 
@@ -720,7 +745,6 @@ function kk(ctx,dev)
 ```
 
 
-```
 
 SDK Documentation
 
@@ -728,8 +752,7 @@ https://comarius.blogspot.com/2020/11/circinus-best-gpio-framework-for.html
 
 
 
-
-### Addendum an MP3 PLAYER 
+### Addendum MP3 PLAYER 
 
 ```
 // SCRIPT  TESTED
