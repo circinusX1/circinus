@@ -26,7 +26,7 @@ REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX REMBIX
 
 //              SIMPLE LED BLINK //////////////
 
-::using(eGPIO|ePWM);
+::use(eGPIO|ePWM);
 led  := GPIO(20, DIR_OUT, LOW, "led");
 function main(ctx)
 {
@@ -50,7 +50,7 @@ function program(ctx,devs)
 
 
 /////////////  BMO 160 accelerometer and gyro //////////////////
-::using(eI2C|eSRV);
+::use(eI2C|eSRV);
 ::loadmod("./modules/libbmi160.so","ACCEL");
 i2c    := I2C(11, 0x68, "i2c");
 accel  := ACCEL("i2c", "accel");
@@ -77,7 +77,7 @@ function l(c, d)
 
 /////////////  2 GPIO;s I2C and REST server //////////////////
 
-::using(eI2C|eGPIO|eUART|eSRV);
+::use(eI2C|eGPIO|eUART|eSRV);
 l1   := GPIO(506,  DIR_OUT, LOW, "led");
 l2   := GPIO(507,  DIR_OUT, HIGH, "led2");
 i2c  := I2C(11, 0x68, "i2c");
@@ -104,7 +104,7 @@ function program(ctx, dev)
 
 ///////////// QUITE an OPENGL WINDOW //////////////////
 
-::using(eSOLIB);
+::use(eSOLIB);
 lib := LIB("libglfw.so");                       lib2 := LIB("libGL.so.1.0.0");
 GL_COLOR_BUFFER_BIT := 0x00004000
 lib.load("glfwInit",true,0);                    lib.load("glfwCreateWindow",true,5);
@@ -130,7 +130,7 @@ function main(x)
 
 /////////////  WIRING PI LIBRARY DIRECT CALL //////////////////
 
-::using(eSOLIB|eGPIO|ePWM);
+::use(eSOLIB|eGPIO|ePWM);
 
 lib := LIB("libwiringPi.so");
 lib.load("wiringPiSetupGpio",true,0);   // has return value takes 0 params
@@ -156,7 +156,7 @@ function main(x)
 
 /////////////  I2C OLED 96 CLOCK  //////////////////
 
-::using(eI2C|eGPIO|ePWMM|eSRV|eDB);
+::use(eI2C|eGPIO|ePWMM|eSRV|eDB);
 ::include("modules/_oled96.inc");
 
 var s = Oled96(11, 0x3c, "OLED96");
@@ -183,7 +183,7 @@ function kk(ctx,dev)
 
 /////////////  CURL CONTROL TO ESP826X WEB, PAGE1 //////////////////
 
-::using(eCURL|eSRV|eBASE|eBASE);
+::use(eCURL|eSRV|eBASE|eBASE);
 class XX extends BASE
 {
     curl   = CURL(2000,"led");
@@ -233,7 +233,7 @@ function loo(x,d)
 
 /////////////  GPIO PWM COUNTER AND BUZZER //////////////////
 
-::using(eGPIO|ePWMM|eSRV);
+::use(eGPIO|ePWMM|eSRV);
 
 var l3 = GPIO(13,  DIR_OUT, LOW, "led3");
 var pb = GPIO(21,  DIR_IN,  LOW, "buton");

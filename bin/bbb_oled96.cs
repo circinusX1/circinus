@@ -13,7 +13,7 @@ sudo service udev restart
 */
 
 
-::using(eI2C|eGPIO|ePWMM|eSRV|eDB);
+::use(eI2C|eGPIO|ePWMM|eSRV|eDB);
 ::include("modules/_oled96.inc");
 
 

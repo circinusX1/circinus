@@ -1,6 +1,6 @@
 // SCRIPT  TESTED ON BBB
 
-::using(eI2C|eGPIO|eUART|eSRV);
+::use(eI2C|eGPIO|eUART|eSRV);
 
 l1 := GPIO(506,  DIR_OUT, LOW, "led");
 l2 := GPIO(507,  DIR_OUT, HIGH, "led2");

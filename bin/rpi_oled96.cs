@@ -1,7 +1,7 @@
 // SCRIPT  TESTED
 // HOOK OLED LIKE HERE http://comarius.blogspot.com/2020/10/096-i2c-iic-spi-serial-128x64-white.html
 //
-::using(eI2C|eGPIO|ePWMM|eSRV);
+::use(eI2C|eGPIO|ePWMM|eSRV);
 ::include("modules/_oled96.inc");
 
 /*

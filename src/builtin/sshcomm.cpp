@@ -21,9 +21,9 @@ bool SshComm::_squed;
 
 SshComm::SshComm(const char* cred,
                  const char* name):ComSsh(cred),
-    Divais(name),
-    Reg<SshComm>(this),
-    RtxBus<SshComm>(this)
+                                    Divais(eSTRING,eSSH,name),
+                                    Reg<SshComm>(this),
+                                    RtxBus<SshComm>(this,false,true)
 {
     SshComm::_squed ? _o.BindCppObject(this) : (void)(0);
 }
@@ -31,12 +31,11 @@ SshComm::SshComm(const char* cred,
 SshComm::SshComm(SqObj& o,
                  const char* cred,
                  const char* name):ComSsh(cred),
-                                    Divais(eSSH, name),
+                                    Divais(eSTRING,eSSH,name),
                                     Reg<SshComm>(this),
                                     RtxBus<SshComm>(this,false,true)
 {
     plug_it(o, name);
-    IoType_t::construct(&_uchars);
 }
 
 
@@ -46,29 +45,35 @@ SshComm::~SshComm()
 
 bool  SshComm::_write_now(const devdata_t& vl)
 {
-    return this->bwrite(vl[0].data(), vl[0].length());
+    return this->bwrite(vl.c_bytes(), vl.length());
 }
 
 size_t  SshComm::_fecth(devdata_t& vl, const char* filter)
 {
-    return this->bread(vl.c_bytes(), vl.length());
+    return 0;
 }
-
 
 bool SshComm::_mon_callback(time_t tnow)
 {
-    _cach = this->bread(_uchars->buf(), _uchars->cap());
-    return _mon_dirt;
+/*
+    if(_etype==eSTRING){
+        const char* rv = gets(_bufsz);
+        return this->Divais::_call_cb(rv);
+    }
+    const SqArr& rv = read(_bufsz);
+    return this->Divais::_call_cb(rv);
+    */
+    return false;
 }
 
-const char* SshComm::_gets(int chars)
+const char* SshComm::_gets()
 {
-    return RtxBus<SshComm>::_gets(chars);
+    return RtxBus<SshComm>::_gets();
 }
 
-void SshComm::set_cb(SqMemb& mem)
+bool SshComm::set_cb(SqMemb& mem)
 {
-    return this->Divais::set_cb(m);
+    return this->Divais::set_cb(mem);
 }
 
 void SshComm::on_event(E_VENT e, const uint8_t* buff, int len, int options)
@@ -83,7 +88,7 @@ bool	SshComm::_set_value(const char* key, const char* value)
 
 const char*	SshComm::_get_values(const char* key)
 {
-    GETER_SYSCAT(); return Divais::_get_values(key);
+    return Divais::_get_values(key);
 }
 
 #endif //ifdef WITH_SSH

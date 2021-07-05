@@ -23,7 +23,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "logs.h"
 
 
-namespace GenericHw_bytes
+namespace GenericHw
 {
 libusb_context          *_ctx;
 

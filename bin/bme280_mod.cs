@@ -1,6 +1,6 @@
 // SCRIPT  TESTED
 
-::using(eI2C|eSRV);
+::use(eI2C|eSRV);
 ::loadmod("modules/libbme280-Linux-armv7l.so","THP");
 
 i2c    := I2C(true, "/dev/i2c-2", 0x77, "i2c");  // the i2c THP is using

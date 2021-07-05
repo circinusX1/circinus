@@ -22,13 +22,14 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <libssh/libssh.h> //sudo apt-get install libssh-dev
 #include <libssh/server.h>
 #include "dcore.h"
+#include "rtxbus.h"
 
 using namespace GenericHw;
-class ComSsh: public DvCore, private Reg<ComCurl>
+class ComSsh: public DvCore//, private Reg<ComSsh>
 {
 public:
     // "user/pass@host:port"
-    ComSsh(const char* );
+    ComSsh(const char* constr);
     virtual ~ComSsh();
     virtual bool    iopen(int  mode=O_RDWR);
     virtual void    iclose();

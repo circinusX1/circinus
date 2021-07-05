@@ -1,5 +1,5 @@
 // SCRIPT  NOT TESTED
-::using(eUART|eSRV|eBASE); // load in VM only what we usee. New as Nov 29 !
+::use(eUART|eSRV|eBASE); // load in VM only what we usee. New as Nov 29 !
 
 class MyDev  extends BASE
 {

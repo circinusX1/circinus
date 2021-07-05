@@ -1,5 +1,5 @@
 // SCRIPT  TESTED ON R-PI
-::using(eUART);
+::use(eUART);
 
 port := UART(eSTRING,"/dev/ttyUSB0",115200,"8N1","webname");
 setdbg(0xFF);

@@ -26,6 +26,14 @@ struct SQOuterVar
         _src=ov._src;
         _name=ov._name;
     }
+    // mco-mco
+    SQOuterVar& operator=(const SQOuterVar &ov)
+    {
+        _type=ov._type;
+        _src=ov._src;
+        _name=ov._name;
+        return *this;
+    }
     SQOuterType _type;
     SQObjectPtr _name;
     SQObjectPtr _src;
@@ -41,6 +49,18 @@ struct SQLocalVarInfo
         _end_op=lvi._end_op;
         _pos=lvi._pos;
         _typ = lvi._typ;
+    }
+    // mco-mco
+    SQLocalVarInfo& operator=(const SQLocalVarInfo& lvi)
+    {
+        if(this != &lvi){
+            _name=lvi._name;
+            _start_op=lvi._start_op;
+            _end_op=lvi._end_op;
+            _pos=lvi._pos;
+            _typ = lvi._typ;
+        }
+        return *this;
     }
     SQObjectPtr _name;
     int _start_op;

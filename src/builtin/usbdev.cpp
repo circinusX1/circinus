@@ -61,7 +61,7 @@ size_t  UsbDev::_fecth(devdata_t& vl, const char* filter)
 
 SqArr UsbDev::enumerate()
 {
-    char    id[32];
+    char    id[128];
     size_t  usbs = 0;
 
     _enumerate(usbs);
@@ -74,7 +74,11 @@ SqArr UsbDev::enumerate()
         memset(&pd,0,sizeof(pd));
         libusb_device *device = _devs[j];
         libusb_get_device_descriptor(device, &pd);
-        sprintf(id,"0x%X:0x%X",pd.idVendor,pd.idProduct);
+
+        sprintf(id,"0x%X:0x%X %X/%X/%X",pd.idVendor,pd.idProduct,
+                                    pd.bDeviceClass,
+                                    pd.bDeviceSubClass,
+                                    pd.bDeviceProtocol);
         rar.SetValue(j, id);
     }
     return rar;

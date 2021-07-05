@@ -1,5 +1,5 @@
 // SCRIPT  TESTED ON R-PI
-::using(eSYSIN|eSRV);
+::use(eSYSIN|eSRV);
 
 json := SRV(8000,"rest");
 mouse := SYSIN(eMOUSE,"/dev/input/event4","mice");

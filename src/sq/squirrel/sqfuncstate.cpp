@@ -309,7 +309,7 @@ isize_t SQMembState::CountOuters(isize_t stacksize)
     while(k >= stacksize) {
         SQLocalVarInfo &lvi = _vlocals[k];
         k--;
-        if(lvi._end_op == UINT_MINUS_ONE) { //this means is an outer
+        if(lvi._end_op == (int)UINT_MINUS_ONE) { //this means is an outer
             outers++;
         }
     }
@@ -381,7 +381,7 @@ isize_t SQMembState::GetLocalVariable(const SQObject &name)
 void SQMembState::MarkLocalAsOuter(isize_t pos)
 {
     SQLocalVarInfo &lvi = _vlocals[pos];
-    lvi._end_op = UINT_MINUS_ONE;
+    lvi._end_op = int(UINT_MINUS_ONE);
     _outers++;
 }
 

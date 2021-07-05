@@ -1,6 +1,6 @@
 // SCRIPT  TESTED  ON BBB
 
-::using(eGPIO|ePWMM);
+::use(eGPIO|ePWMM);
 
 system("config-pin P9.41 gpio");
 system("config-pin P9.42 gpio");

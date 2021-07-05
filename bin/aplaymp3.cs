@@ -1,5 +1,5 @@
 // SCRIPT  TESTED
-::using(eSOLIB);
+::use(eSOLIB);
 
 /**
   check your ao library location

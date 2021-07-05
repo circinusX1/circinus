@@ -4,8 +4,8 @@
 
 #include <stdint.h>
 #include <stddef.h>
-
 #include "squtils.h"
+
 
 #ifdef _SQ64
 #define UINT_MINUS_ONE (0xFFFFFFFFFFFFFFFF)

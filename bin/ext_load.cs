@@ -10,7 +10,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 */
 
 
-::using(eSOLIB);
+::use(eSOLIB);
 
 var l = LIB("./modules/libardulike.so");
 

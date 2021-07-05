@@ -210,7 +210,7 @@ int ComSsh::_verify_knownhost()
         fprintf(stderr, "If you accept the host key here, the file will be"
                         "automatically created.\n");
         /* fallback to SSH_SERVER_NOT_KNOWN behavior */
-        __falltrough;
+        //__falltrough;
     case SSH_SERVER_NOT_KNOWN:
         hexa = ssh_get_hexa(hash, hlen);
         printf("The server is unknown. Do you trust the host key?\n");

@@ -43,7 +43,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "scrbase.h"
 #include "rawsock.h"
 #include "comcurl.h"
-#include "comssh.h"
+#include "sshcomm.h"
 #include "inputsys.h"
 #include "buff.h"
 #include "inst.h"
@@ -676,10 +676,10 @@ void usingop(int32_t flags)
     if(flags & eCURL)   ComCurl::squit(*sq);
 #endif //#ifdef WITH_USB
 #ifdef WITH_SSH
-    if(flags & eSSH)    SshComm::squit(sq);
+    if(flags & eSSH)    SshComm::squit(*sq);
 #endif //#ifdef WITH_USB
 #ifdef WITH_USB
-    if(flags & eUSB) UsbDev::sqprintlnuit(sq);
+    if(flags & eUSB) UsbDev::squit(*sq);
 #endif //#ifdef WITH_USB
 }
 
@@ -734,6 +734,7 @@ void globals_expose(SqEnvi& sq)
 			.Const("eUINT64",eINT64)
 			.Const("eREAL",eREAL)
 			.Const("eSTRING",eSTRING)
+			.Const("eTEXT",eSTRING)
 			.Const("eBINARY",eBINARY);
 
 	Sqrat::ConstTable(sq.theVM())
@@ -787,7 +788,7 @@ void globals_expose(SqEnvi& sq)
 	Sqrat::RootTable(sq.theVM()).Functor("U64", &u64);
 	Sqrat::RootTable(sq.theVM()).Functor("I", &ii);
 	Sqrat::RootTable(sq.theVM()).Functor("U", &uu);
-	Sqrat::RootTable(sq.theVM()).Functor("using", &usingop);
+	Sqrat::RootTable(sq.theVM()).Functor("use", &usingop);
 	Sqrat::RootTable(sq.theVM()).Functor("consolein", &cho_in);
 	Sqrat::RootTable(sq.theVM()).Functor("pointer", &pointer);
 

@@ -1,5 +1,5 @@
 // SCRIPT  TESTED ON Linux beaglebone 4.4.155-ti-r155 #1 SMP Thu May 23 05:50:27 UTC 2019 armv7l GNU/Linux
-::using(eGPIO|ePWMM|eSRV);
+::use(eGPIO|ePWMM|eSRV);
 
 setdbg(0xFF);
 

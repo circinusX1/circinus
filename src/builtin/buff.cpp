@@ -59,12 +59,14 @@ void Buff::set(Sqrat::Array& a)
 {
     Uc* pucd;
     int sz = a.GetSize();
-    bool isptr = false;
+    //bool isptr = false;
    
     for(int i=0;i<sz;i++)
     {
         dlayout_t& p = _layout[i];
-        if(p.puser)delete[] p.puser;p.puser=nullptr;
+        if(p.puser)
+            delete[] p.puser;
+        p.puser=nullptr;
         pucd = (Uc*)((char*)(_pb + p.off));
         switch(p.len)
         {
@@ -155,8 +157,8 @@ const char* Buff::str()
 
 void Buff::test()
 {
-    Uc* pb = (Uc*)((uint8_t*)(_pb));
-    printf("\n");
+    //Uc* pb = (Uc*)((uint8_t*)(_pb));
+    //printf("\n");
 }
 
 void Buff::_clear()

@@ -1,6 +1,6 @@
 // SCRIPT  TESTED
 
-::using(eADC|eI2C|eSRV);
+::use(eADC|eI2C|eSRV);
 
 // i2c ///////////////////////////////////////////
 

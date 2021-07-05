@@ -263,7 +263,7 @@ static SQRESULT sqrat_importbin(HSKVM v, const SQChar* moduleName) {
     LOGI("Loading: " << moduleName);
     if(access(moduleName,0)!=0)
     {
-        snprintf(l,sizeof(l)-1,"%s/%s",l,moduleName);
+        snprintf(l,sizeof(l)-10,"%s/%s",l,moduleName);
         if(access(l,0)!=0)
         {
             LOGD1("No file: " << l);

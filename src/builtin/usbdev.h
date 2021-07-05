@@ -20,7 +20,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 #include "dusb.h"
 #include "divais.h"
-#include "sqwrap.h"
+#include "sq_engine.h"
 #include "rtxbus.h"
 
 

@@ -1,6 +1,6 @@
 // SCRIPT  TESTED
 
-::using(eGPIO|eSRV);
+::use(eGPIO|eSRV);
 
 json := SRV(8000,"rest");
 

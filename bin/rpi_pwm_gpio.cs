@@ -18,7 +18,7 @@ ls
                 PWM("X.Y")   where X os pwnchipX and Y is pwm-Y
 */
 
-::using(eGPIO|ePWMM|eSRV);
+::use(eGPIO|ePWMM|eSRV);
 
 var srv = SRV(8000,"srv");
 

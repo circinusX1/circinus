@@ -4,7 +4,7 @@
 dtoverlay=pwm,pin=18,func=2
 dtoverlay=pwm-2chan,pin=12,func=4,pin2=13,func2=4
 */
-::using(ePWMM|eSRV);
+::use(ePWMM|eSRV);
 /*
 
 if(::is_file("/sys/class/pwm/pwmchip0/export")==false)

@@ -19,9 +19,8 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #define SSHCOMM_H
 
 #include "comssh.h"
-#include "iplugbase.h"
-#include "sqwrap.h"
-#include "ctx.h"
+#include "divais.h"
+#include "sq_engine.h"
 #include "rtxbus.h"
 
 using namespace GenericHw;
@@ -39,9 +38,9 @@ public:
     SshComm(SqObj&, const char* credentials, const char* name=nullptr);
 
     virtual ~SshComm();
-    void set_cb(SqMemb& mem, size_t bytes);
-    const char* _gets(int chars);
-    OVERW(ComSsh,Divais);
+    bool set_cb(SqMemb& mem);
+    const char* _gets();
+    OVERW(SshComm,Divais)
     static void squit(SqEnvi& e){
         Sqrat::Class<SshComm> cls(e.theVM(), _SC("SSH"));
         cls.Ctor<const char*, const char* >();

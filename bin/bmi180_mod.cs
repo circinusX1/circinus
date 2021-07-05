@@ -1,6 +1,6 @@
 // SCRIPT  TESTED ON BBB
 
-::using(eI2C|eSRV);
+::use(eI2C|eSRV);
 ::loadmod("./modules/libbmi160-Linux-armv7l.so","ACCEL");
 
 i2c    := I2C(true,"/dev/i2c2", 0x68, "i2c");

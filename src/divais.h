@@ -33,10 +33,10 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "../modules/iper.h"
 
 class   Divais;
-#define MAX_BUFF_SZ (32768)
-#define DEF_BUFF_SZ	(256)
+#define MAX_BUFF_SZ         (32768)
+#define DEF_BUFF_SZ         (256)
 #define ONE_SHOT_BUFF_SZ	(256)
-#define DEF_TOUT    10000
+#define DEF_TOUT            256
 
 extern  SQVM*       ModVM;
 extern  sq_api*     ModPtrs;
@@ -104,9 +104,8 @@ public:
 	const char* dev_key()const{return _ukey.c_str();};
 	void  reset();
 	bool notify_ifdirty(time_t tnow){
-		if(_monitor && _mon_dirt){
-			_mon_dirt = false;
-			_mon_callback(tnow);
+		if(_monitor){
+			_mon_dirt = _mon_callback(tnow);
 		}
 		return _mon_dirt;
 	}

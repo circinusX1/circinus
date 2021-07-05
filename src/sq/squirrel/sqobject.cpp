@@ -218,7 +218,7 @@ const SQChar* SQFunctionProto::GetLocal(SQVM *vm,size_t stackbase,size_t nseq,si
     const SQChar *res=NULL;
     if(nvars>=nseq){
         for(size_t i=0;i<nvars;i++){
-            if(_localvarinfos[i]._start_op<=nop && _localvarinfos[i]._end_op>=nop)
+            if(_localvarinfos[i]._start_op<=(int)nop && _localvarinfos[i]._end_op>=(int)nop)
             {
                 if(nseq==0){
                     vm->Push(vm->_stack[stackbase+_localvarinfos[i]._pos]);

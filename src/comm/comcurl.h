@@ -56,6 +56,7 @@ public:
         cls.Ctor<int, const char* >();
         cls.Ctor<SqObj&, int, const char* >();
         cls.Functor(_SC("close"), &ComCurl::iclose);
+        cls.Functor(_SC("open"), &ComCurl::iopen);
         cls.Functor(_SC("set_post"), &ComCurl::set_post);
         cls.Functor(_SC("set_headers"), &ComCurl::set_headers);
         cls.Functor(_SC("set_url"), &ComCurl::set_url);

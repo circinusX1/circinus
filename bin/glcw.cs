@@ -1,5 +1,5 @@
 // SCRIPT  TESTED
-::using(eSOLIB);
+::use(eSOLIB);
 
 lib := LIB("libglfw.so");
 lib2 := LIB("libGL.so");
