@@ -228,7 +228,7 @@ bool   Inst::check_devs(time_t t)
     bool evs = false;
     for(auto& d : _devs)
     {
-        evs |= d.second->notify_ifdirty(t);
+        evs |= d.second->_mon_cbacks_call(t);
     }
     return evs;
 }

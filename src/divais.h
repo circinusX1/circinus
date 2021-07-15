@@ -103,7 +103,7 @@ public:
 	};
 	const char* dev_key()const{return _ukey.c_str();};
 	void  reset();
-	bool notify_ifdirty(time_t tnow){
+	bool _mon_cbacks_call(time_t tnow){
 		if(_monitor){
 			_mon_dirt = _mon_callback(tnow);
 		}
