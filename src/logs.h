@@ -72,7 +72,7 @@ do{\
 
 #define SLOG(x) \
 do{\
-    std::cout <<  Tc::Md(Tc::FG_BLUE) << "S " << x << Tc::Md(Tc::FG_DEFAULT);\
+    std::cout <<  Tc::Md(Tc::FG_BLUE) << x << Tc::Md(Tc::FG_DEFAULT);\
 }while(0);
 
 //-----------------------------------------------------------------------------
@@ -140,7 +140,7 @@ do{\
 
 #define SLOG(x) \
 do{\
-    std::cout <<  Tc::Md(Tc::FG_BLUE) << "S " << x << Tc::Md(Tc::FG_DEFAULT);\
+    std::cout <<  Tc::Md(Tc::FG_BLUE) << x << Tc::Md(Tc::FG_DEFAULT);\
 }while(0);
 
 
