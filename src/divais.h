@@ -31,6 +31,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "sq_engine.h"
 #include "logs.h"
 #include "../modules/iper.h"
+#include "../modules/isqcls.h"
 
 class   Divais;
 #define MAX_BUFF_SZ         (32768)

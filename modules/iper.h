@@ -239,15 +239,20 @@ public:
 class  I_IDev
 {
 public:
-
+    I_IDev(){}
+    
     I_IDev(const char* dev, const char* name):_name(name){
+#ifdef PLUGIN_LIB        
         __eng_rw = __pinstance->get_devi(dev); 
         __pinstance->add_this(this, name); 
+#endif         
     }
 
     virtual ~I_IDev(){
+#ifdef PLUGIN_LIB        
         if(__eng_rw)__eng_rw->iclose();  
         __pinstance->remove_obj(_name.c_str());
+#endif         
     }
     
 	virtual const char* name()const=0;              // ret the name
@@ -265,9 +270,11 @@ protected:
     devdata_t           _data;
 
 public:    
+#ifdef PLUGIN_LIB    
     static IInstance*   __pinstance;
     static HSKVM        __vm;
     static IoOps*       __eng_rw;
+#endif     
 };
 
 typedef bool (*devModPtr_t)(HSKVM vm, sq_api* ptrs, IInstance* pi, const char* name);

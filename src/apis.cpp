@@ -49,6 +49,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include "inst.h"
 
 
+
 int         Secret;
 int         ThrLock;
 int         Loggran = 0x0;
@@ -650,6 +651,33 @@ bool dynamic(const char* lib, const char* devname)
     return false;
 }
 
+
+bool loadclass(const char* lib, const char* devname)
+{
+    void* module  = ::dlopen(lib, RTLD_NOW | RTLD_LOCAL | RTLD_NOLOAD);
+    if (module == nullptr)
+    {
+        module = ::dlopen(lib, RTLD_NOW | RTLD_LOCAL);
+        if (module == nullptr)
+        {
+            LOGE("cannot load DLL" << lib << dlerror());
+            return false;
+        }
+    }
+
+    devClsPtr_t startmod = (devClsPtr_t)::dlsym(module, "start_sqclass");
+    if (startmod == nullptr)
+    {
+        LOGE("cannot load startmod" << __FUNCTION__ << dlerror());
+        ::dlclose(module);
+        module = nullptr;
+        return false;
+    }
+    __sq_env->add_dll(module);
+    return startmod(__vm,  SQ_PTRS, devname);
+}
+
+
 bool loadmod(const char* lib, const char* devname)
 {
     void* module  = ::dlopen(lib, RTLD_NOW | RTLD_LOCAL | RTLD_NOLOAD);
@@ -772,6 +800,7 @@ void globals_expose(SqEnvi& sq)
 
 	Sqrat::RootTable(sq.theVM()).Functor("execute",&execute);
 	Sqrat::RootTable(sq.theVM()).Functor("loadmod",&loadmod);
+	Sqrat::RootTable(sq.theVM()).Functor("loadclass",&loadclass);
 	Sqrat::RootTable(sq.theVM()).Functor("dynamic",&dynamic);
 	Sqrat::RootTable(sq.theVM()).Functor("context",&context);
 	Sqrat::RootTable(sq.theVM()).Functor("ctx",&context);
