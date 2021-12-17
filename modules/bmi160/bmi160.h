@@ -33,14 +33,10 @@ public:
 
 
 private:
-    IoOps*          _ird;
-    std::string     _name;
     double          _acc[3];
     double          _rot[3];
-    devdata_t           _data;
     char            _retbuff[64];
     bool            _dirt = false;
-    Sqrat::Object   _o;
 };
 
 #endif // MCP9600_H
