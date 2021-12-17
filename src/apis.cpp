@@ -94,7 +94,6 @@ std::string intarr2a(SqArr& a, const char* sep)
         LOGW("array to large");
         return "";
     }
-    out.clear();
     a.GetArray(ptr, sz);
     for(int i=0;i<sz;i++)
     {
@@ -407,7 +406,7 @@ void make_dir(const std::string& path)
     }
 }
 
-static char StaticSr[16];
+static char StaticSr[128];
 const char*  i2a(int k)
 {
     ::strcpy(StaticSr, std::to_string(k).c_str());
@@ -419,6 +418,34 @@ const char*  x2a(int k)
     ::sprintf(StaticSr, "%X", k);
     return StaticSr;
 }
+
+const char* deline(const char* str)
+{
+    memset(StaticSr,0,sizeof(StaticSr));
+    char* p =StaticSr;
+    for(int i=0;str[i];i++)
+    {
+        if(str[i] == '\n' || str[i] == '\r')continue;
+        *p++=str[i];
+    }
+    *p++=0;
+    return StaticSr;
+}
+
+
+const char* dechar(const char* str, char c)
+{
+    memset(StaticSr,0,sizeof(StaticSr));
+    char* p =StaticSr;
+    for(int i=0;str[i];i++)
+    {
+        if(str[i] == c)continue;
+        *p++=str[i];
+    }
+    *p++=0;
+    return StaticSr;
+}
+
 
 const char* i2xa(int k)
 {
@@ -777,6 +804,8 @@ void globals_expose(SqEnvi& sq)
 	Sqrat::RootTable(sq.theVM()).Functor("errorln", &errorln);
 	Sqrat::RootTable(sq.theVM()).Functor("sys_config", &sys_config);
 	Sqrat::RootTable(sq.theVM()).Functor("S8", &s8);
+	Sqrat::RootTable(sq.theVM()).Functor("deline", &deline);
+	Sqrat::RootTable(sq.theVM()).Functor("dechar", &dechar);
 	Sqrat::RootTable(sq.theVM()).Functor("S16", &s16);
 	Sqrat::RootTable(sq.theVM()).Functor("R32", &r32);
 	Sqrat::RootTable(sq.theVM()).Functor("R64", &r64);

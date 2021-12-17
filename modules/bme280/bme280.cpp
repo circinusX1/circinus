@@ -6,20 +6,16 @@
 #include "bme280.h"
 
 
-sq_api*             SQ_PTRS;
-static IoOps*       __pobj;
-static IInstance*   __pi;
-static HSKVM        __vm;
+MODULE_VARS();
 
-
-Bme280::Bme280(const char* dev, const char* name):_name(name)
+Bme280::Bme280(const char* dev, const char* name):I_IDev(dev,name)
 {
-    SHALL_CTOR();
+    MUST_CALL();
 }
 
 Bme280::~Bme280()
 {
-    SHALL_DTOR();
+
 }
 
 /**
@@ -103,7 +99,7 @@ const char* Bme280::dev_key()const
  */
 Sqrat::Object Bme280::object()const
 {
-    return _o;
+    return _ratobj;
 }
 
 void Bme280::monitor(bool m)
@@ -182,7 +178,7 @@ const devdata_t& Bme280::get_data()const
 void  Bme280::sync(const char*)
 {
 	int		tph[3];
-	read_values(__pobj, tph[0], tph[1], tph[2]);
+	read_values(__eng_rw, tph[0], tph[1], tph[2]);
 	_dirty = ::memcmp(tph, _tph, sizeof(tph));
 	::memcpy(_tph, tph, sizeof(tph));
 	_data.clear();

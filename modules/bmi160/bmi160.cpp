@@ -17,10 +17,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 #include "bmi160.h"
 #include "_bmi160.h"
 
-sq_api*             SQ_PTRS;
-static IoOps*       __pobj;
-static IInstance*   __pi;
-static HSKVM        __vm;
+MODULE_VARS();
 
 /* required C function by bosh sensor driver implementation */
 void linux_delay(uint32_t period)
@@ -30,10 +27,10 @@ void linux_delay(uint32_t period)
 
 int8_t linux_write(uint8_t devaddr, uint8_t regdevaddr, uint8_t *reg_data, uint16_t length)
 {
-    if(__pobj->iopen())
+    if(I_IDev::__eng_rw->iopen())
     {
-        __pobj->bwrite(reg_data, (int)length, (int)regdevaddr);
-        __pobj->iclose();
+        I_IDev::__eng_rw->bwrite(reg_data, (int)length, (int)regdevaddr);
+        I_IDev::__eng_rw->iclose();
         return 0;
     }
     return -1;
@@ -41,10 +38,10 @@ int8_t linux_write(uint8_t devaddr, uint8_t regdevaddr, uint8_t *reg_data, uint1
 
 int8_t  linux_read(uint8_t devaddr, uint8_t regdevaddr, uint8_t *reg_data, uint16_t length)
 {
-    if(__pobj->iopen())
+    if(I_IDev::__eng_rw->iopen())
     {
-        __pobj->bread(reg_data, (int)length, (int)regdevaddr);
-        __pobj->iclose();
+        I_IDev::__eng_rw->bread(reg_data, (int)length, (int)regdevaddr);
+        I_IDev::__eng_rw->iclose();
         return 0;
     }
     return -1;
@@ -55,14 +52,14 @@ int8_t  linux_read(uint8_t devaddr, uint8_t regdevaddr, uint8_t *reg_data, uint1
  * @param dev - the device id-name used by BME sensor.
  * @param name-key for the sensor.
  */
-Bmi160::Bmi160(const char* dev, const char* name):_name(name)
+Bmi160::Bmi160(const char* dev, const char* name):I_IDev(dev, name)
 {
-    SHALL_CTOR();
+    MUST_CALL();
 }
 
 Bmi160::~Bmi160()
 {
-    SHALL_DTOR();
+
 }
 
 /**
@@ -143,7 +140,7 @@ const char* Bmi160::dev_key()const
  */
 Sqrat::Object Bmi160::object()const
 {
-    return _o;
+    return _ratobj;
 }
 
 /**

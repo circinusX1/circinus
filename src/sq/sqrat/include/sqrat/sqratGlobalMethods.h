@@ -1383,7 +1383,7 @@ public:
     template <bool overloaded /*= false*/>
     static isize_t MembRt(HSKVM vm, bool rv, isize_t nargs)
     {
-
+        SQUNUSED(nargs);
 #if !defined (SCRAT_NO_ERROR_CHECKING)
         if (!SQRAT_CONST_CONDITION(overloaded) && SQ_PTRS->gettop(vm) != 2) {
             return SQ_PTRS->throwerror(vm, _SC("parameters count or return type"));

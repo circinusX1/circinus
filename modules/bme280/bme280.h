@@ -25,13 +25,9 @@ public:
 
 
 private:
-    IoOps*          _ird;
-    std::string     _name;
-    devdata_t       _data;
     char            _retbuff[32];
     int             _tph[3];
     bool            _dirty = false;
-    Sqrat::Object   _o;
     bool            _montorit = false;
 };
 
