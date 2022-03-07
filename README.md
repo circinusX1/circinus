@@ -156,7 +156,7 @@ function  callback(dev)
 
 ```c++
 
-include("plugins/oled96.scr");
+include("plugins/oled96.scr"); /// oled interface driver script
 /*
 sudo nano /lib/udev/rules.d/60-i2c-tools.rules
 KERNEL=="i2c-0"     , GROUP="i2c", MODE="0660"
@@ -189,15 +189,14 @@ function main(a)
 }
 ```
 
-### Extend circinus with custom modules and solibs. 
+### Extend circinus with custom modules and libs. 
 ### Let's use wiringpi.so module wrapped around wiringPI.so. 
 ### so wiringPi/arduino style coding can be used
  
 ```cpp
-::using(eSOLIB); // load what we use only 
-::import("./modules/libardulike.so");
+::using(eSOLIB);                      // so importer
+::import("./modules/libardulike.so"); 
 
-/*  the code here was pasted as it was taken form Wiring pi example */
 var LED=26;
 
 function main(x)
@@ -217,18 +216,17 @@ function main(x)
 
 ```
 
-# Wow!
-### Or call directin to wiringpi.so library using arduino style.
+### Or call directin to wiringpi.so library
 #### Import library, get functions and call them.
 
 ```cpp
-::using(eSOLIB); // load what we use only 
+::using(eSOLIB);                        // the so importer
 
-lib := LIB("libwiringPi.so");
-lib.load("wiringPiSetupGpio",true,0);   // function name from the so ,function type has return value takes 0 params
-lib.load("digitalWrite",false,2);       // function name from the so ,function type no return 2 parameters
-lib.load("delay",0,1);                  // function name from the so ,function type no return takes one param
-lib.load("PinMode",0,2);                // function name from the so ,function type no return takes one param
+lib := LIB("libwiringPi.so");           // load the library
+lib.load("wiringPiSetupGpio",true,0);   // Load each function we use form the lib,
+lib.load("digitalWrite",false,2);       // LIB.load(function_name, return_type, number_of_parameters);
+lib.load("delay",0,1);                  // 
+lib.load("PinMode",0,2);                // 
 
 var LED = 26;
 function main(x)
@@ -247,7 +245,7 @@ function main(x)
 
 ```
 
-### Let;s play some audio calling into libao 
+### LibAO demo 
 
 ```cpp
 
@@ -266,10 +264,6 @@ lib.load("ao_play",false,3);
 lib.load("ao_close",0,1);
 lib.load("ao_shutdown",0,0);
 
-
-
-
-
 function main(ctx)
 {
     var param = ctx.args();
@@ -285,16 +279,16 @@ function main(ctx)
     var file   = FILE(eBINARY, "/home/marius/Music/iris.wav","iris");
     var buffer = BUFF([4096]);                  // file buffer
     
-    var format  = BUFF(['I''I','I','I','P']);    // format structure int, int int int void
-    var options = BUFF(['P','P','P']);
-    format.set([16,44100,2,1,0]);               // populate structure
-    options.set([ param[1], param[2]]);      // param[0] is the script name
-    options.get();
+    var format  = BUFF(['I''I','I','I','P']);   // BUFF as structure [Int Int Int Int Pointer]
+    var options = BUFF(['P','P','P']);          // 3 Pointers
+    format.set([16,44100,2,1,0]);               // populate structure format BUFF
+    options.set([ param[1], param[2]]);         // param[0] is the script name, P1 is the hw and P2 is 0 aka hw:0
     
-    ao_initialize();                            // init ao
+    ao_initialize();                            // Call the function into lib AO
     var default_driver = ao_default_driver_id();    
     print(default_driver + " default_driver\n");
-    var device = ao_open_live(default_driver, format.get(), options.get());
+    var device = ao_open_live(default_driver, format.get(), options.get()); // the get() methods on buffers are not to be used in script
+                                                                            // they are used to pass the native type to native functions  
     print(device + " device\n");
     
     
@@ -382,10 +376,6 @@ Credits:
 
 ```
 
-
-# LICENSE ADDON
-
-    * Not for commercial witout written consent
 
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L9RVWU5NUZ4YG)   [donations are taken care by meeiot domain]
